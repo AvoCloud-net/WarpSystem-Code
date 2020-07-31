@@ -2,7 +2,6 @@ package de.codingair.warpsystem.spigot.features.warps.guis;
 
 import de.codingair.codingapi.player.gui.anvil.*;
 import de.codingair.codingapi.player.gui.inventory.gui.GUI;
-import de.codingair.codingapi.player.gui.inventory.gui.GUIListener;
 import de.codingair.codingapi.player.gui.inventory.gui.InterfaceListener;
 import de.codingair.codingapi.player.gui.inventory.gui.Skull;
 import de.codingair.codingapi.player.gui.inventory.gui.itembutton.ItemButton;
@@ -19,10 +18,8 @@ import de.codingair.warpsystem.spigot.base.language.Lang;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types.BoundAction;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types.CostsAction;
-import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types.WarpAction;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
 import de.codingair.warpsystem.spigot.base.utils.options.specific.WarpGUIOptions;
-import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.features.FeatureType;
 import de.codingair.warpsystem.spigot.features.warps.guis.editor.GEditor;
 import de.codingair.warpsystem.spigot.features.warps.managers.IconManager;
@@ -437,9 +434,7 @@ public class GWarps extends GUI {
                                                 e.setPost(() -> {
                                                     Icon icon = new Icon(input, item, GWarps.this.page, slot, null);
                                                     icon.setPage(category);
-
-                                                    Icon clone = icon.clone().addAction(new WarpAction(new Destination()));
-                                                    new GEditor(p, icon, clone).setFallbackGUI(GWarps.this).setUseFallbackGUI(true).open();
+                                                    new GEditor(p, icon).setFallbackGUI(GWarps.this).setUseFallbackGUI(true).open();
                                                 });
                                             else {
                                                 Sound.ENTITY_ITEM_BREAK.playSound(p);
@@ -471,6 +466,7 @@ public class GWarps extends GUI {
         }
 
         ItemButtonOption option = new StandardButtonOption();
+        SoundData s = option.getClickSound2();
 
         if(editing || (!icon.hasPermission() || p.hasPermission(icon.getPermission()))) {
             addButton(new SyncButton(icon.getSlot()) {
@@ -532,6 +528,8 @@ public class GWarps extends GUI {
                 @Override
                 public void onClick(InventoryClickEvent e, Player player) {
                     if(editing) {
+                        s.play(player);
+
                         if(cloning && cursorIcon == null) {
                             //fast deleting
                             IconManager.getInstance().remove(icon);
@@ -586,9 +584,7 @@ public class GWarps extends GUI {
                                     e.setCurrentItem(new ItemStack(Material.AIR));
                                     setMoving(true, e.getSlot());
                                 } else {
-                                    Icon clone = icon.clone();
-                                    if(!clone.hasAction(Action.WARP)) clone.addAction(new WarpAction(new Destination()));
-                                    changeGUI(new GEditor(p, icon, clone), true);
+                                    changeGUI(new GEditor(p, icon), true);
                                 }
                             }
                         } else if(e.isRightClick()) {
@@ -636,6 +632,8 @@ public class GWarps extends GUI {
                             }
                         }
                     } else if(e.isLeftClick()) {
+                        if(!icon.hasAction(Action.SOUND)) s.play(player);
+
                         if(icon.isPage()) {
                             GWarps.this.page = icon;
                             reinitialize();
@@ -645,7 +643,7 @@ public class GWarps extends GUI {
                         icon.perform(p);
                     }
                 }
-            }.setOption(option));
+            }.setOption(option).setClickSound2(null));
         }
     }
 
