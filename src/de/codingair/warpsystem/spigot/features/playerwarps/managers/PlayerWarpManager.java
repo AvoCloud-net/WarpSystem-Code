@@ -382,10 +382,6 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
         WarpSystem.getInstance().getBungeeFeatureList().add(this);
         Bukkit.getPluginManager().registerEvents(this.listener, WarpSystem.getInstance());
 
-        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PlayerWarpPlaceholderExpansion().register();
-        }
-
         return success;
     }
 

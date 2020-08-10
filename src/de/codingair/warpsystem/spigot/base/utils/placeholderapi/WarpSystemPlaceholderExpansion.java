@@ -6,7 +6,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 
 public abstract class WarpSystemPlaceholderExpansion extends PlaceholderExpansion {
-    private FeatureType type;
+    private final FeatureType type;
 
     public WarpSystemPlaceholderExpansion(FeatureType type) {
         this.type = type;
