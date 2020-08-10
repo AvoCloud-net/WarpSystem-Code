@@ -86,8 +86,13 @@ public class CooldownButton extends SyncAnvilGUIButton {
     @Override
     public void onOtherClick(InventoryClickEvent e) {
         if(e.getClick() == ClickType.RIGHT) {
-            object.removeAction(Action.COSTS);
+            object.setCooldown(0);
             update();
         }
+    }
+
+    @Override
+    public boolean canClick(ClickType click) {
+        return click == ClickType.LEFT || click == ClickType.RIGHT;
     }
 }
