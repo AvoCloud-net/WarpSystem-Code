@@ -18,6 +18,7 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.
 import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleporterManager;
 import de.codingair.warpsystem.spigot.features.randomteleports.packets.QueueRTPUsagePacket;
 import de.codingair.warpsystem.spigot.features.randomteleports.packets.RandomTPPacket;
+import de.codingair.warpsystem.spigot.features.randomteleports.utils.WorldOption;
 import de.codingair.warpsystem.transfer.packets.utils.Packet;
 import de.codingair.warpsystem.transfer.packets.utils.PacketType;
 import de.codingair.warpsystem.transfer.utils.PacketListener;
@@ -78,7 +79,9 @@ public class SpawnListener implements Listener, PacketListener {
 
     private void triggerRTP(Player player, Node<World, String> node) {
         if(node.getKey() != null) {
-            RandomTeleporterManager.getInstance().search(player, node.getKey(), new Callback<Location>() {
+            WorldOption option = RandomTeleporterManager.getInstance().getOption(node.getKey(), RandomTeleporterManager.getInstance().getDefValues());
+
+            RandomTeleporterManager.getInstance().search(player, node.getKey(), option, new Callback<Location>() {
                 @Override
                 public void accept(Location loc) {
                     if(loc == null) {
