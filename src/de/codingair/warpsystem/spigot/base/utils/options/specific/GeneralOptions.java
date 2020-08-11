@@ -21,6 +21,7 @@ public class GeneralOptions extends Options {
     private Option<String> cooldownBack = new Option<>("WarpSystem.Cooldown.Back", "0s");
     private Option<String> cooldownRandomTP = new Option<>("WarpSystem.Cooldown.Tpa", "5m");
     private Option<String> delayDisplay = new Option<>("WarpSystem.Teleport.Delay_Display", "ACTION_BAR");
+    private Option<Boolean> teleportInterceptions = new Option<>("WarpSystem.Teleport.Teleport_Interceptions", true);
 
     public GeneralOptions() {
         super("Config");
@@ -44,6 +45,7 @@ public class GeneralOptions extends Options {
         set(cooldownBack);
         set(cooldownRandomTP);
         set(delayDisplay);
+        set(teleportInterceptions);
         save();
     }
 
@@ -60,6 +62,7 @@ public class GeneralOptions extends Options {
         get(cooldownBack);
         get(cooldownRandomTP);
         get(delayDisplay);
+        get(teleportInterceptions);
 
         IntPredicate test = new IntPredicate() {
             private boolean color = false;
@@ -105,6 +108,7 @@ public class GeneralOptions extends Options {
             this.cooldownBack = o.cooldownBack.clone();
             this.cooldownRandomTP = o.cooldownRandomTP.clone();
             this.delayDisplay = o.delayDisplay.clone();
+            this.teleportInterceptions = o.teleportInterceptions.clone();
         }
     }
 
@@ -170,5 +174,9 @@ public class GeneralOptions extends Options {
         else if(origin == Origin.TeleportCommand) return getCooldownBack();
         else if(origin == Origin.RandomTP) return getCooldownRandomTP();
         return 0;
+    }
+
+    public boolean isTeleportInterceptions() {
+        return teleportInterceptions.getValue();
     }
 }

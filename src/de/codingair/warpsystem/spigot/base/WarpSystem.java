@@ -227,6 +227,7 @@ public class WarpSystem extends JavaPlugin {
             Bukkit.getPluginManager().registerEvents(new TeleportListener(), this);
             Bukkit.getPluginManager().registerEvents(new NotifyListener(), this);
             Bukkit.getPluginManager().registerEvents(new CommandListener(), this);
+            Bukkit.getPluginManager().registerEvents(new TeleportInterceptionListener(), this);
 
             UUIDManager.UUIDListener uuidListener = uuidManager.listener();
             Bukkit.getPluginManager().registerEvents(uuidListener, this);
