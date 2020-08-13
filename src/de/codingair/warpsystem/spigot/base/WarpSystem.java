@@ -111,6 +111,7 @@ public class WarpSystem extends JavaPlugin {
     private final HeadManager headManager = new HeadManager();
     private final SetupAssistantManager setupAssistantManager = new SetupAssistantManager();
     private final CooldownManager cooldownManager = new CooldownManager();
+    private final VanishManager vanishManager = new VanishManager();
 
     private UpdateNotifier updateNotifier;
 
@@ -237,7 +238,7 @@ public class WarpSystem extends JavaPlugin {
             SetupAssistantListener l = new SetupAssistantListener();
             Bukkit.getPluginManager().registerEvents(l, this);
             dataHandler.register(l);
-            getBungeeFeatureList().add(new VanishManager());
+            getBungeeFeatureList().add(this.vanishManager);
 
             this.startAutoSaver();
             afterOnEnable();
@@ -618,5 +619,9 @@ public class WarpSystem extends JavaPlugin {
 
     public static CooldownManager cooldown() {
         return getInstance().cooldownManager;
+    }
+
+    public VanishManager getVanishManager() {
+        return vanishManager;
     }
 }
