@@ -55,7 +55,8 @@ import java.util.regex.Pattern;
 @Function(name = "Max warp amount", defaultValue = "5", configPath = "PlayerWarps.General.Max_Warp_Amount", description = "§7If permissions are §cdisabled", clazz = Integer.class)
 @Function(name = "Protected regions", defaultValue = "true", configPath = "PlayerWarps.General.Support.ProtectedRegions", clazz = Boolean.class)
 @Function(name = "BungeeCord", defaultValue = "true", configPath = "PlayerWarps.General.BungeeCord", clazz = Boolean.class)
-@Function(name = "Economy", defaultValue = "false", configPath = "PlayerWarps.General.Economy", clazz = Boolean.class)
+@Function(name = "Economy", description = "Disables 'Time bound' when disabled.", defaultValue = "false", configPath = "PlayerWarps.General.Economy", clazz = Boolean.class)
+@Function(name = "Time bound", description = "!! Already created player warps remain time bounded,\nplease  clear PlayerWarp data after toggling this option !!", defaultValue = "true", configPath = "PlayerWarps.General.Time_Bound", clazz = Boolean.class, since = "v4.2.9")
 @Function(name = "Force player head", defaultValue = "false", configPath = "PlayerWarps.General.Force_Player_Head", clazz = Boolean.class)
 @Function(name = "Force create GUI", defaultValue = "false", configPath = "PlayerWarps.General.Force_Create_GUI", clazz = Boolean.class)
 @Function(name = "Public as create state", defaultValue = "false", configPath = "PlayerWarps.General.Public_as_create_state", clazz = Boolean.class)
@@ -125,6 +126,7 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
     private boolean allowTrustedMembers;
     private boolean allowTeleportMessage;
     private boolean allowDescription;
+    private boolean time;
 
     public static boolean hasPermission(Player player) {
         if(player.isOp()) return true;
@@ -283,6 +285,7 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
         this.allowTrustedMembers = config.getBoolean("PlayerWarps.General.Allow_Trusted_Members", true);
         this.allowTeleportMessage = config.getBoolean("PlayerWarps.General.Allow_Teleport_Messages", true);
         this.allowDescription = config.getBoolean("PlayerWarps.General.Allow_Description", true);
+        this.time = economy && config.getBoolean("PlayerWarps.General.Time_Bound", true);
 
         //Costs - Editing
         this.nameChangeCosts = config.getDouble("PlayerWarps.Costs.Editing.Name", 400);
@@ -377,7 +380,7 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
         imported.clear();
 
         if(!bungeeCord) WarpSystem.log("    ...got " + size + " PlayerWarp(s)");
-        if(economy) API.addTicker(this);
+        if(economy && time) API.addTicker(this);
 
         WarpSystem.getInstance().getBungeeFeatureList().add(this);
         Bukkit.getPluginManager().registerEvents(this.listener, WarpSystem.getInstance());
@@ -1207,5 +1210,9 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
 
     public boolean isAllowDescription() {
         return allowDescription;
+    }
+
+    public boolean isTime() {
+        return time;
     }
 }
