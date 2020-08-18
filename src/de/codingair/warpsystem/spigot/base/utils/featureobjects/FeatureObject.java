@@ -168,6 +168,7 @@ public abstract class FeatureObject implements Serializable {
             return this;
         }
 
+        //register dummy to cache this perform instance
         TeleportManager.getInstance().registerTeleport(player, new TeleportDummy(player, getOrigin(), new Callback<Result>() {
             @Override
             public void accept(Result result) {
@@ -175,6 +176,14 @@ public abstract class FeatureObject implements Serializable {
                 else if(payment.getValue() != null) payment.getValue().proceed();
             }
         }));
+
+        //invalidating purpose
+        options.addCallback(new Callback<Result>() {
+            @Override
+            public void accept(Result result) {
+                TeleportManager.getInstance().invalidate(player);
+            }
+        });
 
         if(costs > 0) {
             if(!Bank.isReady() || Bank.adapter().getMoney(player) < costs) {
@@ -186,7 +195,7 @@ public abstract class FeatureObject implements Serializable {
                 @Override
                 public void accept(Result result) {
                     if(result != Result.SUCCESS) {
-                        TeleportManager.getInstance().invalidate(player);
+                        options.fireCallbacks(result);
                         return;
                     }
 
@@ -196,6 +205,7 @@ public abstract class FeatureObject implements Serializable {
                         @Override
                         public void accept(Result result) {
                             payment.setValue(null);
+
                             if(result == Result.SUCCESS) {
                                 for(ActionObject<?> action : actions) {
                                     if(action.getType() == Action.WARP || action.getType() == Action.COSTS) continue;
@@ -203,14 +213,10 @@ public abstract class FeatureObject implements Serializable {
                                 }
 
                                 player.sendMessage(Lang.getPrefix() + Lang.get("Money_Paid_Use").replace("%AMOUNT%", new ImprovedDouble(getAction(CostsAction.class).getValue()).toString()));
-                            } else {
-                                TeleportManager.getInstance().invalidate(player);
-
-                                if(result == Result.NOT_ENOUGH_MONEY) {
-                                    player.sendMessage(Lang.getPrefix() + Lang.get("Not_Enough_Money").replace("%AMOUNT%", options.getFinalCosts(player).toString()));
-                                } else if(result == Result.DENIED_PAYMENT) {
-                                    if(options.getPaymentDeniedMessage(player) != null) player.sendMessage(options.getPaymentDeniedMessage(player));
-                                }
+                            } else if(result == Result.NOT_ENOUGH_MONEY) {
+                                player.sendMessage(Lang.getPrefix() + Lang.get("Not_Enough_Money").replace("%AMOUNT%", options.getFinalCosts(player).toString()));
+                            } else if(result == Result.DENIED_PAYMENT) {
+                                if(options.getPaymentDeniedMessage(player) != null) player.sendMessage(options.getPaymentDeniedMessage(player));
                             }
 
                             options.fireCallbacks(result);
