@@ -608,7 +608,7 @@ public class PlayerWarp extends FeatureObject {
     }
 
     public boolean isTimeDependent() {
-        return this.time > 0 || ((getServer() == null || Objects.deepEquals(WarpSystem.getInstance().getCurrentServer(), getServer())) && PlayerWarpManager.getManager().isEconomy());
+        return this.time > 0 || ((getServer() == null || Objects.deepEquals(WarpSystem.getInstance().getCurrentServer(), getServer())) && PlayerWarpManager.getManager().isTime());
     }
 
     public String getServer() {
@@ -619,6 +619,11 @@ public class PlayerWarp extends FeatureObject {
 
     public PlayerWarp setTime(long time) {
         this.time = time;
+        return this;
+    }
+
+    public PlayerWarp setTimeIfEnabled(long time) {
+        if(PlayerWarpManager.getManager().isTime()) this.time = time;
         return this;
     }
 
