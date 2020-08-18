@@ -103,7 +103,7 @@ public class TeleportOptions {
     }
 
     public void setDisplayName(String displayName) {
-        this.displayName = displayName == null ? null : displayName.replace("_", " ");
+        this.displayName = displayName;
     }
 
     public String getPermission() {
