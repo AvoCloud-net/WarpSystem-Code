@@ -572,7 +572,7 @@ public class DestinationPage extends PageItem {
                                     public void accept(Boolean online) {
                                         DestinationPage.this.pinging = false;
                                         DestinationPage.this.online = online;
-                                        ((SyncButton) getButton(3, 2)).update();
+                                        update();
                                     }
                                 }));
                             }
