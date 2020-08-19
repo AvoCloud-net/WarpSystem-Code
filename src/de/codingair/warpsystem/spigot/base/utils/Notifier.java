@@ -1,6 +1,5 @@
 package de.codingair.warpsystem.spigot.base.utils;
 
-import com.earth2me.essentials.Warps;
 import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.language.Lang;
@@ -22,7 +21,7 @@ public class Notifier {
                 String v = WarpSystem.getInstance().getUpdateNotifier().getVersion();
                 if(!v.startsWith("v")) v = "v" + v;
 
-                TextComponent tc0 = new TextComponent(Lang.getPrefix() + "§7A new update is available §8[§b" + v + "§8 - §b" + WarpSystem.getInstance().getUpdateNotifier().getUpdateInfo() + "§8]§7. Download it §7»");
+                TextComponent tc0 = new TextComponent(Lang.getPrefix() + "§7A new update is available §8[§b" + WarpSystem.getInstance().getUpdateNotifier().getUpdateInfo() + "§8]§7. Download it §7»");
                 TextComponent click = new TextComponent("§chere");
                 TextComponent tc1 = new TextComponent("§7«!");
 
