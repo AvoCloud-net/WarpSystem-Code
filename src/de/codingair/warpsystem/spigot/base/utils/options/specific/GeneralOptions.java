@@ -22,6 +22,7 @@ public class GeneralOptions extends Options {
     private Option<String> cooldownRandomTP = new Option<>("WarpSystem.Cooldown.Tpa", "5m");
     private Option<String> delayDisplay = new Option<>("WarpSystem.Teleport.Delay_Display", "ACTION_BAR");
     private Option<Boolean> teleportInterceptions = new Option<>("WarpSystem.Teleport.Teleport_Interceptions", true);
+    private Option<Integer> fetchUpdates = new Option<>("WarpSystem.BungeeCord.Fetch_Updated_Jars", 1);
 
     public GeneralOptions() {
         super("Config");
@@ -46,6 +47,7 @@ public class GeneralOptions extends Options {
         set(cooldownRandomTP);
         set(delayDisplay);
         set(teleportInterceptions);
+        set(fetchUpdates);
         save();
     }
 
@@ -63,6 +65,10 @@ public class GeneralOptions extends Options {
         get(cooldownRandomTP);
         get(delayDisplay);
         get(teleportInterceptions);
+        get(fetchUpdates);
+
+        if(fetchUpdates.getValue() < 0 || fetchUpdates.getValue() > 2) fetchUpdates.setValue(1);
+        if(System.getProperty("os.name").toLowerCase().contains("win") || System.getProperty("os.name").toLowerCase().contains("mac")) fetchUpdates.setValue(0);   //file-system does not allow to delete active files.
 
         IntPredicate test = new IntPredicate() {
             private boolean color = false;
@@ -109,6 +115,7 @@ public class GeneralOptions extends Options {
             this.cooldownRandomTP = o.cooldownRandomTP.clone();
             this.delayDisplay = o.delayDisplay.clone();
             this.teleportInterceptions = o.teleportInterceptions.clone();
+            this.fetchUpdates = o.fetchUpdates.clone();
         }
     }
 
@@ -178,5 +185,9 @@ public class GeneralOptions extends Options {
 
     public boolean isTeleportInterceptions() {
         return teleportInterceptions.getValue();
+    }
+
+    public int getFetchUpdateOption() {
+        return fetchUpdates.getValue();
     }
 }

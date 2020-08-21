@@ -9,6 +9,7 @@ import de.codingair.warpsystem.spigot.features.randomteleports.packets.QueueRTPU
 import de.codingair.warpsystem.spigot.features.randomteleports.packets.RandomTPPacket;
 import de.codingair.warpsystem.spigot.features.randomteleports.packets.RandomTPWorldsPacket;
 import de.codingair.warpsystem.spigot.features.teleportcommand.packets.*;
+import de.codingair.warpsystem.transfer.jar.SendJarPacket;
 import de.codingair.warpsystem.transfer.packets.bungee.*;
 import de.codingair.warpsystem.transfer.packets.general.*;
 import de.codingair.warpsystem.transfer.packets.spigot.*;
@@ -21,6 +22,8 @@ public enum PacketType {
     SendGlobalSpawnOptionsPacket(SendGlobalSpawnOptionsPacket.class),
     TeleportSpawnPacket(TeleportSpawnPacket.class),
     PacketVanishInfo(PacketVanishInfo.class),
+    SendJarPacket(SendJarPacket.class),
+    SendOptionsPacket(SendOptionsPacket.class),
 
     PublishGlobalWarpPacket(PublishGlobalWarpPacket.class),
     GlobalWarpTeleportPacket(GlobalWarpTeleportPacket.class),
