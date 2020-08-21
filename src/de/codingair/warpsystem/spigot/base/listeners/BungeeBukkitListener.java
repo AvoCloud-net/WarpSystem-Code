@@ -7,8 +7,10 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.transfer.packets.bungee.InitialPacket;
 import de.codingair.warpsystem.transfer.packets.bungee.PrepareLoginMessagePacket;
 import de.codingair.warpsystem.transfer.packets.general.PrepareCoordinationTeleportPacket;
+import de.codingair.warpsystem.transfer.packets.spigot.SendOptionsPacket;
 import de.codingair.warpsystem.transfer.packets.utils.Packet;
 import de.codingair.warpsystem.transfer.packets.utils.PacketType;
+import de.codingair.warpsystem.transfer.serializeable.ServerOptions;
 import de.codingair.warpsystem.transfer.utils.PacketListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -44,6 +46,8 @@ public class BungeeBukkitListener implements PacketListener, Listener {
     public void onReceive(Packet packet, String extra) {
         switch(PacketType.getByObject(packet)) {
             case InitialPacket: {
+                WarpSystem.getInstance().getDataHandler().send(new SendOptionsPacket(new ServerOptions(WarpSystem.getInstance().getDescription().getVersion(), WarpSystem.opt().getFetchUpdateOption())));
+
                 WarpSystem.getInstance().setCurrentServer(((InitialPacket) packet).getServerName());
 
                 String version = ((InitialPacket) packet).getVersion();
