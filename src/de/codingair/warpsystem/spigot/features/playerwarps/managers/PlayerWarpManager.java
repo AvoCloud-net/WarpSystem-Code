@@ -56,7 +56,7 @@ import java.util.regex.Pattern;
 @Function(name = "Protected regions", defaultValue = "true", configPath = "PlayerWarps.General.Support.ProtectedRegions", clazz = Boolean.class)
 @Function(name = "BungeeCord", defaultValue = "true", configPath = "PlayerWarps.General.BungeeCord", clazz = Boolean.class)
 @Function(name = "Economy", description = "Disables 'Time bound' when disabled.", defaultValue = "false", configPath = "PlayerWarps.General.Economy", clazz = Boolean.class)
-@Function(name = "Time bound", description = "!! Already created player warps remain time bounded,\nplease  clear PlayerWarp data after toggling this option !!", defaultValue = "true", configPath = "PlayerWarps.General.Time_Bound", clazz = Boolean.class, since = "v4.2.9")
+@Function(name = "Time bound", description = "!! Already created player warps remain time bounded, please  clear PlayerWarp data after toggling this option !!", defaultValue = "true", configPath = "PlayerWarps.General.Time_Bound", clazz = Boolean.class, since = "v4.2.9")
 @Function(name = "Force player head", defaultValue = "false", configPath = "PlayerWarps.General.Force_Player_Head", clazz = Boolean.class)
 @Function(name = "Force create GUI", defaultValue = "false", configPath = "PlayerWarps.General.Force_Create_GUI", clazz = Boolean.class)
 @Function(name = "Public as create state", defaultValue = "false", configPath = "PlayerWarps.General.Public_as_create_state", clazz = Boolean.class)
