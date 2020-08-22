@@ -24,4 +24,9 @@ public class TeleportInterceptions implements Beta {
     public String getFinalConfigTag() {
         return "WarpSystem.Teleport.Teleport_Interceptions";
     }
+
+    @Override
+    public boolean active() {
+        return true;
+    }
 }

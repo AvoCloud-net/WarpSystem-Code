@@ -54,13 +54,25 @@ public class BetaManager implements Manager {
 
         if(!config.getBoolean("WarpSystem.Beta.Participate")) return true;
 
+        WarpSystem.log("  > Loading BETA features - Thank you for your help!");
+
         //enable beta features
         boolean success = true;
+
+        int amount = 0, activated = 0;
+
         for(Map.Entry<String, Beta> e : BETA.entrySet()) {
+            if(!e.getValue().active()) continue;
+            amount++;
+
             if(config.getBoolean("WarpSystem.Beta.Functions." + e.getKey())) {
+                activated++;
+
                 if(!e.getValue().load(loader)) success = false;
             }
         }
+
+        WarpSystem.log("    > " + activated + "/" + amount + " feature(s) activated");
 
         return success;
     }
