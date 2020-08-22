@@ -3,7 +3,7 @@ package de.codingair.warpsystem.bungee.features.randomtp;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.managers.ServerManager;
-import de.codingair.warpsystem.bungee.base.utils.ServerInitializeEvent;
+import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
 import de.codingair.warpsystem.spigot.features.randomteleports.packets.QueueRTPUsagePacket;
 import de.codingair.warpsystem.spigot.features.randomteleports.packets.RandomTPPacket;
 import de.codingair.warpsystem.spigot.features.randomteleports.packets.RandomTPWorldsPacket;
@@ -39,7 +39,8 @@ public class RandomTPListener implements PacketListener, Listener {
     }
 
     @EventHandler
-    public void onInitialize(ServerInitializeEvent e) {
+    public void onInitialize(ServerProvideOptionsEvent e) {
+        if(!e.getOptions().sameVersion()) return;
         RandomTPManager.getInstance().updateQueue(e.getInfo());
     }
 
