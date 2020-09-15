@@ -96,7 +96,7 @@ public class UpdateNotifier {
                 return false;
             }
 
-            String current = WarpSystem.getInstance().getDescription().getVersion();
+            String current = WarpSystem.getInstance().getDescription().getVersion().replaceAll("-hotfix.*", "");
             if(current.startsWith("v")) current = current.replaceFirst("v", "");
             String newV = version.startsWith("v") ? version.replaceFirst("v", "") : version;
 
@@ -143,7 +143,8 @@ public class UpdateNotifier {
                 return false;
             }
 
-            needsUpdate = !WarpSystem.getInstance().getDescription().getVersion().equals(version);
+            String current = WarpSystem.getInstance().getDescription().getVersion().replaceAll("-hotfix.*", "");
+            needsUpdate = !current.equals(version);
             if(needsUpdate) checkUpdateInfo();
             return needsUpdate && !notStable();
         }

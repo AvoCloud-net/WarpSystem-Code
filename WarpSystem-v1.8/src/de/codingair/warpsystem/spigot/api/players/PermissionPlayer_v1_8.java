@@ -1,19 +1,12 @@
 package de.codingair.warpsystem.spigot.api.players;
 
-import de.codingair.codingapi.server.reflections.IReflection;
 import org.bukkit.*;
-import org.bukkit.advancement.Advancement;
-import org.bukkit.advancement.AdvancementProgress;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.PistonMoveReaction;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.entity.*;
-import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.*;
@@ -22,22 +15,19 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.util.BoundingBox;
-import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.net.InetSocketAddress;
 import java.util.*;
 
-public class PermissionPlayer implements Player {
+public class PermissionPlayer_v1_8 implements Player {
     private Player player;
 
-    public PermissionPlayer(Player player) {
+    public PermissionPlayer_v1_8(Player player) {
         this.player = player;
     }
 
@@ -109,26 +99,6 @@ public class PermissionPlayer implements Player {
 
     }
 
-    public void playSound(Location location, Sound sound, SoundCategory soundCategory, float v, float v1) {
-
-    }
-
-    public void playSound(Location location, String s, SoundCategory soundCategory, float v, float v1) {
-
-    }
-
-    public void stopSound(Sound sound, SoundCategory soundCategory) {
-
-    }
-
-    public void stopSound(String s, SoundCategory soundCategory) {
-
-    }
-
-    public void sendBlockChange(Location location, BlockData blockData) {
-
-    }
-
     public void hidePlayer(Plugin plugin, Player player) {
 
     }
@@ -145,10 +115,6 @@ public class PermissionPlayer implements Player {
 
     }
 
-    public AdvancementProgress getAdvancementProgress(Advancement advancement) {
-        return null;
-    }
-
     public int getClientViewDistance() {
         return 0;
     }
@@ -163,10 +129,6 @@ public class PermissionPlayer implements Player {
 
     public void openBook(ItemStack itemStack) {
 
-    }
-
-    public InventoryView openMerchant(Merchant merchant, boolean b) {
-        return null;
     }
 
     public boolean hasCooldown(Material material) {
@@ -197,22 +159,6 @@ public class PermissionPlayer implements Player {
         return false;
     }
 
-    public boolean discoverRecipe(NamespacedKey namespacedKey) {
-        return false;
-    }
-
-    public int discoverRecipes(Collection<NamespacedKey> collection) {
-        return 0;
-    }
-
-    public boolean undiscoverRecipe(NamespacedKey namespacedKey) {
-        return false;
-    }
-
-    public int undiscoverRecipes(Collection<NamespacedKey> collection) {
-        return 0;
-    }
-
     public Entity getShoulderEntityLeft() {
         return null;
     }
@@ -230,18 +176,6 @@ public class PermissionPlayer implements Player {
     }
 
     public Block getTargetBlockExact(int i) {
-        return null;
-    }
-
-    public Block getTargetBlockExact(int i, FluidCollisionMode fluidCollisionMode) {
-        return null;
-    }
-
-    public RayTraceResult rayTraceBlocks(double v) {
-        return null;
-    }
-
-    public RayTraceResult rayTraceBlocks(double v, FluidCollisionMode fluidCollisionMode) {
         return null;
     }
 
@@ -267,10 +201,6 @@ public class PermissionPlayer implements Player {
 
     public double getWidth() {
         return 0;
-    }
-
-    public BoundingBox getBoundingBox() {
-        return null;
     }
 
     public void setRotation(float v, float v1) {
@@ -322,14 +252,6 @@ public class PermissionPlayer implements Player {
     }
 
     public BlockFace getFacing() {
-        return null;
-    }
-
-    public Pose getPose() {
-        return null;
-    }
-
-    public PersistentDataContainer getPersistentDataContainer() {
         return null;
     }
 
@@ -753,56 +675,8 @@ public class PermissionPlayer implements Player {
 
     }
 
-    public void spawnParticle(Particle particle, Location location, int i) {
-
-    }
-
-    public void spawnParticle(Particle particle, double v, double v1, double v2, int i) {
-
-    }
-
-    public <T> void spawnParticle(Particle particle, Location location, int i, T t) {
-
-    }
-
-    public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, T t) {
-
-    }
-
-    public void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2) {
-
-    }
-
-    public void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5) {
-
-    }
-
-    public <T> void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, T t) {
-
-    }
-
-    public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, T t) {
-
-    }
-
-    public void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, double v3) {
-
-    }
-
-    public void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6) {
-
-    }
-
-    public <T> void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, double v3, T t) {
-
-    }
-
-    public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6, T t) {
-
-    }
-
     public Spigot spigot() {
-        return this.player.spigot();
+        return null;
     }
 
     public boolean isOnline() {
@@ -875,11 +749,6 @@ public class PermissionPlayer implements Player {
 
     public Inventory getEnderChest() {
         return this.player.getEnderChest();
-    }
-
-    public MainHand getMainHand() {
-        IReflection.MethodAccessor getMainHand = IReflection.getMethod(Player.class, "getMainHand", MainHand.class, new Class[0]);
-        return (MainHand) getMainHand.invoke(player);
     }
 
     public boolean setWindowProperty(InventoryView.Property property, int i) {
@@ -1136,18 +1005,6 @@ public class PermissionPlayer implements Player {
 
     public void setCollidable(boolean b) {
 
-    }
-
-    public <T> T getMemory(MemoryKey<T> memoryKey) {
-        return null;
-    }
-
-    public <T> void setMemory(MemoryKey<T> memoryKey, T t) {
-
-    }
-
-    public AttributeInstance getAttribute(Attribute attribute) {
-        return null;
     }
 
     public void damage(double v) {
