@@ -21,7 +21,7 @@ public class GeneralOptions extends Options {
     private Option<String> cooldownBack = new Option<>("WarpSystem.Cooldown.Back", "0s");
     private Option<String> cooldownRandomTP = new Option<>("WarpSystem.Cooldown.Tpa", "5m");
     private Option<String> delayDisplay = new Option<>("WarpSystem.Teleport.Delay_Display", "ACTION_BAR");
-    private Option<Boolean> teleportInterceptions = new Option<>("WarpSystem.Teleport.Teleport_Interceptions", true);
+    private Option<Boolean> teleportInterceptions = new Option<>("WarpSystem.Beta.Functions.Teleport_Interceptions", false);
     private Option<Integer> fetchUpdates = new Option<>("WarpSystem.BungeeCord.Fetch_Updated_Jars", 1);
 
     public GeneralOptions() {
