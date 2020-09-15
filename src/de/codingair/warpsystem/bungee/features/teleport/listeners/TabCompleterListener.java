@@ -28,6 +28,10 @@ public class TabCompleterListener implements Listener {
         boolean tp = false, tpa = false, tpaHere = false, tpHere = false;
         if((tp = e.getSuggestions().remove(ID_TP)) || (tpa = e.getSuggestions().remove(ID_TPA)) || (tpaHere = e.getSuggestions().remove(ID_TPA_HERE)) || (tpHere = e.getSuggestions().remove(ID_TP_HERE))) {
             String cursor = e.getSuggestions().remove(0);
+            if(cursor.length() >= 2) {
+                if(cursor.charAt(0) == '"') cursor = cursor.substring(1);
+                if(cursor.charAt(cursor.length() - 1) == '"') cursor = cursor.substring(0, cursor.length() - 1);
+            }
 
             String[] args = cursor.split(" ");
 
@@ -35,9 +39,13 @@ public class TabCompleterListener implements Listener {
             ServerInfo info = receiver.getServer().getInfo();
             TeleportCommandOptions options = TeleportManager.getInstance().getOptions(info);
 
+            String last = args[args.length - 1];
+
             if(tp) {
                 if(options == null || !options.isTp()) {
                     for(ProxiedPlayer player : info.getPlayers()) {
+                        if(!cursor.endsWith(" ") && !player.getName().toLowerCase().startsWith(last.toLowerCase())) continue;
+
                         e.getSuggestions().add(player.getName());
                     }
                     return;
@@ -55,6 +63,7 @@ public class TabCompleterListener implements Listener {
                             TeleportCommandOptions access = TeleportManager.getInstance().getOptions(server);
                             if(access != null && access.isTp()) {
                                 for(ProxiedPlayer player : server.getPlayers()) {
+                                    if(!cursor.endsWith(" ") && !player.getName().toLowerCase().startsWith(last.toLowerCase())) continue;
                                     e.getSuggestions().add(player.getName());
                                 }
                             }
@@ -62,8 +71,6 @@ public class TabCompleterListener implements Listener {
                     }
                 } else {
                     if(deep == 1 || deep == 2) {
-                        String last = args[deep];
-
                         for(ServerInfo server : BungeeCord.getInstance().getServers().values()) {
                             TeleportCommandOptions access = TeleportManager.getInstance().getOptions(server);
                             if(access != null && access.isTp()) {
@@ -79,13 +86,12 @@ public class TabCompleterListener implements Listener {
                 if(options == null || !options.isTpa()) {
                     for(ProxiedPlayer player : info.getPlayers()) {
                         if(player.getName().equals(receiver.getName())) continue;
+                        if(!cursor.endsWith(" ") && !player.getName().toLowerCase().startsWith(last.toLowerCase())) continue;
                         if(!WarpSystem.getVanishManager().isVanished(player.getName())) e.getSuggestions().add(player.getName()); //check vanished player names
                     }
                     finish(e);
                     return;
                 }
-
-                String last = args[args.length - 1];
 
                 for(ServerInfo server : BungeeCord.getInstance().getServers().values()) {
                     TeleportCommandOptions access = TeleportManager.getInstance().getOptions(server);
@@ -93,7 +99,6 @@ public class TabCompleterListener implements Listener {
                         for(ProxiedPlayer player : server.getPlayers()) {
                             if(player.getName().equals(receiver.getName())) continue;
                             if(!cursor.endsWith(" ") && !player.getName().toLowerCase().startsWith(last.toLowerCase())) continue;
-
                             if(!WarpSystem.getVanishManager().isVanished(player.getName())) e.getSuggestions().add(player.getName()); //check vanished player names
                         }
                     }
@@ -102,12 +107,12 @@ public class TabCompleterListener implements Listener {
                 if(options == null || !options.isTpaHere()) {
                     for(ProxiedPlayer player : info.getPlayers()) {
                         if(player.getName().equals(receiver.getName())) continue;
+                        if(!cursor.endsWith(" ") && !player.getName().toLowerCase().startsWith(last.toLowerCase())) continue;
                         if(!WarpSystem.getVanishManager().isVanished(player.getName())) e.getSuggestions().add(player.getName()); //check vanished player names
                     }
                     finish(e);
                     return;
                 }
-                String last = args[args.length - 1];
 
                 for(ServerInfo server : BungeeCord.getInstance().getServers().values()) {
                     TeleportCommandOptions access = TeleportManager.getInstance().getOptions(server);
@@ -115,7 +120,6 @@ public class TabCompleterListener implements Listener {
                         for(ProxiedPlayer player : server.getPlayers()) {
                             if(player.getName().equals(receiver.getName())) continue;
                             if(!cursor.endsWith(" ") && !player.getName().toLowerCase().startsWith(last.toLowerCase())) continue;
-
                             if(!WarpSystem.getVanishManager().isVanished(player.getName())) e.getSuggestions().add(player.getName()); //check vanished player names
                         }
                     }
@@ -123,20 +127,18 @@ public class TabCompleterListener implements Listener {
             } else if(tpHere) {
                 if(options == null || !options.isTp()) {
                     for(ProxiedPlayer player : info.getPlayers()) {
+                        if(!cursor.endsWith(" ") && !player.getName().toLowerCase().startsWith(last.toLowerCase())) continue;
                         e.getSuggestions().add(player.getName());
                     }
                     finish(e);
                     return;
                 }
 
-                String last = args[args.length - 1];
-
                 for(ServerInfo server : BungeeCord.getInstance().getServers().values()) {
                     TeleportCommandOptions access = TeleportManager.getInstance().getOptions(server);
                     if(access != null && access.isTp()) {
                         for(ProxiedPlayer player : server.getPlayers()) {
                             if(!cursor.endsWith(" ") && !player.getName().toLowerCase().startsWith(last.toLowerCase())) continue;
-
                             e.getSuggestions().add(player.getName());
                         }
                     }

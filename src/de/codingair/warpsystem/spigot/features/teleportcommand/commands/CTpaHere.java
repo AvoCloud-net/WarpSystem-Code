@@ -11,6 +11,7 @@ import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.language.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.features.teleportcommand.TeleportCommandManager;
+import de.codingair.warpsystem.transfer.packets.spigot.RequestFullNamePacket;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -82,18 +83,36 @@ public class CTpaHere extends WSCommandBuilder {
 
                 if(WarpSystem.cooldown().checkPlayer((Player) sender, Origin.TeleportRequest)) return false;
 
-                TeleportCommandManager.getInstance().invite(sender.getName(), true, new Callback<Long>() {
+                //get original name
+                Callback<String> callback = new Callback<String>() {
                     @Override
-                    public void accept(Long result) {
-                        int handled = (int) (result >> 32);
-                        int sent = result.intValue();
+                    public void accept(String name) {
+                        if(name == null) {
+                            sender.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
+                            return;
+                        }
 
-                        if(handled == 0) sender.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
-                        else if(handled == -1) sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_denied_sender").replace("%PLAYER%", ChatColor.stripColor(argument)));
-                        else if(sent == 0) sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_already_sent"));
-                        else sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_sent").replace("%PLAYER%", ChatColor.stripColor(argument)));
+                        TeleportCommandManager.getInstance().invite(sender.getName(), true, new Callback<Long>() {
+                            @Override
+                            public void accept(Long result) {
+                                int handled = (int) (result >> 32);
+                                int sent = result.intValue();
+
+                                if(handled == 0) sender.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
+                                else if(handled == -1) sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_denied_sender").replace("%PLAYER%", ChatColor.stripColor(name)));
+                                else if(sent == 0) sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_already_sent"));
+                                else sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_sent").replace("%PLAYER%", ChatColor.stripColor(name)));
+                            }
+                        }, name);
                     }
-                }, argument);
+                };
+
+                if(!WarpSystem.getInstance().isOnBungeeCord() || !TeleportCommandManager.getInstance().isBungeeCord() || other != null) {
+                    callback.accept(other == null ? argument : other.getName());
+                    return false;
+                }
+
+                WarpSystem.getInstance().getDataHandler().send(new RequestFullNamePacket(callback, argument));
                 return false;
             }
         });
