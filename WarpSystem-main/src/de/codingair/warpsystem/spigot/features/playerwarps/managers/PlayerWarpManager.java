@@ -11,7 +11,7 @@ import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.codingapi.utils.Ticker;
 import de.codingair.warpsystem.spigot.api.StringFormatter;
-import de.codingair.warpsystem.spigot.api.players.PermissionPlayer;
+import de.codingair.warpsystem.spigot.api.players.PermissionPlayer_v1_9;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.language.Lang;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableForSetupAssistant;
@@ -179,9 +179,9 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
 
         if(!getManager().isProtectedRegions()) return false;
 
-        PermissionPlayer check = null;
+        PermissionPlayer_v1_9 check = null;
         try {
-            check = PermissionPlayer.class.getConstructor(Player.class).newInstance(player);
+            check = PermissionPlayer_v1_9.class.getConstructor(Player.class).newInstance(player);
         } catch(InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
             return true;
