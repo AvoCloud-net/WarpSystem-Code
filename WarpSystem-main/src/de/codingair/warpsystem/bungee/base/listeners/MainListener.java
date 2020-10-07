@@ -7,6 +7,7 @@ import de.codingair.warpsystem.bungee.base.language.Lang;
 import de.codingair.warpsystem.bungee.base.managers.ServerManager;
 import de.codingair.warpsystem.bungee.base.utils.ServerInitializeEvent;
 import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
+import de.codingair.warpsystem.spigot.base.utils.ServerPing;
 import de.codingair.warpsystem.transfer.packets.bungee.ApplyUUIDPacket;
 import de.codingair.warpsystem.transfer.packets.bungee.PrepareLoginMessagePacket;
 import de.codingair.warpsystem.transfer.packets.general.BooleanPacket;
@@ -158,13 +159,13 @@ public class MainListener implements Listener, PacketListener {
                     }
 
                     if(WarpSystem.getInstance().getServerManager().isOnline(info)) {
-                        ServerOptions options = WarpSystem.getInstance().getServerManager().getOptions(info);
+                        ServerPing ping = WarpSystem.getInstance().getServerManager().getLastPing(info);
 
-                        if(options == null) {
+                        if(ping == null) {
                             answer.setValue(4);
                             WarpSystem.getInstance().getDataHandler().send(answer, server);
                         } else {
-                            if(p.isIgnoreLimit() || info.getPlayers().size() < options.getMaxPlayers()) {
+                            if(p.isIgnoreLimit() || info.getPlayers().size() < ping.getMaxPlayers()) {
                                 answer.setValue(0);
                                 WarpSystem.getInstance().getDataHandler().send(answer, server);
                                 ServerManager.sendPlayerTo(info, pp, new Callback<ServerInfo>() {
@@ -210,13 +211,13 @@ public class MainListener implements Listener, PacketListener {
                             WarpSystem.getInstance().getDataHandler().send(answer, server);
                         });
                     } else {
-                        ServerOptions options = WarpSystem.getInstance().getServerManager().getOptions(target);
+                        ServerPing ping = WarpSystem.getInstance().getServerManager().getLastPing(target);
 
-                        if(options == null) {
+                        if(ping == null) {
                             answer.setValue(4);
                             WarpSystem.getInstance().getDataHandler().send(answer, server);
                         } else {
-                            if(p.isIgnoreLimit() || target.getPlayers().size() < options.getMaxPlayers()) {
+                            if(p.isIgnoreLimit() || target.getPlayers().size() < ping.getMaxPlayers()) {
                                 //prepare and switch
                                 PrepareCoordinationTeleportPacket finalCall = p.clone(new Callback<Integer>() {
                                     @Override

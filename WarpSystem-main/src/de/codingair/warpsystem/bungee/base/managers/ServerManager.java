@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ServerManager implements Listener, PacketListener {
     private final HashMap<ServerInfo, ServerOptions> options = new HashMap<>();
-    private final HashMap<String, ServerPing> properties = new HashMap<>();
+    private final HashMap<String, ServerPing> cachedPing = new HashMap<>();
     private final Set<ServerInfo> onlineServer = new HashSet<>();
     private final HashMap<ServerInfo, List<Callback<ServerInfo>>> waiting = new HashMap<>();
 
@@ -61,19 +61,19 @@ public class ServerManager implements Listener, PacketListener {
                     setStatus(info, error == null);
 
                     if(error == null) {
-                        properties.put(info.getName().toLowerCase(), new ServerPing(true,
+                        cachedPing.put(info.getName().toLowerCase(), new ServerPing(true,
                                 serverPing.getPlayers().getOnline(),
                                 serverPing.getPlayers().getMax(),
                                 info.getMotd()));
                     } else {
-                        properties.put(info.getName().toLowerCase(), new ServerPing(false, 0, 0, null));
+                        cachedPing.put(info.getName().toLowerCase(), new ServerPing(false, 0, 0, null));
                     }
                 });
             }
         }, 0, 5, TimeUnit.SECONDS);
 
         BungeeCord.getInstance().getScheduler().schedule(WarpSystem.getInstance(), () -> {
-            SendServerPropertiesPacket p = new SendServerPropertiesPacket(properties);
+            SendServerPropertiesPacket p = new SendServerPropertiesPacket(cachedPing);
 
             for(ServerInfo target : BungeeCord.getInstance().getServers().values()) {
                 if(!target.getPlayers().isEmpty()) {
@@ -105,6 +105,11 @@ public class ServerManager implements Listener, PacketListener {
     public ServerOptions getOptions(ServerInfo info) {
         if(info == null) return null;
         return options.get(info);
+    }
+
+    public ServerPing getLastPing(ServerInfo info) {
+        if(info == null) return null;
+        return cachedPing.get(info.getName().toLowerCase());
     }
 
     @Override

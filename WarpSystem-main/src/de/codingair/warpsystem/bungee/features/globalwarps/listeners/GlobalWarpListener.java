@@ -5,6 +5,7 @@ import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.managers.ServerManager;
 import de.codingair.warpsystem.bungee.features.FeatureType;
 import de.codingair.warpsystem.bungee.features.globalwarps.managers.GlobalWarpManager;
+import de.codingair.warpsystem.spigot.base.utils.ServerPing;
 import de.codingair.warpsystem.transfer.packets.general.BooleanPacket;
 import de.codingair.warpsystem.transfer.packets.general.IntegerPacket;
 import de.codingair.warpsystem.transfer.packets.general.PrepareCoordinationTeleportPacket;
@@ -124,13 +125,13 @@ public class GlobalWarpListener implements Listener, PacketListener {
                     WarpSystem.getInstance().getDataHandler().send(out, otherServer);
                 } else {
                     if(WarpSystem.getInstance().getServerManager().isOnline(otherServer)) {
-                        ServerOptions options = WarpSystem.getInstance().getServerManager().getOptions(otherServer);
+                        ServerPing ping = WarpSystem.getInstance().getServerManager().getLastPing(otherServer);
 
-                        if(options == null) {
+                        if(ping == null) {
                             answerIntegerPacket.setValue(GlobalWarpTeleportPacket.Result.ERROR.getId());
                             WarpSystem.getInstance().getDataHandler().send(answerIntegerPacket, server);
                         } else {
-                            if(teleportPacket.isIgnoreLimit() || otherServer.getPlayers().size() < options.getMaxPlayers()) {
+                            if(teleportPacket.isIgnoreLimit() || otherServer.getPlayers().size() < ping.getMaxPlayers()) {
                                 WarpSystem.getInstance().getDataHandler().send(answerIntegerPacket, server);
                                 ServerManager.sendPlayerTo(otherServer, p, new Callback<ServerInfo>() {
                                     @Override
