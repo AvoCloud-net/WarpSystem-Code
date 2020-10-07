@@ -19,6 +19,7 @@ import de.codingair.warpsystem.transfer.packets.spigot.RequestFullNamePacket;
 import de.codingair.warpsystem.transfer.packets.spigot.RequestServerStatusPacket;
 import de.codingair.warpsystem.transfer.packets.utils.Packet;
 import de.codingair.warpsystem.transfer.packets.utils.PacketType;
+import de.codingair.warpsystem.transfer.serializeable.ServerOptions;
 import de.codingair.warpsystem.transfer.utils.PacketListener;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
@@ -157,14 +158,26 @@ public class MainListener implements Listener, PacketListener {
                     }
 
                     if(WarpSystem.getInstance().getServerManager().isOnline(info)) {
-                        answer.setValue(0);
-                        WarpSystem.getInstance().getDataHandler().send(answer, server);
-                        ServerManager.sendPlayerTo(info, pp, new Callback<ServerInfo>() {
-                            @Override
-                            public void accept(ServerInfo object) {
-                                WarpSystem.getInstance().getDataHandler().send(new PrepareLoginMessagePacket(pp.getName(), p.getMessage()), info);
+                        ServerOptions options = WarpSystem.getInstance().getServerManager().getOptions(info);
+
+                        if(options == null) {
+                            answer.setValue(4);
+                            WarpSystem.getInstance().getDataHandler().send(answer, server);
+                        } else {
+                            if(p.isIgnoreLimit() || info.getPlayers().size() < options.getMaxPlayers()) {
+                                answer.setValue(0);
+                                WarpSystem.getInstance().getDataHandler().send(answer, server);
+                                ServerManager.sendPlayerTo(info, pp, new Callback<ServerInfo>() {
+                                    @Override
+                                    public void accept(ServerInfo object) {
+                                        WarpSystem.getInstance().getDataHandler().send(new PrepareLoginMessagePacket(pp.getName(), p.getMessage()), info);
+                                    }
+                                });
+                            } else {
+                                answer.setValue(5);
+                                WarpSystem.getInstance().getDataHandler().send(answer, server);
                             }
-                        });
+                        }
                     } else {
                         answer.setValue(3);
                         WarpSystem.getInstance().getDataHandler().send(answer, server);
@@ -197,17 +210,29 @@ public class MainListener implements Listener, PacketListener {
                             WarpSystem.getInstance().getDataHandler().send(answer, server);
                         });
                     } else {
-                        //prepare and switch
-                        PrepareCoordinationTeleportPacket finalCall = p.clone(new Callback<Integer>() {
-                            @Override
-                            public void accept(Integer object) {
-                                answer.setValue(object);
+                        ServerOptions options = WarpSystem.getInstance().getServerManager().getOptions(target);
+
+                        if(options == null) {
+                            answer.setValue(4);
+                            WarpSystem.getInstance().getDataHandler().send(answer, server);
+                        } else {
+                            if(p.isIgnoreLimit() || target.getPlayers().size() < options.getMaxPlayers()) {
+                                //prepare and switch
+                                PrepareCoordinationTeleportPacket finalCall = p.clone(new Callback<Integer>() {
+                                    @Override
+                                    public void accept(Integer object) {
+                                        answer.setValue(object);
+                                        WarpSystem.getInstance().getDataHandler().send(answer, server);
+                                    }
+                                });
+                                finalCall.setServer(null);
+                                WarpSystem.getInstance().getDataHandler().send(finalCall, target);
+                                pp.connect(target);
+                            } else {
+                                answer.setValue(3);
                                 WarpSystem.getInstance().getDataHandler().send(answer, server);
                             }
-                        });
-                        finalCall.setServer(null);
-                        WarpSystem.getInstance().getDataHandler().send(finalCall, target);
-                        pp.connect(target);
+                        }
                     }
                 } else {
                     answer.setValue(1);

@@ -14,6 +14,7 @@ import de.codingair.warpsystem.transfer.packets.spigot.PublishGlobalWarpPacket;
 import de.codingair.warpsystem.transfer.packets.utils.Packet;
 import de.codingair.warpsystem.transfer.packets.utils.PacketType;
 import de.codingair.warpsystem.transfer.serializeable.SGlobalWarp;
+import de.codingair.warpsystem.transfer.serializeable.ServerOptions;
 import de.codingair.warpsystem.transfer.utils.PacketListener;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -116,20 +117,34 @@ public class GlobalWarpListener implements Listener, PacketListener {
                 teleportPacket.applyAsAnswer(answerIntegerPacket);
 
                 PrepareCoordinationTeleportPacket out = new PrepareCoordinationTeleportPacket(p.getName(), null, warp.getLoc().getWorld(), teleportDisplayName, teleportPacket.getMessage() == null ? PrepareCoordinationTeleportPacket.NO_MESSAGE : teleportPacket.getMessage(), warp.getLoc().getX(), warp.getLoc().getY(), warp.getLoc().getZ(),
-                        teleportPacket.isKeepRotation() ? -420 : warp.getLoc().getYaw(), teleportPacket.isKeepRotation() ? -420 : warp.getLoc().getPitch(), teleportPacket.getCosts(), null);
+                        teleportPacket.isKeepRotation() ? -420 : warp.getLoc().getYaw(), teleportPacket.isKeepRotation() ? -420 : warp.getLoc().getPitch(), teleportPacket.getCosts(), teleportPacket.isIgnoreLimit(), null);
 
                 if(p.getServer().getInfo().equals(otherServer)) {
                     WarpSystem.getInstance().getDataHandler().send(answerIntegerPacket, server);
                     WarpSystem.getInstance().getDataHandler().send(out, otherServer);
                 } else {
                     if(WarpSystem.getInstance().getServerManager().isOnline(otherServer)) {
-                        WarpSystem.getInstance().getDataHandler().send(answerIntegerPacket, server);
-                        ServerManager.sendPlayerTo(otherServer, p, new Callback<ServerInfo>() {
-                            @Override
-                            public void accept(ServerInfo object) {
-                                WarpSystem.getInstance().getDataHandler().send(out, otherServer);
+                        ServerOptions options = WarpSystem.getInstance().getServerManager().getOptions(otherServer);
+
+                        if(options == null) {
+                            answerIntegerPacket.setValue(GlobalWarpTeleportPacket.Result.ERROR.getId());
+                            WarpSystem.getInstance().getDataHandler().send(answerIntegerPacket, server);
+                        } else {
+                            if(teleportPacket.isIgnoreLimit() || otherServer.getPlayers().size() < options.getMaxPlayers()) {
+                                WarpSystem.getInstance().getDataHandler().send(answerIntegerPacket, server);
+                                ServerManager.sendPlayerTo(otherServer, p, new Callback<ServerInfo>() {
+                                    @Override
+                                    public void accept(ServerInfo object) {
+                                        WarpSystem.getInstance().getDataHandler().send(out, otherServer);
+                                    }
+                                });
+                            } else {
+                                answerIntegerPacket.setValue(GlobalWarpTeleportPacket.Result.SERVER_IS_FULL.getId());
+                                WarpSystem.getInstance().getDataHandler().send(answerIntegerPacket, server);
                             }
-                        });
+                        }
+
+
                     } else {
                         answerIntegerPacket.setValue(2);
                         WarpSystem.getInstance().getDataHandler().send(answerIntegerPacket, server);
