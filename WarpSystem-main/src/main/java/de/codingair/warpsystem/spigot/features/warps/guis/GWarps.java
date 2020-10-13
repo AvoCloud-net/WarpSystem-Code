@@ -85,6 +85,8 @@ public class GWarps extends GUI {
         Bukkit.getPluginManager().registerEvents(listener = new Listener() {
             @EventHandler
             public void onClick(InventoryClickEvent e) {
+                if(!p.equals(e.getWhoClicked())) return;
+
                 if(e.getClickedInventory() == e.getView().getBottomInventory() && cloning && cursorIcon == null) {
                     //fast deleting
                     e.setCancelled(true);
@@ -93,6 +95,8 @@ public class GWarps extends GUI {
             
             @EventHandler
             public void onClick(InventoryDragEvent e) {
+                if(!p.equals(e.getWhoClicked())) return;
+
                 if(cloning && cursorIcon == null) {
                     //fast deleting
                     for(Integer rawSlot : e.getRawSlots()) {
@@ -106,6 +110,8 @@ public class GWarps extends GUI {
 
             @EventHandler
             public void onDrop(PlayerDropItemEvent e) {
+                if(!p.equals(e.getPlayer())) return;
+
                 Player p = e.getPlayer();
 
                 if(!p.getName().equals(getPlayer().getName()) || !moving) return;
@@ -122,6 +128,8 @@ public class GWarps extends GUI {
         addListener(new InterfaceListener() {
             @Override
             public void onInvClickEvent(InventoryClickEvent e) {
+                if(!p.equals(e.getWhoClicked())) return;
+
                 if(!cloning && cursorIcon != null && cursorIcon.getPage() == GWarps.this.page && cursorIcon.getSlot() == e.getSlot()) {
                     e.getView().setCursor(new ItemStack(Material.AIR));
                     setMoving(false, e.getSlot());
@@ -132,6 +140,8 @@ public class GWarps extends GUI {
 
             @Override
             public void onDropItem(InventoryClickEvent e) {
+                if(!p.equals(e.getWhoClicked())) return;
+
                 e.setCancelled(true);
 
                 if(moving) {
@@ -156,6 +166,8 @@ public class GWarps extends GUI {
 
             @Override
             public void onInvCloseEvent(InventoryCloseEvent e) {
+                if(!p.equals(e.getPlayer())) return;
+
                 e.getView().setCursor(new ItemStack(Material.AIR));
 
                 if(!showMenu) {
