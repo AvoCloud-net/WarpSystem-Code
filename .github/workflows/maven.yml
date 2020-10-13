@@ -34,7 +34,7 @@ jobs:
       run: |
         file=$(find "./WarpSystem-main/target" -type f -name "WarpSystem_v*.jar" | head -n 1)
         name=${file[@]//.jar/}
-        name=${name:7}
+        name=${name:23}
         info=${name##*_}
         version=${name:12}
         version=${version[@]//_$info/}
@@ -48,5 +48,5 @@ jobs:
         milestone=35
         hook=${{ secrets.DISCORD_WEBHOOK }}
         echo "Sending '$file' to 'DevBuilds' channel, this may take a while..."
-        curl -i -H 'Expect: application/json' -F file=@"$file" -F "payload_json={ \"wait\": true, \"avatar_url\":\"https://i.imgur.com/x3pSH55.png\", \"content\": \"@here\n__**$info$version**__   [$NOW]\n\n**Changelog:**\n<https://github.com/CodingAir/WarpSystem-IssueTracker/milestone/$milestone?closed=1>\", \"username\": \"WarpSystem CI\" }" $hook
+        curl -i -H 'Expect: application/json' -F file=@"$file" -F "payload_json={ \"wait\": true, \"avatar_url\":\"https://i.imgur.com/ZoSmsVs.png\", \"content\": \"@here\n__**$info$version**__   [$NOW]\n\n**Changelog:**\n<https://github.com/CodingAir/WarpSystem-IssueTracker/milestone/$milestone?closed=1>\", \"username\": \"WarpSystem CI\" }" $hook
 
