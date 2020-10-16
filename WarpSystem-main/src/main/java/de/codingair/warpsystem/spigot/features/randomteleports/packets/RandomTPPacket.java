@@ -9,15 +9,17 @@ import java.io.IOException;
 
 public class RandomTPPacket extends RequestPacket<Boolean> {
     private String player, server, world;
+    private boolean byOther;
 
     public RandomTPPacket() {
     }
 
-    public RandomTPPacket(Callback<Boolean> callback, String player, String server, String world) {
+    public RandomTPPacket(Callback<Boolean> callback, String player, String server, String world, boolean byOther) {
         super(callback);
         this.player = player;
         this.server = server;
         this.world = world;
+        this.byOther = byOther;
     }
 
     @Override
@@ -28,7 +30,8 @@ public class RandomTPPacket extends RequestPacket<Boolean> {
         out.writeByte(options);
         out.writeUTF(this.player);
         out.writeUTF(this.server);
-        out.writeUTF(this.world);
+        if(world != null) out.writeUTF(this.world);
+        out.writeBoolean(byOther);
     }
 
     @Override
@@ -39,6 +42,7 @@ public class RandomTPPacket extends RequestPacket<Boolean> {
         this.player = in.readUTF();
         this.server = in.readUTF();
         if((options & 1) != 0) this.world = in.readUTF();
+        this.byOther = in.readBoolean();
     }
 
     public String getPlayer() {
@@ -55,5 +59,9 @@ public class RandomTPPacket extends RequestPacket<Boolean> {
 
     public String getWorld() {
         return world;
+    }
+
+    public boolean isByOther() {
+        return byOther;
     }
 }
