@@ -7,10 +7,10 @@ import de.codingair.codingapi.server.reflections.IReflection;
 import de.codingair.codingapi.server.reflections.PacketUtils;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.Location;
-import de.codingair.codingapi.utils.Node;
 import de.codingair.warpsystem.spigot.api.events.PlayerFinalJoinEvent;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Result;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
@@ -40,7 +40,7 @@ public class SpawnListener implements Listener, PacketListener {
     private final List<Class<?>> forwarding = new ArrayList<>();
     private final HashMap<String, List<Object>> packetCache = new HashMap<>();
     private final HashMap<Player, List<Player>> showAfterwards = new HashMap<>();
-    private final HashMap<String, Node<World, String>> teleporting = new HashMap<>();
+    private final HashMap<String, TeleportInfo> teleporting = new HashMap<>();
     private Class<?> chunkPacket = null;
 
     public SpawnListener() {
@@ -64,8 +64,8 @@ public class SpawnListener implements Listener, PacketListener {
 
     @EventHandler
     public void onJoin(PlayerFinalJoinEvent e) {
-        Node<World, String> node = teleporting.get(e.getPlayer().getName());
-        if(node != null) triggerRTP(e.getPlayer(), node);
+        TeleportInfo teleportInfo = teleporting.get(e.getPlayer().getName());
+        if(teleportInfo != null) triggerRTP(e.getPlayer(), teleportInfo);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -77,11 +77,11 @@ public class SpawnListener implements Listener, PacketListener {
         } else showPlayer(e.getPlayer());
     }
 
-    private void triggerRTP(Player player, Node<World, String> node) {
-        if(node.getKey() != null) {
-            WorldOption option = RandomTeleporterManager.getInstance().getOption(node.getKey(), RandomTeleporterManager.getInstance().getDefValues());
+    private void triggerRTP(Player player, TeleportInfo teleportInfo) {
+        if(teleportInfo.getWorld() != null) {
+            WorldOption option = RandomTeleporterManager.getInstance().getOption(teleportInfo.getWorld(), RandomTeleporterManager.getInstance().getDefValues());
 
-            RandomTeleporterManager.getInstance().search(player, node.getKey(), option, new Callback<Location>() {
+            RandomTeleporterManager.getInstance().search(player, teleportInfo.getWorld(), option, new Callback<Location>() {
                 @Override
                 public void accept(Location loc) {
                     if(loc == null) {
@@ -91,7 +91,8 @@ public class SpawnListener implements Listener, PacketListener {
                         clearCache(player, true);
                         player.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_No_Location_Found"));
                     } else {
-                        WarpSystem.getInstance().getDataHandler().send(new QueueRTPUsagePacket(WarpSystem.getInstance().getUUIDManager().get(player), node.getValue()));
+                        WarpSystem.getInstance().getDataHandler().send(new QueueRTPUsagePacket(WarpSystem.getInstance().getUUIDManager().get(player), teleportInfo.getServer()));
+                        if(!teleportInfo.isByOther()) WarpSystem.cooldown().register(player, Origin.RandomTP);
 
                         org.bukkit.Location l = player.getLocation();
                         boolean discardOldChunk = !l.getWorld().equals(loc.getWorld()) || l.distance(loc) > 250;
@@ -223,15 +224,39 @@ public class SpawnListener implements Listener, PacketListener {
             World w = Bukkit.getWorld(p.getWorld());
 
             Player player = Bukkit.getPlayer(p.getPlayer());
-            Node<World, String> node = new Node<>(w, p.getServer());
+            TeleportInfo teleportInfo = new TeleportInfo(w, p.getServer(), p.isByOther());
 
-            if(player == null || !WarpSystem.getInstance().getUUIDManager().isRegistered(player)) teleporting.put(p.getPlayer(), node);
-            else triggerRTP(player, node);
+            if(player == null || !WarpSystem.getInstance().getUUIDManager().isRegistered(player)) teleporting.put(p.getPlayer(), teleportInfo);
+            else triggerRTP(player, teleportInfo);
         }
     }
 
     @Override
     public boolean onSend(Packet packet) {
         return false;
+    }
+
+    private static class TeleportInfo {
+        private final World world;
+        private final String server;
+        private final boolean byOther; //triggered by other person (admin) -> no cooldown
+
+        public TeleportInfo(World world, String server, boolean byOther) {
+            this.world = world;
+            this.server = server;
+            this.byOther = byOther;
+        }
+
+        public World getWorld(){
+            return world;
+        }
+
+        public String getServer(){
+            return server;
+        }
+
+        public boolean isByOther() {
+            return byOther;
+        }
     }
 }
