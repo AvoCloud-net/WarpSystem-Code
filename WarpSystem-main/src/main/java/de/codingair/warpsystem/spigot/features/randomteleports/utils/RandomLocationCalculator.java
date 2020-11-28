@@ -12,10 +12,7 @@ import de.codingair.warpsystem.spigot.api.players.PermissionPlayer_v1_9;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleporterManager;
 import io.papermc.lib.PaperLib;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.WorldBorder;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -23,6 +20,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 public class RandomLocationCalculator implements Runnable {
     private final org.bukkit.Location startLocation;
@@ -81,6 +79,7 @@ public class RandomLocationCalculator implements Runnable {
             location.setX(x + offset.getKey());
             location.setZ(z + offset.getValue());
 
+            PaperLib.getChunkAtAsync(location).join();
             if(start + maxTime < System.currentTimeMillis()) {
                 return null;
             }
