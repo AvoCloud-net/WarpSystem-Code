@@ -4,6 +4,7 @@ import de.codingair.codingapi.server.commands.builder.CommandBuilder;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.io.utils.DataWriter;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
+import de.codingair.warpsystem.spigot.base.language.Lang;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.ActionObject;
 import de.codingair.warpsystem.transfer.packets.spigot.PerformCommandOnBungeePacket;
@@ -56,7 +57,7 @@ public class CommandAction extends ActionObject<List<String>> {
                 WarpSystem.getInstance().getDataHandler().send(new PerformCommandOnBungeePacket(player.getName(), command, new Callback<Boolean>() {
                     @Override
                     public void accept(Boolean exists) {
-                        if(!exists) player.sendMessage(org.spigotmc.SpigotConfig.unknownCommandMessage);
+                        if(!exists) player.sendMessage(Lang.getPrefix() + Lang.get("Unknown_Command"));
                     }
                 }));
             } else {

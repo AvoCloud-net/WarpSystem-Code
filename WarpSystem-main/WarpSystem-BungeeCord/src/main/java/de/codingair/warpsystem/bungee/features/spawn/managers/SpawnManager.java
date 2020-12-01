@@ -1,12 +1,11 @@
 package de.codingair.warpsystem.bungee.features.spawn.managers;
 
+import de.codingair.codingapi.bungeecord.files.ConfigFile;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.features.FeatureType;
 import de.codingair.warpsystem.bungee.features.spawn.listeners.ServerListener;
-import de.codingair.codingapi.bungeecord.files.ConfigFile;
 import de.codingair.warpsystem.transfer.packets.general.SendGlobalSpawnOptionsPacket;
 import de.codingair.warpsystem.utils.Manager;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import java.util.Objects;
@@ -26,7 +25,7 @@ public class SpawnManager implements Manager {
         this.respawn = file.getConfig().getString("WarpSystem.GlobalSpawnOptions.Respawn", null);
 
         ServerListener listener = new ServerListener();
-        BungeeCord.getInstance().getPluginManager().registerListener(WarpSystem.getInstance(), listener);
+        WarpSystem.proxy().getPluginManager().registerListener(WarpSystem.getInstance(), listener);
         WarpSystem.getInstance().getDataHandler().register(listener);
         return true;
     }

@@ -17,7 +17,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.spigotmc.SpigotConfig;
 
 import java.util.logging.Level;
 
@@ -51,7 +50,7 @@ public class BungeeBukkitListener extends PacketListener implements Listener {
                 WarpSystem.getInstance().setCurrentServer(((InitialPacket) packet).getServerName());
 
                 String version = ((InitialPacket) packet).getVersion();
-                if(!SpigotConfig.bungee) {
+                if(!WarpSystem.getInstance().getServer().spigot().getConfig().getBoolean("settings.bungeecord")) {
                     this.notice = new String[] {
                             "§8[§cWarpSystem§8] §fFound a §eBungeeCord §fbut it's §cdisabled in spigot.yml§f! Please §nenable§f this option to use Bungee features!"
                     };

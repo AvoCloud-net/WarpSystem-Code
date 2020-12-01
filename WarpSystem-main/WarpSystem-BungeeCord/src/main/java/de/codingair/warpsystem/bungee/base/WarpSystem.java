@@ -1,18 +1,18 @@
 package de.codingair.warpsystem.bungee.base;
 
-import de.codingair.warpsystem.bungee.base.commands.CWarpSystem;
 import de.codingair.codingapi.bungeecord.BungeeAPI;
 import de.codingair.codingapi.bungeecord.files.FileManager;
 import de.codingair.codingapi.tools.time.TimeFetcher;
 import de.codingair.codingapi.tools.time.Timer;
 import de.codingair.warpsystem.bungee.api.chatinput.ChatInputManager;
+import de.codingair.warpsystem.bungee.base.commands.CWarpSystem;
 import de.codingair.warpsystem.bungee.base.language.Lang;
 import de.codingair.warpsystem.bungee.base.listeners.MainListener;
 import de.codingair.warpsystem.bungee.base.listeners.SetupAssistantListener;
 import de.codingair.warpsystem.bungee.base.managers.*;
 import de.codingair.warpsystem.bungee.transfer.bungee.BungeeHandler;
 import de.codingair.warpsystem.utils.Manager;
-import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.io.File;
@@ -26,6 +26,7 @@ public class WarpSystem extends Plugin {
     public static final String PERMISSION_MODIFY_SYSTEM = "warpsystem.modify.system";
 
     private static WarpSystem instance;
+    private ProxyServer server;
     private final BungeeHandler dataHandler = new BungeeHandler(this);
     private final FileManager fileManager = new FileManager(this);
     private final ServerManager serverManager = new ServerManager();
@@ -46,6 +47,7 @@ public class WarpSystem extends Plugin {
     @Override
     public void onEnable() {
         instance = this;
+        this.server = getProxy();
         timer.start();
 
         BungeeAPI.getInstance().onEnable(this);
@@ -71,17 +73,17 @@ public class WarpSystem extends Plugin {
 
         //listener
         MainListener listener = new MainListener();
-        BungeeCord.getInstance().getPluginManager().registerListener(this, listener);
+        getProxy().getPluginManager().registerListener(this, listener);
         this.dataHandler.register(listener);
-        BungeeCord.getInstance().getPluginManager().registerListener(this, vanishManager);
+        getProxy().getPluginManager().registerListener(this, vanishManager);
         this.dataHandler.register(vanishManager);
-        BungeeCord.getInstance().getPluginManager().registerListener(this, cooldownManager);
+        getProxy().getPluginManager().registerListener(this, cooldownManager);
         this.dataHandler.register(cooldownManager);
 
         cooldownManager.load();
 
         SetupAssistantListener l = new SetupAssistantListener();
-        BungeeCord.getInstance().getPluginManager().registerListener(this, l);
+        getProxy().getPluginManager().registerListener(this, l);
         this.dataHandler.register(l);
 
         this.serverManager.run();
@@ -89,7 +91,7 @@ public class WarpSystem extends Plugin {
 
         new ChatInputManager();
 
-        BungeeCord.getInstance().getPluginManager().registerCommand(this, new CWarpSystem());
+        getProxy().getPluginManager().registerCommand(this, new CWarpSystem());
 
         log("Loading features");
         boolean createBackup = false;
@@ -120,7 +122,7 @@ public class WarpSystem extends Plugin {
 
     private void startAutoSaver() {
         WarpSystem.log("Starting AutoSaver");
-        BungeeCord.getInstance().getScheduler().schedule(this, () -> save(true), 10, 10, TimeUnit.MINUTES);
+        getProxy().getScheduler().schedule(this, () -> save(true), 10, 10, TimeUnit.MINUTES);
     }
 
     private void destroy() {
@@ -234,5 +236,9 @@ public class WarpSystem extends Plugin {
 
     public JarManager getJarManager() {
         return jarManager;
+    }
+
+    public static ProxyServer proxy() {
+        return instance.getProxy();
     }
 }

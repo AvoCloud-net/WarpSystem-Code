@@ -1,10 +1,10 @@
 package de.codingair.warpsystem.bungee.features.globalwarps.listeners;
 
-import de.codingair.warpsystem.bungee.features.FeatureType;
-import de.codingair.warpsystem.bungee.features.globalwarps.managers.GlobalWarpManager;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.managers.ServerManager;
+import de.codingair.warpsystem.bungee.features.FeatureType;
+import de.codingair.warpsystem.bungee.features.globalwarps.managers.GlobalWarpManager;
 import de.codingair.warpsystem.transfer.packets.general.BooleanPacket;
 import de.codingair.warpsystem.transfer.packets.general.IntegerPacket;
 import de.codingair.warpsystem.transfer.packets.general.PrepareCoordinationTeleportPacket;
@@ -16,7 +16,6 @@ import de.codingair.warpsystem.transfer.packets.utils.Packet;
 import de.codingair.warpsystem.transfer.packets.utils.PacketType;
 import de.codingair.warpsystem.transfer.serializeable.SGlobalWarp;
 import de.codingair.warpsystem.transfer.utils.PacketListener;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
@@ -39,7 +38,7 @@ public class GlobalWarpListener extends PacketListener implements Listener {
     @Override
     public void onReceive(Packet packet, String extra) {
         GlobalWarpManager manager = WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS);
-        ServerInfo server = BungeeCord.getInstance().getServerInfo(extra);
+        ServerInfo server = WarpSystem.proxy().getServerInfo(extra);
 
         switch(PacketType.getByObject(packet)) {
             case PublishGlobalWarpPacket:
@@ -105,8 +104,8 @@ public class GlobalWarpListener extends PacketListener implements Listener {
                     return;
                 }
 
-                ServerInfo otherServer = BungeeCord.getInstance().getServerInfo(warp.getServer());
-                ProxiedPlayer p = BungeeCord.getInstance().getPlayer(player);
+                ServerInfo otherServer = WarpSystem.proxy().getServerInfo(warp.getServer());
+                ProxiedPlayer p = WarpSystem.proxy().getPlayer(player);
 
                 IntegerPacket answerIntegerPacket = new IntegerPacket();
 

@@ -1,11 +1,10 @@
 package de.codingair.warpsystem.bungee.features.teleport.listeners;
 
-import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.bungee.features.teleport.utils.TeleportCommandOptions;
 import de.codingair.warpsystem.bungee.api.Players;
+import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.features.teleport.managers.TeleportManager;
+import de.codingair.warpsystem.bungee.features.teleport.utils.TeleportCommandOptions;
 import de.codingair.warpsystem.features.TeleportTabCompleteKeys;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.TabCompleteResponseEvent;
@@ -56,7 +55,7 @@ public class TabCompleterListener implements Listener {
                         return;
                     }
                     if(deep == 0 || deep == 1) {
-                        for(ServerInfo server : BungeeCord.getInstance().getServers().values()) {
+                        for(ServerInfo server : WarpSystem.proxy().getServers().values()) {
                             TeleportCommandOptions access = TeleportManager.getInstance().getOptions(server);
                             if(access != null && access.isTp()) {
                                 for(ProxiedPlayer player : server.getPlayers()) {
@@ -68,7 +67,7 @@ public class TabCompleterListener implements Listener {
                     }
                 } else {
                     if(deep == 1 || deep == 2) {
-                        for(ServerInfo server : BungeeCord.getInstance().getServers().values()) {
+                        for(ServerInfo server : WarpSystem.proxy().getServers().values()) {
                             TeleportCommandOptions access = TeleportManager.getInstance().getOptions(server);
                             if(access != null && access.isTp()) {
                                 for(ProxiedPlayer player : server.getPlayers()) {
@@ -90,7 +89,7 @@ public class TabCompleterListener implements Listener {
                     return;
                 }
 
-                for(ServerInfo server : BungeeCord.getInstance().getServers().values()) {
+                for(ServerInfo server : WarpSystem.proxy().getServers().values()) {
                     TeleportCommandOptions access = TeleportManager.getInstance().getOptions(server);
                     if(access != null && access.isTpa()) {
                         for(ProxiedPlayer player : server.getPlayers()) {
@@ -111,7 +110,7 @@ public class TabCompleterListener implements Listener {
                     return;
                 }
 
-                for(ServerInfo server : BungeeCord.getInstance().getServers().values()) {
+                for(ServerInfo server : WarpSystem.proxy().getServers().values()) {
                     TeleportCommandOptions access = TeleportManager.getInstance().getOptions(server);
                     if(access != null && access.isTpaHere()) {
                         for(ProxiedPlayer player : server.getPlayers()) {
@@ -131,7 +130,7 @@ public class TabCompleterListener implements Listener {
                     return;
                 }
 
-                for(ServerInfo server : BungeeCord.getInstance().getServers().values()) {
+                for(ServerInfo server : WarpSystem.proxy().getServers().values()) {
                     TeleportCommandOptions access = TeleportManager.getInstance().getOptions(server);
                     if(access != null && access.isTp()) {
                         for(ProxiedPlayer player : server.getPlayers()) {

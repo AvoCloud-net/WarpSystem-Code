@@ -2,7 +2,7 @@ package de.codingair.warpsystem.bungee.api;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import net.md_5.bungee.BungeeCord;
+import de.codingair.warpsystem.bungee.base.WarpSystem;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Locale;
@@ -12,7 +12,7 @@ public class Players {
     private static final Cache<String, ProxiedPlayer> CACHE = CacheBuilder.newBuilder().expireAfterAccess(30, TimeUnit.SECONDS).build();
 
     public static ProxiedPlayer getPlayer(String name) {
-        ProxiedPlayer found = BungeeCord.getInstance().getPlayer(name);
+        ProxiedPlayer found = WarpSystem.proxy().getPlayer(name);
         if(found != null) return found;
         String lowerName = name.toLowerCase(Locale.ENGLISH);
 
@@ -20,7 +20,7 @@ public class Players {
         if(found != null) return found;
 
         int delta = 2147483647;
-        for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()) {
+        for(ProxiedPlayer player : WarpSystem.proxy().getPlayers()) {
             if(player.getName().toLowerCase(Locale.ENGLISH).startsWith(lowerName)) {
                 int curDelta = Math.abs(player.getName().length() - lowerName.length());
                 if(curDelta < delta) {

@@ -1,11 +1,11 @@
 package de.codingair.warpsystem.bungee.base.managers;
 
-import de.codingair.warpsystem.transfer.packets.bungee.PacketVanishInfo;
+import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.utils.ServerInitializeEvent;
+import de.codingair.warpsystem.transfer.packets.bungee.PacketVanishInfo;
 import de.codingair.warpsystem.transfer.packets.utils.Packet;
 import de.codingair.warpsystem.transfer.packets.utils.PacketType;
 import de.codingair.warpsystem.transfer.utils.PacketListener;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ServerSwitchEvent;
@@ -37,7 +37,7 @@ public class VanishManager extends PacketListener implements Listener {
     public void onInit(ServerInitializeEvent e) {
         List<String> l = new ArrayList<>(vanished);
         for(String s : l) {
-            ProxiedPlayer p = BungeeCord.getInstance().getPlayer(s);
+            ProxiedPlayer p = WarpSystem.proxy().getPlayer(s);
             if(p == null || p.getServer() == null) vanished.remove(s);
             else if(p.getServer().getInfo().equals(e.getInfo())) vanished.remove(s);
         }

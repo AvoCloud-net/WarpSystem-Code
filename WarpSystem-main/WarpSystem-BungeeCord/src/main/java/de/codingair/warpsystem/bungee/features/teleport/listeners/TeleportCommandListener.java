@@ -1,12 +1,11 @@
 package de.codingair.warpsystem.bungee.features.teleport.listeners;
 
-import de.codingair.warpsystem.bungee.features.teleport.utils.TeleportCommandOptions;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.utils.ServerInitializeEvent;
 import de.codingair.warpsystem.bungee.features.teleport.managers.TeleportManager;
+import de.codingair.warpsystem.bungee.features.teleport.utils.TeleportCommandOptions;
 import de.codingair.warpsystem.transfer.packets.bungee.PerformCommandOnSpigotPacket;
 import de.codingair.warpsystem.transfer.packets.spigot.ToggleForceTeleportsPacket;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
@@ -46,7 +45,7 @@ public class TeleportCommandListener implements Listener {
         if(cmd.contains(" ")) cmd = cmd.split(" ")[0];
 
         Command c = null;
-        for(Map.Entry<String, Command> command : BungeeCord.getInstance().getPluginManager().getCommands()) {
+        for(Map.Entry<String, Command> command : WarpSystem.proxy().getPluginManager().getCommands()) {
             if(isCommand(command.getValue(), cmd)) {
                 c = command.getValue();
                 break;

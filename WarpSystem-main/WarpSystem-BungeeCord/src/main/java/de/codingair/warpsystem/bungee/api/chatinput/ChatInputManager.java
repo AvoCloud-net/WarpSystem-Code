@@ -5,7 +5,6 @@ import de.codingair.warpsystem.transfer.packets.spigot.ChatInputGUITogglePacket;
 import de.codingair.warpsystem.transfer.packets.utils.Packet;
 import de.codingair.warpsystem.transfer.packets.utils.PacketType;
 import de.codingair.warpsystem.transfer.utils.PacketListener;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.event.ServerDisconnectEvent;
@@ -18,12 +17,12 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ChatInputManager extends PacketListener implements Listener {
-    private List<String> using = new ArrayList<>();
-    private HashMap<String, String> cache = new HashMap<>();
+    private final List<String> using = new ArrayList<>();
+    private final HashMap<String, String> cache = new HashMap<>();
 
     public ChatInputManager() {
         WarpSystem.getInstance().getDataHandler().register(this);
-        BungeeCord.getInstance().getPluginManager().registerListener(WarpSystem.getInstance(), this);
+        WarpSystem.proxy().getPluginManager().registerListener(WarpSystem.getInstance(), this);
     }
 
     @EventHandler(priority = -100)

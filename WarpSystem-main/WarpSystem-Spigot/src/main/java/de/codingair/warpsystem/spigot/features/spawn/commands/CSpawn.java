@@ -15,7 +15,6 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.spigotmc.SpigotConfig;
 
 public class CSpawn extends WSCommandBuilder {
     public CSpawn() {
@@ -43,7 +42,7 @@ public class CSpawn extends WSCommandBuilder {
                         message.replace("%HERE%", tc);
                         message.send((Player) sender);
                         spawn.perform((Player) sender);
-                    } else sender.sendMessage(SpigotConfig.unknownCommandMessage);
+                    } else sender.sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));
                 } else spawn.perform((Player) sender);
 
                 return false;

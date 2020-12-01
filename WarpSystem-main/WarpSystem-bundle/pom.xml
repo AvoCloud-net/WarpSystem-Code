@@ -52,6 +52,7 @@
 
                 <configuration>
                     <relocations>
+<!--                        Cannot handle sub modules with same dependencies-->
                         <!--                        <relocation>-->
                         <!--                            <pattern>io.papermc.lib</pattern>-->
                         <!--                            <shadedPattern>de.codingair.warpsystem.lib.paperlib</shadedPattern>-->

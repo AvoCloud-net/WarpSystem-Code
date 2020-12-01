@@ -1,9 +1,9 @@
 package de.codingair.warpsystem.bungee.features.teleport.listeners;
 
-import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.utils.Value;
 import de.codingair.warpsystem.bungee.api.Players;
+import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.features.teleport.managers.TeleportManager;
 import de.codingair.warpsystem.transfer.packets.bungee.TeleportPlayerToCoordsPacket;
 import de.codingair.warpsystem.transfer.packets.bungee.TeleportPlayerToPlayerPacket;
@@ -14,7 +14,6 @@ import de.codingair.warpsystem.transfer.packets.spigot.*;
 import de.codingair.warpsystem.transfer.packets.utils.Packet;
 import de.codingair.warpsystem.transfer.packets.utils.PacketType;
 import de.codingair.warpsystem.transfer.utils.PacketListener;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -22,7 +21,7 @@ public class TeleportPacketListener extends PacketListener {
     @Override
     public void onReceive(Packet packet, String extra) {
         if(PacketType.getByObject(packet) == PacketType.TeleportCommandOptions) {
-            ServerInfo info = BungeeCord.getInstance().getServerInfo(extra);
+            ServerInfo info = WarpSystem.proxy().getServerInfo(extra);
             TeleportCommandOptionsPacket p = (TeleportCommandOptionsPacket) packet;
 
             TeleportManager.getInstance().registerOptions(info, p.getOptions());
@@ -40,7 +39,7 @@ public class TeleportPacketListener extends PacketListener {
 
             if(player == null || target == null) {
                 answer.setValue(1);
-                WarpSystem.getInstance().getDataHandler().send(answer, BungeeCord.getInstance().getServerInfo(extra));
+                WarpSystem.getInstance().getDataHandler().send(answer, WarpSystem.proxy().getServerInfo(extra));
             } else {
                 TeleportPlayerToPlayerPacket tpPacket = new TeleportPlayerToPlayerPacket(player.getName(), player.getName(), target.getName());
                 tpPacket.setCosts(p.getCosts());
@@ -49,15 +48,15 @@ public class TeleportPacketListener extends PacketListener {
                 if(!player.getServer().getInfo().equals(target.getServer().getInfo())) {
                     player.connect(target.getServer().getInfo(), (connected, throwable) -> {
                         if(!connected) answer.setValue(2);
-                        WarpSystem.getInstance().getDataHandler().send(answer, BungeeCord.getInstance().getServerInfo(extra));
+                        WarpSystem.getInstance().getDataHandler().send(answer, WarpSystem.proxy().getServerInfo(extra));
                     });
-                } else WarpSystem.getInstance().getDataHandler().send(answer, BungeeCord.getInstance().getServerInfo(extra));
+                } else WarpSystem.getInstance().getDataHandler().send(answer, WarpSystem.proxy().getServerInfo(extra));
             }
 
         } else if(PacketType.getByObject(packet) == PacketType.StartTeleportToPlayerPacket) {
             StartTeleportToPlayerPacket tpPacket = (StartTeleportToPlayerPacket) packet;
             ProxiedPlayer player = Players.getPlayer(tpPacket.getPlayer());
-            ServerInfo origin = BungeeCord.getInstance().getServerInfo(extra);
+            ServerInfo origin = WarpSystem.proxy().getServerInfo(extra);
 
             IntegerPacket answer = new IntegerPacket(0);
             tpPacket.applyAsAnswer(answer);
@@ -75,7 +74,7 @@ public class TeleportPacketListener extends PacketListener {
             }
         } else if(PacketType.getByObject(packet) == PacketType.PrepareTeleportRequestPacket) {
             PrepareTeleportRequestPacket tpPacket = (PrepareTeleportRequestPacket) packet;
-            ServerInfo origin = BungeeCord.getInstance().getServerInfo(extra);
+            ServerInfo origin = WarpSystem.proxy().getServerInfo(extra);
 
             String recipient = tpPacket.getRecipient();
 
@@ -130,7 +129,7 @@ public class TeleportPacketListener extends PacketListener {
         } else if(PacketType.getByObject(packet) == PacketType.PrepareTeleportPacket) {
             PrepareTeleportPacket tpPacket = (PrepareTeleportPacket) packet;
 
-            ServerInfo origin = BungeeCord.getInstance().getServerInfo(extra);
+            ServerInfo origin = WarpSystem.proxy().getServerInfo(extra);
             ProxiedPlayer sender = Players.getPlayer(tpPacket.getSender());
             ProxiedPlayer targetPlayer = tpPacket.getSender().equalsIgnoreCase(tpPacket.getTarget()) ? sender : Players.getPlayer(tpPacket.getTarget());
 

@@ -7,7 +7,6 @@ import de.codingair.warpsystem.bungee.features.teleport.listeners.TeleportComman
 import de.codingair.warpsystem.bungee.features.teleport.listeners.TeleportPacketListener;
 import de.codingair.warpsystem.bungee.features.teleport.utils.TeleportCommandOptions;
 import de.codingair.warpsystem.utils.Manager;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -28,8 +27,8 @@ public class TeleportManager implements Manager {
     public boolean load(boolean loader) {
         if(!loader) WarpSystem.log("  > Initializing TeleportManager");
 
-        BungeeCord.getInstance().getPluginManager().registerListener(WarpSystem.getInstance(), new TabCompleterListener());
-        BungeeCord.getInstance().getPluginManager().registerListener(WarpSystem.getInstance(), new TeleportCommandListener());
+        WarpSystem.proxy().getPluginManager().registerListener(WarpSystem.getInstance(), new TabCompleterListener());
+        WarpSystem.proxy().getPluginManager().registerListener(WarpSystem.getInstance(), new TeleportCommandListener());
 
         WarpSystem.getInstance().getDataHandler().register(new TeleportPacketListener());
         return true;

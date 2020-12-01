@@ -36,7 +36,7 @@ public class CommandListener implements Listener {
                 } else {
                     e.getPlayer().sendMessage(Lang.getPrefix() + "§7You have to enable '§4§l" + feature.getName() + "§7' in the Config.yml to use this command!");
                 }
-            } else e.getPlayer().sendMessage(org.spigotmc.SpigotConfig.unknownCommandMessage);
+            } else e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Unknown_Command"));
         }
     }
 

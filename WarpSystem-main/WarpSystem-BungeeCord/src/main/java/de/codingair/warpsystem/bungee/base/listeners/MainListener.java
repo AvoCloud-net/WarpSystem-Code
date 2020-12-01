@@ -1,12 +1,12 @@
 package de.codingair.warpsystem.bungee.base.listeners;
 
-import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.warpsystem.bungee.api.Players;
+import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.language.Lang;
 import de.codingair.warpsystem.bungee.base.managers.ServerManager;
 import de.codingair.warpsystem.bungee.base.utils.ServerInitializeEvent;
+import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
 import de.codingair.warpsystem.transfer.packets.bungee.PrepareLoginMessagePacket;
 import de.codingair.warpsystem.transfer.packets.bungee.SendUUIDPacket;
 import de.codingair.warpsystem.transfer.packets.general.BooleanPacket;
@@ -18,7 +18,6 @@ import de.codingair.warpsystem.transfer.packets.spigot.utils.ServerPing;
 import de.codingair.warpsystem.transfer.packets.utils.Packet;
 import de.codingair.warpsystem.transfer.packets.utils.PacketType;
 import de.codingair.warpsystem.transfer.utils.PacketListener;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -90,7 +89,7 @@ public class MainListener extends PacketListener implements Listener {
 
     @Override
     public void onReceive(Packet packet, String extra) {
-        ServerInfo server = BungeeCord.getInstance().getServerInfo(extra);
+        ServerInfo server = WarpSystem.proxy().getServerInfo(extra);
 
         switch(PacketType.getByObject(packet)) {
             case RequestInitialPacket: {
@@ -100,7 +99,7 @@ public class MainListener extends PacketListener implements Listener {
 
             case RequestUUIDPacket: {
                 RequestUUIDPacket p = (RequestUUIDPacket) packet;
-                ProxiedPlayer pp = BungeeCord.getInstance().getPlayer(p.getName());
+                ProxiedPlayer pp = WarpSystem.proxy().getPlayer(p.getName());
 
                 SendUUIDPacket answer;
                 if(pp == null) answer = new SendUUIDPacket(null);
@@ -114,7 +113,7 @@ public class MainListener extends PacketListener implements Listener {
 
             case MessagePacket: {
                 MessagePacket p = (MessagePacket) packet;
-                ProxiedPlayer player = BungeeCord.getInstance().getPlayer(p.getPlayer());
+                ProxiedPlayer player = WarpSystem.proxy().getPlayer(p.getPlayer());
 
                 if(player != null) {
                     TextComponent tc = new TextComponent(p.getMessage());
@@ -129,7 +128,7 @@ public class MainListener extends PacketListener implements Listener {
                 BooleanPacket answer = new BooleanPacket();
                 p.applyAsAnswer(answer);
 
-                ServerInfo info = BungeeCord.getInstance().getServerInfo(p.getServer());
+                ServerInfo info = WarpSystem.proxy().getServerInfo(p.getServer());
 
                 if(info == null) {
                     answer.setValue(false);
@@ -149,8 +148,8 @@ public class MainListener extends PacketListener implements Listener {
                 IntegerPacket answer = new IntegerPacket();
                 p.applyAsAnswer(answer);
 
-                ProxiedPlayer pp = BungeeCord.getInstance().getPlayer(p.getPlayer());
-                ServerInfo info = BungeeCord.getInstance().getServerInfo(p.getServer());
+                ProxiedPlayer pp = WarpSystem.proxy().getPlayer(p.getPlayer());
+                ServerInfo info = WarpSystem.proxy().getServerInfo(p.getServer());
 
                 if(pp == null || info == null) {
                     answer.setValue(1);
@@ -196,8 +195,8 @@ public class MainListener extends PacketListener implements Listener {
                 IntegerPacket answer = new IntegerPacket();
                 p.applyAsAnswer(answer);
 
-                ProxiedPlayer pp = BungeeCord.getInstance().getPlayer(p.getPlayer());
-                ServerInfo target = BungeeCord.getInstance().getServerInfo(p.getServer());
+                ProxiedPlayer pp = WarpSystem.proxy().getPlayer(p.getPlayer());
+                ServerInfo target = WarpSystem.proxy().getServerInfo(p.getServer());
 
                 if(WarpSystem.getInstance().getServerManager().isOnline(target)) {
                     if(target.getPlayers().isEmpty()) {

@@ -1,9 +1,9 @@
 package de.codingair.warpsystem.bungee.features.randomtp;
 
+import de.codingair.codingapi.tools.Callback;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.managers.ServerManager;
 import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
-import de.codingair.codingapi.tools.Callback;
 import de.codingair.warpsystem.features.RandomTPCompleteKeys;
 import de.codingair.warpsystem.transfer.packets.general.BooleanPacket;
 import de.codingair.warpsystem.transfer.packets.spigot.QueueRTPUsagePacket;
@@ -12,7 +12,6 @@ import de.codingair.warpsystem.transfer.packets.spigot.RandomTPWorldsPacket;
 import de.codingair.warpsystem.transfer.packets.utils.Packet;
 import de.codingair.warpsystem.transfer.packets.utils.PacketType;
 import de.codingair.warpsystem.transfer.utils.PacketListener;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.TabCompleteResponseEvent;
@@ -133,12 +132,12 @@ public class RandomTPListener extends PacketListener implements Listener {
 
     @Override
     public void onReceive(Packet packet, String extra) {
-        ServerInfo origin = BungeeCord.getInstance().getServerInfo(extra);
+        ServerInfo origin = WarpSystem.proxy().getServerInfo(extra);
 
         if(packet.getType() == PacketType.RandomTPPacket) {
             RandomTPPacket p = (RandomTPPacket) packet;
-            ProxiedPlayer pp = BungeeCord.getInstance().getPlayer(p.getPlayer());
-            ServerInfo target = BungeeCord.getInstance().getServerInfo(p.getServer());
+            ProxiedPlayer pp = WarpSystem.proxy().getPlayer(p.getPlayer());
+            ServerInfo target = WarpSystem.proxy().getServerInfo(p.getServer());
 
             BooleanPacket answer = new BooleanPacket(true);
             p.applyAsAnswer(answer);
@@ -162,7 +161,7 @@ public class RandomTPListener extends PacketListener implements Listener {
         } else if(packet.getType() == PacketType.QueueRTPUsagePacket) {
             QueueRTPUsagePacket p = (QueueRTPUsagePacket) packet;
 
-            ServerInfo server = BungeeCord.getInstance().getServerInfo(p.getServer());
+            ServerInfo server = WarpSystem.proxy().getServerInfo(p.getServer());
             if(!server.getPlayers().isEmpty()) WarpSystem.getInstance().getDataHandler().send(p, server);
             else RandomTPManager.getInstance().addQueueEntry(p.getIdOnce(), p.getServer());
 

@@ -1,10 +1,10 @@
 package de.codingair.warpsystem.bungee.base.managers;
 
-import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
 import com.google.common.base.Preconditions;
 import de.codingair.codingapi.tools.Callback;
+import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.utils.ServerInitializeEvent;
+import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
 import de.codingair.warpsystem.bungee.features.teleport.managers.TeleportManager;
 import de.codingair.warpsystem.transfer.packets.bungee.InitialPacket;
 import de.codingair.warpsystem.transfer.packets.bungee.SendServerPropertiesPacket;
@@ -14,7 +14,6 @@ import de.codingair.warpsystem.transfer.packets.utils.Packet;
 import de.codingair.warpsystem.transfer.packets.utils.PacketType;
 import de.codingair.warpsystem.transfer.serializeable.ServerOptions;
 import de.codingair.warpsystem.transfer.utils.PacketListener;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
@@ -56,12 +55,12 @@ public class ServerManager extends PacketListener implements Listener {
     }
 
     public void run() {
-        for(ServerInfo info : BungeeCord.getInstance().getServers().values()) {
+        for(ServerInfo info : WarpSystem.proxy().getServers().values()) {
             cachedPing.put(info.getName().toLowerCase(), new ServerPing(false, 0, 0, null));
         }
 
-        BungeeCord.getInstance().getScheduler().schedule(WarpSystem.getInstance(), () -> {
-            for(ServerInfo info : BungeeCord.getInstance().getServers().values()) {
+        WarpSystem.proxy().getScheduler().schedule(WarpSystem.getInstance(), () -> {
+            for(ServerInfo info : WarpSystem.proxy().getServers().values()) {
                 info.ping((serverPing, error) -> {
                     setStatus(info, error == null);
 
@@ -84,14 +83,14 @@ public class ServerManager extends PacketListener implements Listener {
             }
         }, 0, 5, TimeUnit.SECONDS);
 
-        BungeeCord.getInstance().getScheduler().schedule(WarpSystem.getInstance(), () -> {
+        WarpSystem.proxy().getScheduler().schedule(WarpSystem.getInstance(), () -> {
             HashMap<String, ServerPing> copy = new HashMap<>();
             for(Map.Entry<String, ServerPing> e : cachedPing.entrySet()) {
                 copy.put(e.getKey(), new ServerPing(e.getValue()));
             }
 
             SendServerPropertiesPacket p = new SendServerPropertiesPacket(copy);
-            for(ServerInfo target : BungeeCord.getInstance().getServers().values()) {
+            for(ServerInfo target : WarpSystem.proxy().getServers().values()) {
                 if(!target.getPlayers().isEmpty()) {
                     WarpSystem.getInstance().getDataHandler().send(p, target);
                 }
@@ -101,7 +100,7 @@ public class ServerManager extends PacketListener implements Listener {
 
     public void sendInitialPacket(ServerInfo server) {
         WarpSystem.getInstance().getDataHandler().send(new InitialPacket(WarpSystem.getInstance().getDescription().getVersion(), server.getName()), server);
-        BungeeCord.getInstance().getPluginManager().callEvent(new ServerInitializeEvent(server));
+        WarpSystem.proxy().getPluginManager().callEvent(new ServerInitializeEvent(server));
 
         List<Callback<ServerInfo>> l = WarpSystem.getInstance().getServerManager().waiting.remove(server);
         if(l != null) {

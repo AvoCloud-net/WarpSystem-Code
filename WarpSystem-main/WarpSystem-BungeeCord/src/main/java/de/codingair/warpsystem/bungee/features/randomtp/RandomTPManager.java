@@ -1,11 +1,10 @@
 package de.codingair.warpsystem.bungee.features.randomtp;
 
+import de.codingair.codingapi.bungeecord.files.ConfigFile;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.features.FeatureType;
-import de.codingair.codingapi.bungeecord.files.ConfigFile;
 import de.codingair.warpsystem.transfer.packets.spigot.QueueRTPUsagePacket;
 import de.codingair.warpsystem.utils.Manager;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import java.util.ArrayList;
@@ -55,7 +54,7 @@ public class RandomTPManager implements Manager {
 
         RandomTPListener l = new RandomTPListener();
         WarpSystem.getInstance().getDataHandler().register(l);
-        BungeeCord.getInstance().getPluginManager().registerListener(WarpSystem.getInstance(), l);
+        WarpSystem.proxy().getPluginManager().registerListener(WarpSystem.getInstance(), l);
         return true;
     }
 
@@ -131,7 +130,7 @@ public class RandomTPManager implements Manager {
     public List<String> getServer() {
         List<String> servers = new ArrayList<>();
         for(String s : this.worlds.keySet()) {
-            ServerInfo info = BungeeCord.getInstance().getServerInfo(s);
+            ServerInfo info = WarpSystem.proxy().getServerInfo(s);
             if(info != null && WarpSystem.getInstance().getServerManager().isOnline(info)) servers.add(s);
         }
         return servers;

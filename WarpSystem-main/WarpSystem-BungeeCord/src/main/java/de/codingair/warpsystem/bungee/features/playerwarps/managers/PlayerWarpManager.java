@@ -1,16 +1,15 @@
 package de.codingair.warpsystem.bungee.features.playerwarps.managers;
 
-import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.bungee.features.FeatureType;
-import de.codingair.warpsystem.bungee.features.playerwarps.listeners.PlayerWarpListener;
 import de.codingair.codingapi.bungeecord.files.ConfigFile;
 import de.codingair.codingapi.tools.io.JSON.BungeeJSON;
 import de.codingair.codingapi.tools.io.lib.JSONArray;
+import de.codingair.warpsystem.bungee.base.WarpSystem;
+import de.codingair.warpsystem.bungee.features.FeatureType;
+import de.codingair.warpsystem.bungee.features.playerwarps.listeners.PlayerWarpListener;
 import de.codingair.warpsystem.transfer.packets.bungee.SendPlayerWarpOptionsPacket;
 import de.codingair.warpsystem.transfer.packets.general.DeletePlayerWarpPacket;
 import de.codingair.warpsystem.transfer.packets.spigot.utils.PlayerWarpData;
 import de.codingair.warpsystem.utils.Manager;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -20,9 +19,9 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class PlayerWarpManager implements Manager {
-    private HashMap<UUID, List<PlayerWarpData>> warps = new HashMap<>();
-    private List<ServerInfo> activeServers = new ArrayList<>();
-    private List<String> timeDependent = new ArrayList<>();
+    private final HashMap<UUID, List<PlayerWarpData>> warps = new HashMap<>();
+    private final List<ServerInfo> activeServers = new ArrayList<>();
+    private final List<String> timeDependent = new ArrayList<>();
     private PlayerWarpListener listener = null;
     private ScheduledTask task = null;
 
@@ -67,7 +66,7 @@ public class PlayerWarpManager implements Manager {
 
         if(listener == null) {
             WarpSystem.getInstance().getDataHandler().register(listener = new PlayerWarpListener());
-            BungeeCord.getInstance().getPluginManager().registerListener(WarpSystem.getInstance(), listener);
+            WarpSystem.proxy().getPluginManager().registerListener(WarpSystem.getInstance(), listener);
         }
 
         SendPlayerWarpOptionsPacket packet = new SendPlayerWarpOptionsPacket(inactiveTime);
@@ -103,7 +102,7 @@ public class PlayerWarpManager implements Manager {
 
     public void runScheduler() {
         if(task != null) return;
-        task = BungeeCord.getInstance().getScheduler().schedule(WarpSystem.getInstance(), () -> {
+        task = WarpSystem.proxy().getScheduler().schedule(WarpSystem.getInstance(), () -> {
             HashMap<UUID, List<PlayerWarpData>> map = new HashMap<>(warps);
 
             for(List<PlayerWarpData> value : map.values()) {
@@ -235,7 +234,7 @@ public class PlayerWarpManager implements Manager {
     public void interactWithTimeDependentServers(ServerInteraction runnable) {
         List<String> activeServers = new ArrayList<>(this.timeDependent);
         for(String activeServer : activeServers) {
-            ServerInfo info = BungeeCord.getInstance().getServerInfo(activeServer);
+            ServerInfo info = WarpSystem.proxy().getServerInfo(activeServer);
             if(info != null) runnable.interact(info);
         }
         activeServers.clear();

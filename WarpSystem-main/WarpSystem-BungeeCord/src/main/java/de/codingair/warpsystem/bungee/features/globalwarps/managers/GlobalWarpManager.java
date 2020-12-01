@@ -8,7 +8,6 @@ import de.codingair.warpsystem.transfer.packets.bungee.UpdateGlobalWarpPacket;
 import de.codingair.warpsystem.transfer.serializeable.SGlobalWarp;
 import de.codingair.warpsystem.transfer.serializeable.SLocation;
 import de.codingair.warpsystem.utils.Manager;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.config.Configuration;
 
@@ -18,14 +17,14 @@ import java.util.List;
 
 public class GlobalWarpManager implements Manager {
     private List<SGlobalWarp> globalWarps = new ArrayList<>();
-    private GlobalWarpListener listener;
 
     public boolean load(boolean loader) {
         WarpSystem.getInstance().getFileManager().loadFile("GlobalWarps", "/");
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("GlobalWarps");
         Configuration config = file.getConfig();
 
-        BungeeCord.getInstance().getPluginManager().registerListener(WarpSystem.getInstance(), listener = new GlobalWarpListener());
+        GlobalWarpListener listener;
+        WarpSystem.proxy().getPluginManager().registerListener(WarpSystem.getInstance(), listener = new GlobalWarpListener());
 
         if(!loader) WarpSystem.log("  > Loading locations of GlobalWarps");
 

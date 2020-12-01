@@ -6,8 +6,6 @@ import de.codingair.warpsystem.transfer.packets.bungee.ToggleSetupAssistantPacke
 import de.codingair.warpsystem.transfer.packets.utils.Packet;
 import de.codingair.warpsystem.transfer.packets.utils.PacketType;
 import de.codingair.warpsystem.transfer.utils.PacketListener;
-import net.md_5.bungee.BungeeCord;
-import net.md_5.bungee.UserConnection;
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
@@ -56,10 +54,11 @@ public class SetupAssistantListener extends PacketListener implements Listener {
         }
     }
 
-    public void inject(UserConnection c) throws NoSuchFieldException, IllegalAccessException {
+    public void inject(ProxiedPlayer c) throws NoSuchFieldException, IllegalAccessException, ClassNotFoundException {
         if(backup != null) return;
 
-        Field unsafe = UserConnection.class.getDeclaredField("unsafe");
+        Class<?> userConnection = Class.forName("net.md_5.bungee.UserConnection");
+        Field unsafe = userConnection.getDeclaredField("unsafe");
         unsafe.setAccessible(true);
 
         backup = (Connection.Unsafe) unsafe.get(c);
@@ -78,9 +77,10 @@ public class SetupAssistantListener extends PacketListener implements Listener {
         });
     }
 
-    public void backup(UserConnection c) throws NoSuchFieldException, IllegalAccessException {
+    public void backup(ProxiedPlayer c) throws NoSuchFieldException, IllegalAccessException, ClassNotFoundException {
         if(backup == null) return;
-        Field unsafe = UserConnection.class.getDeclaredField("unsafe");
+        Class<?> userConnection = Class.forName("net.md_5.bungee.UserConnection");
+        Field unsafe = userConnection.getDeclaredField("unsafe");
         unsafe.setAccessible(true);
         unsafe.set(c, backup);
         backup = null;
@@ -91,21 +91,21 @@ public class SetupAssistantListener extends PacketListener implements Listener {
         if(packet.getType() == PacketType.ToggleSetupAssistantPacket) {
             String name = ((ToggleSetupAssistantPacket) packet).getName();
             if(name == null) {
-                if(editing instanceof UserConnection) {
+                if(editing instanceof ProxiedPlayer) {
                     try {
-                        backup((UserConnection) editing);
-                    } catch(NoSuchFieldException | IllegalAccessException e) {
+                        backup(editing);
+                    } catch(NoSuchFieldException | IllegalAccessException | ClassNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
 
                 editing = null;
-            } else editing = BungeeCord.getInstance().getPlayer(name);
+            } else editing = WarpSystem.proxy().getPlayer(name);
 
-            if(editing instanceof UserConnection) {
+            if(editing instanceof ProxiedPlayer) {
                 try {
-                    inject((UserConnection) editing);
-                } catch(NoSuchFieldException | IllegalAccessException e) {
+                    inject(editing);
+                } catch(NoSuchFieldException | IllegalAccessException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
             }

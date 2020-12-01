@@ -14,7 +14,6 @@ import de.codingair.warpsystem.transfer.packets.utils.Packet;
 import de.codingair.warpsystem.transfer.packets.utils.PacketType;
 import de.codingair.warpsystem.transfer.serializeable.Serializable;
 import de.codingair.warpsystem.transfer.utils.PacketListener;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -62,7 +61,7 @@ public class PlayerWarpListener extends PacketListener implements Listener {
 
             if(!l.isEmpty()) uploads.add(l);
 
-            ServerInfo server = BungeeCord.getInstance().getServerInfo(extra);
+            ServerInfo server = WarpSystem.proxy().getServerInfo(extra);
             PlayerWarpManager.getInstance().setActive(server, true);
             PlayerWarpManager.getInstance().setTimeDependent(server, ((RegisterServerForPlayerWarpsPacket) packet).isTimeDependent());
 
@@ -91,7 +90,7 @@ public class PlayerWarpListener extends PacketListener implements Listener {
 
             if(!l.isEmpty()) uploads.add(l);
 
-            ServerInfo server = BungeeCord.getInstance().getServerInfo(extra);
+            ServerInfo server = WarpSystem.proxy().getServerInfo(extra);
             PlayerWarpManager.getInstance().setActive(server, false);
 
             for(List<PlayerWarpData> upload : uploads) {
