@@ -38,7 +38,7 @@ public class PlayerWarpManager implements Manager {
     public boolean load(boolean loader) {
         if(!loader) WarpSystem.log("  > Loading PlayerWarps");
 
-        WarpSystem.getInstance().getFileManager().loadFile("PlayerWarps", "/");
+        WarpSystem.getInstance().getFileManager().getFile("PlayerWarps", "/");
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("PlayerWarps");
         ConfigFile configFile = WarpSystem.getInstance().getFileManager().getFile("Config");
 
@@ -81,7 +81,7 @@ public class PlayerWarpManager implements Manager {
     public void save(boolean saver) {
         if(!saver) WarpSystem.log("  > Saving PlayerWarps...");
 
-        WarpSystem.getInstance().getFileManager().loadFile("PlayerWarps", "/");
+        WarpSystem.getInstance().getFileManager().getFile("PlayerWarps", "/");
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("PlayerWarps");
 
         file.clear();
