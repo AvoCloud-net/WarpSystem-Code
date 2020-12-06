@@ -112,7 +112,7 @@ public class CTpaHere extends WSCommandBuilder {
                     return false;
                 }
 
-                WarpSystem.getInstance().getDataHandler().send(other, new RequestFullNamePacket(callback, argument));
+                WarpSystem.getInstance().getDataHandler().send((Player) sender, new RequestFullNamePacket(callback, argument));
                 return false;
             }
         });
