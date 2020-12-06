@@ -483,14 +483,14 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
                 for(List<PlayerWarpData> upload : uploads) {
                     SendPlayerWarpsPacket p = new SendPlayerWarpsPacket(upload);
                     p.setClearable(true);
-                    WarpSystem.getInstance().getDataHandler().send(p);
+                    WarpSystem.getInstance().getDataHandler().send(null, p);
                 }
 
                 uploads.clear();
             }
 
-            WarpSystem.getInstance().getDataHandler().send(new RegisterServerForPlayerWarpsPacket(isEconomy()));
-        } else WarpSystem.getInstance().getDataHandler().send(new MoveLocalPlayerWarpsPacket());
+            WarpSystem.getInstance().getDataHandler().send(null, new RegisterServerForPlayerWarpsPacket(isEconomy()));
+        } else WarpSystem.getInstance().getDataHandler().send(null, new MoveLocalPlayerWarpsPacket());
     }
 
     @Override
@@ -514,7 +514,7 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
                 add(warp.getData());
             }});
             packet.setClearable(true);
-            WarpSystem.getInstance().getDataHandler().send(packet);
+            WarpSystem.getInstance().getDataHandler().send(null, packet);
             return true;
         } else return sync(old.getData(), warp.getData());
     }
@@ -525,7 +525,7 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
 
         if(update.isEmpty()) return false;
 
-        WarpSystem.getInstance().getDataHandler().send(new SendPlayerWarpUpdatePacket(update));
+        WarpSystem.getInstance().getDataHandler().send(null, new SendPlayerWarpUpdatePacket(update));
         old.destroy();
         warp.destroy();
         return true;
@@ -929,7 +929,7 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
 
         if(informBungee && checkBungeeCord()) {
             DeletePlayerWarpPacket packet = new DeletePlayerWarpPacket(warp.getName(), warp.getOwner().getId());
-            WarpSystem.getInstance().getDataHandler().send(packet);
+            WarpSystem.getInstance().getDataHandler().send(null, packet);
         }
 
         return refund;

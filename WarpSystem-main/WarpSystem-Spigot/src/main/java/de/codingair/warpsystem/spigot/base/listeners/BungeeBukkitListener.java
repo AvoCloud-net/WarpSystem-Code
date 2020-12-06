@@ -45,7 +45,7 @@ public class BungeeBukkitListener extends PacketListener implements Listener {
     public void onReceive(Packet packet, String extra) {
         switch(PacketType.getByObject(packet)) {
             case InitialPacket: {
-                WarpSystem.getInstance().getDataHandler().send(new SendOptionsPacket(new ServerOptions(WarpSystem.getInstance().getDescription().getVersion(), WarpSystem.opt().getFetchUpdateOption())));
+                WarpSystem.getInstance().getDataHandler().send(null, new SendOptionsPacket(new ServerOptions(WarpSystem.getInstance().getDescription().getVersion(), WarpSystem.opt().getFetchUpdateOption())));
 
                 WarpSystem.getInstance().setCurrentServer(((InitialPacket) packet).getServerName());
 

@@ -571,7 +571,7 @@ public class DestinationPage extends PageItem {
                             server = name;
                             if(server != null) {
                                 pinging = true;
-                                WarpSystem.getInstance().getDataHandler().send(new RequestServerStatusPacket(server, new Callback<Boolean>() {
+                                WarpSystem.getInstance().getDataHandler().send(p, new RequestServerStatusPacket(server, new Callback<Boolean>() {
                                     @Override
                                     public void accept(Boolean online) {
                                         DestinationPage.this.pinging = false;
@@ -640,7 +640,7 @@ public class DestinationPage extends PageItem {
                             if(server != null && !pinging) {
                                 pinging = true;
                                 update();
-                                WarpSystem.getInstance().getDataHandler().send(new RequestServerStatusPacket(server, new Callback<Boolean>() {
+                                WarpSystem.getInstance().getDataHandler().send(p, new RequestServerStatusPacket(server, new Callback<Boolean>() {
                                     @Override
                                     public void accept(Boolean online) {
                                         DestinationPage.this.pinging = false;

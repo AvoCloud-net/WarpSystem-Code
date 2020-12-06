@@ -91,7 +91,7 @@ public class SpawnListener extends PacketListener implements Listener {
                         clearCache(player, true);
                         player.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_No_Location_Found"));
                     } else {
-                        WarpSystem.getInstance().getDataHandler().send(new QueueRTPUsagePacket(WarpSystem.getInstance().getUUIDManager().get(player), teleportInfo.getServer()));
+                        WarpSystem.getInstance().getDataHandler().send(player, new QueueRTPUsagePacket(WarpSystem.getInstance().getUUIDManager().get(player), teleportInfo.getServer()));
                         if(!teleportInfo.isByOther()) WarpSystem.cooldown().register(player, Origin.RandomTP);
 
                         org.bukkit.Location l = player.getLocation();

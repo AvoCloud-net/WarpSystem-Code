@@ -200,7 +200,7 @@ public class CTeleport extends WSCommandBuilder {
         if(playerP == null) {
             //try on proxy
             if(WarpSystem.getInstance().isOnBungeeCord() && TeleportCommandManager.getInstance().isBungeeCord()) {
-                WarpSystem.getInstance().getDataHandler().send(new PrepareTeleportPacket(new Callback<Long>() {
+                WarpSystem.getInstance().getDataHandler().send(playerP, new PrepareTeleportPacket(new Callback<Long>() {
                     @Override
                     public void accept(Long result) {
                         int handled = (int) (result >> 32);
@@ -244,7 +244,7 @@ public class CTeleport extends WSCommandBuilder {
         if(playerP == null || targetP == null) {
             //try on proxy
             if(WarpSystem.getInstance().isOnBungeeCord() && TeleportCommandManager.getInstance().isBungeeCord()) {
-                WarpSystem.getInstance().getDataHandler().send(new PrepareTeleportPacket(new Callback<Long>() {
+                WarpSystem.getInstance().getDataHandler().send(playerP, new PrepareTeleportPacket(new Callback<Long>() {
                     @Override
                     public void accept(Long result) {
                         int handled = (int) (result >> 32);

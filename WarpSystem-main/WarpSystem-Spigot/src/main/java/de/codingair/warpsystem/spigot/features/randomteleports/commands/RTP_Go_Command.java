@@ -130,7 +130,7 @@ public class RTP_Go_Command extends NaturalCommandComponent {
                 targetWorld = data[1];
 
                 if(!targetServer.equalsIgnoreCase(WarpSystem.getInstance().getCurrentServer())) {
-                    WarpSystem.getInstance().getDataHandler().send(new RandomTPPacket(new Callback<Boolean>() {
+                    WarpSystem.getInstance().getDataHandler().send(p, new RandomTPPacket(new Callback<Boolean>() {
                         @Override
                         public void accept(Boolean success) {
                             if(success) {
