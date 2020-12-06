@@ -167,7 +167,7 @@ public class TeleportCommandManager implements Manager, BungeeFeature, Collectib
         Bukkit.getPluginManager().registerEvents(this.packetListener, WarpSystem.getInstance());
 
         if(bungeeCord) {
-            WarpSystem.getInstance().getDataHandler().send(new TeleportCommandOptionsPacket(back != null, tp != null, tpAll != null, tpToggle != null, tpa != null, tpaHere != null, tpaAll != null, tpaToggle != null));
+            WarpSystem.getInstance().getDataHandler().send(null, new TeleportCommandOptionsPacket(back != null, tp != null, tpAll != null, tpToggle != null, tpa != null, tpaHere != null, tpaAll != null, tpaToggle != null));
         }
     }
 
@@ -228,11 +228,11 @@ public class TeleportCommandManager implements Manager, BungeeFeature, Collectib
 
     public boolean toggleDenyTpaRequest(Player player) {
         if(this.denyTpa.contains(player.getName())) {
-            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getInstance().getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), deniesForceTps(player), false));
+            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getInstance().getDataHandler().send(player, new ToggleForceTeleportsPacket(player.getName(), deniesForceTps(player), false));
             this.denyTpa.remove(player.getName());
             return false;
         } else {
-            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getInstance().getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), deniesForceTps(player), true));
+            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getInstance().getDataHandler().send(player, new ToggleForceTeleportsPacket(player.getName(), deniesForceTps(player), true));
             this.denyTpa.add(player.getName());
             return true;
         }
@@ -244,11 +244,11 @@ public class TeleportCommandManager implements Manager, BungeeFeature, Collectib
 
     public boolean toggleDenyForceTps(Player player) {
         if(this.denyForceTps.contains(player.getName())) {
-            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getInstance().getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), false, deniesTpaRequests(player.getName())));
+            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getInstance().getDataHandler().send(player, new ToggleForceTeleportsPacket(player.getName(), false, deniesTpaRequests(player.getName())));
             this.denyForceTps.remove(player.getName());
             return false;
         } else {
-            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getInstance().getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), true, deniesTpaRequests(player.getName())));
+            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getInstance().getDataHandler().send(player, new ToggleForceTeleportsPacket(player.getName(), true, deniesTpaRequests(player.getName())));
             this.denyForceTps.add(player.getName());
             return true;
         }

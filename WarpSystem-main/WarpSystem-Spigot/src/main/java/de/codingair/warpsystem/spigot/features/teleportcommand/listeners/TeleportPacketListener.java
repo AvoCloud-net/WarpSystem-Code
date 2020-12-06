@@ -68,7 +68,7 @@ public class TeleportPacketListener extends PacketListener implements Listener {
                     public void accept(Long result) {
                         LongPacket answer = new LongPacket(result);
                         tpPacket.applyAsAnswer(answer);
-                        WarpSystem.getInstance().getDataHandler().send(answer);
+                        WarpSystem.getInstance().getDataHandler().send(null, answer);
                     }
                 }, tpPacket.getRecipient(), true);
                 break;
@@ -83,11 +83,11 @@ public class TeleportPacketListener extends PacketListener implements Listener {
 
                 if(player == null) {
                     answer.setValue(1);
-                    WarpSystem.getInstance().getDataHandler().send(answer);
+                    WarpSystem.getInstance().getDataHandler().send(player, answer);
                     return;
                 }
 
-                WarpSystem.getInstance().getDataHandler().send(answer);
+                WarpSystem.getInstance().getDataHandler().send(player, answer);
 
                 TeleportOptions options = new TeleportOptions(new Destination(new EmptyAdapter()), tpPacket.getToDisplayName());
                 options.setOrigin(Origin.TeleportRequest);
@@ -100,7 +100,7 @@ public class TeleportPacketListener extends PacketListener implements Listener {
                     public void accept(Result result) {
                         //move
                         if(result == Result.SUCCESS) {
-                            WarpSystem.getInstance().getDataHandler().send(new PrepareTeleportPlayerToPlayerPacket(player.getName(), tpPacket.getTo(), new Callback<Integer>() {
+                            WarpSystem.getInstance().getDataHandler().send(player, new PrepareTeleportPlayerToPlayerPacket(player.getName(), tpPacket.getTo(), new Callback<Integer>() {
                                 @Override
                                 public void accept(Integer result) {
                                     if(result == 0) {

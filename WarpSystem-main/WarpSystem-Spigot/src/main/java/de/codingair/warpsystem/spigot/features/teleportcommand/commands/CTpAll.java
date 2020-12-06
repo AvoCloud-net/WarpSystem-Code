@@ -35,6 +35,7 @@ public class CTpAll extends WSCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
+                Player p = (Player) sender;
                 int iHandled = 0;
                 int iSent = 0;
 
@@ -54,7 +55,7 @@ public class CTpAll extends WSCommandBuilder {
                 if(WarpSystem.getInstance().isOnBungeeCord() && TeleportCommandManager.getInstance().isBungeeCord()) {
                     int finalI = iSent;
                     int finalIHandled = iHandled;
-                    WarpSystem.getInstance().getDataHandler().send(new PrepareTeleportPacket(new Callback<Long>() {
+                    WarpSystem.getInstance().getDataHandler().send(p, new PrepareTeleportPacket(new Callback<Long>() {
                         @Override
                         public void accept(Long result) {
                             int handled = (int) (result >> 32);

@@ -155,7 +155,7 @@ public class PTrusted extends PageItem {
                                 }
                             });
 
-                            WarpSystem.getInstance().getDataHandler().send(packet);
+                            WarpSystem.getInstance().getDataHandler().send(p, packet);
                         } else e.getPlayer().sendMessage(Lang.get("Prefix") + Lang.get("Player_is_not_online"));
 
                         return;

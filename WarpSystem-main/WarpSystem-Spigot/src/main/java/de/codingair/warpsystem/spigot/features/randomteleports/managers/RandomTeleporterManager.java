@@ -223,7 +223,7 @@ public class RandomTeleporterManager implements Manager, BungeeFeature {
             worlds.add(world.getName());
         }
 
-        WarpSystem.getInstance().getDataHandler().send(new RandomTPWorldsPacket(worlds));
+        WarpSystem.getInstance().getDataHandler().send(null, new RandomTPWorldsPacket(worlds));
     }
 
     @Override
