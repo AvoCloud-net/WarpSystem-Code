@@ -6,10 +6,12 @@ import de.codingair.warpsystem.base.transfer.packets.bungee.SendGlobalWarpNamesP
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.features.FeatureType;
 import de.codingair.warpsystem.spigot.features.globalwarps.managers.GlobalWarpManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SendGlobalWarpNamesPacketHandler implements PacketHandler<SendGlobalWarpNamesPacket> {
     @Override
-    public void process(SendGlobalWarpNamesPacket packet, Proxy proxy) {
+    public void process(@NotNull SendGlobalWarpNamesPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
         GlobalWarpManager gwManager = WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS);
         if(packet.isStart()) {
             gwManager.getGlobalWarps().clear();

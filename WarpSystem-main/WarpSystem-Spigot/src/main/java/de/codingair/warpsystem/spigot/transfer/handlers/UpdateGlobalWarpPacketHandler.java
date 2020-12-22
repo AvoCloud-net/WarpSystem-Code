@@ -11,10 +11,12 @@ import de.codingair.warpsystem.spigot.features.FeatureType;
 import de.codingair.warpsystem.spigot.features.globalwarps.managers.GlobalWarpManager;
 import de.codingair.warpsystem.spigot.features.warps.managers.IconManager;
 import de.codingair.warpsystem.spigot.features.warps.nextlevel.utils.Icon;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class UpdateGlobalWarpPacketHandler implements PacketHandler<UpdateGlobalWarpPacket> {
     @Override
-    public void process(UpdateGlobalWarpPacket packet, Proxy proxy) {
+    public void process(@NotNull UpdateGlobalWarpPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
         switch(packet.getAction()) {
             case ADD:
                 ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).getGlobalWarps().put(packet.getName(), packet.getServer());

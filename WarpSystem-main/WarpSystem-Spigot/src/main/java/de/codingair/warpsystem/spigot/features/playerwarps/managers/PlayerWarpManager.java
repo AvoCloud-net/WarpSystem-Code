@@ -80,7 +80,7 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
     private final List<String> nameBlacklist = new ArrayList<>();
     private final List<String> worldBlacklist = new ArrayList<>();
     private boolean bungeeCord;
-    private final PlayerWarpListener listener = new PlayerWarpListener();
+    private final PlayerWarpListener listener;
     private int maxAmount = 0;
     private long minTime;
     private long maxTime;
@@ -130,6 +130,10 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
     private boolean allowTeleportMessage;
     private boolean allowDescription;
     private boolean time;
+
+    public PlayerWarpManager() {
+         listener = new PlayerWarpListener();
+    }
 
     public static boolean hasPermission(Player player) {
         if(player.isOp()) return true;
@@ -460,8 +464,6 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
 
     @Override
     public void onConnect() {
-        WarpSystem.getInstance().getDataHandler().register(listener);
-
         if(bungeeCord) {
             if(!getWarps().isEmpty()) {
                 List<List<PlayerWarpData>> uploads = new ArrayList<>();
@@ -483,14 +485,14 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
                 for(List<PlayerWarpData> upload : uploads) {
                     SendPlayerWarpsPacket p = new SendPlayerWarpsPacket(upload);
                     p.setClearable(true);
-                    WarpSystem.getInstance().getDataHandler().send(null, p);
+                    WarpSystem.getDataHandler().send(p);
                 }
 
                 uploads.clear();
             }
 
-            WarpSystem.getInstance().getDataHandler().send(null, new RegisterServerForPlayerWarpsPacket(isEconomy()));
-        } else WarpSystem.getInstance().getDataHandler().send(null, new MoveLocalPlayerWarpsPacket());
+            WarpSystem.getDataHandler().send(new RegisterServerForPlayerWarpsPacket(isEconomy()));
+        } else WarpSystem.getDataHandler().send(new MoveLocalPlayerWarpsPacket());
     }
 
     @Override
@@ -501,8 +503,6 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
             }
             this.warps.clear();
         }
-
-        WarpSystem.getInstance().getDataHandler().unregister(listener);
     }
 
     public boolean sync(PlayerWarp old, PlayerWarp warp) {
@@ -514,7 +514,7 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
                 add(warp.getData());
             }});
             packet.setClearable(true);
-            WarpSystem.getInstance().getDataHandler().send(null, packet);
+            WarpSystem.getDataHandler().send(packet);
             return true;
         } else return sync(old.getData(), warp.getData());
     }
@@ -525,7 +525,7 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
 
         if(update.isEmpty()) return false;
 
-        WarpSystem.getInstance().getDataHandler().send(null, new SendPlayerWarpUpdatePacket(update));
+        WarpSystem.getDataHandler().send(new SendPlayerWarpUpdatePacket(update));
         old.destroy();
         warp.destroy();
         return true;
@@ -929,7 +929,7 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
 
         if(informBungee && checkBungeeCord()) {
             DeletePlayerWarpPacket packet = new DeletePlayerWarpPacket(warp.getName(), warp.getOwner().getId());
-            WarpSystem.getInstance().getDataHandler().send(null, packet);
+            WarpSystem.getDataHandler().send(packet);
         }
 
         return refund;

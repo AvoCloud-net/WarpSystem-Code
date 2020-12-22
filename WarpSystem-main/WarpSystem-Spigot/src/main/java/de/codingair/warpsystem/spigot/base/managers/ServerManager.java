@@ -8,6 +8,8 @@ import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.features.FeatureType;
 import de.codingair.warpsystem.spigot.features.signs.managers.SignManager;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
@@ -17,7 +19,7 @@ public class ServerManager {
     public ServerManager() {
         WarpSystem.getDataHandler().registerHandler(SendServerPropertiesPacket.class, new PacketHandler<SendServerPropertiesPacket>() {
             @Override
-            public void process(SendServerPropertiesPacket packet, Proxy proxy) {
+            public void process(@NotNull SendServerPropertiesPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
                 properties.putAll(packet.getProperties());
                 packet.getProperties().clear();
                 onUpdate();

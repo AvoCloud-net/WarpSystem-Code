@@ -1,24 +1,26 @@
 package de.codingair.warpsystem.bungee.transfer.bungee;
 
-import de.codingair.codingapi.tools.Callback;
-import de.codingair.codingapi.transfer.bungee.BungeeDataHandler;
-import de.codingair.codingapi.transfer.core.PacketListener;
-import de.codingair.codingapi.transfer.packets.utils.Packet;
-import de.codingair.warpsystem.base.transfer.packets.utils.AnswerPacket;
-import de.codingair.warpsystem.base.transfer.packets.utils.AssignedPacket;
+import de.codingair.packetmanagement.DataHandler;
+import de.codingair.packetmanagement.handlers.PacketHandler;
+import de.codingair.packetmanagement.packets.Packet;
+import de.codingair.packetmanagement.utils.Direction;
+import de.codingair.warpsystem.base.transfer.handlers.CooldownDataPacketHandler;
+import de.codingair.warpsystem.base.transfer.handlers.CooldownPacketHandler;
+import de.codingair.warpsystem.base.transfer.packets.bungee.SendJarPacket;
+import de.codingair.warpsystem.base.transfer.packets.general.DeletePlayerWarpPacket;
+import de.codingair.warpsystem.base.transfer.packets.general.PrepareCoordinationTeleportPacket;
+import de.codingair.warpsystem.base.transfer.packets.general.SendPlayerWarpUpdatePacket;
+import de.codingair.warpsystem.base.transfer.packets.general.SendPlayerWarpsPacket;
+import de.codingair.warpsystem.base.transfer.packets.spigot.*;
 import de.codingair.warpsystem.base.transfer.packets.utils.PacketType;
-import de.codingair.warpsystem.base.transfer.packets.utils.RequestPacket;
+import de.codingair.warpsystem.bungee.base.WarpSystem;
+import de.codingair.warpsystem.bungee.transfer.handlers.*;
 import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.util.UUID;
-
-public class BungeeHandler extends BungeeDataHandler {
-    public BungeeHandler(Plugin plugin) {
-        super(plugin);
+public class BungeeHandler extends DataHandler<ServerInfo> {
+    public BungeeHandler(WarpSystem plugin) {
+        super(plugin.getDescription().getName().toLowerCase(), plugin);
     }
 
     @Override
@@ -26,46 +28,45 @@ public class BungeeHandler extends BungeeDataHandler {
         for(PacketType value : PacketType.values()) {
             registerPacket(value.getPacket());
         }
+
+        registerHandler(SendPlayerWarpsPacket.class, new SendPlayerWarpsPacketHandler());
+        registerHandler(RegisterServerForPlayerWarpsPacket.class, new RegisterServerForPlayerWarpsPacketHandler());
+        registerHandler(MoveLocalPlayerWarpsPacket.class, new MoveLocalPlayerWarpsPacketHandler());
+        registerHandler(SendPlayerWarpUpdatePacket.class, new SendPlayerWarpUpdatePacketHandler());
+        registerHandler(PlayerWarpTeleportProcessPacket.class, new PlayerWarpTeleportProcessPacketHandler());
+        registerHandler(DeletePlayerWarpPacket.class, new DeletePlayerWarpPacketHandler());
+        registerHandler(TeleportCommandOptionsPacket.class, new TeleportCommandOptionsPacketHandler());
+        registerHandler(TeleportRequestHandledPacket.class, new TeleportRequestHandledPacketHandler());
+        registerHandler(PrepareTeleportPlayerToPlayerPacket.class, new PrepareTeleportPlayerToPlayerPacketHandler());
+        registerHandler(PrepareTeleportRequestPacket.class, new PrepareTeleportRequestPacketHandler());
+        registerHandler(PrepareTeleportPacket.class, new PrepareTeleportPacketHandler());
+        registerHandler(ToggleForceTeleportsPacket.class, new ToggleForceTeleportsPacketHandler());
+        registerHandler(PublishGlobalWarpPacket.class, new PublishGlobalWarpPacketHandler());
+        registerHandler(DeleteGlobalWarpPacket.class, new DeleteGlobalWarpPacketHandler());
+        registerHandler(GlobalWarpTeleportPacket.class, new GlobalWarpTeleportPacketHandler());
+        registerHandler(RequestGlobalWarpNamesPacket.class, new RequestGlobalWarpNamesPacketHandler());
+        registerHandler(SendOptionsPacket.class, new SendOptionsPacketHandler());
+        registerHandler(TeleportCommandOptionsPacket.class, new TeleportCommandOptionsPacketHandler());
+        registerHandler(TeleportRequestHandledPacket.class, new TeleportRequestHandledPacketHandler());
+        registerHandler(PrepareTeleportPlayerToPlayerPacket.class, new PrepareTeleportPlayerToPlayerPacketHandler());
+        registerHandler(PrepareTeleportRequestPacket.class, new PrepareTeleportRequestPacketHandler());
+        registerHandler(PrepareTeleportPacket.class, new PrepareTeleportPacketHandler());
+        registerHandler(ToggleForceTeleportsPacket.class, new ToggleForceTeleportsPacketHandler());
+        registerHandler(PrepareCoordinationTeleportPacket.class, new PrepareCoordinationTeleportPacketHandler());
     }
 
     @Override
-    public void send(Packet packet, ServerInfo server) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        DataOutputStream out = new DataOutputStream(stream);
-
-        int id = getId(packet.getClass());
-        if(id == -1) throw new IllegalStateException(packet.getClass() + " is not registered!");
-
-        if(packet instanceof RequestPacket && ((RequestPacket<?>) packet).getCallback() != null) {
-            if(callbacks.get(((RequestPacket<?>) packet).getUniqueId()) != null) ((RequestPacket<?>) packet).checkUUID(this.callbacks.keySet());
-            callbacks.put(((RequestPacket<?>) packet).getUniqueId(), ((RequestPacket<?>) packet).getCallback());
-        }
-
-        try {
-            out.writeShort(id);
-            packet.write(out);
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-
-        for(PacketListener listener : listeners) {
-            if(listener.onSend(packet)) return;
-        }
-
-        server.sendData(channelBackend, stream.toByteArray());
+    protected boolean isConnected(Direction direction) {
+        return direction == Direction.DOWN;
     }
 
     @Override
-    public void onReceive(Packet packet, ServerInfo server) {
-        if(packet instanceof AnswerPacket) {
-            UUID uniqueId = ((AssignedPacket) packet).getUniqueId();
-            Callback callback;
-            if((callback = this.callbacks.remove(uniqueId)) == null) return;
-            callback.accept(((AnswerPacket) packet).getValue());
-        }
+    protected void send(byte[] data, ServerInfo connection, Direction direction) {
+        if(direction == Direction.DOWN) connection.sendData(channelBackend, data);
+    }
 
-        for(PacketListener listener : listeners) {
-            listener.onReceive(packet, server);
-        }
+    @Override
+    public <P extends Packet> boolean registerHandler(@NotNull Class<? extends P> receiving, @NotNull PacketHandler<P> handler) {
+        return super.registerHandler(receiving, handler);
     }
 }

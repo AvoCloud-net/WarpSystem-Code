@@ -112,7 +112,6 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     private boolean onBungeeCord = false;
     private String bungeePluginVersion = null;
     private String server = null;
-    private BungeeBukkitListener packetListener;
     private final List<BungeeFeature> bungeeFeatureList = new ArrayList<>();
 
     private final TeleportManager teleportManager = TeleportManager.getInstance();
@@ -273,8 +272,8 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             this.ERROR = false;
 
             this.dataHandler.send(new RequestInitialPacket());
-            this.packetListener = new BungeeBukkitListener();
-            Bukkit.getPluginManager().registerEvents(this.packetListener, this);
+            BungeeBukkitListener packetListener = new BungeeBukkitListener();
+            Bukkit.getPluginManager().registerEvents(packetListener, this);
 
             ConfigFile config = fileManager.getFile("Config");
             if(config.getConfig().getBoolean("WarpSystem.Functions.CommandBlocks", true))

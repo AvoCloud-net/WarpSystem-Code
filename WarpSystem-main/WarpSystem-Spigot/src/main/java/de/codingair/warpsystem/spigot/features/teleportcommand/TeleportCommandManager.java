@@ -3,7 +3,12 @@ package de.codingair.warpsystem.spigot.features.teleportcommand;
 import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.codingapi.player.chat.ChatButtonManager;
 import de.codingair.codingapi.tools.Callback;
+import de.codingair.warpsystem.base.transfer.packets.bungee.TeleportPlayerToCoordsPacket;
+import de.codingair.warpsystem.base.transfer.packets.bungee.TeleportPlayerToPlayerPacket;
+import de.codingair.warpsystem.base.transfer.packets.general.StartTeleportToPlayerPacket;
+import de.codingair.warpsystem.base.transfer.packets.spigot.PrepareTeleportRequestPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.TeleportCommandOptionsPacket;
+import de.codingair.warpsystem.base.transfer.packets.spigot.TeleportRequestHandledPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.ToggleForceTeleportsPacket;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
@@ -20,11 +25,10 @@ import de.codingair.warpsystem.spigot.features.FeatureType;
 import de.codingair.warpsystem.spigot.features.teleportcommand.commands.*;
 import de.codingair.warpsystem.spigot.features.teleportcommand.listeners.BackListener;
 import de.codingair.warpsystem.spigot.features.teleportcommand.listeners.TeleportListener;
-import de.codingair.warpsystem.spigot.features.teleportcommand.listeners.TeleportPacketListener;
+import de.codingair.warpsystem.spigot.transfer.handlers.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,12 +57,10 @@ public class TeleportCommandManager implements Manager, BungeeFeature, Collectib
     private final HashMap<String, List<Location>> backHistory = new HashMap<>();
     private final List<String> usingBackCommand = new ArrayList<>();
 
-    private TeleportPacketListener packetListener;
-
     private int expireDelay = 30;
     private int backHistorySize = 1;
     private int tpaCosts = 0;
-    private boolean bungeeCord = false;
+    private boolean proxy = false;
 
     private CTeleport tp;
     private CTpHere tpHere;
@@ -71,6 +73,15 @@ public class TeleportCommandManager implements Manager, BungeeFeature, Collectib
     private CTpaAll tpaAll;
     private CTpAll tpAll;
     private CBack back;
+
+    public TeleportCommandManager() {
+        WarpSystem.getDataHandler().registerHandler(PrepareTeleportRequestPacket.class, new PrepareTeleportRequestPacketHandler());
+        WarpSystem.getDataHandler().registerHandler(StartTeleportToPlayerPacket.class, new StartTeleportToPlayerPacketHandler());
+        WarpSystem.getDataHandler().registerHandler(TeleportPlayerToCoordsPacket.class, new TeleportPlayerToCoordsPacketHandler());
+        WarpSystem.getDataHandler().registerHandler(TeleportPlayerToPlayerPacket.class, new TeleportPlayerToPlayerPacketHandler());
+        WarpSystem.getDataHandler().registerHandler(TeleportRequestHandledPacket.class, new TeleportRequestHandledPacketHandler());
+        WarpSystem.getDataHandler().registerHandler(ToggleForceTeleportsPacket.class, new ToggleForceTeleportsPacketHandler());
+    }
 
     public static TeleportCommandManager getInstance() {
         return WarpSystem.getInstance().getDataManager().getManager(FeatureType.TELEPORT_COMMAND);
@@ -100,7 +111,7 @@ public class TeleportCommandManager implements Manager, BungeeFeature, Collectib
         if(file.getConfig().getBoolean("WarpSystem.Functions.TeleportCommand", true)) {
             expireDelay = file.getConfig().getInt("WarpSystem.TeleportCommands.TeleportRequests.ExpireDelay", 30);
             tpaCosts = file.getConfig().getInt("WarpSystem.TeleportCommands.TeleportRequests.Teleport_Costs", 0);
-            bungeeCord = file.getConfig().getBoolean("WarpSystem.TeleportCommands.BungeeCord", true);
+            proxy = file.getConfig().getBoolean("WarpSystem.TeleportCommands.BungeeCord", true);
 
             if(file.getConfig().getBoolean("WarpSystem.TeleportCommands.Tp", true)) {
                 (tp = new CTeleport()).register();
@@ -162,26 +173,15 @@ public class TeleportCommandManager implements Manager, BungeeFeature, Collectib
 
     @Override
     public void onConnect() {
-        this.packetListener = new TeleportPacketListener();
-        WarpSystem.getInstance().getDataHandler().register(this.packetListener);
-        Bukkit.getPluginManager().registerEvents(this.packetListener, WarpSystem.getInstance());
-
-        if(bungeeCord) {
-            WarpSystem.getInstance().getDataHandler().send(null, new TeleportCommandOptionsPacket(back != null, tp != null, tpAll != null, tpToggle != null, tpa != null, tpaHere != null, tpaAll != null, tpaToggle != null));
-        }
+        if(proxy) WarpSystem.getDataHandler().send(new TeleportCommandOptionsPacket(back != null, tp != null, tpAll != null, tpToggle != null, tpa != null, tpaHere != null, tpaAll != null, tpaToggle != null));
     }
 
     @Override
     public void onDisconnect() {
-        if(this.packetListener != null) {
-            HandlerList.unregisterAll(this.packetListener);
-            WarpSystem.getInstance().getDataHandler().unregister(this.packetListener);
-            this.packetListener = null;
-        }
     }
 
-    public boolean isBungeeCord() {
-        return bungeeCord;
+    public boolean isProxy() {
+        return proxy;
     }
 
     public boolean usingBackCommand(Player player) {
@@ -228,11 +228,11 @@ public class TeleportCommandManager implements Manager, BungeeFeature, Collectib
 
     public boolean toggleDenyTpaRequest(Player player) {
         if(this.denyTpa.contains(player.getName())) {
-            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getInstance().getDataHandler().send(player, new ToggleForceTeleportsPacket(player.getName(), deniesForceTps(player), false));
+            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), deniesForceTps(player), false), player);
             this.denyTpa.remove(player.getName());
             return false;
         } else {
-            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getInstance().getDataHandler().send(player, new ToggleForceTeleportsPacket(player.getName(), deniesForceTps(player), true));
+            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), deniesForceTps(player), true), player);
             this.denyTpa.add(player.getName());
             return true;
         }
@@ -244,11 +244,11 @@ public class TeleportCommandManager implements Manager, BungeeFeature, Collectib
 
     public boolean toggleDenyForceTps(Player player) {
         if(this.denyForceTps.contains(player.getName())) {
-            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getInstance().getDataHandler().send(player, new ToggleForceTeleportsPacket(player.getName(), false, deniesTpaRequests(player.getName())));
+            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), false, deniesTpaRequests(player.getName())), player);
             this.denyForceTps.remove(player.getName());
             return false;
         } else {
-            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getInstance().getDataHandler().send(player, new ToggleForceTeleportsPacket(player.getName(), true, deniesTpaRequests(player.getName())));
+            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), true, deniesTpaRequests(player.getName())), player);
             this.denyForceTps.add(player.getName());
             return true;
         }
@@ -301,7 +301,7 @@ public class TeleportCommandManager implements Manager, BungeeFeature, Collectib
     }
 
     public void invite(String sender, boolean tpToSender, Callback<Long> callback, String recipient) {
-        invite(sender, tpToSender, callback, recipient, !bungeeCord);
+        invite(sender, tpToSender, callback, recipient, !proxy);
     }
 
     public void invite(String sender, boolean tpToSender, Callback<Long> callback, String recipient, boolean bukkitOnly) {

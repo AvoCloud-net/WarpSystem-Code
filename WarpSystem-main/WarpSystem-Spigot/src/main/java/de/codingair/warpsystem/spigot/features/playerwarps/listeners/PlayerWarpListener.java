@@ -10,9 +10,6 @@ import de.codingair.warpsystem.base.transfer.packets.general.SendPlayerWarpsPack
 import de.codingair.warpsystem.base.transfer.packets.spigot.PlayerWarpTeleportProcessPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.utils.PlayerWarpData;
 import de.codingair.warpsystem.base.transfer.packets.spigot.utils.PlayerWarpUpdate;
-import de.codingair.warpsystem.base.transfer.packets.utils.Packet;
-import de.codingair.warpsystem.base.transfer.packets.utils.PacketType;
-import de.codingair.warpsystem.base.transfer.utils.PacketListener;
 import de.codingair.warpsystem.spigot.api.StringFormatter;
 import de.codingair.warpsystem.spigot.api.events.PlayerFinalJoinEvent;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
@@ -28,7 +25,53 @@ import org.bukkit.event.Listener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerWarpListener extends PacketListener implements Listener {
+public class PlayerWarpListener implements Listener {
+
+    public PlayerWarpListener() {
+        //register Packets
+        WarpSystem.getDataHandler().registerHandler(SendPlayerWarpsPacket.class, (packet, proxy, connection) -> {
+            List<PlayerWarpData> l = packet.getData();
+
+            for(PlayerWarpData s : l) {
+                PlayerWarp w = new PlayerWarp();
+                w.setData(s);
+                PlayerWarpManager.getManager().updateWarp(w);
+                s.destroy();
+            }
+
+            l.clear();
+            PlayerWarpManager.getManager().updateGUIs();
+        });
+
+        WarpSystem.getDataHandler().registerHandler(SendPlayerWarpUpdatePacket.class, (packet, proxy, connection) -> {
+            PlayerWarpUpdate update = packet.getUpdate();
+
+            PlayerWarp w = PlayerWarpManager.getManager().getWarp(update.getId(), update.getOriginName());
+            w.setData(update);
+            update.destroy();
+            PlayerWarpManager.getManager().updateGUIs();
+        });
+
+        WarpSystem.getDataHandler().registerHandler(SendPlayerWarpOptionsPacket.class, (packet, proxy, connection) -> PlayerWarpManager.getManager().setInactiveTime(packet.getInactiveTime()));
+
+        WarpSystem.getDataHandler().registerHandler(DeletePlayerWarpPacket.class, (packet, proxy, connection) -> {
+            PlayerWarp warp = PlayerWarpManager.getManager().getWarp(packet.getId(), packet.getName());
+            PlayerWarpManager.getManager().delete(warp, false);
+            if(warp != null) warp.setSource(true);
+            PlayerWarpManager.getManager().updateGUIs();
+        });
+
+        WarpSystem.getDataHandler().registerHandler(PlayerWarpTeleportProcessPacket.class, (packet, proxy, connection) -> {
+            PlayerWarp warp = PlayerWarpManager.getManager().getWarp(packet.getId(), packet.getName());
+            if(warp != null) {
+                if(packet.increaseSales()) warp.increaseInactiveSales();
+                if(packet.resetSales()) warp.resetInactiveSales();
+                if(packet.increasePerformed()) warp.increasePerformed();
+
+                PlayerWarpManager.getManager().updateGUIs();
+            }
+        });
+    }
 
     @EventHandler
     public void onJoin(PlayerFinalJoinEvent e) {
@@ -72,55 +115,5 @@ public class PlayerWarpListener extends PacketListener implements Listener {
                 }
             }, 5 * 20L);
         }
-    }
-
-    @Override
-    public void onReceive(Packet packet, String extra) {
-        if(packet.getType() == PacketType.SendPlayerWarpsPacket) {
-            List<PlayerWarpData> l = ((SendPlayerWarpsPacket) packet).getData();
-
-            for(PlayerWarpData s : l) {
-                PlayerWarp w = new PlayerWarp();
-                w.setData(s);
-                PlayerWarpManager.getManager().updateWarp(w);
-                s.destroy();
-            }
-
-            l.clear();
-            PlayerWarpManager.getManager().updateGUIs();
-        } else if(packet.getType() == PacketType.SendPlayerWarpUpdatesPacket) {
-            PlayerWarpUpdate update = ((SendPlayerWarpUpdatePacket) packet).getUpdate();
-
-            PlayerWarp w = PlayerWarpManager.getManager().getWarp(update.getId(), update.getOriginName());
-            w.setData(update);
-            update.destroy();
-            PlayerWarpManager.getManager().updateGUIs();
-        } else if(packet.getType() == PacketType.SendPlayerWarpOptionsPacket) {
-            SendPlayerWarpOptionsPacket p = (SendPlayerWarpOptionsPacket) packet;
-            PlayerWarpManager.getManager().setInactiveTime(p.getInactiveTime());
-        } else if(packet.getType() == PacketType.DeletePlayerWarpPacket) {
-            DeletePlayerWarpPacket p = (DeletePlayerWarpPacket) packet;
-
-            PlayerWarp warp = PlayerWarpManager.getManager().getWarp(p.getId(), p.getName());
-            PlayerWarpManager.getManager().delete(warp, false);
-            if(warp != null) warp.setSource(true);
-            PlayerWarpManager.getManager().updateGUIs();
-        } else if(packet.getType() == PacketType.PlayerWarpTeleportProcessPacket) {
-            PlayerWarpTeleportProcessPacket p = (PlayerWarpTeleportProcessPacket) packet;
-
-            PlayerWarp warp = PlayerWarpManager.getManager().getWarp(p.getId(), p.getName());
-            if(warp != null) {
-                if(p.increaseSales()) warp.increaseInactiveSales();
-                if(p.resetSales()) warp.resetInactiveSales();
-                if(p.increasePerformed()) warp.increasePerformed();
-
-                PlayerWarpManager.getManager().updateGUIs();
-            }
-        }
-    }
-
-    @Override
-    public boolean onSend(Packet packet) {
-        return false;
     }
 }

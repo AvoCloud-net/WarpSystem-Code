@@ -1,8 +1,8 @@
 package de.codingair.warpsystem.spigot.base.utils.teleport;
 
 public class SimulatedTeleportResult {
-    private String error;
-    private Result result;
+    private final String error;
+    private final Result result;
 
     public SimulatedTeleportResult(String error, Result result) {
         this.error = error;

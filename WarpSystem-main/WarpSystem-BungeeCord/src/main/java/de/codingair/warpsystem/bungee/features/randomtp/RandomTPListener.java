@@ -1,18 +1,14 @@
 package de.codingair.warpsystem.bungee.features.randomtp;
 
-import de.codingair.codingapi.tools.Callback;
-import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.bungee.base.managers.ServerManager;
-import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
 import de.codingair.warpsystem.base.features.RandomTPCompleteKeys;
-import de.codingair.warpsystem.base.transfer.packets.general.BooleanPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.QueueRTPUsagePacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RandomTPPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RandomTPWorldsPacket;
-import de.codingair.warpsystem.base.transfer.packets.utils.Packet;
-import de.codingair.warpsystem.base.transfer.packets.utils.PacketType;
-import de.codingair.warpsystem.base.transfer.utils.PacketListener;
-import net.md_5.bungee.api.config.ServerInfo;
+import de.codingair.warpsystem.bungee.base.WarpSystem;
+import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
+import de.codingair.warpsystem.bungee.transfer.handlers.QueueRTPUsagePacketHandler;
+import de.codingair.warpsystem.bungee.transfer.handlers.RandomTPPacketHandler;
+import de.codingair.warpsystem.bungee.transfer.handlers.RandomTPWorldsPacketHandler;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.TabCompleteResponseEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -20,7 +16,13 @@ import net.md_5.bungee.event.EventHandler;
 
 import java.util.List;
 
-public class RandomTPListener extends PacketListener implements Listener {
+public class RandomTPListener implements Listener {
+    public RandomTPListener() {
+        WarpSystem.getDataHandler().registerHandler(RandomTPPacket.class, new RandomTPPacketHandler());
+        WarpSystem.getDataHandler().registerHandler(QueueRTPUsagePacket.class, new QueueRTPUsagePacketHandler());
+        WarpSystem.getDataHandler().registerHandler(RandomTPWorldsPacket.class, new RandomTPWorldsPacketHandler());
+    }
+
     private void add(TabCompleteResponseEvent e, String last, String argument) {
         if(last.isEmpty() || argument.startsWith(last)) {
             e.getSuggestions().add(argument);
@@ -128,51 +130,5 @@ public class RandomTPListener extends PacketListener implements Listener {
                 }
             }
         }
-    }
-
-    @Override
-    public void onReceive(Packet packet, String extra) {
-        ServerInfo origin = WarpSystem.proxy().getServerInfo(extra);
-
-        if(packet.getType() == PacketType.RandomTPPacket) {
-            RandomTPPacket p = (RandomTPPacket) packet;
-            ProxiedPlayer pp = WarpSystem.proxy().getPlayer(p.getPlayer());
-            ServerInfo target = WarpSystem.proxy().getServerInfo(p.getServer());
-
-            BooleanPacket answer = new BooleanPacket(true);
-            p.applyAsAnswer(answer);
-
-            if(target == null || !WarpSystem.getInstance().getServerManager().isOnline(target)) {
-                answer.setValue(false);
-                WarpSystem.getInstance().getDataHandler().send(answer, origin);
-                return;
-            }
-
-            if(pp != null) {
-                WarpSystem.getInstance().getDataHandler().send(answer, origin);
-                p.setServer(extra);
-                ServerManager.sendPlayerTo(target, pp, new Callback<ServerInfo>() {
-                    @Override
-                    public void accept(ServerInfo server) {
-                        WarpSystem.getInstance().getDataHandler().send(p, server);
-                    }
-                });
-            }
-        } else if(packet.getType() == PacketType.QueueRTPUsagePacket) {
-            QueueRTPUsagePacket p = (QueueRTPUsagePacket) packet;
-
-            ServerInfo server = WarpSystem.proxy().getServerInfo(p.getServer());
-            if(!server.getPlayers().isEmpty()) WarpSystem.getInstance().getDataHandler().send(p, server);
-            else RandomTPManager.getInstance().addQueueEntry(p.getIdOnce(), p.getServer());
-
-        } else if(packet.getType() == PacketType.RandomTPWorldsPacket) {
-            RandomTPWorldsPacket p = (RandomTPWorldsPacket) packet;
-            RandomTPManager.getInstance().addWorldData(extra, p.getWorlds());
-        }
-    }
-
-    @Override
-    public boolean onSend(Packet packet) {
-        return false;
     }
 }

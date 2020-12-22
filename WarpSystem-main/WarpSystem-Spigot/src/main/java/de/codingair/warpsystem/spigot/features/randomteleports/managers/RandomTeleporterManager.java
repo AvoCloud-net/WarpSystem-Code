@@ -8,6 +8,7 @@ import de.codingair.codingapi.tools.Location;
 import de.codingair.codingapi.tools.io.ConfigWriter;
 import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.items.XMaterial;
+import de.codingair.warpsystem.base.transfer.packets.spigot.QueueRTPUsagePacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RandomTPWorldsPacket;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
@@ -23,13 +24,13 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destinati
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.LocationAdapter;
 import de.codingair.warpsystem.spigot.features.FeatureType;
 import de.codingair.warpsystem.spigot.features.randomteleports.commands.CRandomTp;
-import de.codingair.warpsystem.spigot.features.randomteleports.listeners.BungeePacketListener;
 import de.codingair.warpsystem.spigot.features.randomteleports.listeners.InteractListener;
 import de.codingair.warpsystem.spigot.features.randomteleports.listeners.SpawnListener;
 import de.codingair.warpsystem.spigot.features.randomteleports.utils.RandomLocationCalculator;
 import de.codingair.warpsystem.spigot.features.randomteleports.utils.WorldOption;
 import de.codingair.warpsystem.spigot.features.randomteleports.utils.forwardcompatibility.RTPTagConverter_v4_2_2;
 import de.codingair.warpsystem.spigot.features.randomteleports.utils.forwardcompatibility.RTPTagConverter_v4_2_6;
+import de.codingair.warpsystem.spigot.transfer.handlers.QueueRTPUsagePacketHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -68,7 +69,7 @@ public class RandomTeleporterManager implements Manager, BungeeFeature {
     private final InteractListener listener = new InteractListener();
 
     public static RandomTeleporterManager getInstance() {
-        return ((RandomTeleporterManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.RANDOM_TELEPORTS));
+        return WarpSystem.getInstance().getDataManager().getManager(FeatureType.RANDOM_TELEPORTS);
     }
 
     @Override
@@ -136,8 +137,7 @@ public class RandomTeleporterManager implements Manager, BungeeFeature {
 
         SpawnListener listener = new SpawnListener();
         Bukkit.getPluginManager().registerEvents(listener, WarpSystem.getInstance());
-        WarpSystem.getInstance().getDataHandler().register(listener);
-        WarpSystem.getInstance().getDataHandler().register(new BungeePacketListener());
+        WarpSystem.getDataHandler().registerHandler(QueueRTPUsagePacket.class, new QueueRTPUsagePacketHandler());
 
         boolean success = true;
         worldOptions.clear();
@@ -223,7 +223,7 @@ public class RandomTeleporterManager implements Manager, BungeeFeature {
             worlds.add(world.getName());
         }
 
-        WarpSystem.getInstance().getDataHandler().send(null, new RandomTPWorldsPacket(worlds));
+        WarpSystem.getDataHandler().send(new RandomTPWorldsPacket(worlds));
     }
 
     @Override

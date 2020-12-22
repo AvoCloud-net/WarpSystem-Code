@@ -8,6 +8,8 @@ import de.codingair.warpsystem.base.transfer.serializeable.ServerOptions;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.listeners.BungeeBukkitListener;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.logging.Level;
 
@@ -19,7 +21,7 @@ public class InitialPacketHandler implements PacketHandler<InitialPacket> {
     }
 
     @Override
-    public void process(InitialPacket packet, Proxy proxy) {
+    public void process(@NotNull InitialPacket packet, @NotNull Proxy proxy, @Nullable @Nullable Object connection) {
         WarpSystem.getDataHandler().send(new SendOptionsPacket(new ServerOptions(WarpSystem.getInstance().getDescription().getVersion(), WarpSystem.opt().getFetchUpdateOption())));
 
         WarpSystem.getInstance().setCurrentServer(packet.getServerName());

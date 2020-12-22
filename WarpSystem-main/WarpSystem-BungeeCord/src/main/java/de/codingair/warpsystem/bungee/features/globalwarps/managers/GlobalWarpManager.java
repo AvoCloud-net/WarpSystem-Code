@@ -1,6 +1,7 @@
 package de.codingair.warpsystem.bungee.features.globalwarps.managers;
 
 import de.codingair.codingapi.bungeecord.files.ConfigFile;
+import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.features.globalwarps.listeners.GlobalWarpListener;
 import de.codingair.warpsystem.base.transfer.packets.bungee.SendGlobalWarpNamesPacket;
@@ -23,8 +24,7 @@ public class GlobalWarpManager implements Manager {
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("GlobalWarps");
         Configuration config = file.getConfig();
 
-        GlobalWarpListener listener;
-        WarpSystem.proxy().getPluginManager().registerListener(WarpSystem.getInstance(), listener = new GlobalWarpListener());
+        WarpSystem.proxy().getPluginManager().registerListener(WarpSystem.getInstance(), new GlobalWarpListener());
 
         if(!loader) WarpSystem.log("  > Loading locations of GlobalWarps");
 
@@ -46,8 +46,6 @@ public class GlobalWarpManager implements Manager {
 
             this.globalWarps.add(warp);
         }
-
-        WarpSystem.getInstance().getDataHandler().register(listener);
 
         return true;
     }
@@ -88,7 +86,7 @@ public class GlobalWarpManager implements Manager {
             else if(get(warp.getName()).equals(warp)) id = UpdateGlobalWarpPacket.Action.ADD.getId();
             else id = UpdateGlobalWarpPacket.Action.UPDATE_POSITION.getId();
 
-            WarpSystem.getInstance().getDataHandler().send(new UpdateGlobalWarpPacket(id, warp.getName(), warp.getServer()), server);
+            WarpSystem.getDataHandler().send(new UpdateGlobalWarpPacket(id, warp.getName(), warp.getServer()), server, Direction.DOWN);
         });
     }
 
@@ -117,7 +115,7 @@ public class GlobalWarpManager implements Manager {
 
         boolean start = true;
         for(HashMap<String, String> l : list) {
-            WarpSystem.getInstance().getDataHandler().send(new SendGlobalWarpNamesPacket(l, start), info);
+            WarpSystem.getDataHandler().send(new SendGlobalWarpNamesPacket(l, start), info, Direction.DOWN);
             start = false;
         }
 

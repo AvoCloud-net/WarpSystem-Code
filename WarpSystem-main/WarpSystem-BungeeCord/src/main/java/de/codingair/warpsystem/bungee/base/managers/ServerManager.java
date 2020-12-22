@@ -2,17 +2,13 @@ package de.codingair.warpsystem.bungee.base.managers;
 
 import com.google.common.base.Preconditions;
 import de.codingair.codingapi.tools.Callback;
+import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.warpsystem.base.transfer.packets.bungee.InitialPacket;
 import de.codingair.warpsystem.base.transfer.packets.bungee.SendServerPropertiesPacket;
-import de.codingair.warpsystem.base.transfer.packets.spigot.SendOptionsPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.utils.ServerPing;
-import de.codingair.warpsystem.base.transfer.packets.utils.Packet;
-import de.codingair.warpsystem.base.transfer.packets.utils.PacketType;
 import de.codingair.warpsystem.base.transfer.serializeable.ServerOptions;
-import de.codingair.warpsystem.base.transfer.utils.PacketListener;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.utils.ServerInitializeEvent;
-import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
@@ -25,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-public class ServerManager extends PacketListener implements Listener {
+public class ServerManager implements Listener {
     private final HashMap<ServerInfo, ServerOptions> options = new HashMap<>();
     private final ConcurrentHashMap<ServerInfo, ServerPing> cachedPing = new ConcurrentHashMap<>();
     private final HashMap<ServerInfo, List<Callback<ServerInfo>>> waiting = new HashMap<>();
@@ -89,14 +85,14 @@ public class ServerManager extends PacketListener implements Listener {
             SendServerPropertiesPacket p = new SendServerPropertiesPacket(copy);
             for(ServerInfo target : WarpSystem.proxy().getServers().values()) {
                 if(!target.getPlayers().isEmpty()) {
-                    WarpSystem.getInstance().getDataHandler().send(p, target);
+                    WarpSystem.getInstance().getDataHandler().send(p, target, Direction.DOWN);
                 }
             }
         }, 3, 5, TimeUnit.SECONDS);
     }
 
     public void sendInitialPacket(ServerInfo server) {
-        WarpSystem.getInstance().getDataHandler().send(new InitialPacket(WarpSystem.getInstance().getDescription().getVersion(), server.getName()), server);
+        WarpSystem.getInstance().getDataHandler().send(new InitialPacket(WarpSystem.getInstance().getDescription().getVersion(), server.getName()), server, Direction.DOWN);
         WarpSystem.proxy().getPluginManager().callEvent(new ServerInitializeEvent(server));
 
         List<Callback<ServerInfo>> l = WarpSystem.getInstance().getServerManager().waiting.remove(server);
@@ -116,20 +112,7 @@ public class ServerManager extends PacketListener implements Listener {
         return cachedPing.get(info);
     }
 
-    @Override
-    public void onReceive(Packet packet, String extra) {
-        if(packet.getType() == PacketType.SendOptionsPacket) {
-            ServerInfo info = WarpSystem.getInstance().getProxy().getServerInfo(extra);
-
-            SendOptionsPacket p = (SendOptionsPacket) packet;
-            options.put(info, p.getOptions());
-            p.getOptions().setSameVersion(WarpSystem.getInstance().getDescription().getVersion().equals(p.getOptions().getVersion()));
-            WarpSystem.getInstance().getProxy().getPluginManager().callEvent(new ServerProvideOptionsEvent(info, p.getOptions()));
-        }
-    }
-
-    @Override
-    public boolean onSend(Packet packet) {
-        return false;
+    public void applyOptions(ServerInfo info, ServerOptions options) {
+        this.options.putIfAbsent(info, options);
     }
 }

@@ -15,9 +15,9 @@ public enum DestinationType {
     Portal(8, PortalDestinationAdapter.class),
     ;
 
-    private int id;
-    private boolean bungee;
-    private Class<? extends DestinationAdapter> adapter;
+    private final int id;
+    private final boolean bungee;
+    private final Class<? extends DestinationAdapter> adapter;
 
     DestinationType(int id, boolean bungee, Class<? extends DestinationAdapter> adapter) {
         this.id = id;

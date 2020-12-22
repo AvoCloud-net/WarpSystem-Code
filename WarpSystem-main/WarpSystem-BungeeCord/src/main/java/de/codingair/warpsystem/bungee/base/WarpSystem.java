@@ -4,14 +4,15 @@ import de.codingair.codingapi.bungeecord.BungeeAPI;
 import de.codingair.codingapi.bungeecord.files.FileManager;
 import de.codingair.codingapi.tools.time.TimeFetcher;
 import de.codingair.codingapi.tools.time.Timer;
+import de.codingair.packetmanagement.utils.Proxy;
+import de.codingair.warpsystem.base.utils.Manager;
+import de.codingair.warpsystem.bungee.api.chatinput.ChatInputManager;
+import de.codingair.warpsystem.bungee.base.commands.CWarpSystem;
 import de.codingair.warpsystem.bungee.base.language.Lang;
 import de.codingair.warpsystem.bungee.base.listeners.MainListener;
 import de.codingair.warpsystem.bungee.base.listeners.SetupAssistantListener;
 import de.codingair.warpsystem.bungee.base.managers.*;
 import de.codingair.warpsystem.bungee.transfer.bungee.BungeeHandler;
-import de.codingair.warpsystem.base.utils.Manager;
-import de.codingair.warpsystem.bungee.api.chatinput.ChatInputManager;
-import de.codingair.warpsystem.bungee.base.commands.CWarpSystem;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -22,22 +23,18 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.concurrent.TimeUnit;
 
-public class WarpSystem extends Plugin {
+public class WarpSystem extends Plugin implements Proxy {
     public static final String PERMISSION_MODIFY_SYSTEM = "warpsystem.modify.system";
 
     private static WarpSystem instance;
     private final BungeeHandler dataHandler = new BungeeHandler(this);
     private final FileManager fileManager = new FileManager(this);
-    private final ServerManager serverManager = new ServerManager();
-    private final VanishManager vanishManager = new VanishManager();
     private final DataManager dataManager = new DataManager();
-    private final CooldownManager cooldownManager = new CooldownManager();
     private final JarManager jarManager = new JarManager();
     private final Timer timer = new Timer();
-
-    public static WarpSystem getInstance() {
-        return instance;
-    }
+    private ServerManager serverManager;
+    private CooldownManager cooldownManager;
+    private VanishManager vanishManager;
 
     public static void log(String message) {
         System.out.println(message);
@@ -67,25 +64,17 @@ public class WarpSystem extends Plugin {
             e.printStackTrace();
         }
 
-        this.dataHandler.onEnable();
-
         //listener
-        MainListener listener = new MainListener();
-        getProxy().getPluginManager().registerListener(this, listener);
-        this.dataHandler.register(listener);
-        getProxy().getPluginManager().registerListener(this, vanishManager);
-        this.dataHandler.register(vanishManager);
-        getProxy().getPluginManager().registerListener(this, cooldownManager);
-        this.dataHandler.register(cooldownManager);
+        getProxy().getPluginManager().registerListener(this, new MainListener());
+        getProxy().getPluginManager().registerListener(this, vanishManager = new VanishManager());
+        getProxy().getPluginManager().registerListener(this, cooldownManager = new CooldownManager());
 
         cooldownManager.load();
 
-        SetupAssistantListener l = new SetupAssistantListener();
-        getProxy().getPluginManager().registerListener(this, l);
-        this.dataHandler.register(l);
+        getProxy().getPluginManager().registerListener(this, new SetupAssistantListener());
 
+        this.serverManager = new ServerManager();
         this.serverManager.run();
-        this.dataHandler.register(serverManager);
 
         new ChatInputManager();
 
@@ -112,7 +101,7 @@ public class WarpSystem extends Plugin {
 
     @Override
     public void onDisable() {
-        this.dataHandler.onDisable();
+        this.dataHandler.flush();
         save(false);
         destroy();
         BungeeAPI.getInstance().onDisable(this);
@@ -208,8 +197,8 @@ public class WarpSystem extends Plugin {
         }
     }
 
-    public BungeeHandler getDataHandler() {
-        return dataHandler;
+    public static BungeeHandler getDataHandler() {
+        return getInstance().dataHandler;
     }
 
     public FileManager getFileManager() {
@@ -234,5 +223,9 @@ public class WarpSystem extends Plugin {
 
     public static ProxyServer proxy() {
         return instance.getProxy();
+    }
+
+    public static WarpSystem getInstance() {
+        return instance;
     }
 }

@@ -107,12 +107,12 @@ public class CTpaHere extends WSCommandBuilder {
                     }
                 };
 
-                if(!WarpSystem.getInstance().isOnBungeeCord() || !TeleportCommandManager.getInstance().isBungeeCord() || other != null) {
+                if(!WarpSystem.getInstance().isOnBungeeCord() || !TeleportCommandManager.getInstance().isProxy() || other != null) {
                     callback.accept(other == null ? argument : other.getName());
                     return false;
                 }
 
-                WarpSystem.getInstance().getDataHandler().send((Player) sender, new RequestFullNamePacket(callback, argument));
+                WarpSystem.getDataHandler().send(new RequestFullNamePacket(argument), (Player) sender).thenAccept(packet -> callback.accept(packet.a()));
                 return false;
             }
         });

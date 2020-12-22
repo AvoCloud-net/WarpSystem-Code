@@ -1,12 +1,11 @@
 package de.codingair.warpsystem.bungee.features.teleport.managers;
 
-import de.codingair.warpsystem.bungee.features.teleport.listeners.TabCompleterListener;
-import de.codingair.warpsystem.bungee.features.teleport.listeners.TeleportCommandListener;
-import de.codingair.warpsystem.bungee.features.teleport.listeners.TeleportPacketListener;
+import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.features.FeatureType;
+import de.codingair.warpsystem.bungee.features.teleport.listeners.TabCompleterListener;
+import de.codingair.warpsystem.bungee.features.teleport.listeners.TeleportCommandListener;
 import de.codingair.warpsystem.bungee.features.teleport.utils.TeleportCommandOptions;
-import de.codingair.warpsystem.base.utils.Manager;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -29,8 +28,6 @@ public class TeleportManager implements Manager {
 
         WarpSystem.proxy().getPluginManager().registerListener(WarpSystem.getInstance(), new TabCompleterListener());
         WarpSystem.proxy().getPluginManager().registerListener(WarpSystem.getInstance(), new TeleportCommandListener());
-
-        WarpSystem.getInstance().getDataHandler().register(new TeleportPacketListener());
         return true;
     }
 

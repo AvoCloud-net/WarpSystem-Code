@@ -1,15 +1,17 @@
 package de.codingair.warpsystem.spigot.transfer.spigot;
 
 import de.codingair.packetmanagement.packets.Packet;
+import de.codingair.packetmanagement.packets.RequestPacket;
+import de.codingair.packetmanagement.packets.ResponsePacket;
 import de.codingair.packetmanagement.variants.OneWayDataHandler;
 import de.codingair.warpsystem.base.transfer.packets.utils.PacketType;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class SpigotHandler extends OneWayDataHandler<Player> {
     public SpigotHandler(WarpSystem plugin) {
@@ -32,6 +34,10 @@ public class SpigotHandler extends OneWayDataHandler<Player> {
 
     public void send(@NotNull Packet packet) {
         super.send(packet, null);
+    }
+
+    public <A extends ResponsePacket> CompletableFuture<A> send(@NotNull RequestPacket<A> packet) {
+        return super.send(packet, null);
     }
 
     private Player getAny() {

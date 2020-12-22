@@ -1,6 +1,7 @@
 package de.codingair.warpsystem.bungee.features.randomtp;
 
 import de.codingair.codingapi.bungeecord.files.ConfigFile;
+import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.features.FeatureType;
 import de.codingair.warpsystem.base.transfer.packets.spigot.QueueRTPUsagePacket;
@@ -13,9 +14,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class RandomTPManager implements Manager {
-    private HashMap<String, List<String>> worlds = new HashMap<>();
+    private final HashMap<String, List<String>> worlds = new HashMap<>();
     private ConfigFile file;
-    private HashMap<String, List<UUID>> queuedEntries = new HashMap<>();
+    private final HashMap<String, List<UUID>> queuedEntries = new HashMap<>();
 
     public static RandomTPManager getInstance() {
         return WarpSystem.getInstance().getDataManager().getManager(FeatureType.RANDOM_TP);
@@ -52,9 +53,7 @@ public class RandomTPManager implements Manager {
         }
         if(!loader) WarpSystem.log("    ...got " + size + " registered random tp world(s)");
 
-        RandomTPListener l = new RandomTPListener();
-        WarpSystem.getInstance().getDataHandler().register(l);
-        WarpSystem.proxy().getPluginManager().registerListener(WarpSystem.getInstance(), l);
+        WarpSystem.proxy().getPluginManager().registerListener(WarpSystem.getInstance(), new RandomTPListener());
         return true;
     }
 
@@ -110,7 +109,7 @@ public class RandomTPManager implements Manager {
     public void updateQueue(ServerInfo info) {
         List<UUID> l = queuedEntries.remove(info.getName());
         if(l != null && !l.isEmpty()) {
-            WarpSystem.getInstance().getDataHandler().send(new QueueRTPUsagePacket(l), info);
+            WarpSystem.getDataHandler().send(new QueueRTPUsagePacket(l), info, Direction.DOWN);
         }
     }
 

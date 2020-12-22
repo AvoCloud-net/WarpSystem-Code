@@ -2,6 +2,7 @@ package de.codingair.warpsystem.base.transfer.packets.spigot;
 
 import de.codingair.packetmanagement.packets.RequestPacket;
 import de.codingair.packetmanagement.packets.impl.StringPacket;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -13,7 +14,7 @@ public class RequestFullNamePacket implements RequestPacket<StringPacket> {
     public RequestFullNamePacket() {
     }
 
-    public RequestFullNamePacket(String name) {
+    public RequestFullNamePacket(@NotNull String name) {
         this.name = name;
     }
 

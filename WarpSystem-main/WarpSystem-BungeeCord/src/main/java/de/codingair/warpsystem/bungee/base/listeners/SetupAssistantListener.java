@@ -1,11 +1,9 @@
 package de.codingair.warpsystem.bungee.base.listeners;
 
+import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.warpsystem.base.transfer.packets.bungee.SetupAssistantStorePacket;
 import de.codingair.warpsystem.base.transfer.packets.bungee.ToggleSetupAssistantPacket;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.base.transfer.packets.utils.Packet;
-import de.codingair.warpsystem.base.transfer.packets.utils.PacketType;
-import de.codingair.warpsystem.base.transfer.utils.PacketListener;
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
@@ -16,10 +14,35 @@ import net.md_5.bungee.protocol.packet.Chat;
 
 import java.lang.reflect.Field;
 
-public class SetupAssistantListener extends PacketListener implements Listener {
+public class SetupAssistantListener implements Listener {
     private ProxiedPlayer editing = null;
     private String message = null;
     private Connection.Unsafe backup = null;
+
+    public SetupAssistantListener() {
+        WarpSystem.getDataHandler().registerHandler(ToggleSetupAssistantPacket.class, (packet, proxy, connection) -> {
+            String name = packet.getName();
+            if(name == null) {
+                if(editing instanceof ProxiedPlayer) {
+                    try {
+                        backup(editing);
+                    } catch(NoSuchFieldException | IllegalAccessException | ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                editing = null;
+            } else editing = WarpSystem.proxy().getPlayer(name);
+
+            if(editing instanceof ProxiedPlayer) {
+                try {
+                    inject(editing);
+                } catch(NoSuchFieldException | IllegalAccessException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
     @EventHandler(priority = -99)
     public void onChatRemove(ChatEvent e) {
@@ -68,7 +91,7 @@ public class SetupAssistantListener extends PacketListener implements Listener {
                 //block every bungee initiated chat message > queue
                 Chat chat = (Chat) definedPacket;
                 if(!chat.getMessage().isEmpty())
-                    WarpSystem.getInstance().getDataHandler().send(new SetupAssistantStorePacket(chat.getMessage()), c.getServer().getInfo());
+                    WarpSystem.getDataHandler().send(new SetupAssistantStorePacket(chat.getMessage()), c.getServer().getInfo(), Direction.DOWN);
                 return;
             }
 
@@ -84,36 +107,5 @@ public class SetupAssistantListener extends PacketListener implements Listener {
         unsafe.setAccessible(true);
         unsafe.set(c, backup);
         backup = null;
-    }
-
-    @Override
-    public void onReceive(Packet packet, String extra) {
-        if(packet.getType() == PacketType.ToggleSetupAssistantPacket) {
-            String name = ((ToggleSetupAssistantPacket) packet).getName();
-            if(name == null) {
-                if(editing instanceof ProxiedPlayer) {
-                    try {
-                        backup(editing);
-                    } catch(NoSuchFieldException | IllegalAccessException | ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                editing = null;
-            } else editing = WarpSystem.proxy().getPlayer(name);
-
-            if(editing instanceof ProxiedPlayer) {
-                try {
-                    inject(editing);
-                } catch(NoSuchFieldException | IllegalAccessException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    @Override
-    public boolean onSend(Packet packet) {
-        return false;
     }
 }

@@ -53,7 +53,6 @@ public class SpawnManager implements Manager {
 
         SpawnListener listener = new SpawnListener();
         Bukkit.getPluginManager().registerEvents(listener, WarpSystem.getInstance());
-        WarpSystem.getInstance().getDataHandler().register(listener);
 
         new CSetSpawn().register();
         new CSpawn().register();
@@ -110,7 +109,7 @@ public class SpawnManager implements Manager {
             this.spawnServer = spawn;
             this.respawnServer = respawn;
 
-            WarpSystem.getInstance().getDataHandler().send(null, new SendGlobalSpawnOptionsPacket(spawn, respawn));
+            WarpSystem.getDataHandler().send(new SendGlobalSpawnOptionsPacket(spawn, respawn));
         }
     }
 

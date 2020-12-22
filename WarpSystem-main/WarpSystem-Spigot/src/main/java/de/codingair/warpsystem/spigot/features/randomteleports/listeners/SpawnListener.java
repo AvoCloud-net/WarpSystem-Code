@@ -9,9 +9,6 @@ import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.Location;
 import de.codingair.warpsystem.base.transfer.packets.spigot.QueueRTPUsagePacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RandomTPPacket;
-import de.codingair.warpsystem.base.transfer.packets.utils.Packet;
-import de.codingair.warpsystem.base.transfer.packets.utils.PacketType;
-import de.codingair.warpsystem.base.transfer.utils.PacketListener;
 import de.codingair.warpsystem.spigot.api.events.PlayerFinalJoinEvent;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.language.Lang;
@@ -35,7 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class SpawnListener extends PacketListener implements Listener {
+public class SpawnListener implements Listener {
     private static final String PACKET_READER_NAME = "RTP_LISTENER";
     private final List<Class<?>> forwarding = new ArrayList<>();
     private final HashMap<String, List<Object>> packetCache = new HashMap<>();
@@ -60,6 +57,16 @@ public class SpawnListener extends PacketListener implements Listener {
             chunkPacket = IReflection.getSaveClass(IReflection.ServerPacket.MINECRAFT_PACKAGE, "PacketPlayOutMapChunk");
         } catch(ClassNotFoundException ignored) {
         }
+
+        WarpSystem.getDataHandler().registerHandler(RandomTPPacket.class, (packet, proxy, connection) -> {
+            World w = Bukkit.getWorld(packet.getWorld());
+
+            Player player = Bukkit.getPlayer(packet.getPlayer());
+            TeleportInfo teleportInfo = new TeleportInfo(w, packet.getServer(), packet.isByOther());
+
+            if(player == null) teleporting.put(packet.getPlayer(), teleportInfo);
+            else triggerRTP(player, teleportInfo);
+        });
     }
 
     @EventHandler
@@ -91,7 +98,7 @@ public class SpawnListener extends PacketListener implements Listener {
                         clearCache(player, true);
                         player.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_No_Location_Found"));
                     } else {
-                        WarpSystem.getInstance().getDataHandler().send(player, new QueueRTPUsagePacket(WarpSystem.getInstance().getUUIDManager().get(player), teleportInfo.getServer()));
+                        WarpSystem.getDataHandler().send(new QueueRTPUsagePacket(WarpSystem.getInstance().getUUIDManager().get(player), teleportInfo.getServer()), player);
                         if(!teleportInfo.isByOther()) WarpSystem.cooldown().register(player, Origin.RandomTP);
 
                         org.bukkit.Location l = player.getLocation();
@@ -215,25 +222,6 @@ public class SpawnListener extends PacketListener implements Listener {
 
         l.clear();
         return found;
-    }
-
-    @Override
-    public void onReceive(Packet packet, String extra) {
-        if(packet.getType() == PacketType.RandomTPPacket) {
-            RandomTPPacket p = (RandomTPPacket) packet;
-            World w = Bukkit.getWorld(p.getWorld());
-
-            Player player = Bukkit.getPlayer(p.getPlayer());
-            TeleportInfo teleportInfo = new TeleportInfo(w, p.getServer(), p.isByOther());
-
-            if(player == null) teleporting.put(p.getPlayer(), teleportInfo);
-            else triggerRTP(player, teleportInfo);
-        }
-    }
-
-    @Override
-    public boolean onSend(Packet packet) {
-        return false;
     }
 
     private static class TeleportInfo {

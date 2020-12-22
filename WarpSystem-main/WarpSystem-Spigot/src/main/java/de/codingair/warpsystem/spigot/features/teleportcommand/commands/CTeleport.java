@@ -2,7 +2,6 @@ package de.codingair.warpsystem.spigot.features.teleportcommand.commands;
 
 import de.codingair.codingapi.server.commands.builder.BaseComponent;
 import de.codingair.codingapi.server.commands.builder.CommandComponent;
-import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.warpsystem.base.features.TeleportTabCompleteKeys;
 import de.codingair.warpsystem.base.transfer.packets.spigot.PrepareTeleportPacket;
@@ -16,7 +15,6 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.
 import de.codingair.warpsystem.spigot.features.teleportcommand.TeleportCommandManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -24,7 +22,6 @@ import org.bukkit.entity.Player;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class CTeleport extends WSCommandBuilder {
     public CTeleport() {
@@ -143,7 +140,7 @@ public class CTeleport extends WSCommandBuilder {
 
             if(commandSender instanceof Player) {
                 Player p = (Player) commandSender;
-                Block b = p.getTargetBlock((Set<Material>) null, 10);
+                Block b = p.getTargetBlock(null, 10);
                 if(b.getType() == XMaterial.COMMAND_BLOCK.parseMaterial()) {
                     return new ArrayList<>();
                 }
@@ -199,17 +196,15 @@ public class CTeleport extends WSCommandBuilder {
 
         if(playerP == null) {
             //try on proxy
-            if(WarpSystem.getInstance().isOnBungeeCord() && TeleportCommandManager.getInstance().isBungeeCord()) {
-                WarpSystem.getInstance().getDataHandler().send(gateP, new PrepareTeleportPacket(new Callback<Long>() {
-                    @Override
-                    public void accept(Long result) {
-                        int handled = (int) (result >> 32);
-                        int sent = result.intValue();
+            if(WarpSystem.getInstance().isOnBungeeCord() && TeleportCommandManager.getInstance().isProxy()) {
+                WarpSystem.getDataHandler().send(new PrepareTeleportPacket(gate, player, x, y, z), gateP).thenAccept(packet -> {
+                    long result = packet.a();
+                    int handled = (int) (result >> 32);
+                    int sent = (int) result;
 
-                        if(handled == 0) gateP.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
-                        else if(sent == 0) gateP.sendMessage(Lang.getPrefix() + Lang.get("Teleport_denied").replace("%PLAYER%", player));
-                    }
-                }, gate, player, x, y, z));
+                    if(handled == 0) gateP.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
+                    else if(sent == 0) gateP.sendMessage(Lang.getPrefix() + Lang.get("Teleport_denied").replace("%PLAYER%", player));
+                });
             } else gateP.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
             return;
         }
@@ -243,17 +238,15 @@ public class CTeleport extends WSCommandBuilder {
 
         if(playerP == null || targetP == null) {
             //try on proxy
-            if(WarpSystem.getInstance().isOnBungeeCord() && TeleportCommandManager.getInstance().isBungeeCord()) {
-                WarpSystem.getInstance().getDataHandler().send(gateP, new PrepareTeleportPacket(new Callback<Long>() {
-                    @Override
-                    public void accept(Long result) {
-                        int handled = (int) (result >> 32);
-                        int sent = result.intValue();
+            if(WarpSystem.getInstance().isOnBungeeCord() && TeleportCommandManager.getInstance().isProxy()) {
+                WarpSystem.getDataHandler().send(new PrepareTeleportPacket(gate, player, target), gateP).thenAccept(packet -> {
+                    long result = packet.a();
+                    int handled = (int) (result >> 32);
+                    int sent = (int) result;
 
-                        if(handled == 0) gateP.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
-                        else if(sent == 0) gateP.sendMessage(Lang.getPrefix() + Lang.get("Teleport_denied").replace("%PLAYER%", player));
-                    }
-                }, gate, player, target));
+                    if(handled == 0) gateP.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
+                    else if(sent == 0) gateP.sendMessage(Lang.getPrefix() + Lang.get("Teleport_denied").replace("%PLAYER%", player));
+                });
             } else gateP.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
             return;
         }

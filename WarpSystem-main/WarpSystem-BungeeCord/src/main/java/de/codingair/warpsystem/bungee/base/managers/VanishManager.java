@@ -1,11 +1,8 @@
 package de.codingair.warpsystem.bungee.base.managers;
 
+import de.codingair.warpsystem.base.transfer.packets.bungee.PacketVanishInfo;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.utils.ServerInitializeEvent;
-import de.codingair.warpsystem.base.transfer.packets.bungee.PacketVanishInfo;
-import de.codingair.warpsystem.base.transfer.packets.utils.Packet;
-import de.codingair.warpsystem.base.transfer.packets.utils.PacketType;
-import de.codingair.warpsystem.base.transfer.utils.PacketListener;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ServerSwitchEvent;
@@ -15,22 +12,15 @@ import net.md_5.bungee.event.EventHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VanishManager extends PacketListener implements Listener {
+public class VanishManager implements Listener {
     private final List<String> vanished = new ArrayList<>();
 
-    @Override
-    public void onReceive(Packet packet, String extra) {
-        if(packet.getType() == PacketType.PacketVanishInfo) {
-            PacketVanishInfo p = (PacketVanishInfo) packet;
-            if(p.isVanished()) {
-                if(!vanished.contains(p.getPlayer())) vanished.add(p.getPlayer().toLowerCase());
-            } else vanished.remove(p.getPlayer());
-        }
-    }
-
-    @Override
-    public boolean onSend(Packet packet) {
-        return false;
+    public VanishManager() {
+        WarpSystem.getDataHandler().registerHandler(PacketVanishInfo.class, (packet, proxy, connection) -> {
+            if(packet.isVanished()) {
+                if(!vanished.contains(packet.getPlayer())) vanished.add(packet.getPlayer().toLowerCase());
+            } else vanished.remove(packet.getPlayer());
+        });
     }
 
     @EventHandler

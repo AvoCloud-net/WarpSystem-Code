@@ -1,15 +1,16 @@
 package de.codingair.warpsystem.bungee.base.managers;
 
-import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
-import de.codingair.warpsystem.base.features.cooldown.Cooldown;
-import de.codingair.warpsystem.base.transfer.packets.utils.Packet;
-import de.codingair.warpsystem.base.transfer.packets.utils.PacketType;
-import de.codingair.warpsystem.base.transfer.utils.PacketListener;
 import de.codingair.codingapi.bungeecord.files.ConfigFile;
 import de.codingair.codingapi.tools.io.JSON.BungeeJSON;
+import de.codingair.packetmanagement.utils.Direction;
+import de.codingair.warpsystem.base.features.cooldown.Cooldown;
+import de.codingair.warpsystem.base.features.cooldown.ICooldownManager;
+import de.codingair.warpsystem.base.transfer.handlers.CooldownDataPacketHandler;
+import de.codingair.warpsystem.base.transfer.handlers.CooldownPacketHandler;
 import de.codingair.warpsystem.base.transfer.packets.spigot.CooldownDataPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.CooldownPacket;
+import de.codingair.warpsystem.bungee.base.WarpSystem;
+import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.config.Configuration;
@@ -17,10 +18,15 @@ import net.md_5.bungee.event.EventHandler;
 
 import java.util.*;
 
-public class CooldownManager extends PacketListener implements Listener {
+public class CooldownManager implements ICooldownManager, Listener {
     //expired cooldown will be removed on access (get, save)
     private final HashMap<UUID, List<Cooldown>> cache = new HashMap<>();
     private ConfigFile file;
+
+    public CooldownManager() {
+        WarpSystem.getDataHandler().registerHandler(CooldownDataPacket.class, new CooldownDataPacketHandler(this));
+        WarpSystem.getDataHandler().registerHandler(CooldownPacket.class, new CooldownPacketHandler(this));
+    }
 
     public void load() {
         file = WarpSystem.getInstance().getFileManager().loadFile("Cooldown", "/");
@@ -41,7 +47,7 @@ public class CooldownManager extends PacketListener implements Listener {
                                 Cooldown cooldown = new Cooldown(id);
                                 BungeeJSON json = new BungeeJSON((Map<?, ?>) s);
                                 cooldown.read(json, time);
-                                add(cooldown);
+                                addCooldown(cooldown);
                             } catch(Exception e) {
                                 e.printStackTrace();
                             }
@@ -82,14 +88,14 @@ public class CooldownManager extends PacketListener implements Listener {
         file.save();
     }
 
-    private void add(Cooldown cooldown) {
+    public void addCooldown(Cooldown cooldown) {
         if(cooldown.getRemainingTime() != 0) cache.computeIfAbsent(cooldown.getPlayer(), k -> new ArrayList<>()).add(cooldown);
     }
 
     @EventHandler
     public void onInit(ServerProvideOptionsEvent e) {
         if(!e.getOptions().sameVersion()) return;
-        cache.forEach(((uuid, data) -> WarpSystem.getInstance().getDataHandler().send(new CooldownDataPacket(data.toArray(new Cooldown[0])), e.getInfo())));
+        cache.forEach(((uuid, data) -> WarpSystem.getDataHandler().send(new CooldownDataPacket(data.toArray(new Cooldown[0])), e.getInfo(), Direction.DOWN)));
     }
 
     @EventHandler(priority = -64)
@@ -97,26 +103,8 @@ public class CooldownManager extends PacketListener implements Listener {
         if(WarpSystem.getInstance().getServerManager().isOnline(e.getServer().getInfo())) {
             List<Cooldown> data = cache.get(e.getPlayer().getUniqueId());
             if(data != null) {
-                WarpSystem.getInstance().getDataHandler().send(new CooldownDataPacket(data.toArray(new Cooldown[0])), e.getServer().getInfo());
+                WarpSystem.getDataHandler().send(new CooldownDataPacket(data.toArray(new Cooldown[0])), e.getServer().getInfo(), Direction.DOWN);
             }
         }
-    }
-
-    @Override
-    public void onReceive(Packet packet, String extra) {
-        if(packet.getType() == PacketType.CooldownPacket) {
-            CooldownPacket p = (CooldownPacket) packet;
-            add(p.getCooldown());
-        } else if(packet.getType() == PacketType.CooldownDataPacket) {
-            CooldownDataPacket p = (CooldownDataPacket) packet;
-            for(Cooldown cooldown : p.getCooldown()) {
-                add(cooldown);
-            }
-        }
-    }
-
-    @Override
-    public boolean onSend(Packet packet) {
-        return false;
     }
 }

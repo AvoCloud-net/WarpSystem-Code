@@ -5,6 +5,8 @@ import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.features.cooldown.Cooldown;
 import de.codingair.warpsystem.base.features.cooldown.ICooldownManager;
 import de.codingair.warpsystem.base.transfer.packets.spigot.CooldownDataPacket;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CooldownDataPacketHandler implements PacketHandler<CooldownDataPacket> {
     private final ICooldownManager manager;
@@ -14,7 +16,7 @@ public class CooldownDataPacketHandler implements PacketHandler<CooldownDataPack
     }
 
     @Override
-    public void process(CooldownDataPacket packet, Proxy proxy) {
+    public void process(@NotNull CooldownDataPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
         for(Cooldown c : packet.getCooldown()) {
             manager.addCooldown(c);
         }

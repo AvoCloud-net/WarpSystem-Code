@@ -1,11 +1,12 @@
 package de.codingair.warpsystem.bungee.features.spawn.managers;
 
 import de.codingair.codingapi.bungeecord.files.ConfigFile;
-import de.codingair.warpsystem.bungee.features.spawn.listeners.ServerListener;
-import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.bungee.features.FeatureType;
+import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.warpsystem.base.transfer.packets.general.SendGlobalSpawnOptionsPacket;
 import de.codingair.warpsystem.base.utils.Manager;
+import de.codingair.warpsystem.bungee.base.WarpSystem;
+import de.codingair.warpsystem.bungee.features.FeatureType;
+import de.codingair.warpsystem.bungee.features.spawn.listeners.ServerListener;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import java.util.Objects;
@@ -24,9 +25,7 @@ public class SpawnManager implements Manager {
         this.spawn = file.getConfig().getString("WarpSystem.GlobalSpawnOptions.Spawn", null);
         this.respawn = file.getConfig().getString("WarpSystem.GlobalSpawnOptions.Respawn", null);
 
-        ServerListener listener = new ServerListener();
-        WarpSystem.proxy().getPluginManager().registerListener(WarpSystem.getInstance(), listener);
-        WarpSystem.getInstance().getDataHandler().register(listener);
+        WarpSystem.proxy().getPluginManager().registerListener(WarpSystem.getInstance(), new ServerListener());
         return true;
     }
 
@@ -55,7 +54,7 @@ public class SpawnManager implements Manager {
     public void synchronize(ServerInfo except) {
         WarpSystem.getInstance().getServerManager().getOnlineServer().forEach(serverInfo ->  {
             if(serverInfo.equals(except)) return;
-            WarpSystem.getInstance().getDataHandler().send(getInfoPacket(), serverInfo);
+            WarpSystem.getDataHandler().send(getInfoPacket(), serverInfo, Direction.DOWN);
         });
     }
 

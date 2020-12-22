@@ -2,9 +2,6 @@ package de.codingair.warpsystem.spigot.features.spawn.listeners;
 
 import de.codingair.warpsystem.base.transfer.packets.general.SendGlobalSpawnOptionsPacket;
 import de.codingair.warpsystem.base.transfer.packets.general.TeleportSpawnPacket;
-import de.codingair.warpsystem.base.transfer.packets.utils.Packet;
-import de.codingair.warpsystem.base.transfer.packets.utils.PacketType;
-import de.codingair.warpsystem.base.transfer.utils.PacketListener;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.listeners.TeleportListener;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
@@ -18,7 +15,23 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
-public class SpawnListener extends PacketListener implements Listener {
+public class SpawnListener implements Listener {
+    public SpawnListener() {
+        WarpSystem.getDataHandler().registerHandler(SendGlobalSpawnOptionsPacket.class, (packet, proxy, connection) -> SpawnManager.getInstance().applyGlobalOptions(packet.getSpawn(), packet.getRespawn()));
+
+        WarpSystem.getDataHandler().registerHandler(TeleportSpawnPacket.class, (packet, proxy, connection) -> {
+            Spawn spawn = SpawnManager.getInstance().getSpawn();
+
+            if(spawn != null) {
+                TeleportOptions options = new TeleportOptions();
+                spawn.prepareTeleportOptions(packet.getPlayer(), options);
+                if(packet.isRespawn()) options.setMessage(null);
+
+                TeleportListener.setSpawnPositionOrTeleport(packet.getPlayer(), options);
+            }
+        });
+    }
+
     @EventHandler(priority = EventPriority.HIGH)
     public void onSpawn(PlayerSpawnLocationEvent e) {
         Spawn spawn = SpawnManager.getInstance().getSpawn();
@@ -38,7 +51,7 @@ public class SpawnListener extends PacketListener implements Listener {
         if(WarpSystem.getInstance().isOnBungeeCord()) {
             String respawn = SpawnManager.getInstance().getRespawnServer();
             if(respawn != null && !respawn.equals(WarpSystem.getInstance().getCurrentServer())) {
-                Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> WarpSystem.getInstance().getDataHandler().send(e.getPlayer(), new TeleportSpawnPacket(e.getPlayer().getName(), true)), 2L);
+                Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> WarpSystem.getDataHandler().send(new TeleportSpawnPacket(e.getPlayer().getName(), true), e.getPlayer()), 2L);
                 return;
             }
         }
@@ -48,31 +61,5 @@ public class SpawnListener extends PacketListener implements Listener {
             Location l = spawn.getLocation();
             if(l != null && l.getWorld() != null) e.setRespawnLocation(spawn.getLocation());
         }
-    }
-
-    @Override
-    public void onReceive(Packet packet, String extra) {
-        if(packet.getType() == PacketType.SendGlobalSpawnOptionsPacket) {
-            SendGlobalSpawnOptionsPacket p = (SendGlobalSpawnOptionsPacket) packet;
-
-            SpawnManager.getInstance().applyGlobalOptions(p.getSpawn(), p.getRespawn());
-        } else if(packet.getType() == PacketType.TeleportSpawnPacket) {
-            TeleportSpawnPacket p = (TeleportSpawnPacket) packet;
-
-            Spawn spawn = SpawnManager.getInstance().getSpawn();
-
-            if(spawn != null) {
-                TeleportOptions options = new TeleportOptions();
-                spawn.prepareTeleportOptions(p.getPlayer(), options);
-                if(p.isRespawn()) options.setMessage(null);
-
-                TeleportListener.setSpawnPositionOrTeleport(p.getPlayer(), options);
-            }
-        }
-    }
-
-    @Override
-    public boolean onSend(Packet packet) {
-        return false;
     }
 }

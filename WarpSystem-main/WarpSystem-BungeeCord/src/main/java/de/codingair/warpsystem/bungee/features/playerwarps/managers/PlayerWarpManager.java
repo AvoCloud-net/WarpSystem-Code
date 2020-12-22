@@ -3,13 +3,14 @@ package de.codingair.warpsystem.bungee.features.playerwarps.managers;
 import de.codingair.codingapi.bungeecord.files.ConfigFile;
 import de.codingair.codingapi.tools.io.JSON.BungeeJSON;
 import de.codingair.codingapi.tools.io.lib.JSONArray;
-import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.bungee.features.FeatureType;
+import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.warpsystem.base.transfer.packets.bungee.SendPlayerWarpOptionsPacket;
 import de.codingair.warpsystem.base.transfer.packets.general.DeletePlayerWarpPacket;
-import de.codingair.warpsystem.base.utils.Manager;
-import de.codingair.warpsystem.bungee.features.playerwarps.listeners.PlayerWarpListener;
 import de.codingair.warpsystem.base.transfer.packets.spigot.utils.PlayerWarpData;
+import de.codingair.warpsystem.base.utils.Manager;
+import de.codingair.warpsystem.bungee.base.WarpSystem;
+import de.codingair.warpsystem.bungee.features.FeatureType;
+import de.codingair.warpsystem.bungee.features.playerwarps.listeners.PlayerWarpListener;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -64,13 +65,10 @@ public class PlayerWarpManager implements Manager {
             }
         }
 
-        if(listener == null) {
-            WarpSystem.getInstance().getDataHandler().register(listener = new PlayerWarpListener());
-            WarpSystem.proxy().getPluginManager().registerListener(WarpSystem.getInstance(), listener);
-        }
+        if(listener == null) WarpSystem.proxy().getPluginManager().registerListener(WarpSystem.getInstance(), listener = new PlayerWarpListener());
 
         SendPlayerWarpOptionsPacket packet = new SendPlayerWarpOptionsPacket(inactiveTime);
-        interactWithServers(server -> WarpSystem.getInstance().getDataHandler().send(packet, server));
+        interactWithServers(server -> WarpSystem.getDataHandler().send(packet, server, Direction.DOWN));
 
         runScheduler();
         if(!loader) WarpSystem.log("    ...got " + size + " PlayerWarp(s)");
@@ -249,7 +247,7 @@ public class PlayerWarpManager implements Manager {
 
         if(informServers) {
             DeletePlayerWarpPacket packet = new DeletePlayerWarpPacket(warp.getName(), warp.getOwner().getId());
-            interactWithServers(server -> WarpSystem.getInstance().getDataHandler().send(packet, server));
+            interactWithServers(server -> WarpSystem.getDataHandler().send(packet, server, Direction.DOWN));
         }
 
         return result;

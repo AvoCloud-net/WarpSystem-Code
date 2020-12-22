@@ -1,6 +1,5 @@
 package de.codingair.warpsystem.base.transfer.packets.general;
 
-import de.codingair.codingapi.tools.Callback;
 import de.codingair.packetmanagement.packets.RequestPacket;
 import de.codingair.packetmanagement.packets.impl.IntegerPacket;
 

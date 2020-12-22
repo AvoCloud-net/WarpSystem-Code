@@ -11,6 +11,8 @@ import de.codingair.warpsystem.spigot.base.setupassistant.SetupAssistantManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -50,7 +52,7 @@ public class SetupAssistantListener implements PacketHandler<SetupAssistantStore
     }
 
     @Override
-    public void process(SetupAssistantStorePacket packet, Proxy proxy) {
+    public void process(@NotNull SetupAssistantStorePacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
         String message = packet.getMessage();
         SetupAssistant assistant = SetupAssistantManager.getInstance().getAssistant();
         if(assistant != null) assistant.queue(buildComponent(message));

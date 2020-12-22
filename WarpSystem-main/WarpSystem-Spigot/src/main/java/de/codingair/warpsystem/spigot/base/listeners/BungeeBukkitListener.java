@@ -1,14 +1,10 @@
 package de.codingair.warpsystem.spigot.base.listeners;
 
 import de.codingair.codingapi.tools.time.TimeMap;
-import de.codingair.packetmanagement.handlers.PacketHandler;
-import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.bungee.InitialPacket;
 import de.codingair.warpsystem.base.transfer.packets.bungee.PrepareLoginMessagePacket;
-import de.codingair.warpsystem.base.transfer.packets.general.PrepareCoordinationTeleportPacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.transfer.handlers.InitialPacketHandler;
-import de.codingair.warpsystem.spigot.transfer.handlers.PrepareCoordinationTeleportPacketHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,8 +17,7 @@ public class BungeeBukkitListener implements Listener {
 
     public BungeeBukkitListener() {
         WarpSystem.getDataHandler().registerHandler(InitialPacket.class, new InitialPacketHandler(this));
-        WarpSystem.getDataHandler().registerHandler(PrepareCoordinationTeleportPacket.class, new PrepareCoordinationTeleportPacketHandler());
-        WarpSystem.getDataHandler().registerHandler(PrepareLoginMessagePacket.class, (packet, proxy) -> BungeeBukkitListener.this.process(packet));
+        WarpSystem.getDataHandler().registerHandler(PrepareLoginMessagePacket.class, (packet, proxy, connection) -> BungeeBukkitListener.this.process(packet));
     }
 
     @EventHandler

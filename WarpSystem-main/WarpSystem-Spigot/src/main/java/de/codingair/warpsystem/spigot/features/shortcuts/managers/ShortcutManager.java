@@ -16,7 +16,6 @@ import de.codingair.warpsystem.spigot.features.FeatureType;
 import de.codingair.warpsystem.spigot.features.shortcuts.commands.CShortcuts;
 import de.codingair.warpsystem.spigot.features.shortcuts.commands.ShortcutExecutor;
 import de.codingair.warpsystem.spigot.features.shortcuts.listeners.ShortcutListener;
-import de.codingair.warpsystem.spigot.features.shortcuts.listeners.ShortcutPacketListener;
 import de.codingair.warpsystem.spigot.features.shortcuts.utils.Shortcut;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -32,10 +31,9 @@ import java.util.Map;
 public class ShortcutManager implements Manager, BungeeFeature {
     private final List<Shortcut> shortcuts = new ArrayList<>();
     private final HashMap<Shortcut, ShortcutExecutor> executors = new HashMap<>();
-    private ShortcutPacketListener listener;
 
     public static ShortcutManager getInstance() {
-        return ((ShortcutManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.SHORTCUTS));
+        return WarpSystem.getInstance().getDataManager().getManager(FeatureType.SHORTCUTS);
     }
 
     @Override
@@ -198,15 +196,10 @@ public class ShortcutManager implements Manager, BungeeFeature {
 
     @Override
     public void onConnect() {
-        WarpSystem.getInstance().getDataHandler().register(listener = new ShortcutPacketListener());
     }
 
     @Override
     public void onDisconnect() {
-        if(listener != null) {
-            WarpSystem.getInstance().getDataHandler().unregister(listener);
-            listener = null;
-        }
     }
 
     public Shortcut getShortcut(String displayName) {

@@ -4,6 +4,8 @@ import de.codingair.packetmanagement.handlers.PacketHandler;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.bungee.SendJarPacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -73,7 +75,7 @@ public class JarReceiver implements PacketHandler<SendJarPacket> {
     }
 
     @Override
-    public void process(SendJarPacket packet, Proxy proxy) {
+    public void process(@NotNull SendJarPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
         receive(packet);
     }
 }
