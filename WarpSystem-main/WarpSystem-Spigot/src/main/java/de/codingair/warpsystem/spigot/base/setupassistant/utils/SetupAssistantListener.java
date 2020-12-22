@@ -3,10 +3,9 @@ package de.codingair.warpsystem.spigot.base.setupassistant.utils;
 import de.codingair.codingapi.server.reflections.IReflection;
 import de.codingair.codingapi.server.reflections.PacketUtils;
 import de.codingair.codingapi.server.specification.Version;
+import de.codingair.packetmanagement.handlers.PacketHandler;
+import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.bungee.SetupAssistantStorePacket;
-import de.codingair.warpsystem.base.transfer.packets.utils.Packet;
-import de.codingair.warpsystem.base.transfer.packets.utils.PacketType;
-import de.codingair.warpsystem.base.transfer.utils.PacketListener;
 import de.codingair.warpsystem.spigot.api.events.PlayerFinalJoinEvent;
 import de.codingair.warpsystem.spigot.base.setupassistant.SetupAssistantManager;
 import org.bukkit.event.EventHandler;
@@ -15,7 +14,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.UUID;
 
-public class SetupAssistantListener extends PacketListener implements Listener {
+public class SetupAssistantListener implements PacketHandler<SetupAssistantStorePacket>, Listener {
     private IReflection.ConstructorAccessor chatPacket = null;
     private Object type = null;
 
@@ -51,16 +50,9 @@ public class SetupAssistantListener extends PacketListener implements Listener {
     }
 
     @Override
-    public void onReceive(Packet packet, String extra) {
-        if(packet.getType() == PacketType.SetupAssistantStorePacket) {
-            String message = ((SetupAssistantStorePacket) packet).getMessage();
-            SetupAssistant assistant = SetupAssistantManager.getInstance().getAssistant();
-            if(assistant != null) assistant.queue(buildComponent(message));
-        }
-    }
-
-    @Override
-    public boolean onSend(Packet packet) {
-        return false;
+    public void process(SetupAssistantStorePacket packet, Proxy proxy) {
+        String message = packet.getMessage();
+        SetupAssistant assistant = SetupAssistantManager.getInstance().getAssistant();
+        if(assistant != null) assistant.queue(buildComponent(message));
     }
 }

@@ -1,5 +1,6 @@
 package de.codingair.warpsystem.base.transfer.packets.utils;
 
+import de.codingair.packetmanagement.packets.Packet;
 import de.codingair.warpsystem.base.transfer.packets.bungee.*;
 import de.codingair.warpsystem.base.transfer.packets.general.*;
 import de.codingair.warpsystem.base.transfer.packets.spigot.*;
@@ -27,8 +28,6 @@ public enum PacketType {
     UpdateGlobalWarpPacket(de.codingair.warpsystem.base.transfer.packets.bungee.UpdateGlobalWarpPacket.class),
     PerformCommandOnSpigotPacket(de.codingair.warpsystem.base.transfer.packets.bungee.PerformCommandOnSpigotPacket.class),
     PerformCommandOnBungeePacket(PerformCommandOnBungeePacket.class),
-    RequestUUIDPacket(RequestUUIDPacket.class),
-    SendUUIDPacket(de.codingair.warpsystem.base.transfer.packets.bungee.SendUUIDPacket.class),
     TeleportPlayerToPlayerPacket(TeleportPlayerToPlayerPacket.class),
     TeleportPlayerToCoordsPacket(TeleportPlayerToCoordsPacket.class),
     PrepareServerSwitchPacket(PrepareServerSwitchPacket.class),
@@ -60,20 +59,14 @@ public enum PacketType {
     ToggleSetupAssistantPacket(ToggleSetupAssistantPacket.class),
     SetupAssistantStorePacket(SetupAssistantStorePacket.class),
 
-    BooleanPacket(BooleanPacket.class),
-    IntegerPacket(IntegerPacket.class),
-    LongPacket(LongPacket.class),
-    StringPacket(StringPacket.class),
-
-    AnswerPacket(AnswerPacket.class),
     RequestFullNamePacket(RequestFullNamePacket.class),
 
     SendServerPropertiesPacket(SendServerPropertiesPacket.class),
     ;
 
-    private final Class<?> packet;
+    private final Class<? extends Packet> packet;
 
-    PacketType(Class<?> packet) {
+    PacketType(Class<? extends Packet> packet) {
         this.packet = packet;
     }
 
@@ -99,7 +92,7 @@ public enum PacketType {
         return ordinal();
     }
 
-    public Class<?> getPacket() {
+    public Class<? extends Packet> getPacket() {
         return packet;
     }
 }

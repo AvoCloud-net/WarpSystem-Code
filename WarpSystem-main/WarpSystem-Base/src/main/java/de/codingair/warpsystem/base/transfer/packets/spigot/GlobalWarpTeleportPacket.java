@@ -1,13 +1,13 @@
 package de.codingair.warpsystem.base.transfer.packets.spigot;
 
-import de.codingair.codingapi.tools.Callback;
-import de.codingair.warpsystem.base.transfer.packets.utils.RequestPacket;
+import de.codingair.packetmanagement.packets.RequestPacket;
+import de.codingair.packetmanagement.packets.impl.IntegerPacket;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class GlobalWarpTeleportPacket extends RequestPacket<Integer> {
+public class GlobalWarpTeleportPacket implements RequestPacket<IntegerPacket> {
     private String player;
     private String id;
     private String displayName;
@@ -19,8 +19,7 @@ public class GlobalWarpTeleportPacket extends RequestPacket<Integer> {
     public GlobalWarpTeleportPacket() {
     }
 
-    public GlobalWarpTeleportPacket(String player, String id, double randomOffsetX, double randomOffsetY, double randomOffsetZ, String displayName, String message, double costs, boolean keepRotation, boolean ignoreLimit, Callback<Integer> callback) {
-        super(callback);
+    public GlobalWarpTeleportPacket(String player, String id, double randomOffsetX, double randomOffsetY, double randomOffsetZ, String displayName, String message, double costs, boolean keepRotation, boolean ignoreLimit) {
         this.player = player;
         this.id = id;
 
@@ -56,8 +55,6 @@ public class GlobalWarpTeleportPacket extends RequestPacket<Integer> {
         if(randomOffsetY > 0) out.writeDouble(this.randomOffsetY);
         if(randomOffsetZ > 0) out.writeDouble(this.randomOffsetZ);
         if(message != null) out.writeUTF(this.message);
-
-        super.write(out);
     }
 
     @Override
@@ -75,8 +72,6 @@ public class GlobalWarpTeleportPacket extends RequestPacket<Integer> {
         if((options & (1 << 5)) != 0) this.message = in.readUTF();
         this.keepRotation = (options & (1 << 6)) != 0;
         this.ignoreLimit = (options & (1 << 7)) != 0;
-
-        super.read(in);
     }
 
     public String getPlayer() {

@@ -1,13 +1,13 @@
 package de.codingair.warpsystem.base.transfer.packets.spigot;
 
-import de.codingair.codingapi.tools.Callback;
-import de.codingair.warpsystem.base.transfer.packets.utils.RequestPacket;
+import de.codingair.packetmanagement.packets.RequestPacket;
+import de.codingair.packetmanagement.packets.impl.LongPacket;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class PrepareTeleportPacket extends RequestPacket<Long> {
+public class PrepareTeleportPacket implements RequestPacket<LongPacket> {
     private String sender, recipient, target;
     private double x, y, z;
 
@@ -15,15 +15,13 @@ public class PrepareTeleportPacket extends RequestPacket<Long> {
         recipient = null;
     }
 
-    public PrepareTeleportPacket(Callback<Long> callback, String sender, String recipient, String target) {
-        super(callback);
+    public PrepareTeleportPacket(String sender, String recipient, String target) {
         this.sender = sender;
         this.recipient = recipient;
         this.target = target;
     }
 
-    public PrepareTeleportPacket(Callback<Long> callback, String sender, String recipient, double x, double y, double z) {
-        super(callback);
+    public PrepareTeleportPacket(String sender, String recipient, double x, double y, double z) {
         this.sender = sender;
         this.recipient = recipient;
         this.x = x;
@@ -33,7 +31,6 @@ public class PrepareTeleportPacket extends RequestPacket<Long> {
 
     @Override
     public void write(DataOutputStream out) throws IOException {
-        super.write(out);
         byte options = (byte) (target == null ? 1 : 0);
 
         if(target != null) {
@@ -57,7 +54,6 @@ public class PrepareTeleportPacket extends RequestPacket<Long> {
 
     @Override
     public void read(DataInputStream in) throws IOException {
-        super.read(in);
         byte options = in.readByte();
 
         this.sender = in.readUTF();

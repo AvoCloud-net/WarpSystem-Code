@@ -1,21 +1,20 @@
 package de.codingair.warpsystem.base.transfer.packets.spigot;
 
-import de.codingair.codingapi.tools.Callback;
-import de.codingair.warpsystem.base.transfer.packets.utils.RequestPacket;
+import de.codingair.packetmanagement.packets.RequestPacket;
+import de.codingair.packetmanagement.packets.impl.BooleanPacket;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class RandomTPPacket extends RequestPacket<Boolean> {
+public class RandomTPPacket implements RequestPacket<BooleanPacket> {
     private String player, server, world;
     private boolean byOther;
 
     public RandomTPPacket() {
     }
 
-    public RandomTPPacket(Callback<Boolean> callback, String player, String server, String world, boolean byOther) {
-        super(callback);
+    public RandomTPPacket(String player, String server, String world, boolean byOther) {
         this.player = player;
         this.server = server;
         this.world = world;
@@ -24,7 +23,6 @@ public class RandomTPPacket extends RequestPacket<Boolean> {
 
     @Override
     public void write(DataOutputStream out) throws IOException {
-        super.write(out);
         byte options = (byte) (world != null ? 1 : 0);
 
         out.writeByte(options);
@@ -36,7 +34,6 @@ public class RandomTPPacket extends RequestPacket<Boolean> {
 
     @Override
     public void read(DataInputStream in) throws IOException {
-        super.read(in);
         byte options = in.readByte();
 
         this.player = in.readUTF();

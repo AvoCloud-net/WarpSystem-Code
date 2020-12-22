@@ -19,21 +19,19 @@ public class ServerAdapter extends DestinationAdapter {
             return false;
         }
 
-        WarpSystem.getInstance().getDataHandler().send(player, new PrepareServerSwitchPacket(player.getName(), id, message, player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Max_Players), new Callback<Integer>() {
-            @Override
-            public void accept(Integer result) {
-                if(callback != null) {
-                    if(result == 0) callback.accept(Result.SUCCESS);
-                    else if(result == 1) callback.accept(Result.SERVER_NOT_AVAILABLE);
-                    else if(result == 2) callback.accept(Result.ALREADY_ON_TARGET_SERVER);
-                    else if(result == 3) callback.accept(Result.SERVER_NOT_AVAILABLE);
-                    else if(result == 4) callback.accept(Result.ERROR);
-                    else if(result == 5) callback.accept(Result.TARGET_SERVER_IS_FULL);
-                }
-
-                if(result == 2) player.sendMessage(Lang.getPrefix() + Lang.get("Player_Is_Already_On_Target_Server"));
+        WarpSystem.getDataHandler().send(new PrepareServerSwitchPacket(player.getName(), id, message, player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Max_Players)), player).thenAccept(packet -> {
+            int result = packet.a();
+            if(callback != null) {
+                if(result == 0) callback.accept(Result.SUCCESS);
+                else if(result == 1) callback.accept(Result.SERVER_NOT_AVAILABLE);
+                else if(result == 2) callback.accept(Result.ALREADY_ON_TARGET_SERVER);
+                else if(result == 3) callback.accept(Result.SERVER_NOT_AVAILABLE);
+                else if(result == 4) callback.accept(Result.ERROR);
+                else if(result == 5) callback.accept(Result.TARGET_SERVER_IS_FULL);
             }
-        }));
+
+            if(result == 2) player.sendMessage(Lang.getPrefix() + Lang.get("Player_Is_Already_On_Target_Server"));
+        });
         return false;
     }
 

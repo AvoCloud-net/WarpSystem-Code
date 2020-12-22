@@ -2,7 +2,7 @@ package de.codingair.warpsystem.bungee.base.managers;
 
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
-import de.codingair.warpsystem.base.transfer.packets.spigot.utils.Cooldown;
+import de.codingair.warpsystem.base.features.cooldown.Cooldown;
 import de.codingair.warpsystem.base.transfer.packets.utils.Packet;
 import de.codingair.warpsystem.base.transfer.packets.utils.PacketType;
 import de.codingair.warpsystem.base.transfer.utils.PacketListener;

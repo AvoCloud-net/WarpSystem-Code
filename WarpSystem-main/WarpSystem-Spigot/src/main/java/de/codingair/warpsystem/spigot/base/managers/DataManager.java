@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataManager {
-    private List<Manager> managers = new ArrayList<>();
+    private final List<Manager> managers = new ArrayList<>();
 
     public DataManager() {
         for(FeatureType.Priority value : FeatureType.Priority.values()) {

@@ -1,20 +1,19 @@
 package de.codingair.warpsystem.base.transfer.packets.general;
 
-import de.codingair.codingapi.tools.Callback;
-import de.codingair.warpsystem.base.transfer.packets.utils.RequestPacket;
+import de.codingair.packetmanagement.packets.RequestPacket;
+import de.codingair.packetmanagement.packets.impl.IntegerPacket;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class StartTeleportToPlayerPacket extends RequestPacket<Integer> {
+public class StartTeleportToPlayerPacket implements RequestPacket<IntegerPacket> {
     private String player, to, toDisplayName, teleportRequestSender;
 
     public StartTeleportToPlayerPacket() {
     }
 
-    public StartTeleportToPlayerPacket(Callback<Integer> callback, String player, String to, String toDisplayName, String teleportRequestSender) {
-        super(callback);
+    public StartTeleportToPlayerPacket(String player, String to, String toDisplayName, String teleportRequestSender) {
         this.player = player;
         this.to = to;
         this.toDisplayName = toDisplayName;
@@ -23,7 +22,6 @@ public class StartTeleportToPlayerPacket extends RequestPacket<Integer> {
 
     @Override
     public void write(DataOutputStream out) throws IOException {
-        super.write(out);
         out.writeUTF(player);
         out.writeUTF(to);
         out.writeUTF(toDisplayName);
@@ -32,7 +30,6 @@ public class StartTeleportToPlayerPacket extends RequestPacket<Integer> {
 
     @Override
     public void read(DataInputStream in) throws IOException {
-        super.read(in);
         player = in.readUTF();
         to = in.readUTF();
         toDisplayName = in.readUTF();

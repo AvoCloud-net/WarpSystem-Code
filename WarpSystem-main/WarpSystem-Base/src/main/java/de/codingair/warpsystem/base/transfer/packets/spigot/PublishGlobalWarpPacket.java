@@ -1,28 +1,25 @@
 package de.codingair.warpsystem.base.transfer.packets.spigot;
 
-import de.codingair.codingapi.tools.Callback;
+import de.codingair.packetmanagement.packets.RequestPacket;
+import de.codingair.packetmanagement.packets.impl.BooleanPacket;
 import de.codingair.warpsystem.base.transfer.serializeable.SGlobalWarp;
-import de.codingair.warpsystem.base.transfer.packets.utils.RequestPacket;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class PublishGlobalWarpPacket extends RequestPacket<Boolean> {
+public class PublishGlobalWarpPacket implements RequestPacket<BooleanPacket> {
     public SGlobalWarp warp;
     private boolean overwrite = false;
 
     public PublishGlobalWarpPacket() {
-        super(null);
     }
 
-    public PublishGlobalWarpPacket(SGlobalWarp warp, Callback<Boolean> callback) {
-        super(callback);
+    public PublishGlobalWarpPacket(SGlobalWarp warp) {
         this.warp = warp;
     }
 
-    public PublishGlobalWarpPacket(SGlobalWarp warp, boolean overwrite, Callback<Boolean> callback) {
-        super(callback);
+    public PublishGlobalWarpPacket(SGlobalWarp warp, boolean overwrite) {
         this.warp = warp;
         this.overwrite = overwrite;
     }
@@ -31,7 +28,6 @@ public class PublishGlobalWarpPacket extends RequestPacket<Boolean> {
     public void write(DataOutputStream out) throws IOException {
         this.warp.write(out);
         out.writeBoolean(overwrite);
-        super.write(out);
     }
 
     @Override
@@ -39,7 +35,6 @@ public class PublishGlobalWarpPacket extends RequestPacket<Boolean> {
         this.warp = new SGlobalWarp();
         this.warp.read(in);
         this.overwrite = in.readBoolean();
-        super.read(in);
     }
 
     public boolean isOverwrite() {

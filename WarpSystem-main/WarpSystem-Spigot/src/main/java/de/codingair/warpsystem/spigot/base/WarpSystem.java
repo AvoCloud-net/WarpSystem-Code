@@ -9,6 +9,9 @@ import de.codingair.codingapi.server.specification.Type;
 import de.codingair.codingapi.server.specification.Version;
 import de.codingair.codingapi.tools.time.TimeFetcher;
 import de.codingair.codingapi.tools.time.Timer;
+import de.codingair.packetmanagement.utils.Proxy;
+import de.codingair.warpsystem.base.transfer.packets.bungee.SendJarPacket;
+import de.codingair.warpsystem.base.transfer.packets.bungee.SetupAssistantStorePacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RequestInitialPacket;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.api.PAPI;
@@ -51,7 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class WarpSystem extends JavaPlugin {
+public class WarpSystem extends JavaPlugin implements Proxy {
     public static final String PERMISSION_NOTIFY = "warpsystem.notify";
     public static final String PERMISSION_MODIFY = "warpsystem.modify";
     public static String PERMISSION_ADMIN = "warpsystem.admin"; //will be set after removing all non-final permission (if permissions are disabled)
@@ -209,7 +212,6 @@ public class WarpSystem extends JavaPlugin {
 
             //load cooldown list
             cooldownManager.load();
-            dataHandler.register(cooldownManager);
 
             //check permission before loading features
             checkPermissions();
@@ -243,7 +245,7 @@ public class WarpSystem extends JavaPlugin {
             Bukkit.getPluginManager().registerEvents(new CommandListener(), this);
 
             //register Jar receiver
-            dataHandler.register(new JarReceiver());
+            dataHandler.registerHandler(SendJarPacket.class, new JarReceiver());
 
             UUIDManager.UUIDListener uuidListener = uuidManager.listener();
             Bukkit.getPluginManager().registerEvents(uuidListener, this);
@@ -251,7 +253,7 @@ public class WarpSystem extends JavaPlugin {
             Bukkit.getPluginManager().registerEvents(new HeadListener(), this);
             SetupAssistantListener l = new SetupAssistantListener();
             Bukkit.getPluginManager().registerEvents(l, this);
-            dataHandler.register(l);
+            dataHandler.registerHandler(SetupAssistantStorePacket.class, l);
             getBungeeFeatureList().add(this.vanishManager);
 
             this.startAutoSaver();
@@ -270,9 +272,8 @@ public class WarpSystem extends JavaPlugin {
 
             this.ERROR = false;
 
-            this.dataHandler.onEnable();
-            this.dataHandler.send(null, new RequestInitialPacket());
-            this.dataHandler.register(this.packetListener = new BungeeBukkitListener());
+            this.dataHandler.send(new RequestInitialPacket());
+            this.packetListener = new BungeeBukkitListener();
             Bukkit.getPluginManager().registerEvents(this.packetListener, this);
 
             ConfigFile config = fileManager.getFile("Config");
@@ -395,8 +396,7 @@ public class WarpSystem extends JavaPlugin {
         this.bungeeFeatureList.forEach(BungeeFeature::onDisconnect);
         this.bungeeFeatureList.clear();
 
-        this.dataHandler.onDisable();
-        if(this.packetListener != null) this.dataHandler.unregister(this.packetListener);
+        this.dataHandler.flush();
 
         destroy();
     }
@@ -594,8 +594,8 @@ public class WarpSystem extends JavaPlugin {
         return old;
     }
 
-    public SpigotHandler getDataHandler() {
-        return dataHandler;
+    public static SpigotHandler getDataHandler() {
+        return getInstance().dataHandler;
     }
 
     public DataManager getDataManager() {

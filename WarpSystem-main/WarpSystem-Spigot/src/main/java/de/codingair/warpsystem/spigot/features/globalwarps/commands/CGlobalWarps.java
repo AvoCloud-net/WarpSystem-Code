@@ -86,42 +86,36 @@ public class CGlobalWarps extends WSCommandBuilder implements BungeeFeature {
                     return false;
                 }
 
-                ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).create(player, argument, player.getLocation(), new Callback<Boolean>() {
-                    @Override
-                    public void accept(Boolean created) {
-                        if(created) {
-                            player.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Created").replace("%GLOBAL_WARP%", argument));
-                        } else {
-                            String name = GlobalWarpManager.getInstance().getCaseCorrectlyName(argument);
-                            SimpleMessage simpleMessage = new SimpleMessage(Lang.getPrefix() + Lang.get("Warp_Confirm_Overwrite").replace("%WARP%", name), WarpSystem.getInstance());
+                ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).create(player, argument, player.getLocation()).thenAccept(booleanPacket -> {
+                    if(booleanPacket.getBoolean()) {
+                        player.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Created").replace("%GLOBAL_WARP%", argument));
+                    } else {
+                        String name = GlobalWarpManager.getInstance().getCaseCorrectlyName(argument);
+                        SimpleMessage simpleMessage = new SimpleMessage(Lang.getPrefix() + Lang.get("Warp_Confirm_Overwrite").replace("%WARP%", name), WarpSystem.getInstance());
 
-                            simpleMessage.replace("%YES%", new ChatButton(Lang.get("Warp_Confirm_Overwrite_Yes"), Lang.get("Click_Hover")) {
-                                @Override
-                                public void onClick(Player player) {
-                                    ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).updatePosition(player, name, player.getLocation(), new Callback<Boolean>() {
-                                        @Override
-                                        public void accept(Boolean overwritten) {
-                                            if(overwritten) {
-                                                sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_Overwritten"));
-                                            } else {
-                                                sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Not_Exists").replace("%GLOBAL_WARP%", args[1]));
-                                            }
-                                        }
-                                    });
-                                    simpleMessage.destroy();
-                                }
-                            });
+                        simpleMessage.replace("%YES%", new ChatButton(Lang.get("Warp_Confirm_Overwrite_Yes"), Lang.get("Click_Hover")) {
+                            @Override
+                            public void onClick(Player player) {
+                                ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).updatePosition(player, name, player.getLocation()).thenAccept(packet -> {
+                                    if(packet.getBoolean()) {
+                                        sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_Overwritten"));
+                                    } else {
+                                        sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Not_Exists").replace("%GLOBAL_WARP%", args[1]));
+                                    }
+                                });
+                                simpleMessage.destroy();
+                            }
+                        });
 
-                            simpleMessage.replace("%NO%", new ChatButton(Lang.get("Warp_Confirm_Overwrite_No"), Lang.get("Click_Hover")) {
-                                @Override
-                                public void onClick(Player player) {
-                                    sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_Not_Overwritten"));
-                                    simpleMessage.destroy();
-                                }
-                            });
+                        simpleMessage.replace("%NO%", new ChatButton(Lang.get("Warp_Confirm_Overwrite_No"), Lang.get("Click_Hover")) {
+                            @Override
+                            public void onClick(Player player) {
+                                sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_Not_Overwritten"));
+                                simpleMessage.destroy();
+                            }
+                        });
 
-                            simpleMessage.send((Player) sender);
-                        }
+                        simpleMessage.send((Player) sender);
                     }
                 });
                 return false;
@@ -135,14 +129,11 @@ public class CGlobalWarps extends WSCommandBuilder implements BungeeFeature {
                 String name = GlobalWarpManager.getInstance().getCaseCorrectlyName(args[1]);
 
                 if(name != null) {
-                    ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).updatePosition(player, name, player.getLocation(), new Callback<Boolean>() {
-                        @Override
-                        public void accept(Boolean overwritten) {
-                            if(overwritten) {
-                                sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_Overwritten"));
-                            } else {
-                                sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Not_Exists").replace("%GLOBAL_WARP%", args[1]));
-                            }
+                    ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).updatePosition(player, name, player.getLocation()).thenAccept(packet -> {
+                        if(packet.getBoolean()) {
+                            sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_Overwritten"));
+                        } else {
+                            sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Not_Exists").replace("%GLOBAL_WARP%", args[1]));
                         }
                     });
                 } else getComponent("create", null).runCommand(sender, args[1], args);
@@ -180,14 +171,11 @@ public class CGlobalWarps extends WSCommandBuilder implements BungeeFeature {
                             if(keep) {
                                 sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Deleted_Cancel").replace("%GLOBAL_WARP%", name));
                             } else {
-                                ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).delete((Player) sender, name, new Callback<Boolean>() {
-                                    @Override
-                                    public void accept(Boolean deleted) {
-                                        if(deleted) {
-                                            sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Deleted").replace("%GLOBAL_WARP%", name));
-                                        } else {
-                                            sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Not_Exists").replace("%GLOBAL_WARP%", argument));
-                                        }
+                                ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).delete((Player) sender, name).thenAccept(deleted -> {
+                                    if(deleted.getBoolean()) {
+                                        sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Deleted").replace("%GLOBAL_WARP%", name));
+                                    } else {
+                                        sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Not_Exists").replace("%GLOBAL_WARP%", argument));
                                     }
                                 });
                             }
@@ -206,14 +194,11 @@ public class CGlobalWarps extends WSCommandBuilder implements BungeeFeature {
                 String name = GlobalWarpManager.getInstance().getCaseCorrectlyName(args[1]);
 
                 if(name != null) {
-                    ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).delete(sender instanceof Player ? (Player) sender : null, name, new Callback<Boolean>() {
-                        @Override
-                        public void accept(Boolean deleted) {
-                            if(deleted) {
-                                sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Deleted").replace("%GLOBAL_WARP%", name));
-                            } else {
-                                sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Not_Exists").replace("%GLOBAL_WARP%", args[1]));
-                            }
+                    ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).delete(sender instanceof Player ? (Player) sender : null, name).thenAccept(deleted -> {
+                        if(deleted.getBoolean()) {
+                            sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Deleted").replace("%GLOBAL_WARP%", name));
+                        } else {
+                            sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Not_Exists").replace("%GLOBAL_WARP%", argument));
                         }
                     });
                 } else getComponent("delete", null).runCommand(sender, args[1], args);

@@ -1,13 +1,14 @@
 package de.codingair.warpsystem.base.transfer.packets.general;
 
 import de.codingair.codingapi.tools.Callback;
-import de.codingair.warpsystem.base.transfer.packets.utils.RequestPacket;
+import de.codingair.packetmanagement.packets.RequestPacket;
+import de.codingair.packetmanagement.packets.impl.IntegerPacket;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class PrepareCoordinationTeleportPacket extends RequestPacket<Integer> {
+public class PrepareCoordinationTeleportPacket implements RequestPacket<IntegerPacket> {
     public static final String NO_MESSAGE = "EMPTY";
     private String player, server, world, destinationName, message;
     private double x, y, z;
@@ -18,8 +19,7 @@ public class PrepareCoordinationTeleportPacket extends RequestPacket<Integer> {
     public PrepareCoordinationTeleportPacket() {
     }
 
-    public PrepareCoordinationTeleportPacket(String player, String server, String world, String destinationName, String message, double x, double y, double z, float yaw, float pitch, double costs, boolean ignoreLimit, Callback<Integer> callback) {
-        super(callback);
+    public PrepareCoordinationTeleportPacket(String player, String server, String world, String destinationName, String message, double x, double y, double z, float yaw, float pitch, double costs, boolean ignoreLimit) {
         this.player = player;
         this.server = server;
         this.world = world;
@@ -34,14 +34,12 @@ public class PrepareCoordinationTeleportPacket extends RequestPacket<Integer> {
         this.ignoreLimit = ignoreLimit;
     }
 
-    public PrepareCoordinationTeleportPacket clone(Callback<Integer> callback) {
-        return new PrepareCoordinationTeleportPacket(player, server, world, destinationName, message, x, y, z, yaw, pitch, costs, ignoreLimit, callback);
+    public PrepareCoordinationTeleportPacket clone() {
+        return new PrepareCoordinationTeleportPacket(player, server, world, destinationName, message, x, y, z, yaw, pitch, costs, ignoreLimit);
     }
 
     @Override
     public void write(DataOutputStream out) throws IOException {
-        super.write(out);
-
         byte b = (byte) (server != null ? 1 : 0);
         b |= (costs != 0 ? 1 : 0) << 1;
         b |= (message != null ? 1 : 0) << 2;
@@ -62,8 +60,6 @@ public class PrepareCoordinationTeleportPacket extends RequestPacket<Integer> {
 
     @Override
     public void read(DataInputStream in) throws IOException {
-        super.read(in);
-
         byte b = in.readByte();
 
         this.player = in.readUTF();

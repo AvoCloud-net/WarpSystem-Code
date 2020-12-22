@@ -3,12 +3,12 @@ package de.codingair.warpsystem.spigot.base.managers;
 import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.time.TimeMap;
+import de.codingair.warpsystem.base.features.cooldown.Cooldown;
+import de.codingair.warpsystem.base.features.cooldown.ICooldownManager;
+import de.codingair.warpsystem.base.transfer.handlers.CooldownDataPacketHandler;
+import de.codingair.warpsystem.base.transfer.handlers.CooldownPacketHandler;
 import de.codingair.warpsystem.base.transfer.packets.spigot.CooldownDataPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.CooldownPacket;
-import de.codingair.warpsystem.base.transfer.packets.spigot.utils.Cooldown;
-import de.codingair.warpsystem.base.transfer.packets.utils.Packet;
-import de.codingair.warpsystem.base.transfer.packets.utils.PacketType;
-import de.codingair.warpsystem.base.transfer.utils.PacketListener;
 import de.codingair.warpsystem.spigot.api.StringFormatter;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.language.Lang;
@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class CooldownManager extends PacketListener {
+public class CooldownManager implements ICooldownManager {
     //expired cooldown will be removed on access (get, save)
     private final HashMap<UUID, HashMap<Integer, Long>> cache = new HashMap<>();
     private static final TimeMap<Player, Integer> COOLDOWN_MESSAGE_BUFFER = new TimeMap<>();
@@ -43,7 +43,7 @@ public class CooldownManager extends PacketListener {
                                 Cooldown cooldown = new Cooldown(id);
                                 JSON json = new JSON((Map<?, ?>) s);
                                 cooldown.read(json, time);
-                                add(cooldown);
+                                addCooldown(cooldown);
                             } catch(Exception e) {
                                 e.printStackTrace();
                             }
@@ -54,6 +54,9 @@ public class CooldownManager extends PacketListener {
                 //might be the date tag
             }
         }
+
+        WarpSystem.getDataHandler().registerHandler(CooldownPacket.class, new CooldownPacketHandler(this));
+        WarpSystem.getDataHandler().registerHandler(CooldownDataPacket.class, new CooldownDataPacketHandler(this));
     }
 
     public void save() {
@@ -119,19 +122,19 @@ public class CooldownManager extends PacketListener {
         if(time == 0 || player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Cooldown)) return;
         Cooldown cooldown = new Cooldown(WarpSystem.getInstance().getUUIDManager().get(player), System.currentTimeMillis() + time, origin.ordinal());
 
-        add(cooldown);
+        addCooldown(cooldown);
         if(WarpSystem.getInstance().isOnBungeeCord()) {
             //upload to bungee
-            WarpSystem.getInstance().getDataHandler().send(player, new CooldownPacket(cooldown));
+            WarpSystem.getInstance().getDataHandler().send(new CooldownPacket(cooldown), player);
         }
     }
 
     public void register(Player player, long time, int hash) {
         if(player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Cooldown) || time == 0) return;
-        add(new Cooldown(WarpSystem.getInstance().getUUIDManager().get(player), System.currentTimeMillis() + time, hash));
+        addCooldown(new Cooldown(WarpSystem.getInstance().getUUIDManager().get(player), System.currentTimeMillis() + time, hash));
     }
 
-    private void add(Cooldown cooldown) {
+    public void addCooldown(Cooldown cooldown) {
         if(cooldown.getRemainingTime() != 0) cache.computeIfAbsent(cooldown.getPlayer(), k -> new HashMap<>()).put(cooldown.getHashId(), cooldown.getEnd());
     }
 
@@ -163,24 +166,6 @@ public class CooldownManager extends PacketListener {
             return true;
         }
 
-        return false;
-    }
-
-    @Override
-    public void onReceive(Packet packet, String extra) {
-        if(packet.getType() == PacketType.CooldownPacket) {
-            CooldownPacket p = (CooldownPacket) packet;
-            add(p.getCooldown());
-        } else if(packet.getType() == PacketType.CooldownDataPacket) {
-            CooldownDataPacket p = (CooldownDataPacket) packet;
-            for(Cooldown cooldown : p.getCooldown()) {
-                add(cooldown);
-            }
-        }
-    }
-
-    @Override
-    public boolean onSend(Packet packet) {
         return false;
     }
 }

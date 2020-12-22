@@ -1,9 +1,8 @@
 package de.codingair.warpsystem.spigot.transfer.jar;
 
+import de.codingair.packetmanagement.handlers.PacketHandler;
+import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.bungee.SendJarPacket;
-import de.codingair.warpsystem.base.transfer.packets.utils.Packet;
-import de.codingair.warpsystem.base.transfer.packets.utils.PacketType;
-import de.codingair.warpsystem.base.transfer.utils.PacketListener;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 
 import java.io.File;
@@ -12,7 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JarReceiver extends PacketListener {
+public class JarReceiver implements PacketHandler<SendJarPacket> {
     private final List<byte[]> data = new ArrayList<>();
     private String name;
 
@@ -74,14 +73,7 @@ public class JarReceiver extends PacketListener {
     }
 
     @Override
-    public void onReceive(Packet packet, String extra) {
-        if(packet.getType() == PacketType.SendJarPacket) {
-            receive((SendJarPacket) packet);
-        }
-    }
-
-    @Override
-    public boolean onSend(Packet packet) {
-        return false;
+    public void process(SendJarPacket packet, Proxy proxy) {
+        receive(packet);
     }
 }

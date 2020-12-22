@@ -1,10 +1,9 @@
 package de.codingair.warpsystem.spigot.base.managers;
 
+import de.codingair.packetmanagement.handlers.PacketHandler;
+import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.bungee.SendServerPropertiesPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.utils.ServerPing;
-import de.codingair.warpsystem.base.transfer.packets.utils.Packet;
-import de.codingair.warpsystem.base.transfer.packets.utils.PacketType;
-import de.codingair.warpsystem.base.transfer.utils.PacketListener;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.features.FeatureType;
 import de.codingair.warpsystem.spigot.features.signs.managers.SignManager;
@@ -12,36 +11,27 @@ import org.bukkit.Bukkit;
 
 import java.util.HashMap;
 
-public class ServerManager extends PacketListener {
+public class ServerManager {
     private final HashMap<String, ServerPing> properties = new HashMap<>();
 
     public ServerManager() {
-        WarpSystem.getInstance().getDataHandler().register(this);
+        WarpSystem.getDataHandler().registerHandler(SendServerPropertiesPacket.class, new PacketHandler<SendServerPropertiesPacket>() {
+            @Override
+            public void process(SendServerPropertiesPacket packet, Proxy proxy) {
+                properties.putAll(packet.getProperties());
+                packet.getProperties().clear();
+                onUpdate();
+            }
+        });
     }
 
     public ServerPing getProperties(String server) {
         return properties.get(server.toLowerCase());
     }
 
-    @Override
-    public void onReceive(Packet packet, String extra) {
-        if(packet.getType() == PacketType.SendServerPropertiesPacket) {
-            SendServerPropertiesPacket p = (SendServerPropertiesPacket) packet;
-
-            properties.putAll(p.getProperties());
-            p.getProperties().clear();
-            onUpdate();
-        }
-    }
-
     public void onUpdate() {
         Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> {
             if(FeatureType.SIGNS.isActive()) SignManager.getInstance().updateAll();
         });
-    }
-
-    @Override
-    public boolean onSend(Packet packet) {
-        return false;
     }
 }

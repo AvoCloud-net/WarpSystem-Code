@@ -33,7 +33,7 @@ public class VanishManager implements BungeeFeature {
                             if(!vanished.contains(p)) {
                                 //toggled
                                 vanished.add(p);
-                                WarpSystem.getInstance().getDataHandler().send(p, new PacketVanishInfo(p.getName(), true));
+                                WarpSystem.getDataHandler().send(new PacketVanishInfo(p.getName(), true), p);
                             }
                             break;
                         }
@@ -41,7 +41,7 @@ public class VanishManager implements BungeeFeature {
 
                     if(!isVanished && vanished.remove(p)) {
                         //toggled
-                        WarpSystem.getInstance().getDataHandler().send(p, new PacketVanishInfo(p.getName(), false));
+                        WarpSystem.getDataHandler().send(new PacketVanishInfo(p.getName(), false), p);
                     }
                 }
             }

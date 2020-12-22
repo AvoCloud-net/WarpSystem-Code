@@ -1,4 +1,4 @@
-package de.codingair.warpsystem.base.transfer.packets.spigot.utils;
+package de.codingair.warpsystem.base.features.cooldown;
 
 import com.google.common.base.Preconditions;
 import de.codingair.codingapi.tools.io.utils.DataWriter;

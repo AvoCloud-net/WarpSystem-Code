@@ -76,30 +76,29 @@ public class GlobalLocationAdapter extends LocationAdapter implements Serializab
                 return true;
             }
         } else {
-            PrepareCoordinationTeleportPacket packet = new PrepareCoordinationTeleportPacket(player.getName(), server, location.getWorldName(), displayName, message, location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch(), costs, player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Max_Players), new Callback<Integer>() {
-                @Override
-                public void accept(Integer result) {
-                    if(callback == null) return;
-                    switch(result) {
-                        case 0:
-                            callback.accept(Result.SUCCESS);
-                            break;
-                        case 1:
-                            callback.accept(Result.SERVER_NOT_AVAILABLE);
-                            break;
-                        case 2:
-                            callback.accept(Result.WORLD_DOES_NOT_EXIST);
-                            break;
-                        case 3:
-                            callback.accept(Result.TARGET_SERVER_IS_FULL);
-                            break;
-                        default:
-                            callback.accept(Result.CANCELLED);
-                    }
+            PrepareCoordinationTeleportPacket packet = new PrepareCoordinationTeleportPacket(player.getName(), server, location.getWorldName(), displayName, message,
+                    location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch(),
+                    costs, player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Max_Players));
+
+            WarpSystem.getDataHandler().send(packet, player).thenAccept(result -> {
+                if(callback == null) return;
+                switch(result.a()) {
+                    case 0:
+                        callback.accept(Result.SUCCESS);
+                        break;
+                    case 1:
+                        callback.accept(Result.SERVER_NOT_AVAILABLE);
+                        break;
+                    case 2:
+                        callback.accept(Result.WORLD_DOES_NOT_EXIST);
+                        break;
+                    case 3:
+                        callback.accept(Result.TARGET_SERVER_IS_FULL);
+                        break;
+                    default:
+                        callback.accept(Result.CANCELLED);
                 }
             });
-
-            WarpSystem.getInstance().getDataHandler().send(player, packet);
             return true;
         }
     }

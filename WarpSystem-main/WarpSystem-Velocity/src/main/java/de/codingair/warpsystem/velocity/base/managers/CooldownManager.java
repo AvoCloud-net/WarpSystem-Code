@@ -6,7 +6,7 @@ import com.velocitypowered.api.event.player.ServerConnectedEvent;
 import de.codingair.codingapi.tools.io.JSON.BungeeJSON;
 import de.codingair.warpsystem.base.transfer.packets.spigot.CooldownDataPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.CooldownPacket;
-import de.codingair.warpsystem.base.transfer.packets.spigot.utils.Cooldown;
+import de.codingair.warpsystem.base.features.cooldown.Cooldown;
 import de.codingair.warpsystem.base.transfer.packets.utils.Packet;
 import de.codingair.warpsystem.base.transfer.packets.utils.PacketType;
 import de.codingair.warpsystem.base.transfer.utils.PacketListener;

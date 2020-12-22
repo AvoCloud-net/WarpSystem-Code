@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.base.transfer.packets.bungee;
 
-import de.codingair.warpsystem.base.transfer.packets.utils.Packet;
+import de.codingair.packetmanagement.packets.Packet;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

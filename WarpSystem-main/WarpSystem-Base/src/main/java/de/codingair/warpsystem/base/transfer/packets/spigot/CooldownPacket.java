@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.base.transfer.packets.spigot;
 
-import de.codingair.warpsystem.base.transfer.packets.spigot.utils.Cooldown;
-import de.codingair.warpsystem.base.transfer.packets.utils.Packet;
+import de.codingair.warpsystem.base.features.cooldown.Cooldown;
+import de.codingair.packetmanagement.packets.Packet;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

@@ -87,6 +87,11 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>com.github.CodingAir</groupId>
+            <artifactId>PacketManagement</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>de.codingair</groupId>
             <artifactId>WarpSystem-v1.8</artifactId>
             <scope>compile</scope>

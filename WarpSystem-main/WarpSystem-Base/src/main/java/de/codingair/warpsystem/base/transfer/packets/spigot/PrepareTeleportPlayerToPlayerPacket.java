@@ -1,13 +1,13 @@
 package de.codingair.warpsystem.base.transfer.packets.spigot;
 
-import de.codingair.codingapi.tools.Callback;
-import de.codingair.warpsystem.base.transfer.packets.utils.RequestPacket;
+import de.codingair.packetmanagement.packets.RequestPacket;
+import de.codingair.packetmanagement.packets.impl.IntegerPacket;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class PrepareTeleportPlayerToPlayerPacket extends RequestPacket<Integer> {
+public class PrepareTeleportPlayerToPlayerPacket implements RequestPacket<IntegerPacket> {
     private String player;
     private String destinationPlayer;
     private int costs = 0;
@@ -15,15 +15,13 @@ public class PrepareTeleportPlayerToPlayerPacket extends RequestPacket<Integer> 
     public PrepareTeleportPlayerToPlayerPacket() {
     }
 
-    public PrepareTeleportPlayerToPlayerPacket(String player, String destinationPlayer, Callback<Integer> callback) {
-        super(callback);
+    public PrepareTeleportPlayerToPlayerPacket(String player, String destinationPlayer) {
         this.player = player;
         this.destinationPlayer = destinationPlayer;
     }
 
     @Override
     public void write(DataOutputStream out) throws IOException {
-        super.write(out);
         out.writeUTF(player);
         out.writeUTF(destinationPlayer);
         out.writeInt(this.costs);
@@ -31,7 +29,6 @@ public class PrepareTeleportPlayerToPlayerPacket extends RequestPacket<Integer> 
 
     @Override
     public void read(DataInputStream in) throws IOException {
-        super.read(in);
         this.player = in.readUTF();
         this.destinationPlayer = in.readUTF();
         this.costs = in.readInt();

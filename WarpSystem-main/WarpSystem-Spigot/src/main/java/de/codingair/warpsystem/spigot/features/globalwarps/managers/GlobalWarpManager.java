@@ -1,6 +1,9 @@
 package de.codingair.warpsystem.spigot.features.globalwarps.managers;
 
 import de.codingair.codingapi.tools.Callback;
+import de.codingair.packetmanagement.packets.impl.BooleanPacket;
+import de.codingair.warpsystem.base.transfer.packets.bungee.SendGlobalWarpNamesPacket;
+import de.codingair.warpsystem.base.transfer.packets.bungee.UpdateGlobalWarpPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.DeleteGlobalWarpPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.GlobalWarpTeleportPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.PublishGlobalWarpPacket;
@@ -15,13 +18,15 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.v2.Teleport;
 import de.codingair.warpsystem.spigot.features.FeatureType;
 import de.codingair.warpsystem.spigot.features.globalwarps.commands.CGlobalWarp;
 import de.codingair.warpsystem.spigot.features.globalwarps.commands.CGlobalWarps;
-import de.codingair.warpsystem.spigot.features.globalwarps.listeners.GlobalWarpListener;
-import org.bukkit.Bukkit;
+import de.codingair.warpsystem.spigot.transfer.handlers.SendGlobalWarpNamesPacketHandler;
+import de.codingair.warpsystem.spigot.transfer.handlers.UpdateGlobalWarpPacketHandler;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 
 public class GlobalWarpManager implements Manager, BungeeFeature {
     //              Name,   Server
@@ -31,17 +36,16 @@ public class GlobalWarpManager implements Manager, BungeeFeature {
         return WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS);
     }
 
-    public void create(Player player, String warpName, Location loc, Callback<Boolean> callback) {
-        WarpSystem.getInstance().getDataHandler().send(player, new PublishGlobalWarpPacket(new SGlobalWarp(warpName, new SLocation(loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch())), callback));
+    public CompletableFuture<BooleanPacket> create(Player player, String warpName, Location loc) {
+        return WarpSystem.getDataHandler().send(new PublishGlobalWarpPacket(new SGlobalWarp(warpName, new SLocation(loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch()))), player);
     }
 
-    public void updatePosition(Player player, String warpName, Location loc, Callback<Boolean> callback) {
-        WarpSystem.getInstance().getDataHandler().send(player, new PublishGlobalWarpPacket(new SGlobalWarp(warpName, new SLocation(loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch())), true, callback));
+    public CompletableFuture<BooleanPacket> updatePosition(Player player, String warpName, Location loc) {
+        return WarpSystem.getDataHandler().send(new PublishGlobalWarpPacket(new SGlobalWarp(warpName, new SLocation(loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch())), true), player);
     }
 
-    public void delete(Player player, String warpName, Callback<Boolean> callback) {
-        if(warpName == null) return;
-        WarpSystem.getInstance().getDataHandler().send(player, new DeleteGlobalWarpPacket(warpName, callback));
+    public CompletableFuture<BooleanPacket> delete(Player player, @NotNull String warpName) {
+        return WarpSystem.getDataHandler().send(new DeleteGlobalWarpPacket(warpName), player);
     }
 
     public HashMap<String, String> getGlobalWarps() {
@@ -64,7 +68,7 @@ public class GlobalWarpManager implements Manager, BungeeFeature {
         return false;
     }
 
-    public void teleport(Player player, String id, Vector randomOffset, String displayName, String message, double costs, Callback<GlobalWarpTeleportPacket.Result> callback) {
+    public void teleport(Player player, String id, Vector randomOffset, String displayName, String message, double costs, @NotNull Callback<GlobalWarpTeleportPacket.Result> callback) {
         if(id == null) {
             callback.accept(GlobalWarpTeleportPacket.Result.WARP_NOT_EXISTS);
             return;
@@ -87,12 +91,9 @@ public class GlobalWarpManager implements Manager, BungeeFeature {
         boolean keepRotation = false;
         if(t != null) keepRotation = !t.getDestination().getCustomOptions().isRotation();
 
-        WarpSystem.getInstance().getDataHandler().send(player, new GlobalWarpTeleportPacket(player.getName(), id, x, y, z, displayName, message, costs, keepRotation, player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Max_Players), new Callback<Integer>() {
-            @Override
-            public void accept(Integer object) {
-                callback.accept(GlobalWarpTeleportPacket.Result.getById(object));
-            }
-        }));
+        WarpSystem.getDataHandler().send(new GlobalWarpTeleportPacket(player.getName(), id, x, y, z, displayName, message, costs, keepRotation, player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Max_Players)), player).thenAccept(packet -> {
+            callback.accept(GlobalWarpTeleportPacket.Result.getById(packet.a()));
+        });
     }
 
     @Override
@@ -101,9 +102,8 @@ public class GlobalWarpManager implements Manager, BungeeFeature {
 
         WarpSystem.getInstance().getBungeeFeatureList().add(this);
 
-        GlobalWarpListener listener = new GlobalWarpListener();
-        WarpSystem.getInstance().getDataHandler().register(listener);
-        Bukkit.getPluginManager().registerEvents(listener, WarpSystem.getInstance());
+        WarpSystem.getDataHandler().registerHandler(UpdateGlobalWarpPacket.class, new UpdateGlobalWarpPacketHandler());
+        WarpSystem.getDataHandler().registerHandler(SendGlobalWarpNamesPacket.class, new SendGlobalWarpNamesPacketHandler());
 
         new CGlobalWarp().register();
         new CGlobalWarps().register();
@@ -121,7 +121,7 @@ public class GlobalWarpManager implements Manager, BungeeFeature {
 
     @Override
     public void onConnect() {
-        if(getGlobalWarps().isEmpty()) WarpSystem.getInstance().getDataHandler().send(null, new RequestGlobalWarpNamesPacket());
+        if(getGlobalWarps().isEmpty()) WarpSystem.getDataHandler().send(new RequestGlobalWarpNamesPacket());
     }
 
     @Override
