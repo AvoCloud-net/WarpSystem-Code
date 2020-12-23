@@ -571,14 +571,11 @@ public class DestinationPage extends PageItem {
                             server = name;
                             if(server != null) {
                                 pinging = true;
-                                WarpSystem.getInstance().getDataHandler().send(p, new RequestServerStatusPacket(server, new Callback<Boolean>() {
-                                    @Override
-                                    public void accept(Boolean online) {
-                                        DestinationPage.this.pinging = false;
-                                        DestinationPage.this.online = online;
-                                        update();
-                                    }
-                                }));
+                                WarpSystem.getDataHandler().send(new RequestServerStatusPacket(server), p).thenAccept(booleanPacket -> {
+                                    DestinationPage.this.pinging = false;
+                                    DestinationPage.this.online = booleanPacket.getBoolean();
+                                    update();
+                                });
                             }
                         }
 
@@ -640,14 +637,11 @@ public class DestinationPage extends PageItem {
                             if(server != null && !pinging) {
                                 pinging = true;
                                 update();
-                                WarpSystem.getInstance().getDataHandler().send(p, new RequestServerStatusPacket(server, new Callback<Boolean>() {
-                                    @Override
-                                    public void accept(Boolean online) {
-                                        DestinationPage.this.pinging = false;
-                                        DestinationPage.this.online = online;
-                                        if(getLast().getCurrent() == DestinationPage.this) update();
-                                    }
-                                }));
+                                WarpSystem.getDataHandler().send(new RequestServerStatusPacket(server), p).thenAccept(booleanPacket -> {
+                                    DestinationPage.this.pinging = false;
+                                    DestinationPage.this.online = booleanPacket.getBoolean();
+                                    if(getLast().getCurrent() == DestinationPage.this) update();
+                                });
                             }
                         }
                     }

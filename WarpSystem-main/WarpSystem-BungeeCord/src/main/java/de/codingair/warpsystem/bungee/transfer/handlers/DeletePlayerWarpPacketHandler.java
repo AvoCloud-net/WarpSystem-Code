@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class DeletePlayerWarpPacketHandler implements PacketHandler<DeletePlayerWarpPacket> {
     @Override
-    public void process(@NotNull DeletePlayerWarpPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public void process(@NotNull DeletePlayerWarpPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
 
         PlayerWarpData w = PlayerWarpManager.getInstance().getWarp(packet.getId(), packet.getName());
 

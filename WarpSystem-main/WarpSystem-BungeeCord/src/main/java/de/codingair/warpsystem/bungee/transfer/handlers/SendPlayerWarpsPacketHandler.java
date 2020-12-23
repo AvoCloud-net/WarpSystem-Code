@@ -15,7 +15,7 @@ import java.util.List;
 
 public class SendPlayerWarpsPacketHandler implements PacketHandler<SendPlayerWarpsPacket> {
     @Override
-    public void process(@NotNull SendPlayerWarpsPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public void process(@NotNull SendPlayerWarpsPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         List<PlayerWarpData> l = packet.getData();
 
         for(Serializable s : l) {

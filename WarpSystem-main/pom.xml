@@ -12,7 +12,6 @@
         <module>WarpSystem-Base</module>
         <module>WarpSystem-Spigot</module>
         <module>WarpSystem-BungeeCord</module>
-        <module>WarpSystem-Velocity</module>
         <module>WarpSystem-bundle</module>
     </modules>
 

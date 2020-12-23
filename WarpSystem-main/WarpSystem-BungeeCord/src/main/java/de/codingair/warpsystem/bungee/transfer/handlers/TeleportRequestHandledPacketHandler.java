@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TeleportRequestHandledPacketHandler implements PacketHandler<TeleportRequestHandledPacket> {
     @Override
-    public void process(@NotNull TeleportRequestHandledPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public void process(@NotNull TeleportRequestHandledPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         ProxiedPlayer sender = Players.getPlayer(packet.getSender());
         if(sender != null) WarpSystem.getDataHandler().send(packet, sender.getServer().getInfo(), Direction.DOWN);
     }

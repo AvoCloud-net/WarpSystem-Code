@@ -19,8 +19,8 @@ import java.util.UUID;
 
 public abstract class ChatInputGUI implements Removable {
     private final UUID id = UUID.randomUUID();
-    private JavaPlugin plugin;
-    private Player player;
+    private final JavaPlugin plugin;
+    private final Player player;
 
     private SoundData openSound;
     private SoundData cancelSound;
@@ -28,7 +28,7 @@ public abstract class ChatInputGUI implements Removable {
     private SoundData submitMistakeSound;
 
     private BukkitRunnable runnable = null;
-    private ChatInputListener listener;
+    private final ChatInputListener listener;
     private String title, subTitle = null;
     private boolean actionBarSwitch = false;
 
@@ -53,7 +53,7 @@ public abstract class ChatInputGUI implements Removable {
         API.addRemovable(this);
 
         if(WarpSystem.getInstance().isOnBungeeCord()) {
-            WarpSystem.getInstance().getDataHandler().send(player, new ChatInputGUITogglePacket(this.player.getName(), true));
+            WarpSystem.getDataHandler().send(new ChatInputGUITogglePacket(this.player.getName(), true), player);
         }
 
         sendTitle(5, 10, 0);
@@ -104,7 +104,7 @@ public abstract class ChatInputGUI implements Removable {
             this.runnable = null;
 
             if(WarpSystem.getInstance().isOnBungeeCord()) {
-                WarpSystem.getInstance().getDataHandler().send(player, new ChatInputGUITogglePacket(this.player.getName(), false));
+                WarpSystem.getDataHandler().send(new ChatInputGUITogglePacket(this.player.getName(), false), player);
             }
 
             sendTitle(0, 0, 5);

@@ -4,6 +4,7 @@ import de.codingair.codingapi.server.reflections.IReflection;
 import de.codingair.codingapi.server.reflections.PacketUtils;
 import de.codingair.codingapi.server.specification.Version;
 import de.codingair.packetmanagement.handlers.PacketHandler;
+import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.bungee.SetupAssistantStorePacket;
 import de.codingair.warpsystem.spigot.api.events.PlayerFinalJoinEvent;
@@ -52,7 +53,7 @@ public class SetupAssistantListener implements PacketHandler<SetupAssistantStore
     }
 
     @Override
-    public void process(@NotNull SetupAssistantStorePacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public void process(@NotNull SetupAssistantStorePacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         String message = packet.getMessage();
         SetupAssistant assistant = SetupAssistantManager.getInstance().getAssistant();
         if(assistant != null) assistant.queue(buildComponent(message));

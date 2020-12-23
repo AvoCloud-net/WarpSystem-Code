@@ -735,6 +735,10 @@ public class PermissionPlayer_v1_9 implements Player {
         return this.player.isOnGround();
     }
 
+    public boolean isInWater() {
+        return false;
+    }
+
     public boolean isFlying() {
         return this.player.isFlying();
     }

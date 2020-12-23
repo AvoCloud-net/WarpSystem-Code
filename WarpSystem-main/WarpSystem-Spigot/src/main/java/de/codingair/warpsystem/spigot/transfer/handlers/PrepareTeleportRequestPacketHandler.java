@@ -3,6 +3,7 @@ package de.codingair.warpsystem.spigot.transfer.handlers;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.packetmanagement.handlers.ResponsiblePacketHandler;
 import de.codingair.packetmanagement.packets.impl.LongPacket;
+import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.spigot.PrepareTeleportRequestPacket;
 import de.codingair.warpsystem.spigot.features.teleportcommand.TeleportCommandManager;
@@ -13,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class PrepareTeleportRequestPacketHandler implements ResponsiblePacketHandler<PrepareTeleportRequestPacket, LongPacket> {
     @Override
-    public @NotNull CompletableFuture<LongPacket> response(@NotNull PrepareTeleportRequestPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public @NotNull CompletableFuture<LongPacket> response(@NotNull PrepareTeleportRequestPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         CompletableFuture<LongPacket> future = new CompletableFuture<>();
 
         TeleportCommandManager.getInstance().invite(packet.getSender(), packet.isTpToSender(), new Callback<Long>() {

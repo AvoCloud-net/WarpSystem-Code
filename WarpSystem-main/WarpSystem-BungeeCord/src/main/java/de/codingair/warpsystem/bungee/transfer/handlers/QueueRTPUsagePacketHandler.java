@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class QueueRTPUsagePacketHandler implements PacketHandler<QueueRTPUsagePacket> {
     @Override
-    public void process(@NotNull QueueRTPUsagePacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public void process(@NotNull QueueRTPUsagePacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         ServerInfo server = WarpSystem.proxy().getServerInfo(packet.getServer());
         if(!server.getPlayers().isEmpty()) WarpSystem.getDataHandler().send(packet, server, Direction.DOWN);
         else RandomTPManager.getInstance().addQueueEntry(packet.getIdOnce(), packet.getServer());

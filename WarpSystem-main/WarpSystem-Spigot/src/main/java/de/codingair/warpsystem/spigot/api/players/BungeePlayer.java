@@ -6,9 +6,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class BungeePlayer {
-    private Player player;
-    private String name;
-    private String displayName;
+    private final Player player;
+    private final String name;
+    private final String displayName;
 
     public BungeePlayer(Player player) {
         this.player = player;
@@ -27,7 +27,7 @@ public class BungeePlayer {
     }
 
     public void sendMessage(String msg) {
-        if(player == null) WarpSystem.getInstance().getDataHandler().send(null, new MessagePacket(name, msg));
+        if(player == null) WarpSystem.getDataHandler().send(new MessagePacket(name, msg));
         else player.sendMessage(msg);
     }
 

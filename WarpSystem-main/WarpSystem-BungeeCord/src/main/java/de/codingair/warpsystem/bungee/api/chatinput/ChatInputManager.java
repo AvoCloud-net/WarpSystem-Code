@@ -1,10 +1,7 @@
 package de.codingair.warpsystem.bungee.api.chatinput;
 
-import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.base.transfer.packets.spigot.ChatInputGUITogglePacket;
-import de.codingair.warpsystem.base.transfer.packets.utils.Packet;
-import de.codingair.warpsystem.base.transfer.packets.utils.PacketType;
-import de.codingair.warpsystem.base.transfer.utils.PacketListener;
+import de.codingair.warpsystem.bungee.base.WarpSystem;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.event.ServerDisconnectEvent;
@@ -16,12 +13,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ChatInputManager extends PacketListener implements Listener {
+public class ChatInputManager implements Listener {
     private final List<String> using = new ArrayList<>();
     private final HashMap<String, String> cache = new HashMap<>();
 
     public ChatInputManager() {
-        WarpSystem.getInstance().getDataHandler().register(this);
+        WarpSystem.getDataHandler().registerHandler(ChatInputGUITogglePacket.class, (packet, proxy, connection, direction) -> {
+            if(packet.isUsing()) {
+                if(!using.contains(packet.getName())) using.add(packet.getName());
+            } else using.remove(packet.getName());
+        });
         WarpSystem.proxy().getPluginManager().registerListener(WarpSystem.getInstance(), this);
     }
 
@@ -60,21 +61,5 @@ public class ChatInputManager extends PacketListener implements Listener {
     public void onQuit(ServerSwitchEvent e) {
         this.using.remove(e.getPlayer().getName());
         this.cache.remove(e.getPlayer().getName());
-    }
-
-    @Override
-    public void onReceive(Packet packet, String extra) {
-        if(packet.getType() == PacketType.ChatInputGUITogglePacket) {
-            ChatInputGUITogglePacket p = (ChatInputGUITogglePacket) packet;
-
-            if(p.isUsing()) {
-                if(!this.using.contains(p.getName())) this.using.add(p.getName());
-            } else this.using.remove(p.getName());
-        }
-    }
-
-    @Override
-    public boolean onSend(Packet packet) {
-        return false;
     }
 }

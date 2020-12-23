@@ -1,6 +1,7 @@
 package de.codingair.warpsystem.spigot.transfer.handlers;
 
 import de.codingair.packetmanagement.handlers.PacketHandler;
+import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.bungee.TeleportPlayerToPlayerPacket;
 import de.codingair.warpsystem.spigot.base.language.Lang;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TeleportPlayerToPlayerPacketHandler implements PacketHandler<TeleportPlayerToPlayerPacket> {
     @Override
-    public void process(@NotNull TeleportPlayerToPlayerPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public void process(@NotNull TeleportPlayerToPlayerPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         Player gate = Bukkit.getPlayer(packet.getGate());
         Player player = Bukkit.getPlayer(packet.getPlayer());
         Player other = Bukkit.getPlayer(packet.getTarget());

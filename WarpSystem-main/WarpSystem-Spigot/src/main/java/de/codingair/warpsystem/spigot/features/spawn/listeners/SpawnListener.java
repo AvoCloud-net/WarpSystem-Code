@@ -17,9 +17,9 @@ import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 public class SpawnListener implements Listener {
     public SpawnListener() {
-        WarpSystem.getDataHandler().registerHandler(SendGlobalSpawnOptionsPacket.class, (packet, proxy, connection) -> SpawnManager.getInstance().applyGlobalOptions(packet.getSpawn(), packet.getRespawn()));
+        WarpSystem.getDataHandler().registerHandler(SendGlobalSpawnOptionsPacket.class, (packet, proxy, connection, direction) -> SpawnManager.getInstance().applyGlobalOptions(packet.getSpawn(), packet.getRespawn()));
 
-        WarpSystem.getDataHandler().registerHandler(TeleportSpawnPacket.class, (packet, proxy, connection) -> {
+        WarpSystem.getDataHandler().registerHandler(TeleportSpawnPacket.class, (packet, proxy, connection, direction) -> {
             Spawn spawn = SpawnManager.getInstance().getSpawn();
 
             if(spawn != null) {

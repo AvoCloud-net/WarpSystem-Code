@@ -62,6 +62,8 @@ public enum PacketType {
     RequestFullNamePacket(RequestFullNamePacket.class),
 
     SendServerPropertiesPacket(SendServerPropertiesPacket.class),
+    SendUUIDPacket(SendUUIDPacket.class),
+    RequestUUIDPacket(RequestUUIDPacket.class),
     ;
 
     private final Class<? extends Packet> packet;

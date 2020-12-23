@@ -2,6 +2,7 @@ package de.codingair.warpsystem.bungee.transfer.handlers;
 
 import de.codingair.packetmanagement.handlers.ResponsiblePacketHandler;
 import de.codingair.packetmanagement.packets.impl.BooleanPacket;
+import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RequestServerStatusPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.utils.ServerPing;
@@ -14,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class RequestServerStatusPacketHandler implements ResponsiblePacketHandler<RequestServerStatusPacket, BooleanPacket> {
     @Override
-    public @NotNull CompletableFuture<BooleanPacket> response(@NotNull RequestServerStatusPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public @NotNull CompletableFuture<BooleanPacket> response(@NotNull RequestServerStatusPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         ServerInfo info = WarpSystem.proxy().getServerInfo(packet.getServer());
 
         if(info == null) return CompletableFuture.completedFuture(new BooleanPacket(false));

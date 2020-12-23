@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class PrepareTeleportPacketHandler implements ResponsiblePacketHandler<PrepareTeleportPacket, LongPacket> {
     @Override
-    public @NotNull CompletableFuture<LongPacket> response(@NotNull PrepareTeleportPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public @NotNull CompletableFuture<LongPacket> response(@NotNull PrepareTeleportPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         ProxiedPlayer sender = Players.getPlayer(packet.getSender());
         ProxiedPlayer targetPlayer = packet.getSender().equalsIgnoreCase(packet.getTarget()) ? sender : Players.getPlayer(packet.getTarget());
 

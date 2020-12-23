@@ -17,7 +17,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class RandomTPPacketHandler implements ResponsiblePacketHandler<RandomTPPacket, BooleanPacket> {
     @Override
-    public @NotNull CompletableFuture<BooleanPacket> response(@NotNull RandomTPPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public @NotNull CompletableFuture<BooleanPacket> response(@NotNull RandomTPPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         ProxiedPlayer pp = WarpSystem.proxy().getPlayer(packet.getPlayer());
         ServerInfo target = WarpSystem.proxy().getServerInfo(packet.getServer());
 

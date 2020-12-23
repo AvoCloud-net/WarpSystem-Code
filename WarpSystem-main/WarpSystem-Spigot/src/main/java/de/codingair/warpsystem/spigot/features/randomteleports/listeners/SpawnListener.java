@@ -58,7 +58,7 @@ public class SpawnListener implements Listener {
         } catch(ClassNotFoundException ignored) {
         }
 
-        WarpSystem.getDataHandler().registerHandler(RandomTPPacket.class, (packet, proxy, connection) -> {
+        WarpSystem.getDataHandler().registerHandler(RandomTPPacket.class, (packet, proxy, connection, direction) -> {
             World w = Bukkit.getWorld(packet.getWorld());
 
             Player player = Bukkit.getPlayer(packet.getPlayer());

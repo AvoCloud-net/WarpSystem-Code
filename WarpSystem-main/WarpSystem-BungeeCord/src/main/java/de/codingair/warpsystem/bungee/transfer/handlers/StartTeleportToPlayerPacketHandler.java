@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class StartTeleportToPlayerPacketHandler implements ResponsiblePacketHandler<StartTeleportToPlayerPacket, IntegerPacket> {
     @Override
-    public @NotNull CompletableFuture<IntegerPacket> response(@NotNull StartTeleportToPlayerPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public @NotNull CompletableFuture<IntegerPacket> response(@NotNull StartTeleportToPlayerPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         ProxiedPlayer player = Players.getPlayer(packet.getPlayer());
 
         if(player != null) return WarpSystem.getDataHandler().send(new StartTeleportToPlayerPacket(packet.getPlayer(), packet.getTo(), packet.getToDisplayName(), packet.getTeleportRequestSender()), player.getServer().getInfo(), Direction.DOWN);

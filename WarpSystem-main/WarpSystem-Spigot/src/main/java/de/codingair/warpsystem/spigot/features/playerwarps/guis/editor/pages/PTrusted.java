@@ -8,7 +8,6 @@ import de.codingair.codingapi.player.gui.inventory.gui.simple.SyncAnvilGUIButton
 import de.codingair.codingapi.player.gui.inventory.gui.simple.SyncButton;
 import de.codingair.codingapi.server.sounds.Sound;
 import de.codingair.codingapi.server.sounds.SoundData;
-import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RequestUUIDPacket;
@@ -134,28 +133,24 @@ public class PTrusted extends PageItem {
                     Player other;
                     if((other = Bukkit.getPlayer(input)) == null) {
                         if(WarpSystem.getInstance().isOnBungeeCord()) {
-                            RequestUUIDPacket packet = new RequestUUIDPacket(input, new Callback<UUID>() {
-                                @Override
-                                public void accept(UUID uuid) {
-                                    if(uuid == null) {
-                                        e.getPlayer().sendMessage(Lang.get("Prefix") + Lang.get("Player_is_not_online"));
-                                        return;
-                                    }
-
-                                    if(warp.isTrusted(uuid)) {
-                                        e.getPlayer().sendMessage(Lang.get("Prefix") + Lang.get("Already_Trusted"));
-                                        return;
-                                    }
-
-                                    warp.getTrusted().add(new PlayerWarp.User(input, uuid));
-                                    getLast().updatePage();
-                                    updateIcon();
-                                    updateCosts();
-                                    getAnvilGUI().close();
+                            WarpSystem.getDataHandler().send(new RequestUUIDPacket(input), p).thenAccept(packet -> {
+                                UUID uuid = packet.getId();
+                                if(uuid == null) {
+                                    e.getPlayer().sendMessage(Lang.get("Prefix") + Lang.get("Player_is_not_online"));
+                                    return;
                                 }
-                            });
 
-                            WarpSystem.getInstance().getDataHandler().send(p, packet);
+                                if(warp.isTrusted(uuid)) {
+                                    e.getPlayer().sendMessage(Lang.get("Prefix") + Lang.get("Already_Trusted"));
+                                    return;
+                                }
+
+                                warp.getTrusted().add(new PlayerWarp.User(input, uuid));
+                                getLast().updatePage();
+                                updateIcon();
+                                updateCosts();
+                                getAnvilGUI().close();
+                            });
                         } else e.getPlayer().sendMessage(Lang.get("Prefix") + Lang.get("Player_is_not_online"));
 
                         return;

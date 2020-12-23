@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class PrepareServerSwitchPacketHandler implements ResponsiblePacketHandler<PrepareServerSwitchPacket, IntegerPacket> {
     @Override
-    public @NotNull CompletableFuture<IntegerPacket> response(@NotNull PrepareServerSwitchPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public @NotNull CompletableFuture<IntegerPacket> response(@NotNull PrepareServerSwitchPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         ProxiedPlayer pp = WarpSystem.proxy().getPlayer(packet.getPlayer());
         ServerInfo info = WarpSystem.proxy().getServerInfo(packet.getServer());
 

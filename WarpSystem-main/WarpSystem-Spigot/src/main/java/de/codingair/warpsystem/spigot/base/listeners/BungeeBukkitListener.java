@@ -17,7 +17,7 @@ public class BungeeBukkitListener implements Listener {
 
     public BungeeBukkitListener() {
         WarpSystem.getDataHandler().registerHandler(InitialPacket.class, new InitialPacketHandler(this));
-        WarpSystem.getDataHandler().registerHandler(PrepareLoginMessagePacket.class, (packet, proxy, connection) -> BungeeBukkitListener.this.process(packet));
+        WarpSystem.getDataHandler().registerHandler(PrepareLoginMessagePacket.class, (packet, proxy, connection, direction) -> BungeeBukkitListener.this.process(packet));
     }
 
     @EventHandler

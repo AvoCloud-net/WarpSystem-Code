@@ -17,7 +17,7 @@ import java.util.List;
 
 public class MoveLocalPlayerWarpsPacketHandler implements PacketHandler<MoveLocalPlayerWarpsPacket> {
     @Override
-    public void process(@NotNull MoveLocalPlayerWarpsPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public void process(@NotNull MoveLocalPlayerWarpsPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         List<List<PlayerWarpData>> uploads = new ArrayList<>();
         List<PlayerWarpData> l = new ArrayList<>();
 

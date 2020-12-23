@@ -53,6 +53,7 @@ public class BungeeHandler extends DataHandler<ServerInfo> {
         registerHandler(PrepareTeleportPacket.class, new PrepareTeleportPacketHandler());
         registerHandler(ToggleForceTeleportsPacket.class, new ToggleForceTeleportsPacketHandler());
         registerHandler(PrepareCoordinationTeleportPacket.class, new PrepareCoordinationTeleportPacketHandler());
+        registerHandler(RequestUUIDPacket.class, new SendUUIDPacketHandler());
     }
 
     @Override

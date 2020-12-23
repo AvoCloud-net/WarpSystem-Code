@@ -23,7 +23,7 @@ import java.util.logging.Level;
 
 public class GlobalWarpTeleportPacketHandler implements ResponsiblePacketHandler<GlobalWarpTeleportPacket, IntegerPacket> {
     @Override
-    public @NotNull CompletableFuture<IntegerPacket> response(@NotNull GlobalWarpTeleportPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public @NotNull CompletableFuture<IntegerPacket> response(@NotNull GlobalWarpTeleportPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         GlobalWarpManager manager = WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS);
         String player = packet.getPlayer();
         String teleport = packet.getId();

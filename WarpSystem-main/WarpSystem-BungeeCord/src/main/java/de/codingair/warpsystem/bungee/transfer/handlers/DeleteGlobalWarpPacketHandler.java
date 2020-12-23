@@ -2,6 +2,7 @@ package de.codingair.warpsystem.bungee.transfer.handlers;
 
 import de.codingair.packetmanagement.handlers.ResponsiblePacketHandler;
 import de.codingair.packetmanagement.packets.impl.BooleanPacket;
+import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.spigot.DeleteGlobalWarpPacket;
 import de.codingair.warpsystem.base.transfer.serializeable.SGlobalWarp;
@@ -16,7 +17,7 @@ import java.util.concurrent.CompletableFuture;
 public class DeleteGlobalWarpPacketHandler implements ResponsiblePacketHandler<DeleteGlobalWarpPacket, BooleanPacket> {
 
     @Override
-    public @NotNull CompletableFuture<BooleanPacket> response(@NotNull DeleteGlobalWarpPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public @NotNull CompletableFuture<BooleanPacket> response(@NotNull DeleteGlobalWarpPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         GlobalWarpManager manager = WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS);
         SGlobalWarp warp = manager.get(packet.getWarp());
 

@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TeleportSpawnPacketHandler implements PacketHandler<TeleportSpawnPacket> {
     @Override
-    public void process(@NotNull TeleportSpawnPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public void process(@NotNull TeleportSpawnPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         ProxiedPlayer player = WarpSystem.proxy().getPlayer(packet.getPlayer());
         ServerInfo server = WarpSystem.proxy().getServerInfo(packet.isRespawn() ? SpawnManager.getInstance().getRespawn() : SpawnManager.getInstance().getSpawn());
 

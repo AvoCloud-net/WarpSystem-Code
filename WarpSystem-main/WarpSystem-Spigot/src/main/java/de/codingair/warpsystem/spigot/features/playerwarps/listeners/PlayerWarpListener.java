@@ -29,7 +29,7 @@ public class PlayerWarpListener implements Listener {
 
     public PlayerWarpListener() {
         //register Packets
-        WarpSystem.getDataHandler().registerHandler(SendPlayerWarpsPacket.class, (packet, proxy, connection) -> {
+        WarpSystem.getDataHandler().registerHandler(SendPlayerWarpsPacket.class, (packet, proxy, connection, direction) -> {
             List<PlayerWarpData> l = packet.getData();
 
             for(PlayerWarpData s : l) {
@@ -43,7 +43,7 @@ public class PlayerWarpListener implements Listener {
             PlayerWarpManager.getManager().updateGUIs();
         });
 
-        WarpSystem.getDataHandler().registerHandler(SendPlayerWarpUpdatePacket.class, (packet, proxy, connection) -> {
+        WarpSystem.getDataHandler().registerHandler(SendPlayerWarpUpdatePacket.class, (packet, proxy, connection, direction) -> {
             PlayerWarpUpdate update = packet.getUpdate();
 
             PlayerWarp w = PlayerWarpManager.getManager().getWarp(update.getId(), update.getOriginName());
@@ -52,16 +52,16 @@ public class PlayerWarpListener implements Listener {
             PlayerWarpManager.getManager().updateGUIs();
         });
 
-        WarpSystem.getDataHandler().registerHandler(SendPlayerWarpOptionsPacket.class, (packet, proxy, connection) -> PlayerWarpManager.getManager().setInactiveTime(packet.getInactiveTime()));
+        WarpSystem.getDataHandler().registerHandler(SendPlayerWarpOptionsPacket.class, (packet, proxy, connection, direction) -> PlayerWarpManager.getManager().setInactiveTime(packet.getInactiveTime()));
 
-        WarpSystem.getDataHandler().registerHandler(DeletePlayerWarpPacket.class, (packet, proxy, connection) -> {
+        WarpSystem.getDataHandler().registerHandler(DeletePlayerWarpPacket.class, (packet, proxy, connection, direction) -> {
             PlayerWarp warp = PlayerWarpManager.getManager().getWarp(packet.getId(), packet.getName());
             PlayerWarpManager.getManager().delete(warp, false);
             if(warp != null) warp.setSource(true);
             PlayerWarpManager.getManager().updateGUIs();
         });
 
-        WarpSystem.getDataHandler().registerHandler(PlayerWarpTeleportProcessPacket.class, (packet, proxy, connection) -> {
+        WarpSystem.getDataHandler().registerHandler(PlayerWarpTeleportProcessPacket.class, (packet, proxy, connection, direction) -> {
             PlayerWarp warp = PlayerWarpManager.getManager().getWarp(packet.getId(), packet.getName());
             if(warp != null) {
                 if(packet.increaseSales()) warp.increaseInactiveSales();

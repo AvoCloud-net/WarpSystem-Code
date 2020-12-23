@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class PlayerWarpTeleportProcessPacketHandler implements PacketHandler<PlayerWarpTeleportProcessPacket> {
     @Override
-    public void process(@NotNull PlayerWarpTeleportProcessPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public void process(@NotNull PlayerWarpTeleportProcessPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         PlayerWarpData w = PlayerWarpManager.getInstance().getWarp(packet.getId(), packet.getName());
 
         if(packet.increaseSales()) w.increaseInactiveSales();

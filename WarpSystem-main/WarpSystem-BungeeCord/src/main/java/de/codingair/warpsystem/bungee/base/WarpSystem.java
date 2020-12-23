@@ -185,15 +185,8 @@ public class WarpSystem extends Plugin implements Proxy {
     }
 
     private void copyFileUsingFileChannels(File source, File dest) throws IOException {
-        FileChannel inputChannel = null;
-        FileChannel outputChannel = null;
-        try {
-            inputChannel = new FileInputStream(source).getChannel();
-            outputChannel = new FileOutputStream(dest).getChannel();
+        try(FileChannel inputChannel = new FileInputStream(source).getChannel(); FileChannel outputChannel = new FileOutputStream(dest).getChannel()) {
             outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
-        } finally {
-            inputChannel.close();
-            outputChannel.close();
         }
     }
 

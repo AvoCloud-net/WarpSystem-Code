@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class PrepareTeleportPlayerToPlayerPacketHandler implements ResponsiblePacketHandler<PrepareTeleportPlayerToPlayerPacket, IntegerPacket> {
     @Override
-    public @NotNull CompletableFuture<IntegerPacket> response(@NotNull PrepareTeleportPlayerToPlayerPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public @NotNull CompletableFuture<IntegerPacket> response(@NotNull PrepareTeleportPlayerToPlayerPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         ProxiedPlayer player = Players.getPlayer(packet.getPlayer());
         ProxiedPlayer target = Players.getPlayer(packet.getDestinationPlayer());
 

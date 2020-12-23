@@ -1,6 +1,7 @@
 package de.codingair.warpsystem.spigot.transfer.handlers;
 
 import de.codingair.packetmanagement.handlers.PacketHandler;
+import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.bungee.UpdateGlobalWarpPacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class UpdateGlobalWarpPacketHandler implements PacketHandler<UpdateGlobalWarpPacket> {
     @Override
-    public void process(@NotNull UpdateGlobalWarpPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public void process(@NotNull UpdateGlobalWarpPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         switch(packet.getAction()) {
             case ADD:
                 ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).getGlobalWarps().put(packet.getName(), packet.getServer());

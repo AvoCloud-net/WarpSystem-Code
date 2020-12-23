@@ -1,5 +1,6 @@
 package de.codingair.warpsystem.bungee.features.teleport.listeners;
 
+import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.utils.ServerInitializeEvent;
 import de.codingair.warpsystem.bungee.features.teleport.managers.TeleportManager;
@@ -29,7 +30,7 @@ public class TeleportCommandListener implements Listener {
     public void onSwitch(ServerSwitchEvent e) {
         boolean tp, tpa;
         if((tp = TeleportManager.getInstance().deniesForceTps(e.getPlayer())) | (tpa = TeleportManager.getInstance().deniesForceTpRequests(e.getPlayer())))
-            WarpSystem.getInstance().getDataHandler().send(new ToggleForceTeleportsPacket(e.getPlayer().getName(), tp, tpa), e.getPlayer().getServer().getInfo());
+            WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(e.getPlayer().getName(), tp, tpa), e.getPlayer().getServer().getInfo(), Direction.DOWN);
     }
 
     @EventHandler
@@ -54,7 +55,7 @@ public class TeleportCommandListener implements Listener {
 
         ServerInfo info = ((ProxiedPlayer) e.getSender()).getServer().getInfo();
         if(c != null && !isEnabled(info, c)) {
-            WarpSystem.getInstance().getDataHandler().send(new PerformCommandOnSpigotPacket(((ProxiedPlayer) e.getSender()).getName(), e.getMessage().substring(1)), info);
+            WarpSystem.getDataHandler().send(new PerformCommandOnSpigotPacket(((ProxiedPlayer) e.getSender()).getName(), e.getMessage().substring(1)), info, Direction.DOWN);
             e.setCancelled(true);
         }
     }

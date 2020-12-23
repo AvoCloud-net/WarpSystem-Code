@@ -1,6 +1,7 @@
 package de.codingair.warpsystem.spigot.transfer.handlers;
 
 import de.codingair.packetmanagement.handlers.PacketHandler;
+import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.bungee.TeleportPlayerToCoordsPacket;
 import de.codingair.warpsystem.spigot.api.players.BungeePlayer;
@@ -19,7 +20,7 @@ import java.text.DecimalFormat;
 
 public class TeleportPlayerToCoordsPacketHandler implements PacketHandler<TeleportPlayerToCoordsPacket> {
     @Override
-    public void process(@NotNull TeleportPlayerToCoordsPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public void process(@NotNull TeleportPlayerToCoordsPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         Player gate = Bukkit.getPlayer(packet.getGate());
         Player player = Bukkit.getPlayer(packet.getPlayer());
         String world = packet.getWorld() != null ? packet.getWorld() : player == null ? gate.getWorld().getName() : player.getWorld().getName();

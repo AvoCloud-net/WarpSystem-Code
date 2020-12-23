@@ -16,7 +16,7 @@ public class VanishManager implements Listener {
     private final List<String> vanished = new ArrayList<>();
 
     public VanishManager() {
-        WarpSystem.getDataHandler().registerHandler(PacketVanishInfo.class, (packet, proxy, connection) -> {
+        WarpSystem.getDataHandler().registerHandler(PacketVanishInfo.class, (packet, proxy, connection, direction) -> {
             if(packet.isVanished()) {
                 if(!vanished.contains(packet.getPlayer())) vanished.add(packet.getPlayer().toLowerCase());
             } else vanished.remove(packet.getPlayer());

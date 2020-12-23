@@ -1,6 +1,7 @@
 package de.codingair.warpsystem.base.transfer.handlers;
 
 import de.codingair.packetmanagement.handlers.PacketHandler;
+import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.features.cooldown.Cooldown;
 import de.codingair.warpsystem.base.features.cooldown.ICooldownManager;
@@ -16,7 +17,7 @@ public class CooldownDataPacketHandler implements PacketHandler<CooldownDataPack
     }
 
     @Override
-    public void process(@NotNull CooldownDataPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public void process(@NotNull CooldownDataPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         for(Cooldown c : packet.getCooldown()) {
             manager.addCooldown(c);
         }

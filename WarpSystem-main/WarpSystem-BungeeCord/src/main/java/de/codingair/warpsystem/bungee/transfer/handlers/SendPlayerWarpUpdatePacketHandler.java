@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class SendPlayerWarpUpdatePacketHandler implements PacketHandler<SendPlayerWarpUpdatePacket> {
     @Override
-    public void process(@NotNull SendPlayerWarpUpdatePacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public void process(@NotNull SendPlayerWarpUpdatePacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         PlayerWarpUpdate update = packet.getUpdate();
         PlayerWarpData w = PlayerWarpManager.getInstance().getWarp(update.getId(), update.getOriginName());
         w.apply(update);

@@ -4,6 +4,7 @@ import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.packetmanagement.handlers.ResponsiblePacketHandler;
 import de.codingair.packetmanagement.packets.impl.IntegerPacket;
+import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.general.StartTeleportToPlayerPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.PrepareTeleportPlayerToPlayerPacket;
@@ -24,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class StartTeleportToPlayerPacketHandler implements ResponsiblePacketHandler<StartTeleportToPlayerPacket, IntegerPacket> {
     @Override
-    public @NotNull CompletableFuture<IntegerPacket> response(@NotNull StartTeleportToPlayerPacket packet, @NotNull Proxy proxy, @Nullable Object connection) {
+    public @NotNull CompletableFuture<IntegerPacket> response(@NotNull StartTeleportToPlayerPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         Player player = Bukkit.getPlayerExact(packet.getPlayer());
 
         if(player == null) {

@@ -350,7 +350,7 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
                 }});
                 packet.setClearable(true);
 
-                WarpSystem.getInstance().getDataHandler().send(player, packet);
+                WarpSystem.getDataHandler().send(packet, player);
             }
 
             String s;

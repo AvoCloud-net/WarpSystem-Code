@@ -1,6 +1,7 @@
 package de.codingair.warpsystem.spigot.transfer.handlers;
 
 import de.codingair.packetmanagement.handlers.PacketHandler;
+import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.bungee.InitialPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.SendOptionsPacket;
@@ -21,7 +22,7 @@ public class InitialPacketHandler implements PacketHandler<InitialPacket> {
     }
 
     @Override
-    public void process(@NotNull InitialPacket packet, @NotNull Proxy proxy, @Nullable @Nullable Object connection) {
+    public void process(@NotNull InitialPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         WarpSystem.getDataHandler().send(new SendOptionsPacket(new ServerOptions(WarpSystem.getInstance().getDescription().getVersion(), WarpSystem.opt().getFetchUpdateOption())));
 
         WarpSystem.getInstance().setCurrentServer(packet.getServerName());

@@ -20,7 +20,7 @@ public class SetupAssistantListener implements Listener {
     private Connection.Unsafe backup = null;
 
     public SetupAssistantListener() {
-        WarpSystem.getDataHandler().registerHandler(ToggleSetupAssistantPacket.class, (packet, proxy, connection) -> {
+        WarpSystem.getDataHandler().registerHandler(ToggleSetupAssistantPacket.class, (packet, proxy, connection, direction) -> {
             String name = packet.getName();
             if(name == null) {
                 if(editing instanceof ProxiedPlayer) {
