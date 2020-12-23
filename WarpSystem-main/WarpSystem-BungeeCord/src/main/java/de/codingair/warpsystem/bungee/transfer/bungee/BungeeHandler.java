@@ -1,5 +1,6 @@
 package de.codingair.warpsystem.bungee.transfer.bungee;
 
+import de.codingair.codingapi.bungeecord.BungeeAPI;
 import de.codingair.packetmanagement.DataHandler;
 import de.codingair.packetmanagement.handlers.PacketHandler;
 import de.codingair.packetmanagement.packets.Packet;
@@ -16,9 +17,14 @@ import de.codingair.warpsystem.base.transfer.packets.utils.PacketType;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.transfer.handlers.*;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.PluginMessageEvent;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.event.EventHandler;
 import org.jetbrains.annotations.NotNull;
 
-public class BungeeHandler extends DataHandler<ServerInfo> {
+public class BungeeHandler extends DataHandler<ServerInfo> implements Listener {
     public BungeeHandler(WarpSystem plugin) {
         super(plugin.getDescription().getName().toLowerCase(), plugin);
     }
@@ -56,6 +62,12 @@ public class BungeeHandler extends DataHandler<ServerInfo> {
         registerHandler(RequestUUIDPacket.class, new SendUUIDPacketHandler());
     }
 
+    public void onEnable() {
+        BungeeAPI.getProxy().getPluginManager().registerListener((WarpSystem) proxy, this);
+        BungeeAPI.getProxy().registerChannel(channelProxy);
+        BungeeAPI.getProxy().registerChannel(channelBackend);
+    }
+
     @Override
     protected boolean isConnected(Direction direction) {
         return direction == Direction.DOWN;
@@ -64,6 +76,13 @@ public class BungeeHandler extends DataHandler<ServerInfo> {
     @Override
     protected void send(byte[] data, ServerInfo connection, Direction direction) {
         if(direction == Direction.DOWN) connection.sendData(channelBackend, data);
+    }
+
+    @EventHandler
+    public void onPluginMessage(PluginMessageEvent e) {
+        if(e.getTag().equals(getChannelProxy())) {
+            receive(e.getData(), ((ProxiedPlayer) e.getReceiver()).getServer().getInfo(), Direction.DOWN);
+        }
     }
 
     @Override

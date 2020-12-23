@@ -46,7 +46,6 @@ public class WarpSystem extends Plugin implements Proxy {
         timer.start();
 
         BungeeAPI.getInstance().onEnable(this);
-        dataManager.preLoad();
 
         log(" ");
         log("________________________________________________________");
@@ -55,7 +54,9 @@ public class WarpSystem extends Plugin implements Proxy {
         log(" ");
         log("Status:");
         log(" ");
+        dataManager.preLoad();
         log("Initialize SpigotConnector");
+        this.dataHandler.onEnable();
 
         this.fileManager.loadFile("Config", "/", "de/codingair/warpsystem/bungee/");
         try {
