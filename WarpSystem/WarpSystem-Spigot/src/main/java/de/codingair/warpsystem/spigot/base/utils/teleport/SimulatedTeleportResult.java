@@ -1,5 +1,7 @@
 package de.codingair.warpsystem.spigot.base.utils.teleport;
 
+import de.codingair.warpsystem.api.Result;
+
 public class SimulatedTeleportResult {
     private final String error;
     private final Result result;

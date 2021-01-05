@@ -4,6 +4,8 @@ import de.codingair.codingapi.server.sounds.Sound;
 import de.codingair.codingapi.server.sounds.SoundData;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.utils.ImprovedDouble;
+import de.codingair.warpsystem.api.Options;
+import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.guis.editor.pages.SoundPage;
 import de.codingair.warpsystem.spigot.base.language.Lang;
@@ -13,12 +15,15 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.
 import de.codingair.warpsystem.spigot.features.animations.AnimationManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TeleportOptions {
-    private final List<Callback<Result>> callback = new ArrayList<>();
+    private final Set<Callback<Result>> callback = new HashSet<>();
     private Origin origin;
     private Destination destination;
 
@@ -71,6 +76,26 @@ public class TeleportOptions {
         this.cancelSound = new SoundData(Sound.ENTITY_ITEM_BREAK, 0.7F, 1F);
         this.afterEffects = WarpSystem.opt().isAfterEffects();
         this.publicAnimations = WarpSystem.opt().isPublicAnimations();
+    }
+
+    public TeleportOptions(Options o) {
+        this.destination = new Destination(o.getDestination(), o.randomOffset(new Vector()));
+        this.origin = Origin.Custom;
+        this.displayName = o.displayName(null);
+        this.permission = o.permission(null);
+        this.costs = o.costs(0);
+        this.delay = o.delay(WarpSystem.opt().getTeleportDelay());
+        this.canMove = o.canMove(WarpSystem.opt().isAllowMove());
+        this.waitForTeleport = o.waitForTeleport(false);
+        this.payMessage = o.payMessage(Lang.getPrefix() + Lang.get("Money_Paid"));
+        this.paymentDeniedMessage = o.paymentDeniedMessage(Lang.getPrefix() + Lang.get("Payment_denied"));
+        this.message = o.message(Lang.getPrefix() + Lang.get("Teleported_To"));
+        this.serverNotOnline = o.serverNotOnline(Lang.getPrefix() + Lang.get("Server_Is_Not_Online"));
+        this.silent = false;
+        this.teleportSound = o.teleportSound(null);
+        this.cancelSound = o.cancelSound(new SoundData(Sound.ENTITY_ITEM_BREAK, 0.7F, 1F));
+        this.afterEffects = o.afterEffects(WarpSystem.opt().isAfterEffects());
+        this.publicAnimations = o.publicAnimations(WarpSystem.opt().isPublicAnimations());
     }
 
     public Location buildLocation() {

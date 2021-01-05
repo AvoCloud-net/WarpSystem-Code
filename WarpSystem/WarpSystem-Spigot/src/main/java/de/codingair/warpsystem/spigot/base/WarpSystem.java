@@ -29,7 +29,7 @@ import de.codingair.warpsystem.spigot.base.utils.options.specific.GeneralOptions
 import de.codingair.warpsystem.spigot.base.utils.options.specific.PortalOptions;
 import de.codingair.warpsystem.spigot.base.utils.options.specific.WarpGUIOptions;
 import de.codingair.warpsystem.spigot.base.utils.options.specific.WarpSignOptions;
-import de.codingair.warpsystem.spigot.base.utils.teleport.Result;
+import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.base.utils.updates.UpdateNotifier;
 import de.codingair.warpsystem.spigot.base.utils.updates.UpdateReader;
 import de.codingair.warpsystem.spigot.transfer.jar.JarReceiver;

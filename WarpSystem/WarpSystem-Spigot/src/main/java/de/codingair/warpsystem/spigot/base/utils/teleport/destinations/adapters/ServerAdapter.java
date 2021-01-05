@@ -5,7 +5,7 @@ import de.codingair.codingapi.tools.Location;
 import de.codingair.warpsystem.base.transfer.packets.spigot.PrepareServerSwitchPacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.language.Lang;
-import de.codingair.warpsystem.spigot.base.utils.teleport.Result;
+import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.base.utils.teleport.SimulatedTeleportResult;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.DestinationAdapter;
 import org.bukkit.entity.Player;

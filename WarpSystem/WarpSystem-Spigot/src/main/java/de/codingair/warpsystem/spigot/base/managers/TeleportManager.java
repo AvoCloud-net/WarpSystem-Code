@@ -4,9 +4,12 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import de.codingair.codingapi.player.MessageAPI;
 import de.codingair.codingapi.tools.Callback;
+import de.codingair.warpsystem.api.ITeleportManager;
+import de.codingair.warpsystem.api.Options;
+import de.codingair.warpsystem.api.TeleportService;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.language.Lang;
-import de.codingair.warpsystem.spigot.base.utils.teleport.Result;
+import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.DestinationType;
 import de.codingair.warpsystem.spigot.base.utils.teleport.v2.Teleport;
@@ -15,9 +18,10 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-public class TeleportManager {
+public class TeleportManager implements ITeleportManager {
     private static TeleportManager instance;
     public static final String NO_PERMISSION = "%NO_PERMISSION%";
     private Cache<Player, Teleport> teleports;
@@ -36,6 +40,22 @@ public class TeleportManager {
 
     public void save() {
         WarpSystem.getInstance().getFileManager().getFile("Config").saveConfig();
+    }
+
+    @Override
+    public synchronized CompletableFuture<Result> teleport(Player player, Options options) {
+        TeleportOptions o = new TeleportOptions(options);
+
+        CompletableFuture<Result> future = new CompletableFuture<>();
+        o.addCallback(new Callback<Result>() {
+            @Override
+            public void accept(Result result) {
+                future.complete(result);
+            }
+        });
+
+        this.teleport(player, o);
+        return future;
     }
 
     public synchronized void teleport(Player player, TeleportOptions options) {
@@ -108,7 +128,11 @@ public class TeleportManager {
     }
 
     public static TeleportManager getInstance() {
-        if(instance == null) instance = new TeleportManager();
+        if(instance == null) {
+            instance = new TeleportManager();
+            TeleportService.setInstanceIfAbsent(instance);
+        }
+
         return instance;
     }
 }

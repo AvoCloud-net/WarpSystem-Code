@@ -4,9 +4,10 @@ import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.io.utils.DataWriter;
 import de.codingair.codingapi.tools.io.utils.Serializable;
 import de.codingair.codingapi.utils.ImprovedDouble;
+import de.codingair.warpsystem.api.IDestination;
+import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.api.PAPI;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.utils.teleport.Result;
 import de.codingair.warpsystem.spigot.base.utils.teleport.SimulatedTeleportResult;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.*;
 import de.codingair.warpsystem.spigot.features.globalwarps.managers.GlobalWarpManager;
@@ -50,6 +51,13 @@ public class Destination implements Serializable {
         this.adapter = adapter;
         this.adapter.destination = this;
         this.customOptions = new Options();
+    }
+
+    public Destination(IDestination destination, Vector randomOffset) {
+        this(new CustomAdapter(destination));
+        this.offsetX = randomOffset.getX();
+        this.offsetY = randomOffset.getY();
+        this.offsetZ = randomOffset.getZ();
     }
 
     @Deprecated
