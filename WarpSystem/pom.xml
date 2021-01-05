@@ -121,6 +121,18 @@
                 <version>1.5.21</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>io.papermc</groupId>
+                <artifactId>paperlib</artifactId>
+                <version>1.0.5</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.github.CodingAir</groupId>
+                <artifactId>WarpSystem-API</artifactId>
+                <version>4.3.0</version>
+                <scope>provided</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

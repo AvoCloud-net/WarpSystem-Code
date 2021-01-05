@@ -97,13 +97,11 @@
         <dependency>
             <groupId>io.papermc</groupId>
             <artifactId>paperlib</artifactId>
-            <version>1.0.5</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.github.CodingAir</groupId>
             <artifactId>WarpSystem-API</artifactId>
-            <version>4.2.12</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
