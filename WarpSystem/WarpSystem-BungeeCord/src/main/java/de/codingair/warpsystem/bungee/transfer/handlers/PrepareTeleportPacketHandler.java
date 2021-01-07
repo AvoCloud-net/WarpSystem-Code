@@ -5,8 +5,8 @@ import de.codingair.packetmanagement.handlers.ResponsiblePacketHandler;
 import de.codingair.packetmanagement.packets.impl.LongPacket;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
-import de.codingair.warpsystem.base.transfer.packets.bungee.TeleportPlayerToCoordsPacket;
-import de.codingair.warpsystem.base.transfer.packets.bungee.TeleportPlayerToPlayerPacket;
+import de.codingair.warpsystem.base.transfer.packets.proxy.TeleportPlayerToCoordsPacket;
+import de.codingair.warpsystem.base.transfer.packets.proxy.TeleportPlayerToPlayerPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.PrepareTeleportPacket;
 import de.codingair.warpsystem.bungee.api.Players;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
@@ -24,7 +24,7 @@ public class PrepareTeleportPacketHandler implements ResponsiblePacketHandler<Pr
         ProxiedPlayer sender = Players.getPlayer(packet.getSender());
         ProxiedPlayer targetPlayer = packet.getSender().equalsIgnoreCase(packet.getTarget()) ? sender : Players.getPlayer(packet.getTarget());
 
-        if(targetPlayer == null || !TeleportManager.getInstance().isAccessible(targetPlayer.getServer().getInfo())) {
+        if(targetPlayer == null || TeleportManager.getInstance().isAccessible(targetPlayer.getServer().getInfo())) {
             return CompletableFuture.completedFuture(new LongPacket((((long) 0) << 32)));
         }
 
@@ -39,7 +39,7 @@ public class PrepareTeleportPacketHandler implements ResponsiblePacketHandler<Pr
             WarpSystem.getInstance().getServerManager().getOnlineServer().forEach(s -> {
                 if(s.equals(connection)) return;
                 handled.setValue(handled.getValue() + s.getPlayers().size());
-                if(!TeleportManager.getInstance().isAccessible(s)) return;
+                if(TeleportManager.getInstance().isAccessible(s)) return;
 
                 //tp all
                 for(ProxiedPlayer player : s.getPlayers()) {
@@ -57,7 +57,7 @@ public class PrepareTeleportPacketHandler implements ResponsiblePacketHandler<Pr
             //only recipient
             ProxiedPlayer player = Players.getPlayer(packet.getRecipient());
 
-            if(player == null || !TeleportManager.getInstance().isAccessible(player.getServer().getInfo())) {
+            if(player == null || TeleportManager.getInstance().isAccessible(player.getServer().getInfo())) {
                 //not online/accessible
                 return CompletableFuture.completedFuture(new LongPacket(0));
             } else if(TeleportManager.getInstance().deniesForceTps(player) && !player.equals(sender)) {

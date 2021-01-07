@@ -8,6 +8,7 @@ import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.language.Lang;
 import de.codingair.warpsystem.spigot.features.teleportcommand.TeleportCommandManager;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class CTpaAll extends WSCommandBuilder {
     public CTpaAll() {
@@ -28,14 +29,7 @@ public class CTpaAll extends WSCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                TeleportCommandManager.getInstance().invite(sender.getName(), true, new Callback<Long>() {
-                    @Override
-                    public void accept(Long result) {
-                        int handled = (int) (result >> 32);
-                        int sent = result.intValue();
-                        sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_All").replace("%RECEIVED%", sent + "").replace("%MAX%", handled + ""));
-                    }
-                }, null);
+                TeleportCommandManager.handler().tpaAll((Player) sender);
                 return false;
             }
         }.setOnlyPlayers(true));

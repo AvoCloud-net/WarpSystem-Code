@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.base.transfer.packets.spigot;
 
 import de.codingair.packetmanagement.packets.RequestPacket;
-import de.codingair.warpsystem.base.transfer.packets.bungee.SendUUIDPacket;
+import de.codingair.warpsystem.base.transfer.packets.proxy.SendUUIDPacket;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

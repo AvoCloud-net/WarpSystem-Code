@@ -51,69 +51,26 @@ public class CTpa extends WSCommandBuilder {
 
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
-                Player p = (Player) sender;
-                if(WarpSystem.getInstance().isOnBungeeCord()) {
-                    suggestions.add(TeleportTabCompleteKeys.ID_TPA);
-
-                    StringBuilder builder = new StringBuilder("tpa");
-                    for(String arg : args) {
-                        builder.append(" ").append(arg);
-                    }
-                    suggestions.add(builder.toString());
-                } else {
-                    for(Player player : Bukkit.getOnlinePlayers()) {
-                        if(player.getName().equals(sender.getName()) || !p.canSee(player)) continue;
-                        suggestions.add(ChatColor.stripColor(player.getName()));
-                    }
-                }
+                TeleportCommandManager.handler().suggestTpa((Player) sender, args, suggestions, false);
             }
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
+                Player p = (Player) sender;
                 Player other = Bukkit.getPlayer(argument);
-                if(other != null && !((Player) sender).canSee(other)) {
+                if(other != null && !(p).canSee(other)) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
-                    return false;
+                    return true;
                 }
 
                 if(argument.equalsIgnoreCase(sender.getName())) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_Cant_Teleport_Yourself"));
-                    return false;
+                    return true;
                 }
 
-                if(WarpSystem.cooldown().checkPlayer((Player) sender, Origin.TeleportRequest)) return false;
-
-                //get original name
-                Callback<String> callback = new Callback<String>() {
-                    @Override
-                    public void accept(String name) {
-                        if(name == null) {
-                            sender.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
-                            return;
-                        }
-
-                        TeleportCommandManager.getInstance().invite(sender.getName(), false, new Callback<Long>() {
-                            @Override
-                            public void accept(Long result) {
-                                int handled = (int) (result >> 32);
-                                int sent = result.intValue();
-
-                                if(handled == 0) sender.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
-                                else if(handled == -1) sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_denied_sender").replace("%PLAYER%", ChatColor.stripColor(name)));
-                                else if(sent == 0) sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_already_sent"));
-                                else sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_sent").replace("%PLAYER%", ChatColor.stripColor(name)));
-                            }
-                        }, name);
-                    }
-                };
-
-                if(!WarpSystem.getInstance().isOnBungeeCord() || !TeleportCommandManager.getInstance().isProxy() || other != null) {
-                    callback.accept(other == null ? argument : other.getName());
-                    return false;
-                }
-
-                WarpSystem.getDataHandler().send(new RequestFullNamePacket(argument), (Player) sender).thenAccept(packet -> callback.accept(packet.a()));
-                return false;
+                if(WarpSystem.cooldown().checkPlayer(p, Origin.TeleportRequest)) return true;
+                TeleportCommandManager.handler().tpa(p, argument, other, false);
+                return true;
             }
         });
     }

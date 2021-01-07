@@ -6,8 +6,8 @@ import de.codingair.warpsystem.base.transfer.packets.spigot.DeleteGlobalWarpPack
 import de.codingair.warpsystem.base.transfer.packets.spigot.GlobalWarpTeleportPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.PublishGlobalWarpPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RequestGlobalWarpNamesPacket;
-import de.codingair.warpsystem.base.transfer.serializeable.SGlobalWarp;
-import de.codingair.warpsystem.base.transfer.serializeable.SLocation;
+import de.codingair.warpsystem.base.transfer.utils.serializeable.SGlobalWarp;
+import de.codingair.warpsystem.base.transfer.utils.serializeable.SLocation;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.managers.TeleportManager;

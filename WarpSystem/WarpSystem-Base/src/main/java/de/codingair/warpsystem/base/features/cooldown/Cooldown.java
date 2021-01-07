@@ -2,7 +2,7 @@ package de.codingair.warpsystem.base.features.cooldown;
 
 import com.google.common.base.Preconditions;
 import de.codingair.codingapi.tools.io.utils.DataWriter;
-import de.codingair.warpsystem.base.transfer.serializeable.Serializable;
+import de.codingair.warpsystem.base.transfer.utils.serializeable.Serializable;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

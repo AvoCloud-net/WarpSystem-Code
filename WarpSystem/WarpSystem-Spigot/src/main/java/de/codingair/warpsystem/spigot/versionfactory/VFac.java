@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 public class VFac {
     public static final String PATH = "de.codingair.warpsystem.spigot.versionfactory.";
     public static final String OBJECTS = PATH + "objects.";
+    public static final String TELEPORT = PATH + "teleport.";
 
     public static <A> A build(Class<A> c, VKey key, Object... args) {
         return c.cast(build(key, args));

@@ -10,8 +10,12 @@ import de.codingair.warpsystem.bungee.api.chatinput.ChatInputManager;
 import de.codingair.warpsystem.bungee.base.commands.CWarpSystem;
 import de.codingair.warpsystem.bungee.base.language.Lang;
 import de.codingair.warpsystem.bungee.base.listeners.MainListener;
+import de.codingair.warpsystem.bungee.base.listeners.PlayerDataListener;
 import de.codingair.warpsystem.bungee.base.listeners.SetupAssistantListener;
-import de.codingair.warpsystem.bungee.base.managers.*;
+import de.codingair.warpsystem.bungee.base.managers.CooldownManager;
+import de.codingair.warpsystem.bungee.base.managers.DataManager;
+import de.codingair.warpsystem.bungee.base.managers.JarManager;
+import de.codingair.warpsystem.bungee.base.managers.ServerManager;
 import de.codingair.warpsystem.bungee.transfer.bungee.BungeeHandler;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -34,7 +38,7 @@ public class WarpSystem extends Plugin implements Proxy {
     private final Timer timer = new Timer();
     private ServerManager serverManager;
     private CooldownManager cooldownManager;
-    private VanishManager vanishManager;
+    private final PlayerDataListener playerDataListener = new PlayerDataListener();
 
     public static void log(String message) {
         System.out.println(message);
@@ -67,12 +71,12 @@ public class WarpSystem extends Plugin implements Proxy {
 
         //listener
         getProxy().getPluginManager().registerListener(this, new MainListener());
-        getProxy().getPluginManager().registerListener(this, vanishManager = new VanishManager());
         getProxy().getPluginManager().registerListener(this, cooldownManager = new CooldownManager());
 
         cooldownManager.load();
 
         getProxy().getPluginManager().registerListener(this, new SetupAssistantListener());
+        getProxy().getPluginManager().registerListener(this, this.playerDataListener);
 
         this.serverManager = new ServerManager();
         this.serverManager.run();
@@ -208,10 +212,6 @@ public class WarpSystem extends Plugin implements Proxy {
         return dataManager;
     }
 
-    public static VanishManager getVanishManager() {
-        return getInstance().vanishManager;
-    }
-
     public JarManager getJarManager() {
         return jarManager;
     }
@@ -222,5 +222,9 @@ public class WarpSystem extends Plugin implements Proxy {
 
     public static WarpSystem getInstance() {
         return instance;
+    }
+
+    public PlayerDataListener getPlayerListener() {
+        return playerDataListener;
     }
 }

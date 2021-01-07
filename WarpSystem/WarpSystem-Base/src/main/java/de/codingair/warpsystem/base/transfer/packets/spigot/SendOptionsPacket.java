@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.base.transfer.packets.spigot;
 
-import de.codingair.warpsystem.base.transfer.serializeable.ServerOptions;
+import de.codingair.warpsystem.base.transfer.utils.serializeable.ServerOptions;
 import de.codingair.packetmanagement.packets.Packet;
 
 import java.io.DataInputStream;

@@ -17,9 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class TeleportOptions {
@@ -81,7 +79,7 @@ public class TeleportOptions {
     public TeleportOptions(Options o) {
         this.destination = new Destination(o.getDestination(), o.randomOffset(new Vector()));
         this.origin = Origin.Custom;
-        this.displayName = o.displayName(null);
+        this.displayName = o.displayName();
         this.permission = o.permission(null);
         this.costs = o.costs(0);
         this.delay = o.delay(WarpSystem.opt().getTeleportDelay());

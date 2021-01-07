@@ -51,17 +51,7 @@ public class CTpAll extends WSCommandBuilder {
                     iSent++;
                 }
 
-                if(WarpSystem.getInstance().isOnBungeeCord() && TeleportCommandManager.getInstance().isProxy()) {
-                    int finalI = iSent;
-                    int finalIHandled = iHandled;
-                    WarpSystem.getDataHandler().send(new PrepareTeleportPacket(sender.getName(), null, sender.getName()), p).thenAccept(packet -> {
-                        long result = packet.a();
-                        int handled = (int) (result >> 32);
-                        int sent = (int) result;
-
-                        sender.sendMessage(Lang.getPrefix() + Lang.get("Teleport_all").replace("%AMOUNT%", (finalI + sent) + "").replace("%MAX%", (finalIHandled + handled) + ""));
-                    });
-                } else sender.sendMessage(Lang.getPrefix() + Lang.get("Teleport_all").replace("%AMOUNT%", iSent + "").replace("%MAX%", iHandled + ""));
+                TeleportCommandManager.handler().tpAll(p, iHandled, iSent);
                 return false;
             }
         }.setOnlyPlayers(true));

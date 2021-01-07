@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.base.transfer.packets.spigot.utils;
 
-import de.codingair.warpsystem.base.transfer.serializeable.Serializable;
+import de.codingair.warpsystem.base.transfer.utils.serializeable.Serializable;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

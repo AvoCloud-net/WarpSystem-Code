@@ -3,7 +3,7 @@ package de.codingair.warpsystem.spigot.transfer.jar;
 import de.codingair.packetmanagement.handlers.PacketHandler;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
-import de.codingair.warpsystem.base.transfer.packets.bungee.SendJarPacket;
+import de.codingair.warpsystem.base.transfer.packets.proxy.SendJarPacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

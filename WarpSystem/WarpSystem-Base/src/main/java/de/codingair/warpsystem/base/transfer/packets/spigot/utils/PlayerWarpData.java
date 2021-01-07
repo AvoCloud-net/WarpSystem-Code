@@ -3,7 +3,7 @@ package de.codingair.warpsystem.base.transfer.packets.spigot.utils;
 import de.codingair.codingapi.tools.io.JSON.BungeeJSON;
 import de.codingair.codingapi.tools.io.lib.JSONArray;
 import de.codingair.codingapi.tools.io.utils.DataWriter;
-import de.codingair.warpsystem.base.transfer.serializeable.Serializable;
+import de.codingair.warpsystem.base.transfer.utils.serializeable.Serializable;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

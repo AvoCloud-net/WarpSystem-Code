@@ -4,7 +4,7 @@ import de.codingair.codingapi.bungeecord.files.ConfigFile;
 import de.codingair.codingapi.tools.io.JSON.BungeeJSON;
 import de.codingair.codingapi.tools.io.lib.JSONArray;
 import de.codingair.packetmanagement.utils.Direction;
-import de.codingair.warpsystem.base.transfer.packets.bungee.SendPlayerWarpOptionsPacket;
+import de.codingair.warpsystem.base.transfer.packets.proxy.SendPlayerWarpOptionsPacket;
 import de.codingair.warpsystem.base.transfer.packets.general.DeletePlayerWarpPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.utils.PlayerWarpData;
 import de.codingair.warpsystem.base.utils.Manager;

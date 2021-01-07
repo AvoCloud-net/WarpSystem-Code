@@ -3,8 +3,9 @@ package de.codingair.warpsystem.spigot.features.teleportcommand;
 import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.codingapi.player.chat.ChatButtonManager;
 import de.codingair.codingapi.tools.Callback;
-import de.codingair.warpsystem.base.transfer.packets.spigot.TeleportCommandOptionsPacket;
+import de.codingair.warpsystem.base.transfer.packets.general.TeleportCommandOptionsPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.ToggleForceTeleportsPacket;
+import de.codingair.warpsystem.base.transfer.utils.TeleportCommandOptions;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.language.Lang;
@@ -20,14 +21,13 @@ import de.codingair.warpsystem.spigot.features.FeatureType;
 import de.codingair.warpsystem.spigot.features.teleportcommand.commands.*;
 import de.codingair.warpsystem.spigot.features.teleportcommand.listeners.BackListener;
 import de.codingair.warpsystem.spigot.features.teleportcommand.listeners.TeleportListener;
+import de.codingair.warpsystem.spigot.versionfactory.VFac;
+import de.codingair.warpsystem.spigot.versionfactory.VKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @AvailableForSetupAssistant(type = "TeleportCommands", config = "Config")
 @Function(name = "Enabled", defaultValue = "true", configPath = "WarpSystem.Functions.TeleportCommand", clazz = Boolean.class)
@@ -45,16 +45,19 @@ import java.util.Map;
 public class TeleportCommandManager implements Manager, BungeeFeature, Collectible {
     private final HashMap<String, List<Invitation>> invites = new HashMap<>();
 
-    private final List<String> denyTpa = new ArrayList<>();
-    private final List<String> denyForceTps = new ArrayList<>();
+    private final Set<String> denyTpa = new HashSet<>();
+    private final Set<String> denyForceTps = new HashSet<>();
 
     private final HashMap<String, List<Location>> backHistory = new HashMap<>();
-    private final List<String> usingBackCommand = new ArrayList<>();
+    private final Set<String> usingBackCommand = new HashSet<>();
 
     private int expireDelay = 30;
     private int backHistorySize = 1;
     private int tpaCosts = 0;
     private boolean proxy = false;
+
+    private final Map<String, TeleportCommandOptions> serverOptions = new HashMap<>();
+    private ITeleportCommandHandler handler;
 
     private CTeleport tp;
     private CTpHere tpHere;
@@ -134,6 +137,7 @@ public class TeleportCommandManager implements Manager, BungeeFeature, Collectib
             }
         });
 
+        this.handler = VFac.build(VKey.TeleportCommandHandler);
         return true;
     }
 
@@ -241,7 +245,7 @@ public class TeleportCommandManager implements Manager, BungeeFeature, Collectib
 
     public void setDenyForceTps(Player player, boolean deny) {
         if(deny) {
-            if(!this.denyForceTps.contains(player.getName())) this.denyForceTps.add(player.getName());
+            this.denyForceTps.add(player.getName());
         } else this.denyForceTps.remove(player.getName());
     }
 
@@ -374,5 +378,22 @@ public class TeleportCommandManager implements Manager, BungeeFeature, Collectib
 
     public int getBackHistorySize() {
         return backHistorySize;
+    }
+
+    public static ITeleportCommandHandler handler() {
+        return getInstance().handler;
+    }
+
+    public void registerServerOptions(String server, TeleportCommandOptions options) {
+        this.serverOptions.put(server.toLowerCase(), options);
+    }
+
+    public TeleportCommandOptions getServerOptions(String server) {
+        if(server == null) return null;
+        return this.serverOptions.get(server.toLowerCase());
+    }
+
+    public boolean isServerAccessible(String server) {
+        return getServerOptions(server) != null;
     }
 }

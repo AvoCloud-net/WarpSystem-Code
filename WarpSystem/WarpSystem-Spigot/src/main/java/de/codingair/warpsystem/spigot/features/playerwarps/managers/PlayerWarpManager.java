@@ -682,7 +682,7 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
     }
 
     public List<PlayerWarp> getOwnWarps(Player player) {
-        return getOwnWarps(WarpSystem.getInstance().getUUIDManager().get(player));
+        return getOwnWarps(WarpSystem.getInstance().getPlayerDataManager().get(player));
     }
 
     public List<PlayerWarp> getOwnWarps(UUID id) {
@@ -800,7 +800,7 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
         PlayerWarp pWarp = null; //private warp
 
         if(prefer == null) {
-            List<PlayerWarp> warps = this.warps.get(WarpSystem.getInstance().getUUIDManager().get(player));
+            List<PlayerWarp> warps = this.warps.get(WarpSystem.getInstance().getPlayerDataManager().get(player));
 
             if(warps != null) {
                 warps = new ArrayList<>(warps);

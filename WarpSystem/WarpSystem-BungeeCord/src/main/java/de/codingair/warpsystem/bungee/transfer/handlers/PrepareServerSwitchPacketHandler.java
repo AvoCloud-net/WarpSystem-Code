@@ -5,7 +5,7 @@ import de.codingair.packetmanagement.handlers.ResponsiblePacketHandler;
 import de.codingair.packetmanagement.packets.impl.IntegerPacket;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
-import de.codingair.warpsystem.base.transfer.packets.bungee.PrepareLoginMessagePacket;
+import de.codingair.warpsystem.base.transfer.packets.proxy.PrepareLoginMessagePacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.PrepareServerSwitchPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.utils.ServerPing;
 import de.codingair.warpsystem.bungee.base.WarpSystem;

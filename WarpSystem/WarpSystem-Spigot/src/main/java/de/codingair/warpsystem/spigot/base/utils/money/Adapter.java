@@ -13,6 +13,6 @@ public interface Adapter {
     void deposit(Player player, double amount);
 
     default UUID id(Player player) {
-        return WarpSystem.getInstance().getUUIDManager().get(player);
+        return WarpSystem.getInstance().getPlayerDataManager().get(player);
     }
 }

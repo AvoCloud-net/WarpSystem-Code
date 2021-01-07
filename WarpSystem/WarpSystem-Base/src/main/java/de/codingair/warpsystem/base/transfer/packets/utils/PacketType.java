@@ -1,21 +1,20 @@
 package de.codingair.warpsystem.base.transfer.packets.utils;
 
 import de.codingair.packetmanagement.packets.Packet;
-import de.codingair.warpsystem.base.transfer.packets.bungee.*;
+import de.codingair.warpsystem.base.transfer.packets.proxy.*;
 import de.codingair.warpsystem.base.transfer.packets.general.*;
 import de.codingair.warpsystem.base.transfer.packets.spigot.*;
-import de.codingair.warpsystem.base.transfer.packets.bungee.SendJarPacket;
+import de.codingair.warpsystem.base.transfer.packets.proxy.SendJarPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.CooldownDataPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.CooldownPacket;
 
 public enum PacketType {
-    InitialPacket(de.codingair.warpsystem.base.transfer.packets.bungee.InitialPacket.class),
+    InitialPacket(de.codingair.warpsystem.base.transfer.packets.proxy.InitialPacket.class),
     RequestInitialPacket(de.codingair.warpsystem.base.transfer.packets.spigot.RequestInitialPacket.class),
     RequestServerStatusPacket(de.codingair.warpsystem.base.transfer.packets.spigot.RequestServerStatusPacket.class),
     ChatInputGUITogglePacket(de.codingair.warpsystem.base.transfer.packets.spigot.ChatInputGUITogglePacket.class),
     SendGlobalSpawnOptionsPacket(de.codingair.warpsystem.base.transfer.packets.general.SendGlobalSpawnOptionsPacket.class),
     TeleportSpawnPacket(de.codingair.warpsystem.base.transfer.packets.general.TeleportSpawnPacket.class),
-    PacketVanishInfo(PacketVanishInfo.class),
     SendJarPacket(SendJarPacket.class),
     SendOptionsPacket(de.codingair.warpsystem.base.transfer.packets.spigot.SendOptionsPacket.class),
 
@@ -24,9 +23,9 @@ public enum PacketType {
     TeleportPacket(GlobalWarpTeleportPacket.class),
     DeleteGlobalWarpPacket(DeleteGlobalWarpPacket.class),
     RequestGlobalWarpNamesPacket(RequestGlobalWarpNamesPacket.class),
-    SendGlobalWarpNamesPacket(de.codingair.warpsystem.base.transfer.packets.bungee.SendGlobalWarpNamesPacket.class),
-    UpdateGlobalWarpPacket(de.codingair.warpsystem.base.transfer.packets.bungee.UpdateGlobalWarpPacket.class),
-    PerformCommandOnSpigotPacket(de.codingair.warpsystem.base.transfer.packets.bungee.PerformCommandOnSpigotPacket.class),
+    SendGlobalWarpNamesPacket(de.codingair.warpsystem.base.transfer.packets.proxy.SendGlobalWarpNamesPacket.class),
+    UpdateGlobalWarpPacket(de.codingair.warpsystem.base.transfer.packets.proxy.UpdateGlobalWarpPacket.class),
+    PerformCommandOnSpigotPacket(de.codingair.warpsystem.base.transfer.packets.proxy.PerformCommandOnSpigotPacket.class),
     PerformCommandOnBungeePacket(PerformCommandOnBungeePacket.class),
     TeleportPlayerToPlayerPacket(TeleportPlayerToPlayerPacket.class),
     TeleportPlayerToCoordsPacket(TeleportPlayerToCoordsPacket.class),
@@ -64,6 +63,10 @@ public enum PacketType {
     SendServerPropertiesPacket(SendServerPropertiesPacket.class),
     SendUUIDPacket(SendUUIDPacket.class),
     RequestUUIDPacket(RequestUUIDPacket.class),
+    ProvidePlayerDataPacket(ProvidePlayerDataPacket.class),
+    PlayerJoinPacket(PlayerJoinPacket.class),
+    PlayerQuitPacket(PlayerQuitPacket.class),
+    UpdatePlayerDataPacket(UpdatePlayerDataPacket.class),
     ;
 
     private final Class<? extends Packet> packet;

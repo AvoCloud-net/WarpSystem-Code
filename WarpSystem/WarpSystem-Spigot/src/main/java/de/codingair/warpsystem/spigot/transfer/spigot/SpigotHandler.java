@@ -4,14 +4,8 @@ import de.codingair.packetmanagement.packets.Packet;
 import de.codingair.packetmanagement.packets.RequestPacket;
 import de.codingair.packetmanagement.packets.ResponsePacket;
 import de.codingair.packetmanagement.variants.OneWayDataHandler;
-import de.codingair.warpsystem.base.transfer.packets.bungee.SendGlobalWarpNamesPacket;
-import de.codingair.warpsystem.base.transfer.packets.bungee.TeleportPlayerToCoordsPacket;
-import de.codingair.warpsystem.base.transfer.packets.bungee.TeleportPlayerToPlayerPacket;
-import de.codingair.warpsystem.base.transfer.packets.bungee.UpdateGlobalWarpPacket;
-import de.codingair.warpsystem.base.transfer.packets.general.PrepareCoordinationTeleportPacket;
-import de.codingair.warpsystem.base.transfer.packets.general.SendGlobalSpawnOptionsPacket;
-import de.codingair.warpsystem.base.transfer.packets.general.StartTeleportToPlayerPacket;
-import de.codingair.warpsystem.base.transfer.packets.general.TeleportSpawnPacket;
+import de.codingair.warpsystem.base.transfer.packets.general.*;
+import de.codingair.warpsystem.base.transfer.packets.proxy.*;
 import de.codingair.warpsystem.base.transfer.packets.spigot.PrepareTeleportRequestPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.TeleportRequestHandledPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.ToggleForceTeleportsPacket;
@@ -48,6 +42,10 @@ public class SpigotHandler extends OneWayDataHandler<Player> implements PluginMe
         registerHandler(ToggleForceTeleportsPacket.class, new ToggleForceTeleportsPacketHandler());
         registerHandler(UpdateGlobalWarpPacket.class, new UpdateGlobalWarpPacketHandler());
         registerHandler(SendGlobalWarpNamesPacket.class, new SendGlobalWarpNamesPacketHandler());
+        registerHandler(PlayerJoinPacket.class, new PlayerJoinPacketHandler());
+        registerHandler(PlayerQuitPacket.class, new PlayerQuitPacketHandler());
+        registerHandler(ProvidePlayerDataPacket.class, new ProvideNamesPacketHandler());
+        registerHandler(UpdatePlayerDataPacket.class, new UpdatePlayerDataPacketHandler());
     }
 
     public void onEnable() {

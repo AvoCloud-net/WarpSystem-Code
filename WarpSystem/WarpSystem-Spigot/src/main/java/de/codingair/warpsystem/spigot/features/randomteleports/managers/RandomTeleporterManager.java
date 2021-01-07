@@ -251,7 +251,7 @@ public class RandomTeleporterManager implements Manager, BungeeFeature {
     public boolean canTeleport(Player player) {
         if(player.isOp()) return true;
 
-        UUID u = WarpSystem.getInstance().getUUIDManager().get(player);
+        UUID u = WarpSystem.getInstance().getPlayerDataManager().get(player);
         int bought = getInstance().getBoughtTeleports(u);
         int teleports = getInstance().getTeleports(u);
         int free = getInstance().getFreeTeleportAmount(player);
@@ -401,7 +401,7 @@ public class RandomTeleporterManager implements Manager, BungeeFeature {
                     callback.accept(2);
                 } else {
                     //teleported
-                    UUID uuid = WarpSystem.getInstance().getUUIDManager().get(player);
+                    UUID uuid = WarpSystem.getInstance().getPlayerDataManager().get(player);
                     if(!player.isOp()) increaseTeleports(uuid);
 
                     Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> {
@@ -434,7 +434,7 @@ public class RandomTeleporterManager implements Manager, BungeeFeature {
     }
 
     public int getTeleports(Player player) {
-        return getTeleports(WarpSystem.getInstance().getUUIDManager().get(player));
+        return getTeleports(WarpSystem.getInstance().getPlayerDataManager().get(player));
     }
 
     public int getTeleports(UUID uuid) {
@@ -452,7 +452,7 @@ public class RandomTeleporterManager implements Manager, BungeeFeature {
     }
 
     public int getBoughtTeleports(Player player) {
-        return getBoughtTeleports(WarpSystem.getInstance().getUUIDManager().get(player));
+        return getBoughtTeleports(WarpSystem.getInstance().getPlayerDataManager().get(player));
     }
 
     public int getBoughtTeleports(UUID uuid) {

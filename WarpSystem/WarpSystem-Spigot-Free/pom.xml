@@ -52,6 +52,11 @@
         </dependency>
         <dependency>
             <groupId>com.github.CodingAir</groupId>
+            <artifactId>WarpSystem-API</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.CodingAir</groupId>
             <artifactId>CodingAPI</artifactId>
             <scope>provided</scope>
         </dependency>

@@ -45,7 +45,7 @@ public class HeadManager {
     }
 
     public Head getHead(Player player) {
-        update(player, WarpSystem.getInstance().getUUIDManager().get(player));
+        update(player, WarpSystem.getInstance().getPlayerDataManager().get(player));
         return new Head(player);
     }
 }

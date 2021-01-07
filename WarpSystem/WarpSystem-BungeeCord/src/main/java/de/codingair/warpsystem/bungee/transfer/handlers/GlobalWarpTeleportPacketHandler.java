@@ -8,7 +8,7 @@ import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.general.PrepareCoordinationTeleportPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.GlobalWarpTeleportPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.utils.ServerPing;
-import de.codingair.warpsystem.base.transfer.serializeable.SGlobalWarp;
+import de.codingair.warpsystem.base.transfer.utils.serializeable.SGlobalWarp;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.managers.ServerManager;
 import de.codingair.warpsystem.bungee.features.FeatureType;

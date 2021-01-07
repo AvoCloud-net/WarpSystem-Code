@@ -3,10 +3,10 @@ package de.codingair.warpsystem.bungee.base.managers;
 import com.google.common.base.Preconditions;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.packetmanagement.utils.Direction;
-import de.codingair.warpsystem.base.transfer.packets.bungee.InitialPacket;
-import de.codingair.warpsystem.base.transfer.packets.bungee.SendServerPropertiesPacket;
+import de.codingair.warpsystem.base.transfer.packets.proxy.InitialPacket;
+import de.codingair.warpsystem.base.transfer.packets.proxy.SendServerPropertiesPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.utils.ServerPing;
-import de.codingair.warpsystem.base.transfer.serializeable.ServerOptions;
+import de.codingair.warpsystem.base.transfer.utils.serializeable.ServerOptions;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.utils.ServerInitializeEvent;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -92,7 +92,6 @@ public class ServerManager implements Listener {
     }
 
     public void sendInitialPacket(ServerInfo server) {
-        System.out.println("SEND TO " + server.getName());
         WarpSystem.getDataHandler().send(new InitialPacket(WarpSystem.getInstance().getDescription().getVersion(), server.getName()), server, Direction.DOWN);
         WarpSystem.proxy().getPluginManager().callEvent(new ServerInitializeEvent(server));
 

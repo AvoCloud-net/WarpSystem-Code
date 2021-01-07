@@ -3,7 +3,7 @@ package de.codingair.warpsystem.spigot.transfer.handlers;
 import de.codingair.packetmanagement.handlers.PacketHandler;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
-import de.codingair.warpsystem.base.transfer.packets.bungee.UpdateGlobalWarpPacket;
+import de.codingair.warpsystem.base.transfer.packets.proxy.UpdateGlobalWarpPacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types.WarpAction;

@@ -10,8 +10,9 @@ import de.codingair.codingapi.server.specification.Version;
 import de.codingair.codingapi.tools.time.TimeFetcher;
 import de.codingair.codingapi.tools.time.Timer;
 import de.codingair.packetmanagement.utils.Proxy;
-import de.codingair.warpsystem.base.transfer.packets.bungee.SendJarPacket;
-import de.codingair.warpsystem.base.transfer.packets.bungee.SetupAssistantStorePacket;
+import de.codingair.warpsystem.api.Result;
+import de.codingair.warpsystem.base.transfer.packets.proxy.SendJarPacket;
+import de.codingair.warpsystem.base.transfer.packets.proxy.SetupAssistantStorePacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RequestInitialPacket;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.api.PAPI;
@@ -29,7 +30,6 @@ import de.codingair.warpsystem.spigot.base.utils.options.specific.GeneralOptions
 import de.codingair.warpsystem.spigot.base.utils.options.specific.PortalOptions;
 import de.codingair.warpsystem.spigot.base.utils.options.specific.WarpGUIOptions;
 import de.codingair.warpsystem.spigot.base.utils.options.specific.WarpSignOptions;
-import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.base.utils.updates.UpdateNotifier;
 import de.codingair.warpsystem.spigot.base.utils.updates.UpdateReader;
 import de.codingair.warpsystem.spigot.transfer.jar.JarReceiver;
@@ -120,7 +120,6 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     private final HeadManager headManager = new HeadManager();
     private final SetupAssistantManager setupAssistantManager = new SetupAssistantManager();
     private final CooldownManager cooldownManager = new CooldownManager();
-    private final VanishManager vanishManager = new VanishManager();
     private ServerManager serverManager;
 
     private UpdateNotifier updateNotifier;
@@ -131,7 +130,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     private boolean shouldSave = true;
     private String oldVersion = null;
     private final SpigotHandler dataHandler = new SpigotHandler(this);
-    private final UUIDManager uuidManager = new UUIDManager();
+    private final PlayerDataManager playerDataManager = new PlayerDataManager();
     private UTFConfig oldConfig = null;
 
     public static boolean hasPermission(CommandSender sender, String permission) {
@@ -245,14 +244,12 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             dataHandler.onEnable();
             dataHandler.registerHandler(SendJarPacket.class, new JarReceiver());
 
-            UUIDManager.UUIDListener uuidListener = uuidManager.listener();
-            Bukkit.getPluginManager().registerEvents(uuidListener, this);
+            Bukkit.getPluginManager().registerEvents(playerDataManager, this);
 
             Bukkit.getPluginManager().registerEvents(new HeadListener(), this);
             SetupAssistantListener l = new SetupAssistantListener();
             Bukkit.getPluginManager().registerEvents(l, this);
             dataHandler.registerHandler(SetupAssistantStorePacket.class, l);
-            getBungeeFeatureList().add(this.vanishManager);
 
             this.startAutoSaver();
             afterOnEnable();
@@ -342,7 +339,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
     private void checkPermissions() {
         ConfigFile config = fileManager.getFile("Config");
-        if(config.getConfig().getString("Do_Not_Edit.Last_Version").equals("0")) {
+        if(config.getConfig().getString("Do_Not_Edit.Last_Version", "0").equals("0")) {
             config.getConfig().set("WarpSystem.Permissions", false);
             config.saveConfig();
         }
@@ -388,6 +385,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         old = false;
         ERROR = true;
         shouldSave = true;
+        playerDataManager.flush();
 
         HandlerList.unregisterAll(this);
 
@@ -613,8 +611,8 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         return updateNotifier;
     }
 
-    public UUIDManager getUUIDManager() {
-        return uuidManager;
+    public PlayerDataManager getPlayerDataManager() {
+        return playerDataManager;
     }
 
     public String getBungeePluginVersion() {
@@ -643,10 +641,6 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
     public static CooldownManager cooldown() {
         return getInstance().cooldownManager;
-    }
-
-    public VanishManager getVanishManager() {
-        return vanishManager;
     }
 
     public UTFConfig getOldConfig() {

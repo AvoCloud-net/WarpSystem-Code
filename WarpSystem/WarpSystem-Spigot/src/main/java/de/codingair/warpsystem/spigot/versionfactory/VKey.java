@@ -17,6 +17,7 @@ public enum VKey {
     GWarpsItemUpdateHandler(VFac.OBJECTS),
     MessageButton(VFac.OBJECTS),
     CWarpSystem(VFac.OBJECTS),
+    TeleportCommandHandler(VFac.TELEPORT),
     ;
 
     private final String path;

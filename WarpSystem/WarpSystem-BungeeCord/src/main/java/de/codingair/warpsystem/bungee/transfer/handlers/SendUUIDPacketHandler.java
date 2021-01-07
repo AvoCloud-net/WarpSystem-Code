@@ -3,7 +3,7 @@ package de.codingair.warpsystem.bungee.transfer.handlers;
 import de.codingair.packetmanagement.handlers.ResponsiblePacketHandler;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
-import de.codingair.warpsystem.base.transfer.packets.bungee.SendUUIDPacket;
+import de.codingair.warpsystem.base.transfer.packets.proxy.SendUUIDPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RequestUUIDPacket;
 import de.codingair.warpsystem.bungee.api.Players;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

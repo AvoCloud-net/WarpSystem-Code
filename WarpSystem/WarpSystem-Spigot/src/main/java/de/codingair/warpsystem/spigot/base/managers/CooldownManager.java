@@ -120,7 +120,7 @@ public class CooldownManager implements ICooldownManager {
     public void register(Player player, Origin origin) {
         long time = origin.getCooldown();
         if(time == 0 || player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Cooldown)) return;
-        Cooldown cooldown = new Cooldown(WarpSystem.getInstance().getUUIDManager().get(player), System.currentTimeMillis() + time, origin.ordinal());
+        Cooldown cooldown = new Cooldown(WarpSystem.getInstance().getPlayerDataManager().get(player), System.currentTimeMillis() + time, origin.ordinal());
 
         addCooldown(cooldown);
         if(WarpSystem.getInstance().isOnBungeeCord()) {
@@ -131,7 +131,7 @@ public class CooldownManager implements ICooldownManager {
 
     public void register(Player player, long time, int hash) {
         if(player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Cooldown) || time == 0) return;
-        addCooldown(new Cooldown(WarpSystem.getInstance().getUUIDManager().get(player), System.currentTimeMillis() + time, hash));
+        addCooldown(new Cooldown(WarpSystem.getInstance().getPlayerDataManager().get(player), System.currentTimeMillis() + time, hash));
     }
 
     public void addCooldown(Cooldown cooldown) {
@@ -140,10 +140,10 @@ public class CooldownManager implements ICooldownManager {
 
     public long getRemainingCooldown(Player player, int hashCode) {
         if(player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Cooldown)) {
-            cache.remove(WarpSystem.getInstance().getUUIDManager().get(player));
+            cache.remove(WarpSystem.getInstance().getPlayerDataManager().get(player));
             return 0;
         }
-        return getRemainingCooldown(WarpSystem.getInstance().getUUIDManager().get(player), hashCode);
+        return getRemainingCooldown(WarpSystem.getInstance().getPlayerDataManager().get(player), hashCode);
     }
 
     public long getRemainingCooldown(UUID uuid, int hashCode) {

@@ -81,7 +81,7 @@ public class CRandomTp extends WSCommandBuilder {
 
                                 if(bank >= costs) {
                                     Bank.adapter().withdraw(player, costs);
-                                    UUID u = WarpSystem.getInstance().getUUIDManager().get((Player) sender);
+                                    UUID u = WarpSystem.getInstance().getPlayerDataManager().get((Player) sender);
                                     RandomTeleporterManager.getInstance().setBoughtTeleports(u, RandomTeleporterManager.getInstance().getBoughtTeleports(u) + 1);
                                     sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Buy_Finished").replace("%AMOUNT%", (costs + "").endsWith(".0") ? (costs + "").substring(0, (costs + "").length() - 2) : (costs + "")));
                                 } else {

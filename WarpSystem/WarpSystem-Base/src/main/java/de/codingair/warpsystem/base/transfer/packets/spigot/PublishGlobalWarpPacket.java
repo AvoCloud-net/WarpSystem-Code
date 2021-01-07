@@ -2,7 +2,7 @@ package de.codingair.warpsystem.base.transfer.packets.spigot;
 
 import de.codingair.packetmanagement.packets.RequestPacket;
 import de.codingair.packetmanagement.packets.impl.BooleanPacket;
-import de.codingair.warpsystem.base.transfer.serializeable.SGlobalWarp;
+import de.codingair.warpsystem.base.transfer.utils.serializeable.SGlobalWarp;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

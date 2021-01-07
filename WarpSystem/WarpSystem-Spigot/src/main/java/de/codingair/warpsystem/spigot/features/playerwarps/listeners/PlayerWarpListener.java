@@ -3,7 +3,7 @@ package de.codingair.warpsystem.spigot.features.playerwarps.listeners;
 import de.codingair.codingapi.player.chat.ChatButton;
 import de.codingair.codingapi.player.chat.SimpleMessage;
 import de.codingair.codingapi.utils.ImprovedDouble;
-import de.codingair.warpsystem.base.transfer.packets.bungee.SendPlayerWarpOptionsPacket;
+import de.codingair.warpsystem.base.transfer.packets.proxy.SendPlayerWarpOptionsPacket;
 import de.codingair.warpsystem.base.transfer.packets.general.DeletePlayerWarpPacket;
 import de.codingair.warpsystem.base.transfer.packets.general.SendPlayerWarpUpdatePacket;
 import de.codingair.warpsystem.base.transfer.packets.general.SendPlayerWarpsPacket;

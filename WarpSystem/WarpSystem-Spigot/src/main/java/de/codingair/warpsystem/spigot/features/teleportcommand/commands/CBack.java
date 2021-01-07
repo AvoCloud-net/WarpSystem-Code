@@ -29,9 +29,7 @@ public class CBack extends WSCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                if(WarpSystem.cooldown().checkPlayer((Player) sender, Origin.TeleportCommand)) return false;
-                if(!TeleportCommandManager.getInstance().teleportToLastBackLocation((Player) sender)) sender.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
-                else WarpSystem.cooldown().register((Player) sender, Origin.TeleportCommand);
+                TeleportCommandManager.handler().back((Player) sender);
                 return false;
             }
         }.setOnlyPlayers(true));

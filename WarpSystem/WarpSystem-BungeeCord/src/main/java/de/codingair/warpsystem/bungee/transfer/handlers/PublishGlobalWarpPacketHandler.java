@@ -5,7 +5,7 @@ import de.codingair.packetmanagement.packets.impl.BooleanPacket;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.spigot.PublishGlobalWarpPacket;
-import de.codingair.warpsystem.base.transfer.serializeable.SGlobalWarp;
+import de.codingair.warpsystem.base.transfer.utils.serializeable.SGlobalWarp;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.features.FeatureType;
 import de.codingair.warpsystem.bungee.features.globalwarps.managers.GlobalWarpManager;

@@ -69,7 +69,7 @@ public class PlayerWarp extends FeatureObject {
     public PlayerWarp(Player player, String name) {
         this();
         this.name = name;
-        owner.id = WarpSystem.getInstance().getUUIDManager().get(player);
+        owner.id = WarpSystem.getInstance().getPlayerDataManager().get(player);
         owner.name = player.getName();
 
         resetItem();
@@ -467,7 +467,7 @@ public class PlayerWarp extends FeatureObject {
     }
 
     public boolean isOwner(Player player) {
-        return player != null && isOwner(WarpSystem.getInstance().getUUIDManager().get(player));
+        return player != null && isOwner(WarpSystem.getInstance().getPlayerDataManager().get(player));
     }
 
     public boolean isOwner(UUID id) {
@@ -479,7 +479,7 @@ public class PlayerWarp extends FeatureObject {
     }
 
     public boolean isTrusted(Player player) {
-        return isTrusted(WarpSystem.getInstance().getUUIDManager().get(player));
+        return isTrusted(WarpSystem.getInstance().getPlayerDataManager().get(player));
     }
 
     public boolean isTrusted(UUID id) {
@@ -748,7 +748,7 @@ public class PlayerWarp extends FeatureObject {
         return money;
     }
 
-    public static class User implements Serializable, de.codingair.warpsystem.base.transfer.serializeable.Serializable {
+    public static class User implements Serializable, de.codingair.warpsystem.base.transfer.utils.serializeable.Serializable {
         private final String jsonPrefix;
         private String name;
         private UUID id;
@@ -758,7 +758,7 @@ public class PlayerWarp extends FeatureObject {
         }
 
         public User(Player player) {
-            this(player.getName(), WarpSystem.getInstance().getUUIDManager().get(player));
+            this(player.getName(), WarpSystem.getInstance().getPlayerDataManager().get(player));
         }
 
         public User(String name, UUID id) {

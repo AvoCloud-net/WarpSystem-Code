@@ -6,7 +6,7 @@ import de.codingair.codingapi.player.data.PacketReader;
 import de.codingair.codingapi.server.reflections.IReflection;
 import de.codingair.codingapi.server.reflections.PacketUtils;
 import de.codingair.codingapi.server.specification.Version;
-import de.codingair.warpsystem.base.transfer.packets.bungee.ToggleSetupAssistantPacket;
+import de.codingair.warpsystem.base.transfer.packets.proxy.ToggleSetupAssistantPacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.language.Lang;
 import de.codingair.warpsystem.spigot.base.setupassistant.SetupAssistantManager;

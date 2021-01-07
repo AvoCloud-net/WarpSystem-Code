@@ -3,7 +3,7 @@ package de.codingair.warpsystem.bungee.transfer.handlers;
 import de.codingair.packetmanagement.handlers.PacketHandler;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
-import de.codingair.warpsystem.base.transfer.packets.bungee.SendPlayerWarpOptionsPacket;
+import de.codingair.warpsystem.base.transfer.packets.proxy.SendPlayerWarpOptionsPacket;
 import de.codingair.warpsystem.base.transfer.packets.general.SendPlayerWarpsPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RegisterServerForPlayerWarpsPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.utils.PlayerWarpData;

@@ -47,27 +47,7 @@ public class CTpHere extends WSCommandBuilder {
 
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
-                Player p = (Player) sender;
-                if(WarpSystem.getInstance().isOnBungeeCord()) {
-                    suggestions.add(TeleportTabCompleteKeys.ID_TP_HERE);
-
-                    StringBuilder builder = new StringBuilder("tpa");
-                    for(String arg : args) {
-                        builder.append(" ").append(arg);
-                    }
-                    suggestions.add(builder.toString());
-
-                    for(Player player : Bukkit.getOnlinePlayers()) {
-                        if(!p.canSee(player)) {
-                            suggestions.add("-" + player.getName());
-                        }
-                    }
-                } else {
-                    for(Player player : Bukkit.getOnlinePlayers()) {
-                        if(player.getName().equals(sender.getName())) continue;
-                        suggestions.add(ChatColor.stripColor(player.getName()));
-                    }
-                }
+                suggestTpHere(sender, args, suggestions);
             }
 
             @Override
@@ -76,5 +56,29 @@ public class CTpHere extends WSCommandBuilder {
                 return false;
             }
         });
+    }
+
+    private void suggestTpHere(CommandSender sender, String[] args, List<String> suggestions) {
+        Player p = (Player) sender;
+        if(WarpSystem.getInstance().isOnBungeeCord()) {
+            suggestions.add(TeleportTabCompleteKeys.ID_TP_HERE);
+
+            StringBuilder builder = new StringBuilder("tpa");
+            for(String arg : args) {
+                builder.append(" ").append(arg);
+            }
+            suggestions.add(builder.toString());
+
+            for(Player player : Bukkit.getOnlinePlayers()) {
+                if(!p.canSee(player)) {
+                    suggestions.add("-" + player.getName());
+                }
+            }
+        } else {
+            for(Player player : Bukkit.getOnlinePlayers()) {
+                if(player.getName().equals(sender.getName())) continue;
+                suggestions.add(ChatColor.stripColor(player.getName()));
+            }
+        }
     }
 }
