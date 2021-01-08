@@ -132,7 +132,7 @@ public class PTrusted extends PageItem {
 
                     Player other;
                     if((other = Bukkit.getPlayer(input)) == null) {
-                        if(WarpSystem.getInstance().isOnBungeeCord()) {
+                        if(WarpSystem.getInstance().isOnProxy()) {
                             WarpSystem.getDataHandler().send(new RequestUUIDPacket(input), p).thenAccept(packet -> {
                                 UUID uuid = packet.getId();
                                 if(uuid == null) {

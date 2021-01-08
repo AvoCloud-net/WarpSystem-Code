@@ -43,7 +43,7 @@ public class SetupAssistant {
         this.general = general;
         buildHierarchy();
 
-        if(WarpSystem.getInstance().isOnBungeeCord()) {
+        if(WarpSystem.getInstance().isOnProxy()) {
             //send setup assistant packet
             WarpSystem.getDataHandler().send(new ToggleSetupAssistantPacket(player.getName()), player);
         }
@@ -128,7 +128,7 @@ public class SetupAssistant {
     private void quit(boolean sendMessage) {
         if(reader == null) return;
 
-        if(WarpSystem.getInstance().isOnBungeeCord()) {
+        if(WarpSystem.getInstance().isOnProxy()) {
             //send setup assistant packet
             WarpSystem.getDataHandler().send(new ToggleSetupAssistantPacket(), player);
         }

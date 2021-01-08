@@ -3,10 +3,6 @@ package de.codingair.warpsystem.spigot.features.teleportcommand.commands;
 import de.codingair.codingapi.server.commands.builder.BaseComponent;
 import de.codingair.codingapi.server.commands.builder.CommandComponent;
 import de.codingair.codingapi.server.commands.builder.special.MultiCommandComponent;
-import de.codingair.codingapi.tools.Callback;
-import de.codingair.codingapi.utils.ChatColor;
-import de.codingair.warpsystem.base.features.TeleportTabCompleteKeys;
-import de.codingair.warpsystem.base.transfer.packets.spigot.RequestFullNamePacket;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.language.Lang;
@@ -46,7 +42,7 @@ public class CTpa extends WSCommandBuilder {
         getBaseComponent().addChild(new MultiCommandComponent() {
             @Override
             public boolean matchTabComplete(CommandSender sender, String suggestion, String argument) {
-                return WarpSystem.getInstance().isOnBungeeCord() || super.matchTabComplete(sender, suggestion, argument);
+                return WarpSystem.getInstance().isOnProxy() || super.matchTabComplete(sender, suggestion, argument);
             }
 
             @Override

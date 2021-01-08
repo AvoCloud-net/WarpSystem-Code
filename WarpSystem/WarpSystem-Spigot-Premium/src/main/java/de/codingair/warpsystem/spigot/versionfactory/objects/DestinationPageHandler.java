@@ -435,7 +435,7 @@ public class DestinationPageHandler {
                 }
             }.setOption(option));
 
-            if(WarpSystem.getInstance().isOnBungeeCord()) {
+            if(WarpSystem.getInstance().isOnProxy()) {
                 page.addButton(new SyncButton(slot++, 2) {
                     @Override
                     public ItemStack craftItem() {

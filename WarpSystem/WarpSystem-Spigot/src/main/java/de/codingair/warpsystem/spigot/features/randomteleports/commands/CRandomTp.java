@@ -13,6 +13,7 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleporterManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -70,7 +71,7 @@ public class CRandomTp extends WSCommandBuilder {
                     double costs = RandomTeleporterManager.getInstance().getCosts();
 
                     if(bank >= costs) {
-                        SimpleMessage sm = new SimpleMessage(Lang.getPrefix() + Lang.get("RandomTP_Buy").replace("%AMOUNT%", (costs + "").endsWith(".0") ? (costs + "").substring(0, (costs + "").length() - 2) : (costs + "")), WarpSystem.getInstance());
+                        SimpleMessage sm = new SimpleMessage(Lang.getPrefix() + Lang.get("RandomTP_Buy").replace("%AMOUNT%", fancyCosts(costs)), WarpSystem.getInstance());
 
                         sm.replace("%YES%", new ChatButton(Lang.get("RandomTP_Buy_Yes")) {
                             @Override
@@ -83,9 +84,9 @@ public class CRandomTp extends WSCommandBuilder {
                                     Bank.adapter().withdraw(player, costs);
                                     UUID u = WarpSystem.getInstance().getPlayerDataManager().get((Player) sender);
                                     RandomTeleporterManager.getInstance().setBoughtTeleports(u, RandomTeleporterManager.getInstance().getBoughtTeleports(u) + 1);
-                                    sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Buy_Finished").replace("%AMOUNT%", (costs + "").endsWith(".0") ? (costs + "").substring(0, (costs + "").length() - 2) : (costs + "")));
+                                    sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Buy_Finished").replace("%AMOUNT%", fancyCosts(costs)));
                                 } else {
-                                    sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Not_Enough_Money").replace("%AMOUNT%", (costs + "").endsWith(".0") ? (costs + "").substring(0, (costs + "").length() - 2) : (costs + "")));
+                                    sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Not_Enough_Money").replace("%AMOUNT%", fancyCosts(costs)));
                                 }
                             }
                         }.setHover(Lang.get("Click_Hover")));
@@ -100,7 +101,7 @@ public class CRandomTp extends WSCommandBuilder {
 
                         sm.send((Player) sender);
                     } else {
-                        sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Not_Enough_Money").replace("%AMOUNT%", (costs + "").endsWith(".0") ? (costs + "").substring(0, (costs + "").length() - 2) : (costs + "")));
+                        sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Not_Enough_Money").replace("%AMOUNT%", fancyCosts(costs)));
                     }
                     return false;
                 }
@@ -118,7 +119,6 @@ public class CRandomTp extends WSCommandBuilder {
         getComponent("blocks").addChild(new CommandComponent("add") {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                RandomTeleporterManager.getInstance().getListener().getAddingNewBlock().remove(sender);
                 RandomTeleporterManager.getInstance().getListener().getAddingNewBlock().add((Player) sender, 30);
                 sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Adding_New_Block"));
                 return false;
@@ -184,5 +184,10 @@ public class CRandomTp extends WSCommandBuilder {
                 return false;
             }
         }.setOnlyPlayers(false).addChild(new RTP_Go_Command(WarpSystem.PERMISSION_RANDOM_TELEPORT_SELECTION_SELF)));
+    }
+
+    @NotNull
+    private String fancyCosts(double costs) {
+        return (costs + "").endsWith(".0") ? (costs + "").substring(0, (costs + "").length() - 2) : (costs + "");
     }
 }

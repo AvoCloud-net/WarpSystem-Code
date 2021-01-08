@@ -20,7 +20,7 @@ public class SpawnEditor extends Editor<Spawn> {
         super(p, clone, new Backup<Spawn>(spawn) {
             @Override
             public void applyTo(Spawn clone) {
-                if(WarpSystem.getInstance().isOnBungeeCord() && clone.getUsage().getName().contains("/spawn")) {
+                if(WarpSystem.getInstance().isOnProxy() && clone.getUsage().getName().contains("/spawn")) {
                     String server = SpawnManager.getInstance().getSpawnServer();
 
                     if(server != null && !WarpSystem.getInstance().getCurrentServer().equals(server)) {
@@ -30,7 +30,7 @@ public class SpawnEditor extends Editor<Spawn> {
 
                 spawn.apply(clone);
 
-                if(WarpSystem.getInstance().isOnBungeeCord()) {
+                if(WarpSystem.getInstance().isOnProxy()) {
                     String s = WarpSystem.getInstance().getCurrentServer();
 
                     String spawnServer = SpawnManager.getInstance().getSpawnServer();

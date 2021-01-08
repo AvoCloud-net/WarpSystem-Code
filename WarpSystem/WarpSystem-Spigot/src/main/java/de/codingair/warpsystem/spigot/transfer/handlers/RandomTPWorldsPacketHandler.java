@@ -1,18 +1,18 @@
-package de.codingair.warpsystem.bungee.transfer.handlers;
+package de.codingair.warpsystem.spigot.transfer.handlers;
 
 import de.codingair.packetmanagement.handlers.PacketHandler;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RandomTPWorldsPacket;
-import de.codingair.warpsystem.bungee.features.randomtp.RandomTPManager;
-import net.md_5.bungee.api.config.ServerInfo;
+import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleporterManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class RandomTPWorldsPacketHandler implements PacketHandler<RandomTPWorldsPacket> {
     @Override
     public void process(@NotNull RandomTPWorldsPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
-        assert connection != null;
-        RandomTPManager.getInstance().addWorldData(((ServerInfo) connection), packet);
+        RandomTeleporterManager man = RandomTeleporterManager.getInstance();
+        if(man == null) return;
+        man.updateWorlds(packet.getServer(), packet.getWorlds());
     }
 }

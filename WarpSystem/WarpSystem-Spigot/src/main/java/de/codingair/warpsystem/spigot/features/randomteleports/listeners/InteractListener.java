@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.spigot.features.randomteleports.listeners;
 
 import de.codingair.codingapi.tools.Location;
-import de.codingair.codingapi.tools.time.TimeList;
+import de.codingair.codingapi.tools.time.TimeSet;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.language.Lang;
 import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleporterManager;
@@ -15,8 +15,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class InteractListener implements Listener {
-    private final TimeList<Player> blocked = new TimeList<>();
-    private final TimeList<Player> addingNewBlock = new TimeList<>();
+    private final TimeSet<Player> blocked = new TimeSet<>();
+    private final TimeSet<Player> addingNewBlock = new TimeSet<>();
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
@@ -45,7 +45,6 @@ public class InteractListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onBreak(BlockBreakEvent e) {
         Block b = e.getBlock();
-        if(b == null) return;
         org.bukkit.Location loc = b.getLocation();
 
         Location remove = null;
@@ -67,7 +66,7 @@ public class InteractListener implements Listener {
         }
     }
 
-    public TimeList<Player> getAddingNewBlock() {
+    public TimeSet<Player> getAddingNewBlock() {
         return addingNewBlock;
     }
 }

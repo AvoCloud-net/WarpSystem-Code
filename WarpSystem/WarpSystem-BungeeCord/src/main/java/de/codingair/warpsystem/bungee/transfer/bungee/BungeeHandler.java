@@ -58,6 +58,9 @@ public class BungeeHandler extends DataHandler<ServerInfo> implements Listener {
         registerHandler(RequestInitialPacket.class, new RequestInitialPacketHandler());
         registerHandler(RequestServerStatusPacket.class, new RequestServerStatusPacketHandler());
         registerHandler(UpdatePlayerDataPacket.class, new UpdatePlayerDataPacketHandler());
+        registerHandler(RandomTPPacket.class, new RandomTPPacketHandler());
+        registerHandler(QueueRTPUsagePacket.class, new QueueRTPUsagePacketHandler());
+        registerHandler(RandomTPWorldsPacket.class, new RandomTPWorldsPacketHandler());
     }
 
     public void onEnable() {

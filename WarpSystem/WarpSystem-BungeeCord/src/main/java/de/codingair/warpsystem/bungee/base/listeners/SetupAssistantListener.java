@@ -23,7 +23,7 @@ public class SetupAssistantListener implements Listener {
         WarpSystem.getDataHandler().registerHandler(ToggleSetupAssistantPacket.class, (packet, proxy, connection, direction) -> {
             String name = packet.getName();
             if(name == null) {
-                if(editing instanceof ProxiedPlayer) {
+                if(editing != null) {
                     try {
                         backup(editing);
                     } catch(NoSuchFieldException | IllegalAccessException | ClassNotFoundException e) {
@@ -34,7 +34,7 @@ public class SetupAssistantListener implements Listener {
                 editing = null;
             } else editing = WarpSystem.proxy().getPlayer(name);
 
-            if(editing instanceof ProxiedPlayer) {
+            if(editing != null) {
                 try {
                     inject(editing);
                 } catch(NoSuchFieldException | IllegalAccessException | ClassNotFoundException e) {

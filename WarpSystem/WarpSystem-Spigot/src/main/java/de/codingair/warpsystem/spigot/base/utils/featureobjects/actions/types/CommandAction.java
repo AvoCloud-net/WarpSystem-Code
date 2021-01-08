@@ -1,7 +1,6 @@
 package de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types;
 
 import de.codingair.codingapi.server.commands.builder.CommandBuilder;
-import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.io.utils.DataWriter;
 import de.codingair.warpsystem.base.transfer.packets.spigot.PerformCommandOnBungeePacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
@@ -53,7 +52,7 @@ public class CommandAction extends ActionObject<List<String>> {
 
             Command cmd = CommandBuilder.getCommand(tag);
 
-            if(WarpSystem.getInstance().isOnBungeeCord() && cmd == null) {
+            if(WarpSystem.getInstance().isOnProxy() && cmd == null) {
                 WarpSystem.getDataHandler().send(new PerformCommandOnBungeePacket(player.getName(), command), player).thenAccept(packet -> {
                     if(!packet.getBoolean()) player.sendMessage(Lang.getPrefix() + Lang.get("Unknown_Command"));
                 });

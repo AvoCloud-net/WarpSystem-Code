@@ -46,7 +46,7 @@ public class CGlobalWarps extends WSCommandBuilder implements BungeeFeature {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                if(WarpSystem.getInstance().isOnBungeeCord())
+                if(WarpSystem.getInstance().isOnProxy())
                     sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<create, delete, list>");
                 else sender.sendMessage(Lang.getPrefix() + Lang.get("Connect_BungeeCord"));
                 return false;

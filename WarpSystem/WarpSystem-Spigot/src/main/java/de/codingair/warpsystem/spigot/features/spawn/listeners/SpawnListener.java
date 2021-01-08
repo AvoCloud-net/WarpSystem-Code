@@ -29,7 +29,7 @@ public class SpawnListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onDeath(PlayerRespawnEvent e) {
-        if(WarpSystem.getInstance().isOnBungeeCord()) {
+        if(WarpSystem.getInstance().isOnProxy()) {
             String respawn = SpawnManager.getInstance().getRespawnServer();
             if(respawn != null && !respawn.equals(WarpSystem.getInstance().getCurrentServer())) {
                 Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> WarpSystem.getDataHandler().send(new TeleportSpawnPacket(e.getPlayer().getName(), true), e.getPlayer()), 2L);

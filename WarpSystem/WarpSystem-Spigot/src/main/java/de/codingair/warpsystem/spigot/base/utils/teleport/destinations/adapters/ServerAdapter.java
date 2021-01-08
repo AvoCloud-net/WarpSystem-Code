@@ -14,7 +14,7 @@ import org.bukkit.util.Vector;
 public class ServerAdapter extends DestinationAdapter {
     @Override
     public boolean teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback) {
-        if(!WarpSystem.getInstance().isOnBungeeCord()) {
+        if(!WarpSystem.getInstance().isOnProxy()) {
             if(callback != null) callback.accept(Result.NOT_ON_BUNGEE_CORD);
             return false;
         }
@@ -37,7 +37,7 @@ public class ServerAdapter extends DestinationAdapter {
 
     @Override
     public SimulatedTeleportResult simulate(Player player, String id, boolean checkPermission) {
-        if(!WarpSystem.getInstance().isOnBungeeCord())
+        if(!WarpSystem.getInstance().isOnProxy())
             return new SimulatedTeleportResult(null, Result.NOT_ON_BUNGEE_CORD);
 
         if(WarpSystem.getInstance().getCurrentServer().equalsIgnoreCase(id))

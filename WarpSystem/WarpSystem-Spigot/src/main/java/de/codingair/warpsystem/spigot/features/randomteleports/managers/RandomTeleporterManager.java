@@ -8,6 +8,7 @@ import de.codingair.codingapi.tools.Location;
 import de.codingair.codingapi.tools.io.ConfigWriter;
 import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.items.XMaterial;
+import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.base.transfer.packets.spigot.QueueRTPUsagePacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RandomTPWorldsPacket;
 import de.codingair.warpsystem.base.utils.Manager;
@@ -18,7 +19,6 @@ import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
 import de.codingair.warpsystem.spigot.base.utils.BungeeFeature;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
-import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.LocationAdapter;
@@ -38,6 +38,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -59,6 +60,8 @@ public class RandomTeleporterManager implements Manager, BungeeFeature {
     private final List<WorldOption> worldOptions = new ArrayList<>();
     private WorldOption defValues;
     private final HashMap<Player, RandomLocationCalculator> searching = new HashMap<>();
+
+    private final HashMap<String, List<String>> worlds = new HashMap<>();
 
     private int netherHeight;
     private int endHeight;
@@ -118,7 +121,7 @@ public class RandomTeleporterManager implements Manager, BungeeFeature {
             List<String> configBiomes = config.getStringList("RandomTeleport.Support.Biome.BiomeList");
             biomeList = new ArrayList<>();
 
-            if(configBiomes == null || configBiomes.isEmpty()) {
+            if(configBiomes.isEmpty()) {
                 for(Biome value : Biome.values()) {
                     if(value.name().equalsIgnoreCase("VOID")) continue;
                     this.biomeList.add(value);
@@ -462,6 +465,14 @@ public class RandomTeleporterManager implements Manager, BungeeFeature {
         return config.getInt("RandomTeleporter." + uuid.toString() + ".Bought", 0);
     }
 
+    public void updateWorlds(String server, List<String> worlds) {
+        this.worlds.put(server.toLowerCase(), worlds);
+    }
+
+    public List<String> getWorlds(@NotNull String server) {
+        return this.worlds.get(server.toLowerCase());
+    }
+
     public double getCosts() {
         return costs;
     }
@@ -504,5 +515,13 @@ public class RandomTeleporterManager implements Manager, BungeeFeature {
 
     public List<Material> getMaterialBlackList() {
         return materialBlackList;
+    }
+
+    public boolean hasRegisteredServers() {
+        return !this.worlds.isEmpty();
+    }
+
+    public Set<String> getServer() {
+        return this.worlds.keySet();
     }
 }

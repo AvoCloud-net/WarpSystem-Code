@@ -568,7 +568,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         return fileManager;
     }
 
-    public boolean isOnBungeeCord() {
+    public boolean isOnProxy() {
         return onBungeeCord;
     }
 

@@ -2,16 +2,14 @@ package de.codingair.warpsystem.bungee.features.randomtp;
 
 import de.codingair.codingapi.bungeecord.files.ConfigFile;
 import de.codingair.packetmanagement.utils.Direction;
+import de.codingair.warpsystem.base.transfer.packets.spigot.RandomTPWorldsPacket;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.features.FeatureType;
 import de.codingair.warpsystem.base.transfer.packets.spigot.QueueRTPUsagePacket;
 import de.codingair.warpsystem.base.utils.Manager;
 import net.md_5.bungee.api.config.ServerInfo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class RandomTPManager implements Manager {
     private final HashMap<String, List<String>> worlds = new HashMap<>();
@@ -85,9 +83,8 @@ public class RandomTPManager implements Manager {
                     data.add(uuid.toString());
                 }
                 queue.getConfig().set(server, data);
+                size += value.size();
             }
-
-            size += value.size();
         }
         queue.save();
         if(!saver) WarpSystem.log("    ...saved " + size + " queued random tp(s)");
@@ -118,6 +115,13 @@ public class RandomTPManager implements Manager {
         else this.worlds.put(server, worlds);
     }
 
+    public void addWorldData(ServerInfo server, RandomTPWorldsPacket packet) {
+        addWorldData(server.getName(), packet.getWorlds());
+
+        packet.setServer(server.getName());
+        WarpSystem.getInstance().getServerManager().getOnlineServer().forEach(s -> WarpSystem.getDataHandler().send(packet, s, Direction.DOWN));
+    }
+
     public List<String> getWorlds(String server) {
         return this.worlds.getOrDefault(server, new ArrayList<>());
     }
@@ -133,5 +137,9 @@ public class RandomTPManager implements Manager {
             if(info != null && WarpSystem.getInstance().getServerManager().isOnline(info)) servers.add(s);
         }
         return servers;
+    }
+
+    public HashMap<String, List<String>> getWorlds() {
+        return worlds;
     }
 }

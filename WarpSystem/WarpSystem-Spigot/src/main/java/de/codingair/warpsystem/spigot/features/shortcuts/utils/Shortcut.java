@@ -52,7 +52,7 @@ public class Shortcut extends FeatureObject {
 
         if(hasAction(Action.WARP)) {
             if(getDestination().getType() == DestinationType.GlobalWarp || getDestination().getType() == DestinationType.Server) {
-                return WarpSystem.getInstance().isOnBungeeCord();
+                return WarpSystem.getInstance().isOnProxy();
             }
         }
 

@@ -42,14 +42,14 @@ public class PlayerDataManager implements Listener {
     public PlayerData getCache(Player player) {
         if(player == null) return null;
 
-        if(WarpSystem.getInstance().isOnBungeeCord()) return cached.get(player.getName().toLowerCase());
+        if(WarpSystem.getInstance().isOnProxy()) return cached.get(player.getName().toLowerCase());
         else return new PlayerData(player.getName(), player.getUniqueId());
     }
 
     public PlayerData getCache(String name) {
         if(name == null) return null;
 
-        if(WarpSystem.getInstance().isOnBungeeCord()) return cached.get(name.toLowerCase());
+        if(WarpSystem.getInstance().isOnProxy()) return cached.get(name.toLowerCase());
         else {
             Player player = Bukkit.getPlayer(name);
             if(player == null) return null;

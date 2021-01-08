@@ -42,7 +42,7 @@ public class CTpHere extends WSCommandBuilder {
         getBaseComponent().addChild(new MultiCommandComponent() {
             @Override
             public boolean matchTabComplete(CommandSender sender, String suggestion, String argument) {
-                return WarpSystem.getInstance().isOnBungeeCord() || super.matchTabComplete(sender, suggestion, argument);
+                return WarpSystem.getInstance().isOnProxy() || super.matchTabComplete(sender, suggestion, argument);
             }
 
             @Override
@@ -60,7 +60,7 @@ public class CTpHere extends WSCommandBuilder {
 
     private void suggestTpHere(CommandSender sender, String[] args, List<String> suggestions) {
         Player p = (Player) sender;
-        if(WarpSystem.getInstance().isOnBungeeCord()) {
+        if(WarpSystem.getInstance().isOnProxy()) {
             suggestions.add(TeleportTabCompleteKeys.ID_TP_HERE);
 
             StringBuilder builder = new StringBuilder("tpa");

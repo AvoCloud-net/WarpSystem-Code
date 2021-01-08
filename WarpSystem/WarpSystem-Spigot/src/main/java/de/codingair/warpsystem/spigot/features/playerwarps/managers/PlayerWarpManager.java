@@ -204,7 +204,7 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
         if(economy) entry.put("Economy", 1);
 
         if(bungeeCord) {
-            if(WarpSystem.getInstance().isOnBungeeCord()) entry.put("BungeeCord", 1);
+            if(WarpSystem.getInstance().isOnProxy()) entry.put("BungeeCord", 1);
             else if(Bukkit.getOnlinePlayers().isEmpty()) entry.put("BungeeCord (empty server)", 1);
         }
 
@@ -214,7 +214,7 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
     @Override
     public void addCustomCarts(Metrics metrics) {
         metrics.addCustomChart(new Metrics.SingleLineChart("playerwarp_usage", () -> {
-            if(!bungeeCord || WarpSystem.getInstance().isOnBungeeCord()) {
+            if(!bungeeCord || WarpSystem.getInstance().isOnProxy()) {
                 lastCountedPlayerWarpSize = 0;
 
                 interactWithWarps(new Callback<PlayerWarp>() {
@@ -401,7 +401,7 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
         playerWarpsData.clearConfig();
 
         JSONArray a = null;
-        if(!bungeeCord || !WarpSystem.getInstance().isOnBungeeCord()) {
+        if(!bungeeCord || !WarpSystem.getInstance().isOnProxy()) {
             a = new JSONArray();
 
             for(List<PlayerWarp> data : this.warps.values()) {
@@ -506,7 +506,7 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
     }
 
     public boolean sync(PlayerWarp old, PlayerWarp warp) {
-        if(!bungeeCord || !WarpSystem.getInstance().isOnBungeeCord()) return false;
+        if(!bungeeCord || !WarpSystem.getInstance().isOnProxy()) return false;
 
         if(warp.isSource()) {
             warp.setSource(false);
@@ -520,7 +520,7 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
     }
 
     public boolean sync(PlayerWarpData old, PlayerWarpData warp) {
-        if(!bungeeCord || !WarpSystem.getInstance().isOnBungeeCord()) return false;
+        if(!bungeeCord || !WarpSystem.getInstance().isOnProxy()) return false;
         PlayerWarpUpdate update = warp.diff(old);
 
         if(update.isEmpty()) return false;
@@ -1160,7 +1160,7 @@ public class PlayerWarpManager implements Manager, Ticker, BungeeFeature, Collec
     }
 
     public boolean checkBungeeCord() {
-        return isBungeeCord() && WarpSystem.getInstance().isOnBungeeCord();
+        return isBungeeCord() && WarpSystem.getInstance().isOnProxy();
     }
 
     public long getInactiveTime() {

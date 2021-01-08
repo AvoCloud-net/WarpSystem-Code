@@ -42,7 +42,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
 
         if(playerP == null) {
             //try on proxy
-            if(WarpSystem.getInstance().isOnBungeeCord() && TeleportCommandManager.getInstance().isProxy()) {
+            if(WarpSystem.getInstance().isOnProxy() && TeleportCommandManager.getInstance().isProxy()) {
                 WarpSystem.getDataHandler().send(new PrepareTeleportPacket(gate.getName(), player, x, y, z), gate).thenAccept(packet -> {
                     long result = packet.a();
                     int handled = (int) (result >> 32);
@@ -87,7 +87,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
 
         if(playerP == null || targetP == null) {
             //try on proxy
-            if(WarpSystem.getInstance().isOnBungeeCord() && TeleportCommandManager.getInstance().isProxy()) {
+            if(WarpSystem.getInstance().isOnProxy() && TeleportCommandManager.getInstance().isProxy()) {
                 WarpSystem.getDataHandler().send(new PrepareTeleportPacket(gate.getName(), player, target), gate).thenAccept(packet -> {
                     long result = packet.a();
                     int handled = (int) (result >> 32);
@@ -159,7 +159,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
 
     @Override
     public void tpAll(Player player, int alreadyHandled, int alreadySent) {
-        if(WarpSystem.getInstance().isOnBungeeCord() && TeleportCommandManager.getInstance().isProxy()) {
+        if(WarpSystem.getInstance().isOnProxy() && TeleportCommandManager.getInstance().isProxy()) {
             WarpSystem.getDataHandler().send(new PrepareTeleportPacket(player.getName(), null, player.getName()), player).thenAccept(packet -> {
                 long result = packet.a();
                 int handled = (int) (result >> 32);
@@ -196,7 +196,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
             }
         };
 
-        if(!WarpSystem.getInstance().isOnBungeeCord() || !TeleportCommandManager.getInstance().isProxy() || other != null) {
+        if(!WarpSystem.getInstance().isOnProxy() || !TeleportCommandManager.getInstance().isProxy() || other != null) {
             callback.accept(other == null ? argument : other.getName());
             return;
         }

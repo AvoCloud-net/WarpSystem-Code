@@ -50,7 +50,7 @@ public class MetricsManager implements Manager {
         metrics.addCustomChart(new Metrics.SimplePie("type", () -> "Premium"));
         metrics.addCustomChart(new Metrics.SimplePie("bungeecord", () -> {
             if(Bukkit.getServer().getOnlinePlayers().isEmpty()) return "Is empty";
-            return WarpSystem.getInstance().isOnBungeeCord() ? "Yes" : "No";
+            return WarpSystem.getInstance().isOnProxy() ? "Yes" : "No";
         }));
         return true;
     }

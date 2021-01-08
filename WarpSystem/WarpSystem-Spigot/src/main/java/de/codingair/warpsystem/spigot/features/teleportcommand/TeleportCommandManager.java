@@ -217,11 +217,11 @@ public class TeleportCommandManager implements Manager, BungeeFeature, Collectib
 
     public boolean toggleDenyTpaRequest(Player player) {
         if(this.denyTpa.contains(player.getName())) {
-            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), deniesForceTps(player), false), player);
+            if(WarpSystem.getInstance().isOnProxy()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), deniesForceTps(player), false), player);
             this.denyTpa.remove(player.getName());
             return false;
         } else {
-            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), deniesForceTps(player), true), player);
+            if(WarpSystem.getInstance().isOnProxy()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), deniesForceTps(player), true), player);
             this.denyTpa.add(player.getName());
             return true;
         }
@@ -233,11 +233,11 @@ public class TeleportCommandManager implements Manager, BungeeFeature, Collectib
 
     public boolean toggleDenyForceTps(Player player) {
         if(this.denyForceTps.contains(player.getName())) {
-            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), false, deniesTpaRequests(player.getName())), player);
+            if(WarpSystem.getInstance().isOnProxy()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), false, deniesTpaRequests(player.getName())), player);
             this.denyForceTps.remove(player.getName());
             return false;
         } else {
-            if(WarpSystem.getInstance().isOnBungeeCord()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), true, deniesTpaRequests(player.getName())), player);
+            if(WarpSystem.getInstance().isOnProxy()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), true, deniesTpaRequests(player.getName())), player);
             this.denyForceTps.add(player.getName());
             return true;
         }

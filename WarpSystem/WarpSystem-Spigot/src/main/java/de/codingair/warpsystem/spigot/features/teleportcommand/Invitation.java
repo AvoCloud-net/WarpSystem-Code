@@ -62,7 +62,7 @@ public class Invitation {
         }
 
         handled.add(recipient);
-        if(WarpSystem.getInstance().isOnBungeeCord() && sender == null) WarpSystem.getDataHandler().send(new TeleportRequestHandledPacket(this.sender, recipient, accepted));
+        if(WarpSystem.getInstance().isOnProxy() && sender == null) WarpSystem.getDataHandler().send(new TeleportRequestHandledPacket(this.sender, recipient, accepted));
         TeleportCommandManager.getInstance().checkDestructionOf(this);
     }
 
@@ -207,7 +207,7 @@ public class Invitation {
                 });
             }
 
-            if(WarpSystem.getInstance().isOnBungeeCord() && !bukkitOnly) {
+            if(WarpSystem.getInstance().isOnProxy() && !bukkitOnly) {
                 WarpSystem.getDataHandler().send(new PrepareTeleportRequestPacket(sender, null, true)).thenAccept(packet -> {
                     long result = packet.a();
                     handled.setValue(handled.getValue() + (int) (result >> 32));
@@ -262,7 +262,7 @@ public class Invitation {
             m.send(recipient);
 
             callback.accept((((long) 1) << 32) | (1 & 0xffffffffL));
-        } else if(WarpSystem.getInstance().isOnBungeeCord() && !bukkitOnly) {
+        } else if(WarpSystem.getInstance().isOnProxy() && !bukkitOnly) {
             //try on bungee
             WarpSystem.getDataHandler().send(new PrepareTeleportRequestPacket(sender, this.recipient, toSender)).thenAccept(packet -> callback.accept(packet.a()));
         } else callback.accept(0L);
