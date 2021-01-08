@@ -1,9 +1,8 @@
-package de.codingair.warpsystem.bungee.features.globalwarps.managers;
+package de.codingair.warpsystem.bungee.features.globalwarps;
 
 import de.codingair.codingapi.bungeecord.files.ConfigFile;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.bungee.features.globalwarps.listeners.GlobalWarpListener;
 import de.codingair.warpsystem.base.transfer.packets.proxy.SendGlobalWarpNamesPacket;
 import de.codingair.warpsystem.base.transfer.packets.proxy.UpdateGlobalWarpPacket;
 import de.codingair.warpsystem.base.transfer.utils.serializeable.SGlobalWarp;

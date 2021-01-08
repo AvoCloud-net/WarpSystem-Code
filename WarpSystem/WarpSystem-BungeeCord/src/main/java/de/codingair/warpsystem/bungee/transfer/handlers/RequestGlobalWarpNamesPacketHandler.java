@@ -6,7 +6,7 @@ import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RequestGlobalWarpNamesPacket;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.features.FeatureType;
-import de.codingair.warpsystem.bungee.features.globalwarps.managers.GlobalWarpManager;
+import de.codingair.warpsystem.bungee.features.globalwarps.GlobalWarpManager;
 import net.md_5.bungee.api.config.ServerInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -5,7 +5,7 @@ import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.spigot.ToggleForceTeleportsPacket;
 import de.codingair.warpsystem.bungee.api.Players;
-import de.codingair.warpsystem.bungee.features.teleport.managers.TeleportManager;
+import de.codingair.warpsystem.bungee.features.teleport.TeleportManager;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

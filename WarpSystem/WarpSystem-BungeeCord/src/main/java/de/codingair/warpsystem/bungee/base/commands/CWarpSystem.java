@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.bungee.base.commands;
 
 import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.bungee.base.language.Lang;
+import de.codingair.warpsystem.bungee.base.utils.Lang;
 import de.codingair.warpsystem.bungee.base.managers.JarManager;
 import de.codingair.warpsystem.base.transfer.utils.serializeable.ServerOptions;
 import net.md_5.bungee.api.CommandSender;

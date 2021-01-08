@@ -1,4 +1,4 @@
-package de.codingair.warpsystem.bungee.features.teleport.managers;
+package de.codingair.warpsystem.bungee.features.teleport;
 
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.warpsystem.base.transfer.packets.general.TeleportCommandOptionsPacket;
@@ -6,7 +6,6 @@ import de.codingair.warpsystem.base.transfer.utils.TeleportCommandOptions;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.features.FeatureType;
-import de.codingair.warpsystem.bungee.features.teleport.listeners.TeleportCommandListener;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 

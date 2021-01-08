@@ -1,11 +1,10 @@
-package de.codingair.warpsystem.bungee.features.spawn.listeners;
+package de.codingair.warpsystem.bungee.features.spawn;
 
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.warpsystem.base.transfer.packets.general.SendGlobalSpawnOptionsPacket;
 import de.codingair.warpsystem.base.transfer.packets.general.TeleportSpawnPacket;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
-import de.codingair.warpsystem.bungee.features.spawn.managers.SpawnManager;
 import de.codingair.warpsystem.bungee.transfer.handlers.SendGlobalSpawnOptionsPacketHandler;
 import de.codingair.warpsystem.bungee.transfer.handlers.TeleportSpawnPacketHandler;
 import net.md_5.bungee.api.plugin.Listener;

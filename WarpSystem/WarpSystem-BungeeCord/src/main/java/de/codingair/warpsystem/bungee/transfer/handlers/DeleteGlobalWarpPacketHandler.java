@@ -8,7 +8,7 @@ import de.codingair.warpsystem.base.transfer.packets.spigot.DeleteGlobalWarpPack
 import de.codingair.warpsystem.base.transfer.utils.serializeable.SGlobalWarp;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.features.FeatureType;
-import de.codingair.warpsystem.bungee.features.globalwarps.managers.GlobalWarpManager;
+import de.codingair.warpsystem.bungee.features.globalwarps.GlobalWarpManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

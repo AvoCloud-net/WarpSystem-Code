@@ -12,7 +12,7 @@ import de.codingair.warpsystem.base.transfer.utils.serializeable.SGlobalWarp;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.managers.ServerManager;
 import de.codingair.warpsystem.bungee.features.FeatureType;
-import de.codingair.warpsystem.bungee.features.globalwarps.managers.GlobalWarpManager;
+import de.codingair.warpsystem.bungee.features.globalwarps.GlobalWarpManager;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import org.jetbrains.annotations.NotNull;

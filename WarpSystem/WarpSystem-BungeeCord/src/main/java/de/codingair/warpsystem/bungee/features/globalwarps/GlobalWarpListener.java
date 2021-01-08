@@ -1,8 +1,8 @@
-package de.codingair.warpsystem.bungee.features.globalwarps.listeners;
+package de.codingair.warpsystem.bungee.features.globalwarps;
 
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.features.FeatureType;
-import de.codingair.warpsystem.bungee.features.globalwarps.managers.GlobalWarpManager;
+import de.codingair.warpsystem.bungee.features.globalwarps.GlobalWarpManager;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;

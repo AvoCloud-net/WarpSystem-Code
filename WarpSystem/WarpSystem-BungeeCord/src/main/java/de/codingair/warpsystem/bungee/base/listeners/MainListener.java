@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.bungee.base.listeners;
 
 import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.bungee.base.language.Lang;
+import de.codingair.warpsystem.bungee.base.utils.Lang;
 import de.codingair.warpsystem.bungee.base.utils.ServerInitializeEvent;
 import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
 import net.md_5.bungee.api.chat.BaseComponent;

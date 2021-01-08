@@ -7,7 +7,7 @@ import de.codingair.warpsystem.base.transfer.packets.general.SendPlayerWarpsPack
 import de.codingair.warpsystem.base.transfer.packets.spigot.utils.PlayerWarpData;
 import de.codingair.warpsystem.base.transfer.utils.serializeable.Serializable;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.bungee.features.playerwarps.managers.PlayerWarpManager;
+import de.codingair.warpsystem.bungee.features.playerwarps.PlayerWarpManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

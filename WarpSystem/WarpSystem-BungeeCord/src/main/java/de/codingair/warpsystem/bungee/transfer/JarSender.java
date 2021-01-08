@@ -1,4 +1,4 @@
-package de.codingair.warpsystem.bungee.transfer.jar;
+package de.codingair.warpsystem.bungee.transfer;
 
 import de.codingair.codingapi.tools.Call;
 import de.codingair.codingapi.utils.Value;

@@ -8,7 +8,7 @@ import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.bungee.api.chatinput.ChatInputManager;
 import de.codingair.warpsystem.bungee.base.commands.CWarpSystem;
-import de.codingair.warpsystem.bungee.base.language.Lang;
+import de.codingair.warpsystem.bungee.base.utils.Lang;
 import de.codingair.warpsystem.bungee.base.listeners.MainListener;
 import de.codingair.warpsystem.bungee.base.listeners.PlayerDataListener;
 import de.codingair.warpsystem.bungee.base.listeners.SetupAssistantListener;
@@ -16,7 +16,7 @@ import de.codingair.warpsystem.bungee.base.managers.CooldownManager;
 import de.codingair.warpsystem.bungee.base.managers.DataManager;
 import de.codingair.warpsystem.bungee.base.managers.JarManager;
 import de.codingair.warpsystem.bungee.base.managers.ServerManager;
-import de.codingair.warpsystem.bungee.transfer.bungee.BungeeHandler;
+import de.codingair.warpsystem.bungee.transfer.BungeeHandler;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 

@@ -1,4 +1,4 @@
-package de.codingair.warpsystem.bungee.features.playerwarps.managers;
+package de.codingair.warpsystem.bungee.features.playerwarps;
 
 import de.codingair.codingapi.bungeecord.files.ConfigFile;
 import de.codingair.codingapi.tools.io.JSON.BungeeJSON;
@@ -10,7 +10,6 @@ import de.codingair.warpsystem.base.transfer.packets.spigot.utils.PlayerWarpData
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.features.FeatureType;
-import de.codingair.warpsystem.bungee.features.playerwarps.listeners.PlayerWarpListener;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

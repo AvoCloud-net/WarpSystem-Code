@@ -4,7 +4,7 @@ import de.codingair.packetmanagement.handlers.PacketHandler;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.general.SendGlobalSpawnOptionsPacket;
-import de.codingair.warpsystem.bungee.features.spawn.managers.SpawnManager;
+import de.codingair.warpsystem.bungee.features.spawn.SpawnManager;
 import net.md_5.bungee.api.config.ServerInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

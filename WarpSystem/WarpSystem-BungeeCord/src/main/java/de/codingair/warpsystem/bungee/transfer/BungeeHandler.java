@@ -1,4 +1,4 @@
-package de.codingair.warpsystem.bungee.transfer.bungee;
+package de.codingair.warpsystem.bungee.transfer;
 
 import de.codingair.codingapi.bungeecord.BungeeAPI;
 import de.codingair.packetmanagement.DataHandler;

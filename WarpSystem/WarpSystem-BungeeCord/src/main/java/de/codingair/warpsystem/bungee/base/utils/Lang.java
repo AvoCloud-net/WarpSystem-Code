@@ -1,4 +1,4 @@
-package de.codingair.warpsystem.bungee.base.language;
+package de.codingair.warpsystem.bungee.base.utils;
 
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.codingapi.bungeecord.files.ConfigFile;
