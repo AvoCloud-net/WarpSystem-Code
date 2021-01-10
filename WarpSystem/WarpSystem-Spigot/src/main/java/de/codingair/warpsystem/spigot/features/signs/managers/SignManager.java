@@ -10,6 +10,7 @@ import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
 import de.codingair.warpsystem.spigot.features.FeatureType;
 import de.codingair.warpsystem.spigot.features.signs.listeners.SignListener;
 import de.codingair.warpsystem.spigot.features.signs.utils.WarpSign;
+import de.codingair.warpsystem.spigot.features.signs.utils.WarpSignFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -40,7 +41,7 @@ public class SignManager implements Manager {
         List<?> data = file.getConfig().getList("WarpSigns");
         if(data != null) {
             for(Object s : data) {
-                WarpSign warpSign = new WarpSign();
+                WarpSign warpSign = WarpSignFactory.build();
 
                 if(s instanceof Map) {
                     try {

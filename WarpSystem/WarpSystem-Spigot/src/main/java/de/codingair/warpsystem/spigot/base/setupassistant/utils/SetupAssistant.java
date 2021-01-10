@@ -8,7 +8,7 @@ import de.codingair.codingapi.server.reflections.PacketUtils;
 import de.codingair.codingapi.server.specification.Version;
 import de.codingair.warpsystem.base.transfer.packets.proxy.ToggleSetupAssistantPacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.setupassistant.SetupAssistantManager;
 import de.codingair.warpsystem.spigot.base.utils.PluginVersion;
 import net.md_5.bungee.api.chat.BaseComponent;

@@ -11,7 +11,7 @@ import de.codingair.warpsystem.base.transfer.packets.spigot.CooldownDataPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.CooldownPacket;
 import de.codingair.warpsystem.spigot.api.StringFormatter;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;

@@ -1,9 +1,9 @@
 package de.codingair.warpsystem.bungee.base.commands;
 
-import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.bungee.base.utils.Lang;
-import de.codingair.warpsystem.bungee.base.managers.JarManager;
 import de.codingair.warpsystem.base.transfer.utils.serializeable.ServerOptions;
+import de.codingair.warpsystem.bungee.base.WarpSystem;
+import de.codingair.warpsystem.bungee.base.managers.JarManager;
+import de.codingair.warpsystem.bungee.base.utils.Lang;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

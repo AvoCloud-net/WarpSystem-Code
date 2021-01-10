@@ -7,7 +7,7 @@ import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableForSetupAssistant;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
-import de.codingair.warpsystem.spigot.base.utils.BungeeFeature;
+import de.codingair.warpsystem.spigot.base.utils.ProxyFeature;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types.CommandAction;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
@@ -17,6 +17,7 @@ import de.codingair.warpsystem.spigot.features.shortcuts.commands.CShortcuts;
 import de.codingair.warpsystem.spigot.features.shortcuts.commands.ShortcutExecutor;
 import de.codingair.warpsystem.spigot.features.shortcuts.listeners.ShortcutListener;
 import de.codingair.warpsystem.spigot.features.shortcuts.utils.Shortcut;
+import de.codingair.warpsystem.spigot.features.shortcuts.utils.ShortcutFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -28,7 +29,7 @@ import java.util.Map;
 @AvailableForSetupAssistant(type = "Shortcuts", config = "Config")
 @Function(name = "Enabled", defaultValue = "true", configPath = "WarpSystem.Functions.Shortcuts", clazz = Boolean.class)
 @Function(name = "Teleport message", defaultValue = "true", configPath = "WarpSystem.Send.Teleport_Message.Shortcuts", clazz = Boolean.class)
-public class ShortcutManager implements Manager, BungeeFeature {
+public class ShortcutManager implements Manager, ProxyFeature {
     private final List<Shortcut> shortcuts = new ArrayList<>();
     private final HashMap<Shortcut, ShortcutExecutor> executors = new HashMap<>();
 
@@ -66,7 +67,7 @@ public class ShortcutManager implements Manager, BungeeFeature {
                 destination = new Destination(globalWarp, DestinationType.GlobalWarp);
             } else continue;
 
-            this.shortcuts.add(new Shortcut(destination, key.replace(" ", "_")));
+            this.shortcuts.add(ShortcutFactory.build(destination, key.replace(" ", "_")));
         }
 
         List<?> l = file.getConfig().getList("Shortcuts");
@@ -74,7 +75,7 @@ public class ShortcutManager implements Manager, BungeeFeature {
             for(Object datum : l) {
                 if(datum instanceof Map) {
                     try {
-                        Shortcut s = new Shortcut();
+                        Shortcut s = ShortcutFactory.build();
                         JSON json = new JSON((Map<?, ?>) datum);
                         s.read(json);
                         s.setDisplayName(s.getDisplayName().replace(" ", "_"));
@@ -84,7 +85,7 @@ public class ShortcutManager implements Manager, BungeeFeature {
                     }
                 } else if(datum instanceof String) {
                     try {
-                        Shortcut s = new Shortcut();
+                        Shortcut s = ShortcutFactory.build();
                         JSON json = (JSON) new JSONParser().parse((String) datum);
                         s.read(json);
                         s.setDisplayName(s.getDisplayName().replace(" ", "_"));

@@ -1,7 +1,6 @@
 package de.codingair.warpsystem.base.transfer.packets.general;
 
 import de.codingair.packetmanagement.packets.Packet;
-import de.codingair.packetmanagement.utils.ByteMask;
 import de.codingair.warpsystem.base.transfer.utils.TeleportCommandOptions;
 
 import java.io.DataInputStream;
@@ -9,6 +8,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class TeleportCommandOptionsPacket implements Packet {
+    private String server;
     private TeleportCommandOptions options = new TeleportCommandOptions();
 
     public TeleportCommandOptionsPacket() {
@@ -25,18 +25,30 @@ public class TeleportCommandOptionsPacket implements Packet {
         options.setBit(7, tpaToggle);
     }
 
-    public TeleportCommandOptionsPacket(TeleportCommandOptions options) {
+    public TeleportCommandOptionsPacket(String server, TeleportCommandOptions options) {
+        this.server = server;
         this.options = options;
     }
 
     @Override
     public void write(DataOutputStream out) throws IOException {
+        out.writeBoolean(this.server != null);
+        if(this.server != null) out.writeUTF(this.server);
         this.options.write(out);
     }
 
     @Override
     public void read(DataInputStream in) throws IOException {
+        if(in.readBoolean()) this.server = in.readUTF();
         this.options.read(in);
+    }
+
+    public void setServer(String name) {
+        this.server = name;
+    }
+
+    public String getServer() {
+        return server;
     }
 
     public TeleportCommandOptions getOptions() {

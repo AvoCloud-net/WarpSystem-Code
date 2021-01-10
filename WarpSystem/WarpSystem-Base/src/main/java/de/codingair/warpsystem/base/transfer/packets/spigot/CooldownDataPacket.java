@@ -1,8 +1,8 @@
 package de.codingair.warpsystem.base.transfer.packets.spigot;
 
 import com.google.common.base.Preconditions;
-import de.codingair.warpsystem.base.features.cooldown.Cooldown;
 import de.codingair.packetmanagement.packets.Packet;
+import de.codingair.warpsystem.base.features.cooldown.Cooldown;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

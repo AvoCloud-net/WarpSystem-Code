@@ -1,5 +1,7 @@
 package de.codingair.warpsystem.spigot.base.managers;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import de.codingair.warpsystem.base.transfer.packets.general.UpdatePlayerDataPacket;
 import de.codingair.warpsystem.base.transfer.utils.PlayerData;
 import de.codingair.warpsystem.spigot.api.events.PlayerFinalJoinEvent;
@@ -13,11 +15,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public class PlayerDataManager implements Listener {
+    private final Cache<String, String> abbreviations = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.MINUTES).build();
     private final ConcurrentHashMap<String, PlayerData> cached = new ConcurrentHashMap<>();
 
     public UUID get(Player player) {
@@ -47,6 +53,33 @@ public class PlayerDataManager implements Listener {
     }
 
     public PlayerData getCache(String name) {
+        if(name == null) return null;
+
+        PlayerData data = getCacheExact(name);
+        if(data != null) return data;
+
+        String lowerName = name.toLowerCase(Locale.ENGLISH);
+        String abbreviation = abbreviations.getIfPresent(lowerName);
+        if(abbreviation != null) return getCacheExact(abbreviation);
+
+        int delta = 2147483647;
+        for(String player : cached.keySet()) {
+            if(player.startsWith(lowerName)) {
+                int curDelta = Math.abs(player.length() - lowerName.length());
+                if(curDelta < delta) {
+                    abbreviation = player;
+                    delta = curDelta;
+                }
+
+                if(curDelta == 0) break;
+            }
+        }
+
+        if(abbreviation != null) abbreviations.put(lowerName, abbreviation);
+        return getCacheExact(abbreviation);
+    }
+
+    public PlayerData getCacheExact(String name) {
         if(name == null) return null;
 
         if(WarpSystem.getInstance().isOnProxy()) return cached.get(name.toLowerCase());
@@ -90,7 +123,7 @@ public class PlayerDataManager implements Listener {
         cached.clear();
     }
 
-    public void initialize(Collection<PlayerData> data) {
+    public void apply(Collection<PlayerData> data) {
         data.forEach(entry -> cached.put(entry.getName().toLowerCase(), entry));
     }
 

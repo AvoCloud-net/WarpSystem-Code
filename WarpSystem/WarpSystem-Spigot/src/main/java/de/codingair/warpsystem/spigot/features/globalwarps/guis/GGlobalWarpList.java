@@ -5,7 +5,7 @@ import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.spigot.base.guis.list.GUIList;
 import de.codingair.warpsystem.spigot.base.guis.list.ListItem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.globalwarps.managers.GlobalWarpManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;

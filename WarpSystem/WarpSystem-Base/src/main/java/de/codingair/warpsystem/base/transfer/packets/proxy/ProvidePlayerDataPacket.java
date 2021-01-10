@@ -6,7 +6,8 @@ import de.codingair.warpsystem.base.transfer.utils.PlayerData;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class ProvidePlayerDataPacket implements Packet {
     private Collection<PlayerData> data;

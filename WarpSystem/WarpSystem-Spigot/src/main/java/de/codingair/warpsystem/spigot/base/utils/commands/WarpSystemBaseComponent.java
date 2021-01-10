@@ -2,7 +2,7 @@ package de.codingair.warpsystem.spigot.base.utils.commands;
 
 import de.codingair.codingapi.server.commands.builder.BaseComponent;
 import de.codingair.codingapi.server.commands.builder.CommandComponent;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import org.bukkit.command.CommandSender;
 
 public abstract class WarpSystemBaseComponent extends BaseComponent {

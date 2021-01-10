@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.spigot.api;
 
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import org.bukkit.ChatColor;
 
 import java.util.concurrent.TimeUnit;

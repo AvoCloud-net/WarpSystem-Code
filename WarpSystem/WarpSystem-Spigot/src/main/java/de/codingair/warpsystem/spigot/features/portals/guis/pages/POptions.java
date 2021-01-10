@@ -8,10 +8,7 @@ import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.warpsystem.spigot.base.guis.editor.Editor;
 import de.codingair.warpsystem.spigot.base.guis.editor.PageItem;
 import de.codingair.warpsystem.spigot.base.guis.editor.StandardButtonOption;
-import de.codingair.warpsystem.spigot.base.guis.editor.buttons.CommandButton;
-import de.codingair.warpsystem.spigot.base.guis.editor.buttons.CostsButton;
-import de.codingair.warpsystem.spigot.base.guis.editor.buttons.PermissionButton;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.portals.guis.PortalEditor;
 import de.codingair.warpsystem.spigot.features.portals.utils.Portal;
 import de.codingair.warpsystem.spigot.versionfactory.VFac;
@@ -43,7 +40,7 @@ public class POptions extends PageItem {
         StandardButtonOption option = new StandardButtonOption();
 
         addButton(VFac.build(Button.class, VKey.PermissionButton, 1, 2, clone).setOption(option));
-        addButton(new CommandButton(2, 2, clone).setOption(option));
+        addButton(VFac.build(Button.class, VKey.CommandButton, 2, 2, clone).setOption(option));
         addButton(VFac.build(Button.class, VKey.CooldownButton, 3, 2, clone).setOption(option));
         addButton(VFac.build(Button.class, VKey.CostsButton, 4, 2, clone).setOption(option));
 

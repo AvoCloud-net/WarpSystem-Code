@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.spigot.features.playerwarps.commands;
 
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.commands.WarpSystemBaseComponent;
 import de.codingair.warpsystem.spigot.base.utils.commands.WarpSystemCommandBuilder;
 import de.codingair.warpsystem.spigot.features.playerwarps.guis.list.PWList;

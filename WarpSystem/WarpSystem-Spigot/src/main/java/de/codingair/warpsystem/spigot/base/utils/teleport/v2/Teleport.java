@@ -2,9 +2,9 @@ package de.codingair.warpsystem.spigot.base.utils.teleport.v2;
 
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.utils.Value;
-import de.codingair.warpsystem.spigot.base.language.Lang;
-import de.codingair.warpsystem.spigot.base.utils.money.Bank;
 import de.codingair.warpsystem.api.Result;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.money.Bank;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import org.bukkit.Location;

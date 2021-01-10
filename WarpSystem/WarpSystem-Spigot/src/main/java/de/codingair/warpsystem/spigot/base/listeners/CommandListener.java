@@ -2,7 +2,7 @@ package de.codingair.warpsystem.spigot.base.listeners;
 
 import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.FeatureType;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;

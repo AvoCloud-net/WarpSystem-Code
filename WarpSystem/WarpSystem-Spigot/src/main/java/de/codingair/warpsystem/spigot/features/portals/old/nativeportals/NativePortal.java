@@ -9,6 +9,7 @@ import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types.Wa
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.DestinationType;
 import de.codingair.warpsystem.spigot.features.portals.utils.Portal;
+import de.codingair.warpsystem.spigot.features.portals.utils.PortalFactory;
 import de.codingair.warpsystem.spigot.features.simplewarps.SimpleWarp;
 import de.codingair.warpsystem.spigot.features.simplewarps.managers.SimpleWarpManager;
 
@@ -29,7 +30,7 @@ public class NativePortal extends FeatureObject {
     }
 
     public Portal convert() {
-        Portal portal = new Portal();
+        Portal portal = PortalFactory.build();
         portal.apply(this);
 
         for(PortalBlock block : blocks) {

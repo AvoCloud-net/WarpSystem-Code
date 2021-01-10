@@ -10,7 +10,7 @@ import de.codingair.codingapi.tools.time.TimeList;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.api.StringFormatter;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableForSetupAssistant;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
@@ -25,6 +25,7 @@ import de.codingair.warpsystem.spigot.features.portals.listeners.PortalListener;
 import de.codingair.warpsystem.spigot.features.portals.old.EffectPortal;
 import de.codingair.warpsystem.spigot.features.portals.old.nativeportals.NativePortal;
 import de.codingair.warpsystem.spigot.features.portals.utils.Portal;
+import de.codingair.warpsystem.spigot.features.portals.utils.PortalFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -77,7 +78,7 @@ public class PortalManager implements Manager {
         List<?> l = file.getConfig().getList("PortalsV2");
         if(l != null)
             for(Object s : l) {
-                Portal p = new Portal();
+                Portal p = PortalFactory.build();
 
                 if(s instanceof Map) {
                     try {

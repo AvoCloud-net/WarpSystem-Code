@@ -12,7 +12,7 @@ import de.codingair.codingapi.player.gui.inventory.gui.Skull;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.animations.guis.editor.Menu;
 import de.codingair.warpsystem.spigot.features.animations.guis.editor.Particles;
 import de.codingair.warpsystem.spigot.features.animations.utils.ParticlePart;

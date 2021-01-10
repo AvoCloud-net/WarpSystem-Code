@@ -25,7 +25,7 @@ public class PlayerWarpPlaceholderExpansion extends WarpSystemPlaceholderExpansi
             case "count":
                 return warps.size() + "";
             case "max":
-                return PlayerWarpManager.getMaxAmount(player) + "";
+                return PlayerWarpManager.getManager().getMaxAmount(player) + "";
         }
 
         return null;

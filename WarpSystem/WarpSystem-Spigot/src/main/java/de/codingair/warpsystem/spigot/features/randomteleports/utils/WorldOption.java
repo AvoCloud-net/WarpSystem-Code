@@ -2,7 +2,7 @@ package de.codingair.warpsystem.spigot.features.randomteleports.utils;
 
 import de.codingair.codingapi.tools.io.utils.DataWriter;
 import de.codingair.codingapi.tools.io.utils.Serializable;
-import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleporterManager;
+import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -30,8 +30,8 @@ public class WorldOption implements Serializable {
         this.startX = d.getDouble("startX", world == null ? 0 : world.getSpawnLocation().getX());
         this.startY = d.getDouble("startY", world == null ? 0 : world.getSpawnLocation().getY());
         this.startZ = d.getDouble("startZ", world == null ? 0 : world.getSpawnLocation().getZ());
-        this.min = d.getDouble("min_range", RandomTeleporterManager.getInstance().getDefValues().min);
-        this.max = d.getDouble("max_range", RandomTeleporterManager.getInstance().getDefValues().max);
+        this.min = d.getDouble("min_range", RandomTeleportManager.getInstance().getDefValues().min);
+        this.max = d.getDouble("max_range", RandomTeleportManager.getInstance().getDefValues().max);
         this.target = d.getList("target_worlds");
         this.disabled = d.getBoolean("disabled", false);
         return true;

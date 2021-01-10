@@ -11,7 +11,7 @@ import de.codingair.codingapi.utils.ImprovedDouble;
 import de.codingair.codingapi.utils.Node;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.guis.editor.Editor;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
 import de.codingair.warpsystem.spigot.features.playerwarps.commands.CPlayerWarps;
 import de.codingair.warpsystem.spigot.features.playerwarps.guis.editor.PWEditor;
@@ -104,7 +104,7 @@ public class OwnWarpFilter implements Filter {
         List<PlayerWarp> warps = PlayerWarpManager.getManager().getOwnWarps(player);
 
         List<Button> buttons = new ArrayList<>();
-        if(createButtonInList() && PlayerWarpManager.hasPermission(player)) maxSize--;
+        if(createButtonInList() && PlayerWarpManager.getManager().hasPermission(player)) maxSize--;
 
         ItemButtonOption option = new ItemButtonOption();
         option.setClickSound(new SoundData(Sound.UI_BUTTON_CLICK, 0.7F, 1F));

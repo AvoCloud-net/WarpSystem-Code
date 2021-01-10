@@ -7,10 +7,10 @@ import de.codingair.codingapi.server.commands.builder.CommandComponent;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
-import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleporterManager;
+import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -38,12 +38,12 @@ public class CRandomTp extends WSCommandBuilder {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 if(sender.hasPermission(WarpSystem.PERMISSION_MODIFY_RANDOM_TELEPORTER)) {
-                    if(RandomTeleporterManager.getInstance().isBuyable())
+                    if(RandomTeleportManager.getInstance().isBuyable())
                         sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<buy, blocks, info, go>");
                     else
                         sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<blocks, info, go>");
                 } else {
-                    if(RandomTeleporterManager.getInstance().isBuyable())
+                    if(RandomTeleportManager.getInstance().isBuyable())
                         sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<buy, info, go>");
                     else {
                         sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<info, go>");
@@ -53,22 +53,22 @@ public class CRandomTp extends WSCommandBuilder {
             }
         }.setOnlyPlayers(true));
 
-        if(RandomTeleporterManager.getInstance().isBuyable()) {
+        if(RandomTeleportManager.getInstance().isBuyable()) {
             getBaseComponent().addChild(new CommandComponent("buy") {
                 @Override
                 public boolean runCommand(CommandSender sender, String label, String[] args) {
                     //TextComponent
 
-                    if(!RandomTeleporterManager.getInstance().canBuy((Player) sender)) {
-                        sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Bought_Too_Much").replace("%AMOUNT%", RandomTeleporterManager.getInstance().getMaxTeleportAmount((Player) sender) + ""));
+                    if(!RandomTeleportManager.getInstance().canBuy((Player) sender)) {
+                        sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Bought_Too_Much").replace("%AMOUNT%", RandomTeleportManager.getInstance().getMaxTeleportAmount((Player) sender) + ""));
                         return false;
-                    } else if(RandomTeleporterManager.getInstance().getFreeTeleportAmount((Player) sender) == -1) {
+                    } else if(RandomTeleportManager.getInstance().getFreeTeleportAmount((Player) sender) == -1) {
                         sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Info_Unlimited"));
                         return false;
                     }
 
                     double bank = Bank.adapter().getMoney((Player) sender);
-                    double costs = RandomTeleporterManager.getInstance().getCosts();
+                    double costs = RandomTeleportManager.getInstance().getCosts();
 
                     if(bank >= costs) {
                         SimpleMessage sm = new SimpleMessage(Lang.getPrefix() + Lang.get("RandomTP_Buy").replace("%AMOUNT%", fancyCosts(costs)), WarpSystem.getInstance());
@@ -83,7 +83,7 @@ public class CRandomTp extends WSCommandBuilder {
                                 if(bank >= costs) {
                                     Bank.adapter().withdraw(player, costs);
                                     UUID u = WarpSystem.getInstance().getPlayerDataManager().get((Player) sender);
-                                    RandomTeleporterManager.getInstance().setBoughtTeleports(u, RandomTeleporterManager.getInstance().getBoughtTeleports(u) + 1);
+                                    RandomTeleportManager.getInstance().setBoughtTeleports(u, RandomTeleportManager.getInstance().getBoughtTeleports(u) + 1);
                                     sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Buy_Finished").replace("%AMOUNT%", fancyCosts(costs)));
                                 } else {
                                     sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Not_Enough_Money").replace("%AMOUNT%", fancyCosts(costs)));
@@ -119,7 +119,7 @@ public class CRandomTp extends WSCommandBuilder {
         getComponent("blocks").addChild(new CommandComponent("add") {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                RandomTeleporterManager.getInstance().getListener().getAddingNewBlock().add((Player) sender, 30);
+                RandomTeleportManager.getInstance().getListener().getAddingNewBlock().add((Player) sender, 30);
                 sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Adding_New_Block"));
                 return false;
             }
@@ -136,10 +136,10 @@ public class CRandomTp extends WSCommandBuilder {
         getBaseComponent().addChild(new CommandComponent("info") {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                int free = RandomTeleporterManager.getInstance().getFreeTeleportAmount((Player) sender);
-                int bought = RandomTeleporterManager.getInstance().getBoughtTeleports((Player) sender);
-                int teleports = RandomTeleporterManager.getInstance().getTeleports((Player) sender);
-                int max = RandomTeleporterManager.getInstance().getMaxTeleportAmount((Player) sender);
+                int free = RandomTeleportManager.getInstance().getFreeTeleportAmount((Player) sender);
+                int bought = RandomTeleportManager.getInstance().getBoughtTeleports((Player) sender);
+                int teleports = RandomTeleportManager.getInstance().getTeleports((Player) sender);
+                int max = RandomTeleportManager.getInstance().getMaxTeleportAmount((Player) sender);
 
                 if(free == -1) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Info_Unlimited"));
@@ -148,7 +148,7 @@ public class CRandomTp extends WSCommandBuilder {
                             .replace("%LEFT%", Math.max(free + bought - teleports, 0) + "")
                             .replace("%ALL%", (free + bought) + ""));
 
-                    if(RandomTeleporterManager.getInstance().isBuyable()) {
+                    if(RandomTeleportManager.getInstance().isBuyable()) {
                         if(max == -1) {
                             sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Info_Buyable_Unlimited"));
                         } else {
@@ -173,7 +173,7 @@ public class CRandomTp extends WSCommandBuilder {
                 if(WarpSystem.cooldown().checkPlayer((Player) sender, Origin.RandomTP)) return false;
 
                 Player p = (Player) sender;
-                RandomTeleporterManager.getInstance().tryToTeleport(p.getName(), p.getWorld(), false, new Callback<Integer>() {
+                RandomTeleportManager.getInstance().tryToTeleport(p.getName(), p.getWorld(), false, new Callback<Integer>() {
                     @Override
                     public void accept(Integer result) {
                         if(result == 0) {

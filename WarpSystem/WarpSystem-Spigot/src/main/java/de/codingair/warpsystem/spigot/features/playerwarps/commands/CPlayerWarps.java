@@ -14,7 +14,7 @@ import de.codingair.codingapi.utils.ImprovedDouble;
 import de.codingair.warpsystem.base.transfer.packets.general.SendPlayerWarpsPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.utils.PlayerWarpData;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.commands.WarpSystemBaseComponent;
 import de.codingair.warpsystem.spigot.base.utils.commands.WarpSystemCommandBuilder;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
@@ -189,7 +189,7 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
-                if(!PlayerWarpManager.hasPermission((Player) sender)) {
+                if(!PlayerWarpManager.getManager().hasPermission((Player) sender)) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_Maximum_of_Warps").replace("%AMOUNT%", PlayerWarpManager.getManager().getOwnWarps((Player) sender).size() + ""));
                     return false;
                 }
@@ -277,7 +277,7 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
     }
 
     public static void createPlayerWarp(Player p, GUI fallBack) {
-        if(!PlayerWarpManager.hasPermission(p)) {
+        if(!PlayerWarpManager.getManager().hasPermission(p)) {
             p.sendMessage(Lang.getPrefix() + Lang.get("Warp_Maximum_of_Warps").replace("%AMOUNT%", PlayerWarpManager.getManager().getOwnWarps(p).size() + ""));
             return;
         }

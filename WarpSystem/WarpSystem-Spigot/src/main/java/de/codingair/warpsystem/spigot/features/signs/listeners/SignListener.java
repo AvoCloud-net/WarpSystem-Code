@@ -5,13 +5,14 @@ import de.codingair.codingapi.server.events.PlayerPickItemEvent;
 import de.codingair.codingapi.server.specification.Version;
 import de.codingair.codingapi.tools.Location;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.features.FeatureType;
 import de.codingair.warpsystem.spigot.features.signs.guis.WarpSignGUI;
 import de.codingair.warpsystem.spigot.features.signs.managers.SignManager;
 import de.codingair.warpsystem.spigot.features.signs.utils.NBTHelper;
 import de.codingair.warpsystem.spigot.features.signs.utils.WarpSign;
+import de.codingair.warpsystem.spigot.features.signs.utils.WarpSignFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
@@ -128,8 +129,8 @@ public class SignListener implements Listener {
     public void onPlace(SignChangeEvent e) {
         if(!e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_WARP_SIGNS)) return;
 
-        if(e.getLine(0).equalsIgnoreCase("[warps]")) {
-            WarpSign sign = new WarpSign(Location.getByLocation(e.getBlock().getLocation()), new Destination());
+        if("[warps]".equalsIgnoreCase(e.getLine(0))) {
+            WarpSign sign = WarpSignFactory.build(Location.getByLocation(e.getBlock().getLocation()), new Destination());
             Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> new WarpSignGUI(e.getPlayer(), sign).open(), 1L);
         }
     }

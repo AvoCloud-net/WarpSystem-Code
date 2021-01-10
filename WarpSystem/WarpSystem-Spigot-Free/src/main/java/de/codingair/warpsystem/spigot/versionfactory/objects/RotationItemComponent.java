@@ -4,8 +4,7 @@ import de.codingair.codingapi.player.gui.hotbar.HotbarGUI;
 import de.codingair.codingapi.player.gui.hotbar.components.ItemComponent;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
-import de.codingair.warpsystem.spigot.base.language.Lang;
-import de.codingair.warpsystem.spigot.features.animations.guis.editor.ParticleRotation;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 
 public class RotationItemComponent extends ItemComponent {
     public RotationItemComponent(HotbarGUI rotation) {

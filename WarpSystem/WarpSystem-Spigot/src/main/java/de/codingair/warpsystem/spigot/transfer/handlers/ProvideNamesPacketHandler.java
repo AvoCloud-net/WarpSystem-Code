@@ -11,6 +11,6 @@ import org.jetbrains.annotations.Nullable;
 public class ProvideNamesPacketHandler implements PacketHandler<ProvidePlayerDataPacket> {
     @Override
     public void process(@NotNull ProvidePlayerDataPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
-        WarpSystem.getInstance().getPlayerDataManager().initialize(packet.getData());
+        WarpSystem.getInstance().getPlayerDataManager().apply(packet.getData());
     }
 }

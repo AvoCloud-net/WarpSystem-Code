@@ -11,7 +11,7 @@ import de.codingair.warpsystem.base.transfer.utils.serializeable.SLocation;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.managers.TeleportManager;
-import de.codingair.warpsystem.spigot.base.utils.BungeeFeature;
+import de.codingair.warpsystem.spigot.base.utils.ProxyFeature;
 import de.codingair.warpsystem.spigot.base.utils.teleport.v2.Teleport;
 import de.codingair.warpsystem.spigot.features.FeatureType;
 import de.codingair.warpsystem.spigot.features.globalwarps.commands.CGlobalWarp;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
-public class GlobalWarpManager implements Manager, BungeeFeature {
+public class GlobalWarpManager implements Manager, ProxyFeature {
     //              Name,   Server
     private final HashMap<String, String> globalWarps = new HashMap<>();
 

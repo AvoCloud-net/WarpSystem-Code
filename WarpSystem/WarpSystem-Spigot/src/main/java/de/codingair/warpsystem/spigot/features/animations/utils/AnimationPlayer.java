@@ -6,7 +6,7 @@ import de.codingair.codingapi.particles.animations.movables.MovableMid;
 import de.codingair.codingapi.particles.animations.movables.PlayerMid;
 import de.codingair.codingapi.tools.HitBox;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;

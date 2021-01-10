@@ -9,13 +9,15 @@ import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.codingapi.utils.Value;
 import de.codingair.warpsystem.spigot.base.guis.editor.Editor;
 import de.codingair.warpsystem.spigot.base.guis.editor.PageItem;
-import de.codingair.warpsystem.spigot.base.guis.editor.buttons.*;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.guis.editor.buttons.NameButton;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.shortcuts.managers.ShortcutManager;
 import de.codingair.warpsystem.spigot.features.shortcuts.utils.Shortcut;
 import de.codingair.warpsystem.spigot.versionfactory.VFac;
 import de.codingair.warpsystem.spigot.versionfactory.VKey;
 import org.bukkit.entity.Player;
+
+import java.util.function.Function;
 
 public class POptions extends PageItem {
     private final Shortcut shortcut;
@@ -46,18 +48,14 @@ public class POptions extends PageItem {
             }
         }.setOption(option));
 
-        addButton(new CommandButton(2, 2, shortcut) {
-            @Override
-            public boolean isOkay(String command) {
-                if(ShortcutManager.getInstance().hasCommandLoop(shortcut, command)) {
-                    p.sendMessage(Lang.getPrefix() + Lang.get("Shortcut_Editor_Loop"));
-                    return false;
-                }
-
-                return true;
+        addButton(VFac.build(Button.class, VKey.CommandButton, 2, 2, shortcut, (Function<String, Boolean>) command -> {
+            if(ShortcutManager.getInstance().hasCommandLoop(shortcut, command)) {
+                p.sendMessage(Lang.getPrefix() + Lang.get("Shortcut_Editor_Loop"));
+                return false;
             }
-        }.setOption(option));
 
+            return true;
+        }).setOption(option));
         addButton(VFac.build(Button.class, VKey.PermissionButton, 3, 2, shortcut).setOption(option));
         addButton(VFac.build(Button.class, VKey.CooldownButton, 4, 2, shortcut).setOption(option));
         addButton(VFac.build(Button.class, VKey.CostsButton, 5, 2, shortcut).setOption(option));

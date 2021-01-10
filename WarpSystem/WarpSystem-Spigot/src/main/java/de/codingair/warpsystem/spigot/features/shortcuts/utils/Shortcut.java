@@ -11,19 +11,19 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destinati
 import java.util.Objects;
 
 public class Shortcut extends FeatureObject {
-    private String displayName;
+    protected String displayName;
 
-    public Shortcut() {
+    protected Shortcut() {
     }
 
-    public Shortcut(Shortcut shortcut) {
-        super(shortcut);
-        this.displayName = shortcut.getDisplayName();
-    }
-
-    public Shortcut(Destination destination, String displayName) {
+    protected Shortcut(Destination destination, String displayName) {
         super(null, false, new WarpAction(destination));
         this.displayName = displayName;
+    }
+
+    private Shortcut(Shortcut shortcut) {
+        super(shortcut);
+        this.displayName = shortcut.getDisplayName();
     }
 
     @Override

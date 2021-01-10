@@ -4,7 +4,7 @@ import de.codingair.packetmanagement.handlers.PacketHandler;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.spigot.QueueRTPUsagePacket;
-import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleporterManager;
+import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +16,7 @@ public class QueueRTPUsagePacketHandler implements PacketHandler<QueueRTPUsagePa
     public void process(@NotNull QueueRTPUsagePacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         List<UUID> l = packet.getIds();
         for(UUID uuid : l) {
-            RandomTeleporterManager.getInstance().increaseTeleports(uuid);
+            RandomTeleportManager.getInstance().increaseTeleports(uuid);
         }
         l.clear();
     }

@@ -1,4 +1,4 @@
-package de.codingair.warpsystem.spigot.base.language;
+package de.codingair.warpsystem.spigot.base.utils;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -30,18 +30,6 @@ public class Lang {
     public static final String PREMIUM_HOTBAR = "§8» §6§lPremium feature §8«";
     public static final String PREMIUM_LORE = "§r §8(§6Premium§8)";
     private static final TimeList<CommandSender> premiumMessage = new TimeList<>();
-
-    public static void PREMIUM_CHAT_ONLY_OPED(CommandSender sender) {
-        if(sender instanceof Player) {
-            Player p = (Player) sender;
-
-            if(API.getRemovable(p, GUI.class) != null) return;
-
-            MessageAPI.sendTitle(p, "§7This is a §6Premium §7feature!", "§7Only §eoped §7players can use this.", 5, 50, 5);
-        } else {
-            sender.sendMessage("\n" + getPrefix() + "§7This is a §6§lPremium§7 feature! Only §eoped §7players can use this.\n");
-        }
-    }
 
     public static void PREMIUM_CHAT(CommandSender sender) {
         TextComponent tc0 = new TextComponent("\n" + Lang.getPrefix() + "§7This is a ");

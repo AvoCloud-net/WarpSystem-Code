@@ -1,6 +1,7 @@
 package de.codingair.warpsystem.spigot.base.utils.updates;
 
 import de.codingair.warpsystem.spigot.base.WarpSystem;
+import de.codingair.warpsystem.spigot.versionfactory.VFac;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -19,7 +20,7 @@ public class UpdateNotifier {
     private final UpdateCheckerAdapter adapter;
 
     public UpdateNotifier() {
-        this.adapter = new PremiumUpdateChecker();
+        this.adapter = VFac.isAvailable("Indicator") ? new FreeUpdateChecker() : new PremiumUpdateChecker();
     }
 
     public boolean read() {

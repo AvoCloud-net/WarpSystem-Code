@@ -13,10 +13,10 @@ import de.codingair.warpsystem.base.transfer.packets.spigot.QueueRTPUsagePacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RandomTPWorldsPacket;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableForSetupAssistant;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
-import de.codingair.warpsystem.spigot.base.utils.BungeeFeature;
+import de.codingair.warpsystem.spigot.base.utils.ProxyFeature;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
@@ -50,28 +50,27 @@ import java.util.*;
 @Function(name = "Biome filter", defaultValue = "false", configPath = "RandomTeleport.Support.Biome.Enabled", description = "§eBiomes §7» §6RTPConfig.yml", clazz = Boolean.class)
 @Function(name = "Max uses", defaultValue = "4", configPath = "RandomTeleport.Max", description = "§cONLY §rif permissions in the main §eConfig.yml §rare §cdisabled", clazz = Integer.class)
 @Function(name = "Free uses", defaultValue = "1", configPath = "RandomTeleport.Free", description = "§cONLY §rif permissions in the main §eConfig.yml §rare §cdisabled", clazz = Integer.class)
-public class RandomTeleporterManager implements Manager, BungeeFeature {
-    private boolean buyable;
-    private double costs;
-    private boolean protectedRegions;
-    private boolean worldBorder;
-    private List<Biome> biomeList;
-    private final List<Material> materialBlackList = new ArrayList<>();
-    private final List<WorldOption> worldOptions = new ArrayList<>();
-    private WorldOption defValues;
-    private final HashMap<Player, RandomLocationCalculator> searching = new HashMap<>();
+public abstract class RandomTeleportManager implements Manager, ProxyFeature {
+    protected boolean buyable;
+    protected double costs;
+    protected boolean protectedRegions;
+    protected List<Biome> biomeList;
+    protected final List<Material> materialBlackList = new ArrayList<>();
+    protected final List<WorldOption> worldOptions = new ArrayList<>();
+    protected WorldOption defValues;
+    protected final HashMap<Player, RandomLocationCalculator> searching = new HashMap<>();
 
-    private final HashMap<String, List<String>> worlds = new HashMap<>();
+    protected final HashMap<String, List<String>> worlds = new HashMap<>();
 
-    private int netherHeight;
-    private int endHeight;
-    private int max;
-    private int free;
+    protected int netherHeight;
+    protected int endHeight;
+    protected int max;
+    protected int free;
 
-    private final List<Location> interactBlocks = new ArrayList<>();
-    private final InteractListener listener = new InteractListener();
+    protected final List<Location> interactBlocks = new ArrayList<>();
+    protected final InteractListener listener = new InteractListener();
 
-    public static RandomTeleporterManager getInstance() {
+    public static RandomTeleportManager getInstance() {
         return WarpSystem.getInstance().getDataManager().getManager(FeatureType.RANDOM_TELEPORTS);
     }
 
@@ -81,118 +80,7 @@ public class RandomTeleporterManager implements Manager, BungeeFeature {
         new RTPTagConverter_v4_2_6();
     }
 
-    @Override
-    public boolean load(boolean loader) {
-        if(WarpSystem.getInstance().getFileManager().getFile("PlayData") == null) WarpSystem.getInstance().getFileManager().loadFile("PlayData", "/Memory/");
-        ConfigFile rtpFile = WarpSystem.getInstance().getFileManager().loadFile("RTPConfig", "/");
-        UTFConfig config = rtpFile.getConfig();
-
-        WarpSystem.log("  > Loading RandomTeleporters");
-
-        this.buyable = config.getBoolean("RandomTeleport.Buyable.Enabled", true);
-        this.costs = config.getDouble("RandomTeleport.Buyable.Costs", 500.0);
-
-        this.max = config.getInt("RandomTeleport.Max", 4);
-        this.free = config.getInt("RandomTeleport.Free", 1);
-
-        if(this.defValues != null) this.defValues.destroy();
-        this.defValues = new WorldOption("§DEF§");
-        ConfigWriter w = new ConfigWriter(rtpFile, "RandomTeleport.Worlds.Default");
-        this.defValues.read(w);
-
-        this.netherHeight = config.getInt("RandomTeleport.Range.Highest_Y.Nether", 126);
-        this.endHeight = config.getInt("RandomTeleport.Range.Highest_Y.End", 72);
-
-        this.materialBlackList.clear();
-        if(config.getBoolean("RandomTeleport.Block_Blacklist.Enabled", false)) {
-            for(String material : config.getStringList("RandomTeleport.Block_Blacklist.List")) {
-                Optional<XMaterial> parsed = XMaterial.matchXMaterial(material.toUpperCase().replace(" ", "_"));
-                parsed.ifPresent(xMaterial -> {
-                    Material m = xMaterial.parseMaterial();
-
-                    if(!materialBlackList.contains(m)) materialBlackList.add(m);
-                });
-            }
-        }
-
-        this.protectedRegions = config.getBoolean("RandomTeleport.Support.ProtectedRegions", true);
-        this.worldBorder = config.getBoolean("RandomTeleport.Support.WorldBorder", true);
-        if(config.getBoolean("RandomTeleport.Support.Biome.Enabled", true)) {
-            List<String> configBiomes = config.getStringList("RandomTeleport.Support.Biome.BiomeList");
-            biomeList = new ArrayList<>();
-
-            if(configBiomes.isEmpty()) {
-                for(Biome value : Biome.values()) {
-                    if(value.name().equalsIgnoreCase("VOID")) continue;
-                    this.biomeList.add(value);
-                }
-            } else {
-                for(String biome : configBiomes) {
-                    for(Biome value : Biome.values()) {
-                        if(value.name().equalsIgnoreCase(biome) && !biomeList.contains(value)) {
-                            biomeList.add(value);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        SpawnListener listener = new SpawnListener();
-        Bukkit.getPluginManager().registerEvents(listener, WarpSystem.getInstance());
-        WarpSystem.getDataHandler().registerHandler(QueueRTPUsagePacket.class, new QueueRTPUsagePacketHandler());
-
-        boolean success = true;
-        worldOptions.clear();
-        List<?> l = config.getList("RandomTeleport.Worlds.Options");
-        if(l != null)
-            for(Object data : l) {
-                try {
-                    JSON json = new JSON((Map<?, ?>) data);
-                    for(Object o : json.keySet(false)) {
-                        String key = o + "";
-                        WorldOption option = new WorldOption(key);
-                        json.getSerializable(key, option);
-                        worldOptions.add(option);
-                    }
-                } catch(Exception e) {
-                    success = false;
-                    e.printStackTrace();
-                }
-            }
-
-        WarpSystem.log("    ...got " + this.worldOptions.size() + " WorldOption(s)");
-        ConfigFile file = WarpSystem.getInstance().getFileManager().loadFile("Teleporters", "/Memory/");
-        config = file.getConfig();
-
-        l = config.getList("RandomTeleporter.InteractBlocks");
-        if(l != null)
-            for(Object s : l) {
-                if(s instanceof Map) {
-                    JSON json = new JSON((Map<?, ?>) s);
-                    Location loc = new Location();
-                    try {
-                        loc.read(json);
-                    } catch(Exception e) {
-                        success = false;
-                        e.printStackTrace();
-                        continue;
-                    }
-
-                    this.interactBlocks.add(loc);
-                } else if(s instanceof String) {
-                    this.interactBlocks.add(Location.getByJSONString((String) s));
-                }
-            }
-
-        Bukkit.getPluginManager().registerEvents(this.listener, WarpSystem.getInstance());
-        new CRandomTp().register();
-
-        WarpSystem.log("    ...got " + this.interactBlocks.size() + " InteractBlock(s)");
-        WarpSystem.getInstance().getBungeeFeatureList().add(this);
-
-        return success;
-    }
+    public abstract RandomLocationCalculator newCalculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<Location> callback);
 
     @Override
     public void save(boolean saver) {
@@ -346,7 +234,7 @@ public class RandomTeleporterManager implements Manager, BungeeFeature {
         org.bukkit.Location start = new Location();
         option.prepareStart(start, target);
 
-        RandomLocationCalculator t = new RandomLocationCalculator(player, start, option.getMin(), option.getMax(), new Callback<Location>() {
+        RandomLocationCalculator t = newCalculator(player, start, option.getMin(), option.getMax(), new Callback<Location>() {
             @Override
             public void accept(Location loc) {
                 searching.remove(player);
@@ -465,8 +353,8 @@ public class RandomTeleporterManager implements Manager, BungeeFeature {
         return config.getInt("RandomTeleporter." + uuid.toString() + ".Bought", 0);
     }
 
-    public void updateWorlds(String server, List<String> worlds) {
-        this.worlds.put(server.toLowerCase(), worlds);
+    public void updateWorlds(HashMap<String, List<String>> data) {
+        this.worlds.putAll(data);
     }
 
     public List<String> getWorlds(@NotNull String server) {
@@ -499,10 +387,6 @@ public class RandomTeleporterManager implements Manager, BungeeFeature {
 
     public boolean isBuyable() {
         return buyable && Bank.isReady();
-    }
-
-    public boolean isWorldBorder() {
-        return worldBorder;
     }
 
     public int getNetherHeight() {

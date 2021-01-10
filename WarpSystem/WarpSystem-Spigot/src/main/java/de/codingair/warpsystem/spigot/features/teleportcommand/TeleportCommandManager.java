@@ -3,16 +3,16 @@ package de.codingair.warpsystem.spigot.features.teleportcommand;
 import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.codingapi.player.chat.ChatButtonManager;
 import de.codingair.codingapi.tools.Callback;
+import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.base.transfer.packets.general.TeleportCommandOptionsPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.ToggleForceTeleportsPacket;
 import de.codingair.warpsystem.base.transfer.utils.TeleportCommandOptions;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableForSetupAssistant;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
-import de.codingair.warpsystem.spigot.base.utils.BungeeFeature;
-import de.codingair.warpsystem.api.Result;
+import de.codingair.warpsystem.spigot.base.utils.ProxyFeature;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.LocationAdapter;
@@ -42,7 +42,7 @@ import java.util.*;
 @Function(name = "TpaHere", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.TpaHere", clazz = Boolean.class)
 @Function(name = "TpaAll", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.TpaAll", clazz = Boolean.class)
 @Function(name = "TpaToggle", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.TpaToggle", clazz = Boolean.class)
-public class TeleportCommandManager implements Manager, BungeeFeature, Collectible {
+public class TeleportCommandManager implements Manager, ProxyFeature, Collectible {
     private final HashMap<String, List<Invitation>> invites = new HashMap<>();
 
     private final Set<String> denyTpa = new HashSet<>();
@@ -162,7 +162,9 @@ public class TeleportCommandManager implements Manager, BungeeFeature, Collectib
 
     @Override
     public void onConnect() {
-        if(proxy) WarpSystem.getDataHandler().send(new TeleportCommandOptionsPacket(back != null, tp != null, tpAll != null, tpToggle != null, tpa != null, tpaHere != null, tpaAll != null, tpaToggle != null));
+        TeleportCommandOptionsPacket packet = new TeleportCommandOptionsPacket(back != null, tp != null, tpAll != null, tpToggle != null, tpa != null, tpaHere != null, tpaAll != null, tpaToggle != null);
+        if(proxy) WarpSystem.getDataHandler().send(packet);
+        else this.serverOptions.put(WarpSystem.getInstance().getCurrentServer().toLowerCase(), packet.getOptions());
     }
 
     @Override

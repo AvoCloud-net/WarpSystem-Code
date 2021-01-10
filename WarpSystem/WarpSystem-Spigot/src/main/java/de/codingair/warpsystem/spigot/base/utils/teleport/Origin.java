@@ -2,7 +2,6 @@ package de.codingair.warpsystem.spigot.base.utils.teleport;
 
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.FeatureObject;
-import de.codingair.warpsystem.spigot.features.portals.utils.Portal;
 import de.codingair.warpsystem.spigot.features.shortcuts.utils.Shortcut;
 import de.codingair.warpsystem.spigot.features.warps.nextlevel.utils.Icon;
 
@@ -21,7 +20,7 @@ public enum Origin {
     Custom,
     TeleportRequest,
     PlayerWarp(de.codingair.warpsystem.spigot.features.playerwarps.utils.PlayerWarp.class, "PlayerWarps"),
-    Portal(Portal.class, "Portals"),
+    Portal(de.codingair.warpsystem.spigot.features.portals.utils.Portal.class, "Portals"),
     Spawn(de.codingair.warpsystem.spigot.features.spawn.utils.Spawn.class, "Spawn"),
     RandomTP(null, "RandomTp"),
     TeleportInterception,

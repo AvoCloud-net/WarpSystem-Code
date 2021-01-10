@@ -3,9 +3,9 @@ package de.codingair.warpsystem.spigot.features.randomteleports.commands;
 import de.codingair.codingapi.server.commands.builder.special.NaturalCommandComponent;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
-import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleporterManager;
+import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
 import de.codingair.warpsystem.spigot.versionfactory.VFac;
 import de.codingair.warpsystem.spigot.versionfactory.VKey;
 import org.bukkit.Bukkit;
@@ -77,7 +77,7 @@ public class RTP_Go_Command extends NaturalCommandComponent {
                 return false;
             }
 
-            if(!RandomTeleporterManager.getInstance().canTeleport(p)) {
+            if(!RandomTeleportManager.getInstance().canTeleport(p)) {
                 if(player.equalsIgnoreCase(sender.getName())) sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_No_Teleports_Left"));
                 else {
                     if(sender instanceof Player) {
@@ -130,7 +130,7 @@ public class RTP_Go_Command extends NaturalCommandComponent {
             return true;
         }
 
-        RandomTeleporterManager.getInstance().tryToTeleport(player, target, false, new Callback<Integer>() {
+        RandomTeleportManager.getInstance().tryToTeleport(player, target, false, new Callback<Integer>() {
             @Override
             public void accept(Integer result) {
                 if(!finalPlayer.equalsIgnoreCase(sender.getName())) {
@@ -176,7 +176,7 @@ public class RTP_Go_Command extends NaturalCommandComponent {
         boolean other = checkOther(commandSender);
         if(command.startsWith("\"") && command.endsWith("\"")) command = command.substring(1, command.length() - 1);
 
-        if(!RandomTeleporterManager.getInstance().hasRegisteredServers()) return;
+        if(!RandomTeleportManager.getInstance().hasRegisteredServers()) return;
 
         boolean editingLast = !command.endsWith(" ");
 
@@ -194,7 +194,7 @@ public class RTP_Go_Command extends NaturalCommandComponent {
 
                 int count = count(command, ',') - (editingLast ? 1 : 0);
 
-                Set<String> serverList = RandomTeleporterManager.getInstance().getServer();
+                Set<String> serverList = RandomTeleportManager.getInstance().getServer();
                 int max = serverList.size();
                 for(String s : serverList) {
                     if(!command.contains(s + ",") && !command.contains(s + ";")) {
@@ -219,12 +219,12 @@ public class RTP_Go_Command extends NaturalCommandComponent {
 
                 int max = 0;
                 for(String server : servers) {
-                    List<String> worldList = RandomTeleporterManager.getInstance().getWorlds(server);
+                    List<String> worldList = RandomTeleportManager.getInstance().getWorlds(server);
                     max += worldList.size();
                 }
 
                 for(String server : servers) {
-                    List<String> worldList = RandomTeleporterManager.getInstance().getWorlds(server);
+                    List<String> worldList = RandomTeleportManager.getInstance().getWorlds(server);
                     int count = count(worlds, ',') - (editingLast ? 1 : 0);
 
                     for(String world : worldList) {

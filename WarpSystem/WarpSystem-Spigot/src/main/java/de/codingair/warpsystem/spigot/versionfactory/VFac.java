@@ -1,11 +1,15 @@
 package de.codingair.warpsystem.spigot.versionfactory;
 
+import de.codingair.codingapi.server.reflections.IReflection;
+
 import java.lang.reflect.InvocationTargetException;
 
 public class VFac {
     public static final String PATH = "de.codingair.warpsystem.spigot.versionfactory.";
     public static final String OBJECTS = PATH + "objects.";
-    public static final String TELEPORT = PATH + "teleport.";
+    public static final String GUI = PATH + "gui.";
+    public static final String HANDLERS = PATH + "handlers.";
+    public static final String FEATURE_OBJECTS = PATH + "featureobjects.";
 
     public static <A> A build(Class<A> c, VKey key, Object... args) {
         return c.cast(build(key, args));
@@ -20,7 +24,7 @@ public class VFac {
             Class<?> c = Class.forName(path);
             return build(c, args);
         } catch(ClassNotFoundException e) {
-            throw new IllegalStateException("Could not build an instance with path=\"" + path + "\".");
+            throw new IllegalStateException("Could not build an instance with path=\"" + path + "\".", e);
         }
     }
 
@@ -31,10 +35,10 @@ public class VFac {
                 classes[i] = args[i].getClass();
             }
 
-            if(classes.length == 0) return (A) c.newInstance();
-            return (A) c.getConstructor(classes).newInstance(args);
-        } catch(InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            throw new IllegalStateException("Could not build an instance of " + c.getName() + ".");
+            //noinspection unchecked
+            return (A) IReflection.getConstructor(c, classes).newInstance(args);
+        } catch(NullPointerException | ClassCastException e) {
+            throw new IllegalStateException("Could not build an instance of " + c.getName(), e);
         }
     }
 

@@ -6,7 +6,7 @@ import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.warpsystem.spigot.api.blocks.StaticLavaBlock;
 import de.codingair.warpsystem.spigot.api.blocks.StaticWaterBlock;
 import de.codingair.warpsystem.spigot.api.blocks.utils.Block;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

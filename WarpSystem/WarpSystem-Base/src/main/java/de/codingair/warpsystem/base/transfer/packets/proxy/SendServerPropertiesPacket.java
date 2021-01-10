@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.base.transfer.packets.proxy;
 
-import de.codingair.warpsystem.base.transfer.packets.spigot.utils.ServerPing;
 import de.codingair.packetmanagement.packets.Packet;
+import de.codingair.warpsystem.base.transfer.packets.spigot.utils.ServerPing;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

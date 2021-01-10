@@ -8,10 +8,10 @@ import de.codingair.codingapi.tools.Location;
 import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.io.lib.JSONArray;
 import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.base.managers.PostWorldManager;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.FeatureObject;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types.WarpAction;
-import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import org.bukkit.ChatColor;
@@ -23,48 +23,43 @@ import org.bukkit.util.Vector;
 import java.util.*;
 
 public class Portal extends FeatureObject {
-    private boolean editMode = false;
-    private Portal editing = null;
+    protected boolean editMode = false;
+    protected Portal editing = null;
 
-    private byte trigger;
-    private Location spawn;
-    private List<PortalBlock> blocks;
-    private List<Animation> animations;
-    private boolean visible = false;
-    private final List<PortalListener> listeners = new ArrayList<>();
+    protected byte trigger;
+    protected Location spawn;
+    protected List<PortalBlock> blocks;
+    protected List<Animation> animations;
+    protected boolean visible = false;
+    protected final List<PortalListener> listeners = new ArrayList<>();
 
-    private Hologram hologram = new Hologram(this);
+    protected Hologram hologram = new Hologram(this);
 
-    private final List<BlockHierarchy> merged = new ArrayList<>();
-    private Location[] cachedEdges = null;
-    private Axis cachedAxis = null;
+    protected final List<BlockHierarchy> merged = new ArrayList<>();
+    protected Location[] cachedEdges = null;
+    protected Axis cachedAxis = null;
 
-    private String displayName;
-    private String teleportName;
-    private boolean waitingForWorld = false;
+    protected String displayName;
+    protected String teleportName;
+    protected boolean waitingForWorld = false;
 
-    public Portal() {
+    protected Portal() {
         this.blocks = new ArrayList<>();
         this.animations = new ArrayList<>();
     }
 
-    public Portal(String displayName) {
+    protected Portal(String displayName) {
         this(new Destination(), displayName, new ArrayList<>(), new ArrayList<>());
         getDestination().getCustomOptions().setDelay(0);
     }
 
-    public Portal(Portal portal) {
+    private Portal(Portal portal) {
         super(portal);
 
         this.blocks = new ArrayList<>();
         this.animations = new ArrayList<>();
 
         apply(portal);
-    }
-
-    public Portal(List<PortalBlock> blocks, List<Animation> animations) {
-        this.blocks = blocks;
-        this.animations = animations;
     }
 
     private Portal(Destination destination, String displayName, List<PortalBlock> blocks, List<Animation> animations) {

@@ -40,7 +40,9 @@ public class TeleportManager implements Manager {
 
     public void registerOptions(ServerInfo info, TeleportCommandOptionsPacket options) {
         this.commandOptions.put(info, options.getOptions());
-        WarpSystem.getInstance().getServerManager().getOnlineServer().filter(s -> !s.equals(info)).forEach(s -> WarpSystem.getDataHandler().send(options, s, Direction.DOWN));
+
+        options.setServer(info.getName());
+        WarpSystem.getInstance().getServerManager().getOnlineServer().forEach(s -> WarpSystem.getDataHandler().send(options, s, Direction.DOWN));
     }
 
     public TeleportCommandOptions getOptions(ServerInfo info) {

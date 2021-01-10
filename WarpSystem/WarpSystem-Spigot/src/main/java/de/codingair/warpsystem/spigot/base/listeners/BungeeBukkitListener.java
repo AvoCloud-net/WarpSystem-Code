@@ -6,6 +6,7 @@ import de.codingair.warpsystem.base.transfer.packets.proxy.PrepareLoginMessagePa
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.transfer.handlers.InitialPacketHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -22,7 +23,7 @@ public class BungeeBukkitListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        String message = loginMessage.remove(e.getPlayer());
+        String message = loginMessage.remove(e.getPlayer().getName());
         if(message != null) e.getPlayer().sendMessage(message);
 
         Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
@@ -42,8 +43,8 @@ public class BungeeBukkitListener implements Listener {
     }
 
     public void process(PrepareLoginMessagePacket packet) {
-        if(Bukkit.getPlayer(packet.getPlayer()) != null) {
-            Bukkit.getPlayer(packet.getPlayer()).sendMessage(packet.getMessage());
-        } else loginMessage.put(packet.getPlayer(), packet.getMessage(), 10000);
+        Player p = Bukkit.getPlayer(packet.getPlayer());
+        if(p != null) p.sendMessage(packet.getMessage());
+        else loginMessage.put(packet.getPlayer(), packet.getMessage(), 10000);
     }
 }

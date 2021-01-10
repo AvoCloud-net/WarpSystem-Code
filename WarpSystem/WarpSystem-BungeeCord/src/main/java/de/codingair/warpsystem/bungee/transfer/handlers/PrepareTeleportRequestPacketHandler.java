@@ -45,7 +45,7 @@ public class PrepareTeleportRequestPacketHandler implements ResponsiblePacketHan
             //only recipient
             ProxiedPlayer player = Players.getPlayer(packet.getRecipient());
 
-            if(player == null || TeleportManager.getInstance().isAccessible(player.getServer().getInfo()) || WarpSystem.getVanishManager().isVanished(player.getName())) {
+            if(player == null || TeleportManager.getInstance().isAccessible(player.getServer().getInfo()) || WarpSystem.getInstance().getPlayerListener().isVanished(player)) {
                 //not online/accessible
                 return CompletableFuture.completedFuture(new LongPacket(0));
             } else if(TeleportManager.getInstance().deniesForceTpRequests(player)) {

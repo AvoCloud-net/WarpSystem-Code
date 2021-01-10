@@ -1,4 +1,4 @@
-package de.codingair.warpsystem.spigot.base.guis.editor.buttons;
+package de.codingair.warpsystem.spigot.versionfactory.gui;
 
 import de.codingair.codingapi.server.commands.builder.CommandBuilder;
 import de.codingair.codingapi.tools.items.ItemBuilder;
@@ -6,7 +6,7 @@ import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.codingapi.utils.TextAlignment;
 import de.codingair.warpsystem.spigot.api.chatinput.ChatInputEvent;
 import de.codingair.warpsystem.spigot.api.chatinput.SyncChatInputGUIButton;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.FeatureObject;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types.CommandAction;
@@ -17,15 +17,22 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class CommandButton extends SyncChatInputGUIButton {
     private final FeatureObject object;
+    private final Function<String, Boolean> checkInput;
 
-    public CommandButton(int x, int y, FeatureObject object) {
+    public CommandButton(int x, int y, FeatureObject object, Function<String, Boolean> checkInput) {
         super(x, y, ClickType.LEFT);
 
         this.object = object;
         update(false);
+        this.checkInput = checkInput;
+    }
+
+    public CommandButton(int x, int y, FeatureObject object) {
+        this(x, y, object, null);
     }
 
     @Override
@@ -70,9 +77,7 @@ public class CommandButton extends SyncChatInputGUIButton {
 
         if(!input.startsWith("/")) input = "/" + input;
 
-        if(!isOkay(input)) {
-            return;
-        }
+        if(checkInput != null && !checkInput.apply(input)) return;
 
         e.setClose(true);
 
@@ -85,10 +90,6 @@ public class CommandButton extends SyncChatInputGUIButton {
         }
 
         update();
-    }
-
-    public boolean isOkay(String command) {
-        return true;
     }
 
     @Override

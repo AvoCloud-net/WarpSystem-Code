@@ -1,4 +1,4 @@
-package de.codingair.warpsystem.spigot.versionfactory.objects;
+package de.codingair.warpsystem.spigot.versionfactory.gui;
 
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.FeatureObject;
 

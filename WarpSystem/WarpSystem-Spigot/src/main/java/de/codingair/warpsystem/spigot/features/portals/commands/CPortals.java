@@ -8,10 +8,11 @@ import de.codingair.codingapi.tools.Location;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.portals.guis.PortalEditor;
 import de.codingair.warpsystem.spigot.features.portals.managers.PortalManager;
 import de.codingair.warpsystem.spigot.features.portals.utils.Portal;
+import de.codingair.warpsystem.spigot.features.portals.utils.PortalFactory;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -71,7 +72,7 @@ public class CPortals extends WSCommandBuilder {
                         if(e.isSubmitted()) {
                             String name = e.getSubmittedText();
 
-                            Portal portal = new Portal(name);
+                            Portal portal = PortalFactory.build(name);
                             portal.setSpawn(new Location(((Player) sender).getLocation()));
                             e.setPost(() -> new PortalEditor((Player) sender, portal).open());
                         }
@@ -94,7 +95,7 @@ public class CPortals extends WSCommandBuilder {
                     return false;
                 }
 
-                Portal portal = new Portal(argument);
+                Portal portal = PortalFactory.build(argument);
                 portal.setSpawn(new Location(((Player) sender).getLocation()));
                 new PortalEditor((Player) sender, portal).open();
                 return false;

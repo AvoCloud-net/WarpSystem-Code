@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.base.transfer.packets.general;
 
-import de.codingair.warpsystem.base.transfer.packets.spigot.utils.PlayerWarpData;
 import de.codingair.packetmanagement.packets.Packet;
+import de.codingair.warpsystem.base.transfer.packets.spigot.utils.PlayerWarpData;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

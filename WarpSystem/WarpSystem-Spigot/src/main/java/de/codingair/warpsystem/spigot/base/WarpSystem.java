@@ -18,12 +18,12 @@ import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.api.PAPI;
 import de.codingair.warpsystem.spigot.api.SpigotAPI;
 import de.codingair.warpsystem.spigot.base.commands.CWarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.listeners.*;
 import de.codingair.warpsystem.spigot.base.managers.*;
 import de.codingair.warpsystem.spigot.base.setupassistant.SetupAssistantManager;
 import de.codingair.warpsystem.spigot.base.setupassistant.utils.SetupAssistantListener;
-import de.codingair.warpsystem.spigot.base.utils.BungeeFeature;
+import de.codingair.warpsystem.spigot.base.utils.ProxyFeature;
 import de.codingair.warpsystem.spigot.base.utils.options.OptionBundle;
 import de.codingair.warpsystem.spigot.base.utils.options.Options;
 import de.codingair.warpsystem.spigot.base.utils.options.specific.GeneralOptions;
@@ -32,8 +32,8 @@ import de.codingair.warpsystem.spigot.base.utils.options.specific.WarpGUIOptions
 import de.codingair.warpsystem.spigot.base.utils.options.specific.WarpSignOptions;
 import de.codingair.warpsystem.spigot.base.utils.updates.UpdateNotifier;
 import de.codingair.warpsystem.spigot.base.utils.updates.UpdateReader;
-import de.codingair.warpsystem.spigot.transfer.jar.JarReceiver;
-import de.codingair.warpsystem.spigot.transfer.spigot.SpigotHandler;
+import de.codingair.warpsystem.spigot.transfer.JarReceiver;
+import de.codingair.warpsystem.spigot.transfer.SpigotHandler;
 import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -112,7 +112,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     private boolean onBungeeCord = false;
     private String bungeePluginVersion = null;
     private String server = null;
-    private final List<BungeeFeature> bungeeFeatureList = new ArrayList<>();
+    private final List<ProxyFeature> proxyFeatureList = new ArrayList<>();
 
     private final TeleportManager teleportManager = TeleportManager.getInstance();
     private final FileManager fileManager = new FileManager(this);
@@ -237,6 +237,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
                 log(" ");
             }
 
+            Bukkit.getPluginManager().registerEvents(new PlayerDataListener(), this);
             Bukkit.getPluginManager().registerEvents(new TeleportListener(), this);
             Bukkit.getPluginManager().registerEvents(new NotifyListener(), this);
             Bukkit.getPluginManager().registerEvents(new CommandListener(), this);
@@ -267,7 +268,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
             this.ERROR = false;
 
-            this.dataHandler.send(new RequestInitialPacket());
+            if(!Bukkit.getOnlinePlayers().isEmpty()) this.dataHandler.send(new RequestInitialPacket());
             BungeeBukkitListener packetListener = new BungeeBukkitListener();
             Bukkit.getPluginManager().registerEvents(packetListener, this);
 
@@ -389,8 +390,8 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
         HandlerList.unregisterAll(this);
 
-        this.bungeeFeatureList.forEach(BungeeFeature::onDisconnect);
-        this.bungeeFeatureList.clear();
+        this.proxyFeatureList.forEach(ProxyFeature::onDisconnect);
+        this.proxyFeatureList.clear();
 
         this.dataHandler.flush();
         dataHandler.onDisable();
@@ -442,7 +443,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
     private void destroy() {
         this.dataManager.getManagers().forEach(Manager::destroy);
-        this.bungeeFeatureList.clear();
+        this.proxyFeatureList.clear();
         this.fileManager.destroy();
     }
 
@@ -577,9 +578,9 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
         this.onBungeeCord = onBungeeCord;
         if(onBungeeCord) {
-            this.bungeeFeatureList.forEach(BungeeFeature::onConnect);
+            this.proxyFeatureList.forEach(ProxyFeature::onConnect);
         } else {
-            this.bungeeFeatureList.forEach(BungeeFeature::onDisconnect);
+            this.proxyFeatureList.forEach(ProxyFeature::onDisconnect);
         }
     }
 
@@ -623,8 +624,8 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         this.bungeePluginVersion = bungeePluginVersion;
     }
 
-    public List<BungeeFeature> getBungeeFeatureList() {
-        return bungeeFeatureList;
+    public List<ProxyFeature> getBungeeFeatureList() {
+        return proxyFeatureList;
     }
 
     public HeadManager getHeadManager() {

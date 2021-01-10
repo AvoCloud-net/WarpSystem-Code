@@ -1,4 +1,4 @@
-package de.codingair.warpsystem.spigot.versionfactory.teleport;
+package de.codingair.warpsystem.spigot.versionfactory.handlers;
 
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.utils.ChatColor;
@@ -7,7 +7,7 @@ import de.codingair.warpsystem.base.transfer.packets.spigot.RequestFullNamePacke
 import de.codingair.warpsystem.base.transfer.utils.PlayerData;
 import de.codingair.warpsystem.base.transfer.utils.TeleportCommandOptions;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;

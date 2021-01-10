@@ -6,7 +6,7 @@ import de.codingair.codingapi.server.AsyncCatcher;
 import de.codingair.codingapi.server.events.PlayerWalkEvent;
 import de.codingair.codingapi.tools.Location;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.managers.TeleportManager;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
@@ -76,16 +76,16 @@ public class TeleportListener implements Listener {
             teleport.invalidate(e.getPlayer().getName().toLowerCase());
             org.bukkit.Location l = options.buildLocation();
 
-            if(l.getYaw() == -420 && l.getPitch() == -420) {
-                org.bukkit.Location p = e.getPlayer().getLocation();
-                l.setYaw(p.getYaw());
-                l.setPitch(p.getPitch());
-            }
-
             if(l == null || l.getWorld() == null) {
                 String world = l instanceof Location ? ((Location) l).getWorldName() : null;
                 Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> e.getPlayer().sendMessage(new String[] {" ", Lang.getPrefix() + "§4World " + (world == null ? "" : "'" + world + "' ") + "is missing. Please contact an admin!", " "}), 2L);
                 return;
+            }
+
+            if(l.getYaw() == -420 && l.getPitch() == -420) {
+                org.bukkit.Location p = e.getPlayer().getLocation();
+                l.setYaw(p.getYaw());
+                l.setPitch(p.getPitch());
             }
 
             e.setSpawnLocation(l);

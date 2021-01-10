@@ -3,8 +3,8 @@ package de.codingair.warpsystem.spigot.features.randomteleports.listeners;
 import de.codingair.codingapi.tools.Location;
 import de.codingair.codingapi.tools.time.TimeSet;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
-import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleporterManager;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,17 +26,17 @@ public class InteractListener implements Listener {
         org.bukkit.Location loc = b.getLocation();
 
         if(addingNewBlock.contains(e.getPlayer())) {
-            RandomTeleporterManager.getInstance().getInteractBlocks().add(new Location(loc));
+            RandomTeleportManager.getInstance().getInteractBlocks().add(new Location(loc));
             e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Block_Added"));
             addingNewBlock.remove(e.getPlayer());
             blocked.add(e.getPlayer(), 1);
             return;
         }
 
-        for(Location l : RandomTeleporterManager.getInstance().getInteractBlocks()) {
+        for(Location l : RandomTeleportManager.getInstance().getInteractBlocks()) {
             if(l.equals(loc)) {
                 blocked.add(e.getPlayer(), 1);
-                RandomTeleporterManager.getInstance().tryToTeleport(e.getPlayer());
+                RandomTeleportManager.getInstance().tryToTeleport(e.getPlayer());
                 break;
             }
         }
@@ -48,7 +48,7 @@ public class InteractListener implements Listener {
         org.bukkit.Location loc = b.getLocation();
 
         Location remove = null;
-        for(Location l : RandomTeleporterManager.getInstance().getInteractBlocks()) {
+        for(Location l : RandomTeleportManager.getInstance().getInteractBlocks()) {
             if(l.equals(loc)) {
                 remove = l;
                 break;
@@ -57,7 +57,7 @@ public class InteractListener implements Listener {
 
         if(remove != null) {
             if(e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_RANDOM_TELEPORTER)) {
-                RandomTeleporterManager.getInstance().getInteractBlocks().remove(remove);
+                RandomTeleportManager.getInstance().getInteractBlocks().remove(remove);
                 e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Block_Removed"));
             } else {
                 e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));

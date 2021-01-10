@@ -22,22 +22,18 @@ public class WarpSign extends FeatureObject {
     private Location location;
     private String[] text = null;
 
-    public WarpSign() {
+    protected WarpSign() {
     }
 
-    public WarpSign(WarpSign sign) {
+    protected WarpSign(Location location, Destination destination) {
+        super(null, false, new WarpAction(destination));
+        this.location = location;
+    }
+
+    private WarpSign(WarpSign sign) {
         super(sign);
         this.location = sign.location;
         this.text = sign.text == null ? null : sign.text.clone();
-    }
-
-    public WarpSign(Location location, Destination destination) {
-        this(location, destination, null);
-    }
-
-    public WarpSign(Location location, Destination destination, String permission) {
-        super(permission, false, new WarpAction(destination));
-        this.location = location;
     }
 
     public void editMode() {

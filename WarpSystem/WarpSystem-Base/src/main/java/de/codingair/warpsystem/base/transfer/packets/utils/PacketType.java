@@ -1,12 +1,9 @@
 package de.codingair.warpsystem.base.transfer.packets.utils;
 
 import de.codingair.packetmanagement.packets.Packet;
-import de.codingair.warpsystem.base.transfer.packets.proxy.*;
 import de.codingair.warpsystem.base.transfer.packets.general.*;
+import de.codingair.warpsystem.base.transfer.packets.proxy.*;
 import de.codingair.warpsystem.base.transfer.packets.spigot.*;
-import de.codingair.warpsystem.base.transfer.packets.proxy.SendJarPacket;
-import de.codingair.warpsystem.base.transfer.packets.spigot.CooldownDataPacket;
-import de.codingair.warpsystem.base.transfer.packets.spigot.CooldownPacket;
 
 public enum PacketType {
     InitialPacket(de.codingair.warpsystem.base.transfer.packets.proxy.InitialPacket.class),

@@ -3,9 +3,10 @@ package de.codingair.warpsystem.spigot.features.teleportcommand.commands;
 import de.codingair.codingapi.server.commands.builder.BaseComponent;
 import de.codingair.codingapi.server.commands.builder.CommandComponent;
 import de.codingair.codingapi.server.commands.builder.special.MultiCommandComponent;
+import de.codingair.warpsystem.base.transfer.utils.PlayerData;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.features.teleportcommand.TeleportCommandManager;
 import org.bukkit.Bukkit;
@@ -59,7 +60,8 @@ public class CTpa extends WSCommandBuilder {
                     return true;
                 }
 
-                if(argument.equalsIgnoreCase(sender.getName())) {
+                PlayerData data = WarpSystem.getInstance().getPlayerDataManager().getCache(argument);
+                if(data != null && data.getName().equalsIgnoreCase(sender.getName())) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_Cant_Teleport_Yourself"));
                     return true;
                 }

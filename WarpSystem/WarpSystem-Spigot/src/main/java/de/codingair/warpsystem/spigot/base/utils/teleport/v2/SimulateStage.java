@@ -1,9 +1,9 @@
 package de.codingair.warpsystem.spigot.base.utils.teleport.v2;
 
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.api.Result;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.managers.TeleportManager;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
-import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.base.utils.teleport.SimulatedTeleportResult;
 
 public class SimulateStage extends TeleportStage {

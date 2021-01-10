@@ -4,6 +4,7 @@ import de.codingair.codingapi.bungeecord.BungeeAPI;
 import de.codingair.packetmanagement.DataHandler;
 import de.codingair.packetmanagement.handlers.PacketHandler;
 import de.codingair.packetmanagement.packets.Packet;
+import de.codingair.packetmanagement.packets.ResponsePacket;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.warpsystem.base.transfer.packets.general.*;
 import de.codingair.warpsystem.base.transfer.packets.spigot.*;
@@ -16,6 +17,11 @@ import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
 
 public class BungeeHandler extends DataHandler<ServerInfo> implements Listener {
     public BungeeHandler(WarpSystem plugin) {
@@ -90,10 +96,5 @@ public class BungeeHandler extends DataHandler<ServerInfo> implements Listener {
         if(e.getTag().equals(getChannelProxy())) {
             receive(e.getData(), ((ProxiedPlayer) e.getReceiver()).getServer().getInfo(), Direction.DOWN);
         }
-    }
-
-    @Override
-    public <P extends Packet> boolean registerHandler(@NotNull Class<? extends P> receiving, @NotNull PacketHandler<P> handler) {
-        return super.registerHandler(receiving, handler);
     }
 }

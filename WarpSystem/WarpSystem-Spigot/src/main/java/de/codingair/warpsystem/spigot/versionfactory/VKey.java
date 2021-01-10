@@ -1,23 +1,32 @@
 package de.codingair.warpsystem.spigot.versionfactory;
 
 public enum VKey {
-    CooldownButton(VFac.OBJECTS),
+    CooldownButton(VFac.GUI),
+    CommandButton(VFac.GUI),
+    PermissionButton(VFac.GUI),
+    CostsButton(VFac.GUI),
+    MessageButton(VFac.GUI),
+
     RotationItemComponent(VFac.OBJECTS),
     AnimationPartColor(VFac.OBJECTS),
     AnimationPartSpeed(VFac.OBJECTS),
     DestinationPageHandler(VFac.OBJECTS),
     ParticlesHandler(VFac.OBJECTS),
-    PermissionButton(VFac.OBJECTS),
-    CostsButton(VFac.OBJECTS),
     ParticleOptionsSpeed(VFac.OBJECTS),
     ParticleOptionsColor(VFac.OBJECTS),
     PortalBlockEditorHandler(VFac.OBJECTS),
     RTP_Go_Command_Handler(VFac.OBJECTS),
     WarpGUIChoosePage(VFac.OBJECTS),
-    GWarpsItemUpdateHandler(VFac.OBJECTS),
-    MessageButton(VFac.OBJECTS),
     CWarpSystem(VFac.OBJECTS),
-    TeleportCommandHandler(VFac.TELEPORT),
+
+    TeleportCommandHandler(VFac.HANDLERS),
+    WarpGUI(VFac.HANDLERS),
+    PlayerWarpHandler(VFac.HANDLERS),
+    RandomTeleportHandler(VFac.HANDLERS),
+
+    Portal(VFac.FEATURE_OBJECTS),
+    Shortcut(VFac.FEATURE_OBJECTS),
+    WarpSign(VFac.FEATURE_OBJECTS),
     ;
 
     private final String path;

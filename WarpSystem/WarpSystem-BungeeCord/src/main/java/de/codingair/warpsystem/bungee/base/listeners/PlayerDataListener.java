@@ -10,6 +10,7 @@ import de.codingair.warpsystem.base.transfer.utils.PlayerData;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.event.ServerSwitchEvent;
@@ -71,5 +72,10 @@ public class PlayerDataListener implements Listener {
 
         packet.update(data);
         WarpSystem.getInstance().getServerManager().getOnlineServer().filter(s -> !s.equals(info)).forEach(s -> WarpSystem.getDataHandler().send(packet, s, Direction.DOWN));
+    }
+
+    public boolean isVanished(ProxiedPlayer player) {
+        PlayerData cached = this.cached.get(player.getName().toLowerCase());
+        return cached != null && cached.isVanished();
     }
 }

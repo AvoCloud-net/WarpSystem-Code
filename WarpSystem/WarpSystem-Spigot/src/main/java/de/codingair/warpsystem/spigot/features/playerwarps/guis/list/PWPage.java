@@ -11,7 +11,7 @@ import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.codingapi.utils.Node;
 import de.codingair.warpsystem.spigot.base.guis.editor.Editor;
 import de.codingair.warpsystem.spigot.base.guis.editor.StandardButtonOption;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.playerwarps.commands.CPlayerWarps;
 import de.codingair.warpsystem.spigot.features.playerwarps.managers.PlayerWarpManager;
 import de.codingair.warpsystem.spigot.features.warps.guis.utils.Head;
@@ -84,7 +84,7 @@ public class PWPage extends Page {
                 ItemBuilder builder = new ItemBuilder(XMaterial.NETHER_STAR);
 
                 if(PlayerWarpManager.isProtected(p)) builder.setName("§7" + Lang.get("Create") + " (§c" + Lang.get("Protected_Area") + "§7)");
-                else if(PlayerWarpManager.hasPermission(p)) builder.setName("§b" + Lang.get("Create"));
+                else if(PlayerWarpManager.getManager().hasPermission(p)) builder.setName("§b" + Lang.get("Create"));
                 else builder.setName("§7" + Lang.get("Create") + " (§c" + Lang.get("Maximum_reached") + "§7)");
 
                 return builder.getItem();
@@ -97,7 +97,7 @@ public class PWPage extends Page {
 
             @Override
             public boolean canClick(ClickType click) {
-                return click == ClickType.LEFT && !PlayerWarpManager.isProtected(p) && PlayerWarpManager.hasPermission(p);
+                return click == ClickType.LEFT && !PlayerWarpManager.isProtected(p) && PlayerWarpManager.getManager().hasPermission(p);
             }
         }.setOption(new StandardButtonOption()));
 

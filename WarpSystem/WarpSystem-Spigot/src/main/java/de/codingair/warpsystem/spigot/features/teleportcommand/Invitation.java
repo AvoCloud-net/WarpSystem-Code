@@ -4,6 +4,7 @@ import de.codingair.codingapi.player.chat.SimpleMessage;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.codingapi.utils.Value;
+import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.base.transfer.packets.general.StartTeleportToPlayerPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.PrepareTeleportPlayerToPlayerPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.PrepareTeleportRequestPacket;
@@ -11,9 +12,8 @@ import de.codingair.warpsystem.base.transfer.packets.spigot.TeleportRequestHandl
 import de.codingair.warpsystem.spigot.api.bungee.HoverEventBuilder;
 import de.codingair.warpsystem.spigot.api.players.BungeePlayer;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
-import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.EmptyAdapter;

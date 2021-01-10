@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.bungee.base.utils;
 
-import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.codingapi.bungeecord.files.ConfigFile;
+import de.codingair.warpsystem.bungee.base.WarpSystem;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;

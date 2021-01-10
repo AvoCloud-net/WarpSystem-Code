@@ -3,7 +3,7 @@ package de.codingair.warpsystem.spigot.features.portals.guis;
 import de.codingair.codingapi.player.gui.inventory.guis.ConfirmGUI;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import org.bukkit.entity.Player;
 
 public class DeleteGUI extends ConfirmGUI {

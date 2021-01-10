@@ -1,4 +1,4 @@
-package de.codingair.warpsystem.spigot.transfer.jar;
+package de.codingair.warpsystem.spigot.transfer;
 
 import de.codingair.packetmanagement.handlers.PacketHandler;
 import de.codingair.packetmanagement.utils.Direction;

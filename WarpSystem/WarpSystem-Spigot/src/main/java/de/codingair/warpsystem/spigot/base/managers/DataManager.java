@@ -4,11 +4,11 @@ import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.features.FeatureType;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
 
 public class DataManager {
-    private final List<Manager> managers = new ArrayList<>();
+    private final HashMap<FeatureType, Manager> managers = new HashMap<>();
 
     public DataManager() {
         for(FeatureType.Priority value : FeatureType.Priority.values()) {
@@ -16,7 +16,7 @@ public class DataManager {
 
             for(FeatureType ft : FeatureType.values(value)) {
                 try {
-                    this.managers.add(ft.getManagerClass().newInstance());
+                    this.managers.put(ft, ft.createInstance());
                 } catch(InstantiationException | IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -25,7 +25,7 @@ public class DataManager {
     }
 
     public void preLoad() {
-        for(Manager manager : this.managers) {
+        for(Manager manager : this.managers.values()) {
             manager.preLoad();
         }
     }
@@ -38,14 +38,14 @@ public class DataManager {
                 if(!ft.isActive()) {
                     Manager m = null;
 
-                    for(Manager manager : this.managers) {
+                    for(Manager manager : this.managers.values()) {
                         if(manager.getClass().equals(ft.getManagerClass())) {
                             m = manager;
                             break;
                         }
                     }
 
-                    if(m != null) this.managers.remove(m);
+                    if(m != null) this.managers.remove(ft);
                 }
             }
         }
@@ -53,7 +53,7 @@ public class DataManager {
 
     public boolean load() {
         boolean success = true;
-        for(Manager manager : this.managers) {
+        for(Manager manager : this.managers.values()) {
             if(!manager.load(false)) success = false;
         }
 
@@ -63,20 +63,16 @@ public class DataManager {
     }
 
     public void save(boolean saver) {
-        for(Manager manager : this.managers) {
+        for(Manager manager : this.managers.values()) {
             manager.save(saver);
         }
     }
 
     public <T extends Manager> T getManager(FeatureType type) {
-        for(Manager manager : this.managers) {
-            if(manager.getClass().equals(type.getManagerClass())) return (T) manager;
-        }
-
-        return null;
+        return (T) this.managers.get(type);
     }
 
-    public List<Manager> getManagers() {
-        return managers;
+    public Collection<Manager> getManagers() {
+        return managers.values();
     }
 }

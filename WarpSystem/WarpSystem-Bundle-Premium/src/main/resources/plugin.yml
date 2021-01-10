@@ -2,6 +2,6 @@ name: WarpSystem
 author: CodingAir
 version: "${project.version}"
 description: WarpSystem
-main: de.codingair.warpsystem.spigot.base.Booting
+main: de.codingair.warpsystem.spigot.base.WarpSystem
 softdepend: [Multiverse-Core, Vault, Essentials, MultiWorld, PlaceholderAPI, PlayerPoints, GemsEconomy]
 api-version: "1.13"

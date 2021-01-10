@@ -5,7 +5,6 @@ import de.codingair.packetmanagement.packets.Packet;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.UUID;
 
 public class PlayerQuitPacket implements Packet {
     private String player;

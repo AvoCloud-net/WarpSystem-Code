@@ -16,7 +16,7 @@ import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.codingapi.tools.time.TimeList;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.setupassistant.utils.NavigationCommand;
 import de.codingair.warpsystem.spigot.base.setupassistant.utils.SetupAssistant;
 import de.codingair.warpsystem.spigot.features.animations.AnimationManager;
@@ -355,7 +355,7 @@ public class CWarpSystem extends WSCommandBuilder {
         });
 
         getBaseComponent().addChild(new CommandComponent("reload") {
-            TimeList<CommandSender> confirm = new TimeList<>();
+            final TimeList<CommandSender> confirm = new TimeList<>();
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
@@ -550,7 +550,7 @@ public class CWarpSystem extends WSCommandBuilder {
                 "§7§m" + (line ? "               " : "---------------") + "§7< §6WarpSystem §7>§m" + (line ? "               " : "---------------") + "§7",
                 "",
                 "     §3Author: §bCodingAir",
-                "     §3Version: §bv" + WarpSystem.getInstance().getDescription().getVersion() + " §7[" + "§6Premium" + "§7]",
+                "     §3Version: §bv" + WarpSystem.getInstance().getDescription().getVersion() + (VFac.isAvailable("Indicator") ? "" : " §7[" + "§6Premium" + "§7]"),
                 "",
                 "     §eAvailable on SpigotMc!",
                 ""

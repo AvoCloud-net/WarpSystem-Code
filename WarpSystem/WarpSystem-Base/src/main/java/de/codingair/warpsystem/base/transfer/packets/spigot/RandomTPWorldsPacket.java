@@ -5,7 +5,10 @@ import de.codingair.packetmanagement.packets.Packet;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RandomTPWorldsPacket implements Packet {
     private HashMap<String, List<String>> worlds;

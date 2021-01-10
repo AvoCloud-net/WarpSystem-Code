@@ -2,7 +2,7 @@ package de.codingair.warpsystem.spigot.base.setupassistant.utils;
 
 import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import org.bukkit.ChatColor;
 
 import java.lang.reflect.InvocationTargetException;

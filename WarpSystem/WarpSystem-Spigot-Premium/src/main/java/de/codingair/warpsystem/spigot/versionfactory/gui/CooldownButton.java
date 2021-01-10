@@ -1,4 +1,4 @@
-package de.codingair.warpsystem.spigot.versionfactory.objects;
+package de.codingair.warpsystem.spigot.versionfactory.gui;
 
 import de.codingair.codingapi.player.gui.anvil.AnvilClickEvent;
 import de.codingair.codingapi.player.gui.anvil.AnvilCloseEvent;
@@ -6,7 +6,7 @@ import de.codingair.codingapi.player.gui.inventory.gui.simple.SyncAnvilGUIButton
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.warpsystem.spigot.api.StringFormatter;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.FeatureObject;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;

@@ -11,7 +11,7 @@ import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.codingapi.utils.Removable;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.portals.utils.BlockType;
 import de.codingair.warpsystem.spigot.features.portals.utils.Portal;
 import de.codingair.warpsystem.spigot.features.portals.utils.PortalBlock;
@@ -107,7 +107,7 @@ public class PortalBlockEditor implements Removable {
         }
 
         PlayerItem item;
-        this.player.getInventory().setItem(8, item = new PlayerItem(WarpSystem.getInstance(), player, new ItemBuilder(XMaterial.GHAST_TEAR).setName("§7" + ChatColor.stripColor(BlockType.CUSTOM.getName()) + ": §c-").getItem()) {
+        this.player.getInventory().setItem(8, item = new PlayerItem(WarpSystem.getInstance(), player, new ItemBuilder(XMaterial.GHAST_TEAR).setName("§7" + ChatColor.stripColor(BlockType.CUSTOM.getName()) + ": §c-" + (VFac.isAvailable("Indicator") ? Lang.PREMIUM_LORE : "")).getItem()) {
             private long last = 0;
 
             @Override

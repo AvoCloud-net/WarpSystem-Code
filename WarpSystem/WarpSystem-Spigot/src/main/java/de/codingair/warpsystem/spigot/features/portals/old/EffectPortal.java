@@ -19,6 +19,7 @@ import de.codingair.warpsystem.spigot.features.animations.AnimationManager;
 import de.codingair.warpsystem.spigot.features.animations.utils.Animation;
 import de.codingair.warpsystem.spigot.features.animations.utils.ParticlePart;
 import de.codingair.warpsystem.spigot.features.portals.utils.Portal;
+import de.codingair.warpsystem.spigot.features.portals.utils.PortalFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -44,7 +45,7 @@ public class EffectPortal extends FeatureObject implements Removable {
     }
 
     public Portal convert() {
-        Portal portal = new Portal();
+        Portal portal = PortalFactory.build();
         portal.apply(this);
 
         portal.setDisplayName(this.name);

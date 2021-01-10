@@ -7,17 +7,17 @@ import de.codingair.codingapi.server.reflections.IReflection;
 import de.codingair.codingapi.server.reflections.PacketUtils;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.Location;
+import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.base.transfer.packets.spigot.QueueRTPUsagePacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RandomTPPacket;
 import de.codingair.warpsystem.spigot.api.events.PlayerFinalJoinEvent;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
-import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.LocationAdapter;
-import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleporterManager;
+import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
 import de.codingair.warpsystem.spigot.features.randomteleports.utils.WorldOption;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -86,9 +86,9 @@ public class SpawnListener implements Listener {
 
     private void triggerRTP(Player player, TeleportInfo teleportInfo) {
         if(teleportInfo.getWorld() != null) {
-            WorldOption option = RandomTeleporterManager.getInstance().getOption(teleportInfo.getWorld(), RandomTeleporterManager.getInstance().getDefValues());
+            WorldOption option = RandomTeleportManager.getInstance().getOption(teleportInfo.getWorld(), RandomTeleportManager.getInstance().getDefValues());
 
-            RandomTeleporterManager.getInstance().search(player, teleportInfo.getWorld(), option, new Callback<Location>() {
+            RandomTeleportManager.getInstance().search(player, teleportInfo.getWorld(), option, new Callback<Location>() {
                 @Override
                 public void accept(Location loc) {
                     if(loc == null) {

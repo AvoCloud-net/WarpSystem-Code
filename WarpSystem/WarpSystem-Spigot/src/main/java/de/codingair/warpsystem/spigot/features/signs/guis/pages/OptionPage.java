@@ -10,10 +10,7 @@ import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.warpsystem.spigot.base.guis.editor.Editor;
 import de.codingair.warpsystem.spigot.base.guis.editor.PageItem;
-import de.codingair.warpsystem.spigot.base.guis.editor.buttons.CommandButton;
-import de.codingair.warpsystem.spigot.base.guis.editor.buttons.CostsButton;
-import de.codingair.warpsystem.spigot.base.guis.editor.buttons.PermissionButton;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.signs.guis.WarpSignGUI;
 import de.codingair.warpsystem.spigot.features.signs.utils.WarpSign;
 import de.codingair.warpsystem.spigot.versionfactory.VFac;
@@ -75,7 +72,7 @@ public class OptionPage extends PageItem {
             }
         }.setOption(option).setOnlyLeftClick(true));
 
-        addButton(new CommandButton(2, 2, sign).setOption(option));
+        addButton(VFac.build(Button.class, VKey.CommandButton, 2, 2, sign).setOption(option));
         addButton(VFac.build(Button.class, VKey.CooldownButton, 3, 2, sign).setOption(option));
         addButton(VFac.build(Button.class, VKey.PermissionButton, 4, 2, sign).setOption(option));
         addButton(VFac.build(Button.class, VKey.CostsButton, 5, 2, sign).setOption(option));

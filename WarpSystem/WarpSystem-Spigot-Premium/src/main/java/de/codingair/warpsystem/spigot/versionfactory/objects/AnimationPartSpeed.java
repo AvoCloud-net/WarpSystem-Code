@@ -6,7 +6,7 @@ import de.codingair.codingapi.player.gui.hotbar.HotbarGUI;
 import de.codingair.codingapi.player.gui.hotbar.ItemListener;
 import de.codingair.codingapi.player.gui.hotbar.components.ItemComponent;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.animations.guis.editor.AnimationPart;
 import de.codingair.warpsystem.spigot.features.animations.guis.editor.Menu;
 import org.bukkit.entity.Player;

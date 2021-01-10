@@ -4,6 +4,7 @@ import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.utils.Lang;
 import de.codingair.warpsystem.bungee.base.utils.ServerInitializeEvent;
 import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -25,7 +26,14 @@ public class MainListener implements Listener {
     public void onConnect(ServerConnectedEvent e) {
         if(e.getServer().getInfo().getPlayers().size() == 0) {
             //Update it
-            WarpSystem.getInstance().getServerManager().sendInitialPacket(e.getServer().getInfo());
+
+            ProxyServer.getInstance().getScheduler().schedule(WarpSystem.getInstance(), () -> {
+                WarpSystem.getInstance().getServerManager().sendInitialPacket(e.getServer().getInfo());
+                if(asking.contains(e.getServer().getInfo())) {
+                    ask(e.getPlayer());
+                }
+            }, 50, TimeUnit.MILLISECONDS);
+            return;
         }
 
         if(asking.contains(e.getServer().getInfo())) {

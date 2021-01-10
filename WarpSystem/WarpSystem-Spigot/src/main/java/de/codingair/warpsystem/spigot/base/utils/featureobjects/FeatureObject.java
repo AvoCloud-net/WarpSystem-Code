@@ -12,11 +12,12 @@ import de.codingair.codingapi.tools.io.utils.DataWriter;
 import de.codingair.codingapi.tools.io.utils.Serializable;
 import de.codingair.codingapi.utils.ImprovedDouble;
 import de.codingair.codingapi.utils.Value;
+import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.base.transfer.packets.spigot.utils.ServerPing;
 import de.codingair.warpsystem.spigot.api.PAPI;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.guis.editor.pages.SoundPage;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.managers.TeleportManager;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.ActionObject;
@@ -26,7 +27,6 @@ import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types.So
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types.WarpAction;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
-import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.base.utils.teleport.v2.ConfirmPayment;
@@ -44,35 +44,36 @@ import java.util.*;
 public abstract class FeatureObject implements Serializable {
     protected int performed = 0;
     private List<ActionObject<?>> actions;
-    private String permission = null;
-    private long cooldown = 0;
-    private boolean disabled = false;
-    private boolean skip = false;
-    private Origin origin = null;
+    protected String permission = null;
+    protected long cooldown = 0;
+    protected boolean disabled = false;
+    protected boolean skip = false;
+    protected Origin origin = null;
 
-    public FeatureObject() {
+    protected FeatureObject() {
         this.actions = new ArrayList<>();
     }
 
-    public FeatureObject(String permission, boolean disabled, List<ActionObject<?>> actions) {
+    protected FeatureObject(String permission, boolean disabled, List<ActionObject<?>> actions) {
         this.permission = permission;
         this.disabled = disabled;
         this.actions = actions == null ? new ArrayList<>() : actions;
     }
 
-    public FeatureObject(String permission, boolean disabled, ActionObject<?>... actions) {
+    protected FeatureObject(String permission, boolean disabled, ActionObject<?>... actions) {
         this.permission = permission;
         this.disabled = disabled;
         this.actions = new ArrayList<>(Arrays.asList(actions));
     }
 
-    public FeatureObject(FeatureObject featureObject) {
+    protected FeatureObject(FeatureObject featureObject) {
         this.actions = featureObject.getCopyOfActions();
         this.permission = featureObject.permission;
         this.cooldown = featureObject.cooldown;
         this.disabled = featureObject.disabled;
         this.skip = featureObject.skip;
         this.performed = featureObject.performed;
+        this.origin = featureObject.origin;
     }
 
     public FeatureObject perform(Player player) {
@@ -244,7 +245,7 @@ public abstract class FeatureObject implements Serializable {
         this.disabled = d.getBoolean("disabled");
         this.permission = d.getString("permission");
         this.cooldown = d.getLong("cooldown");
-        if(this.permission != null) this.permission = ChatColor.stripColor(CharMatcher.WHITESPACE.trimFrom(this.permission));
+        if(this.permission != null) this.permission = ChatColor.stripColor(CharMatcher.whitespace().trimFrom(this.permission));
 
         this.skip = d.getBoolean("skip");
         this.performed = d.getInteger("performed");

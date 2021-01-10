@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SendOptionsPacketHandler implements PacketHandler<SendOptionsPacket> {
+
     @Override
     public void process(@NotNull SendOptionsPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         ((WarpSystem) proxy).getServerManager().applyOptions((ServerInfo) connection, packet.getOptions());

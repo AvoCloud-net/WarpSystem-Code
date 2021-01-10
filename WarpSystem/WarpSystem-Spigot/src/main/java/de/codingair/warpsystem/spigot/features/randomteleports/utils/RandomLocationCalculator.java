@@ -10,7 +10,7 @@ import de.codingair.codingapi.utils.Value;
 import de.codingair.warpsystem.spigot.api.players.PermissionPlayer_v1_8;
 import de.codingair.warpsystem.spigot.api.players.PermissionPlayer_v1_9;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleporterManager;
+import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
 import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class RandomLocationCalculator implements Runnable {
+public abstract class RandomLocationCalculator implements Runnable {
     private final org.bukkit.Location startLocation;
     private final Player check;
     private final Callback<Location> callback;
@@ -104,11 +104,11 @@ public class RandomLocationCalculator implements Runnable {
         Location below = location.clone();
         below.setY(below.getY() - 1);
 
-        List<Material> l = RandomTeleporterManager.getInstance().getMaterialBlackList();
+        List<Material> l = RandomTeleportManager.getInstance().getMaterialBlackList();
         return l.contains(below.getBlock().getType());
     }
 
-    private boolean isSafeLocation(Location location) {
+    protected boolean isSafeLocation(Location location) {
         return Environment.canBeEntered(location.getBlock().getType())
                 && Environment.canBeEntered(location.clone().add(0, 1, 0).getBlock().getType())
                 && !Environment.canBeEntered(location.clone().subtract(0, 1, 0).getBlock().getType());
@@ -121,9 +121,9 @@ public class RandomLocationCalculator implements Runnable {
     private int getHighestY(World w) {
         switch(w.getEnvironment()) {
             case NETHER:
-                return RandomTeleporterManager.getInstance().getNetherHeight();
+                return RandomTeleportManager.getInstance().getNetherHeight();
             case THE_END:
-                return RandomTeleporterManager.getInstance().getEndHeight();
+                return RandomTeleportManager.getInstance().getEndHeight();
             default:
                 return 72;
         }
@@ -173,23 +173,9 @@ public class RandomLocationCalculator implements Runnable {
         return loc.getBlockY();
     }
 
-    private boolean correct(Location location, boolean safety) throws InterruptedException {
-        if(RandomTeleporterManager.getInstance().getBiomeList() != null && !RandomTeleporterManager.getInstance().getBiomeList().contains(location.getWorld().getBiome(location.getBlockX(), location.getBlockZ())))
-            return false;
-        if(RandomTeleporterManager.getInstance().isProtectedRegions() && isProtected(location)) return false;
-        if(RandomTeleporterManager.getInstance().isWorldBorder() && !isInsideOfWorldBorder(location)) return false;
-        if(safety) {
-            Location above = location.clone();
-            above.setY(above.getY() + 1);
-            Location below = location.clone();
-            below.setY(below.getY() - 1);
+    public abstract boolean correct(Location location, boolean safety) throws InterruptedException;
 
-
-            return isSafeLocation(location) && isSafe(above) && isSafe(location) && isSafe(below);
-        } else return true;
-    }
-
-    private boolean isSafe(Location location) {
+    protected boolean isSafe(Location location) {
         Block b = location.getBlock();
 
         List<String> unsafe = new ArrayList<>();
@@ -206,12 +192,7 @@ public class RandomLocationCalculator implements Runnable {
         return true;
     }
 
-    private boolean isInsideOfWorldBorder(Location location) {
-        WorldBorder border = location.getWorld().getWorldBorder();
-        return border == null || Area.isInArea(location, border.getCenter(), border.getSize() / 2, false, 0);
-    }
-
-    private boolean isProtected(Location location) throws InterruptedException {
+    protected boolean isProtected(Location location) throws InterruptedException {
         synchronized(this) {
             Value<BlockBreakEvent> eventValue = new Value<>(null);
             Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> {

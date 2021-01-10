@@ -8,11 +8,10 @@ import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.warpsystem.spigot.base.guis.editor.Editor;
 import de.codingair.warpsystem.spigot.base.guis.editor.PageItem;
-import de.codingair.warpsystem.spigot.base.guis.editor.buttons.CommandButton;
 import de.codingair.warpsystem.spigot.base.guis.editor.buttons.CostsButton;
 import de.codingair.warpsystem.spigot.base.guis.editor.buttons.PermissionButton;
 import de.codingair.warpsystem.spigot.base.guis.editor.buttons.StatusButton;
-import de.codingair.warpsystem.spigot.base.language.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.warps.nextlevel.utils.Icon;
 import de.codingair.warpsystem.spigot.versionfactory.VFac;
 import de.codingair.warpsystem.spigot.versionfactory.VKey;
@@ -35,10 +34,10 @@ public class PFunctions extends PageItem {
 
         int slot = 1;
         addButton(new StatusButton(slot++, 2, icon).setOption(option));
-        addButton(new CommandButton(slot++, 2, icon).setOption(option));
+        addButton(VFac.build(Button.class, VKey.CommandButton, slot++, 2, icon).setOption(option));
         if(!icon.isPage()) addButton(VFac.build(Button.class, VKey.CooldownButton, slot++, 2, icon).setOption(option));
         addButton(new PermissionButton(slot++, 2, icon).setOption(option));
         if(!icon.isPage()) addButton(new CostsButton(slot++, 2, icon).setOption(option));
-        addButton(VFac.build(Button.class, VKey.MessageButton, slot++, 2, icon).setOption(option));
+        addButton(VFac.build(Button.class, VKey.MessageButton, slot, 2, icon).setOption(option));
     }
 }

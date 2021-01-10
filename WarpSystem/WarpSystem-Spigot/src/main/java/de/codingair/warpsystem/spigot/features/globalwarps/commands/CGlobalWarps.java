@@ -9,8 +9,8 @@ import de.codingair.codingapi.server.commands.builder.special.MultiCommandCompon
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.language.Lang;
-import de.codingair.warpsystem.spigot.base.utils.BungeeFeature;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.ProxyFeature;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
@@ -26,7 +26,7 @@ import org.bukkit.event.inventory.ClickType;
 import java.util.List;
 import java.util.logging.Level;
 
-public class CGlobalWarps extends WSCommandBuilder implements BungeeFeature {
+public class CGlobalWarps extends WSCommandBuilder implements ProxyFeature {
     public CGlobalWarps() {
         super("GlobalWarps", new BaseComponent(WarpSystem.PERMISSION_MODIFY_GLOBAL_WARPS) {
             @Override
