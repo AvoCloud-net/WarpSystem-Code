@@ -6,7 +6,7 @@ import de.codingair.codingapi.server.reflections.IReflection;
 import de.codingair.codingapi.server.specification.Version;
 import de.codingair.codingapi.tools.Area;
 import de.codingair.codingapi.tools.Location;
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import org.bukkit.Material;
@@ -31,14 +31,14 @@ public class PortalBlock implements Serializable {
     }
 
     @Override
-    public boolean read(DataWriter d) throws Exception {
+    public boolean read(DataMask d) throws Exception {
         this.location = new Location();
         this.location.read(d);
         this.location.trim(0);
 
         try {
             this.type = BlockType.valueOf(d.getString("type"));
-        } catch(Throwable t) {
+        } catch (Throwable t) {
             this.type = BlockType.WATER;
         }
 
@@ -46,7 +46,7 @@ public class PortalBlock implements Serializable {
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         this.location.write(d);
         d.put("type", this.type.name());
     }
@@ -57,41 +57,41 @@ public class PortalBlock implements Serializable {
     }
 
     public void updateBlock(Portal portal) {
-        if(location.getWorld() == null) return;
+        if (location.getWorld() == null) return;
 
-        if(instance != null) {
+        if (instance != null) {
             instance.destroy();
             instance = null;
         }
 
-        if(portal.isVisible()) {
-            if(portal.isEditMode()) {
-                if(type.hasEditMaterial()) setEditData(location.getBlock());
+        if (portal.isVisible()) {
+            if (portal.isEditMode()) {
+                if (type.hasEditMaterial()) setEditData(location.getBlock());
             } else {
-                if(!type.hasBlockMaterial()) {
-                    if(type.getBlock() != null) {
+                if (!type.hasBlockMaterial()) {
+                    if (type.getBlock() != null) {
                         try {
                             instance = type.getBlock().getConstructor(org.bukkit.Location.class).newInstance(this.location);
                             instance.create();
-                        } catch(NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
                             e.printStackTrace();
                         }
                     }
                 } else {
-                    if(type == BlockType.NETHER) {
+                    if (type == BlockType.NETHER) {
                         new ModernBlock(this.location.getBlock()).setTypeAndData(type.getExactBlockMaterial(), new Orientable(portal.getCachedAxis()));
-                    } else if(type == BlockType.END) {
-                        if(portal.isVertically() && type.getVerticalBlockMaterial() != null) {
+                    } else if (type == BlockType.END) {
+                        if (portal.isVertically() && type.getVerticalBlockMaterial() != null) {
                             this.location.getBlock().setType(type.getExactVerticalBlockMaterial(), true);
                         } else this.location.getBlock().setType(type.getExactBlockMaterial(), false);
                     } else this.location.getBlock().setType(type.getExactBlockMaterial(), false);
                 }
             }
-        } else if(type.getEditMaterial() != null || type.getBlock() != null || type.getBlockMaterial() != null) this.location.getBlock().setType(Material.AIR, true);
+        } else if (type.getEditMaterial() != null || type.getBlock() != null || type.getBlockMaterial() != null) this.location.getBlock().setType(Material.AIR, true);
     }
 
     private void setEditData(Block b) {
-        if(Version.get().isBiggerThan(Version.v1_12)) {
+        if (Version.get().isBiggerThan(Version.v1_12)) {
             b.setType(type.getExactEditMaterial(), false);
         } else {
             ItemBuilder builder = type.getEditMaterial();
@@ -101,7 +101,7 @@ public class PortalBlock implements Serializable {
     }
 
     private IReflection.MethodAccessor setData() {
-        if(setData == null) setData = IReflection.getMethod(Block.class, "setData", new Class[] {byte.class, boolean.class});
+        if (setData == null) setData = IReflection.getMethod(Block.class, "setData", new Class[] {byte.class, boolean.class});
         return setData;
     }
 

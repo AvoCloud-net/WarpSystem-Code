@@ -24,7 +24,7 @@ public class DelayButton extends SyncButton {
 
     @Override
     public ItemStack craftItem() {
-        if(object == null) return new ItemStack(Material.AIR);
+        if (object == null) return new ItemStack(Material.AIR);
 
         return new ItemBuilder(XMaterial.CLOCK)
                 .setName(Editor.ITEM_TITLE_COLOR + Lang.get("Teleport_Delay"))
@@ -38,7 +38,7 @@ public class DelayButton extends SyncButton {
 
     @Override
     public void onClick(InventoryClickEvent e, Player player) {
-        if(e.isLeftClick()) {
+        if (e.isLeftClick()) {
             object.setSkip(!object.isSkip());
             update();
         }

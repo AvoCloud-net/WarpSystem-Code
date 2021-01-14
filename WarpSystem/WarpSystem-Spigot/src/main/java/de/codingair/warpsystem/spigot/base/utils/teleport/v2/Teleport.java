@@ -13,9 +13,9 @@ import org.bukkit.entity.Player;
 public class Teleport {
     private final Player player;
     private final TeleportOptions options;
+    protected boolean motionRestricted = false;
     private TeleportStage stage;
     private long started = 0;
-    protected boolean motionRestricted = false;
 
     public Teleport(Player player, TeleportOptions options) {
         this.player = player;
@@ -29,10 +29,10 @@ public class Teleport {
         options.addCallback(new Callback<Result>() {
             @Override
             public void accept(Result result) {
-                if(stage != null && result != Result.SUCCESS && stage.active().isBefore(ConfirmPayment.class) && Bank.adapter() != null) {
+                if (stage != null && result != Result.SUCCESS && stage.active().isBefore(ConfirmPayment.class) && Bank.adapter() != null) {
                     //payback
                     double costs = options.getCosts(player);
-                    if(costs > 0) Bank.adapter().deposit(player, costs);
+                    if (costs > 0) Bank.adapter().deposit(player, costs);
                 }
             }
         });
@@ -48,24 +48,24 @@ public class Teleport {
     }
 
     public void cancel(Result result) {
-        if(this.stage != null) this.stage.active().cancel(result);
+        if (this.stage != null) this.stage.active().cancel(result);
         cancelByStage(result);
     }
 
     public void cancelByStage(Result result) {
-        if(getOptions().getDelay(player) > 0 && options.getCancelSound() != null && stage != null && stage.active().isFired(TeleportDelay.class)) options.getCancelSound().play(player);
+        if (getOptions().getDelay(player) > 0 && options.getCancelSound() != null && stage != null && stage.active().isFired(TeleportDelay.class)) options.getCancelSound().play(player);
         options.fireCallbacks(result);
 
-        if(result == Result.NOT_ENOUGH_MONEY) {
+        if (result == Result.NOT_ENOUGH_MONEY) {
             player.sendMessage(Lang.getPrefix() + Lang.get("Not_enough_Money").replace("%AMOUNT%", options.getFinalCosts(player).toString()));
         }
 
-        if(result == Result.TARGET_SERVER_IS_FULL) {
+        if (result == Result.TARGET_SERVER_IS_FULL) {
             player.sendMessage(Lang.getPrefix() + Lang.get("Target_Server_Is_Full"));
         }
 
-        if(result == Result.DENIED_PAYMENT) {
-            if(options.getPaymentDeniedMessage(player) != null) player.sendMessage(options.getPaymentDeniedMessage(player));
+        if (result == Result.DENIED_PAYMENT) {
+            if (options.getPaymentDeniedMessage(player) != null) player.sendMessage(options.getPaymentDeniedMessage(player));
         }
     }
 

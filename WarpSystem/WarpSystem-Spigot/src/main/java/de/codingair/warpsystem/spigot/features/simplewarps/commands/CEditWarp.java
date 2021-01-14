@@ -45,14 +45,14 @@ public class CEditWarp extends WSCommandBuilder {
         getBaseComponent().addChild(new MultiCommandComponent() {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
-                for(SimpleWarp value : m.getWarps().values()) {
+                for (SimpleWarp value : m.getWarps().values()) {
                     suggestions.add(value.getName(true));
                 }
             }
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
-                if(!m.existsWarp(argument)) {
+                if (!m.existsWarp(argument)) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("WARP_DOES_NOT_EXISTS"));
                     return false;
                 }

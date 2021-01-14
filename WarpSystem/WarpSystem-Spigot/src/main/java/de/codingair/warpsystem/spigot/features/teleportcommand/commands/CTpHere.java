@@ -60,23 +60,23 @@ public class CTpHere extends WSCommandBuilder {
 
     private void suggestTpHere(CommandSender sender, String[] args, List<String> suggestions) {
         Player p = (Player) sender;
-        if(WarpSystem.getInstance().isOnProxy()) {
+        if (WarpSystem.getInstance().isOnProxy()) {
             suggestions.add(TeleportTabCompleteKeys.ID_TP_HERE);
 
             StringBuilder builder = new StringBuilder("tpa");
-            for(String arg : args) {
+            for (String arg : args) {
                 builder.append(" ").append(arg);
             }
             suggestions.add(builder.toString());
 
-            for(Player player : Bukkit.getOnlinePlayers()) {
-                if(!p.canSee(player)) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (!p.canSee(player)) {
                     suggestions.add("-" + player.getName());
                 }
             }
         } else {
-            for(Player player : Bukkit.getOnlinePlayers()) {
-                if(player.getName().equals(sender.getName())) continue;
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.getName().equals(sender.getName())) continue;
                 suggestions.add(ChatColor.stripColor(player.getName()));
             }
         }

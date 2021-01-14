@@ -49,7 +49,7 @@ public class PAppearance extends PageItem {
 
     public static Number cut(double n) {
         double d = Double.parseDouble(new DecimalFormat("#.##").format(n).replace(",", "."));
-        if(d == (int) d) return (int) d;
+        if (d == (int) d) return (int) d;
         else return d;
     }
 
@@ -67,7 +67,7 @@ public class PAppearance extends PageItem {
         addButton(new NameButton(1, 2, false, new Value<>(clone.getDisplayName()), clone) {
             @Override
             public String acceptName(String name) {
-                if(PortalManager.getInstance().existsPortal(name)) {
+                if (PortalManager.getInstance().existsPortal(name)) {
                     return Lang.getPrefix() + Lang.get("Name_Already_Exists");
                 } else return null;
             }
@@ -93,7 +93,7 @@ public class PAppearance extends PageItem {
                         .setLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Portal_Blocks") + ": " + (canFinish() ? "§7" : "§c") + clone.getBlocks().size())
                         .addLore("", Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §a" + Lang.get("Portals_Set_Blocks"));
 
-                if(!canFinish()) {
+                if (!canFinish()) {
                     itemBuilder.addEnchantment(Enchantment.DAMAGE_ALL, 1);
                     itemBuilder.setHideEnchantments(true);
                 }
@@ -112,7 +112,7 @@ public class PAppearance extends PageItem {
                 Bukkit.getPluginManager().registerEvents(new Listener() {
                     @EventHandler
                     public void onDrop(PlayerDropItemEvent e) {
-                        if(!e.getPlayer().getName().equals(player.getName())) return;
+                        if (!e.getPlayer().getName().equals(player.getName())) return;
 
                         e.setCancelled(true);
 
@@ -139,7 +139,7 @@ public class PAppearance extends PageItem {
         addButton(new SyncButton(3, 2) {
             @Override
             public void onClick(InventoryClickEvent e, Player player) {
-                if(e.isLeftClick()) {
+                if (e.isLeftClick()) {
                     getLast().setClosingForGUI(true);
                     close();
                     new HologramEditor(p, (PortalEditor) getLast(), clone.getHologram()).open(false);
@@ -163,7 +163,7 @@ public class PAppearance extends PageItem {
                 b.addText(b.getLore().size() > 3 ? "" : null, Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Status") + ": §7" + (clone.getHologram().isVisible() ? "§a" + Lang.get("Enabled") : "§c" + Lang.get("Disabled")));
 
                 b.addText("", Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §7" + Lang.get("Change"));
-                if(clone.getHologram().getLocation() != null) b.addText(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Rightclick") + ": §7" + Lang.get("Toggle"));
+                if (clone.getHologram().getLocation() != null) b.addText(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Rightclick") + ": §7" + Lang.get("Toggle"));
 
                 return b.getItem();
             }
@@ -196,7 +196,7 @@ public class PAppearance extends PageItem {
 
             @Override
             public void onOtherClick(InventoryClickEvent e) {
-                if(e.getClick() == ClickType.RIGHT) {
+                if (e.getClick() == ClickType.RIGHT) {
                     clone.setTeleportName(null);
                     update();
                 }
@@ -204,11 +204,11 @@ public class PAppearance extends PageItem {
 
             @Override
             public void onClick(AnvilClickEvent e) {
-                if(!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
+                if (!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
 
                 String input = e.getInput();
 
-                if(input == null) {
+                if (input == null) {
                     e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Enter_Name"));
                     return;
                 }
@@ -222,10 +222,10 @@ public class PAppearance extends PageItem {
         addButton(new SyncButton(5, 2) {
             @Override
             public void onClick(InventoryClickEvent e, Player player) {
-                if(e.isLeftClick()) {
+                if (e.isLeftClick()) {
                     getLast().setClosingForGUI(true);
                     close();
-                    if(clone.getSpawn() != null) player.teleport(clone.getSpawn(), PlayerTeleportEvent.TeleportCause.UNKNOWN);
+                    if (clone.getSpawn() != null) player.teleport(clone.getSpawn(), PlayerTeleportEvent.TeleportCause.UNKNOWN);
                     new SpawnEditor(p, (PortalEditor) getLast(), clone).open(false);
                 } else {
                     clone.setSpawn(null);
@@ -248,7 +248,7 @@ public class PAppearance extends PageItem {
 
                 b.addText("", Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Current") + ": §7" + pos);
                 b.addText("", Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": " + (clone.getSpawn() == null ? "§a" + Lang.get("Set") : "§7" + Lang.get("Change")));
-                if(clone.getSpawn() != null) b.addText(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
+                if (clone.getSpawn() != null) b.addText(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
 
                 return b.getItem();
             }

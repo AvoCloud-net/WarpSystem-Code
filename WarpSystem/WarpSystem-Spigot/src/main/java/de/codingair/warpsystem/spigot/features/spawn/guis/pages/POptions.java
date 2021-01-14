@@ -54,7 +54,7 @@ public class POptions extends PageItem {
                 String add = null;
                 String server = SpawnManager.getInstance().getSpawnServer();
 
-                if(server != null && !WarpSystem.getInstance().getCurrentServer().equals(server) && WarpSystem.getInstance().isOnProxy() && clone.getUsage().getName().contains("/spawn")) {
+                if (server != null && !WarpSystem.getInstance().getCurrentServer().equals(server) && WarpSystem.getInstance().isOnProxy() && clone.getUsage().getName().contains("/spawn")) {
                     builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Current") + ": §a" + clone.getUsage().getName().replace("/spawn", "§c§m/spawn§7"));
                     builder.addLore(Editor.ITEM_SUB_TITLE_WARNING + Lang.get("Already_linked") + " §8(§7" + Lang.get("Server") + ": '" + server + "'§8)");
                     add = Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Shift_Rightclick") + ": " + (runnable != null ? "§7" + Lang.get("Reset") + " §7(§c" + ChatColor.stripColor(Lang.get("Confirm")) + "§7)" : "§7" + Lang.get("Reset") + " §7(/spawn)");
@@ -69,11 +69,11 @@ public class POptions extends PageItem {
 
             @Override
             public void onClick(InventoryClickEvent e, Player player) {
-                if(WarpSystem.getInstance().isOnProxy()) {
+                if (WarpSystem.getInstance().isOnProxy()) {
                     String server = SpawnManager.getInstance().getSpawnServer();
 
-                    if(server != null && !WarpSystem.getInstance().getCurrentServer().equals(server) && e.getClick() == ClickType.SHIFT_RIGHT) {
-                        if(runnable == null) {
+                    if (server != null && !WarpSystem.getInstance().getCurrentServer().equals(server) && e.getClick() == ClickType.SHIFT_RIGHT) {
+                        if (runnable == null) {
                             runnable = new BukkitRunnable() {
                                 @Override
                                 public void run() {
@@ -94,7 +94,7 @@ public class POptions extends PageItem {
                     }
                 }
 
-                if(e.isLeftClick()) clone.setUsage(clone.getUsage().previous());
+                if (e.isLeftClick()) clone.setUsage(clone.getUsage().previous());
                 else clone.setUsage(clone.getUsage().next());
 
                 update();
@@ -102,10 +102,10 @@ public class POptions extends PageItem {
 
             @Override
             public boolean canClick(ClickType click) {
-                if(WarpSystem.getInstance().isOnProxy()) {
+                if (WarpSystem.getInstance().isOnProxy()) {
                     String server = SpawnManager.getInstance().getSpawnServer();
 
-                    if(server != null && !WarpSystem.getInstance().getCurrentServer().equals(server)) {
+                    if (server != null && !WarpSystem.getInstance().getCurrentServer().equals(server)) {
                         return click == ClickType.LEFT || click == ClickType.RIGHT || click == ClickType.SHIFT_RIGHT;
                     }
                 }
@@ -122,10 +122,10 @@ public class POptions extends PageItem {
             public ItemStack craftItem() {
                 ItemBuilder builder = new ItemBuilder(XMaterial.ENDER_EYE).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Use_For_Respawn"));
 
-                if(WarpSystem.getInstance().isOnProxy()) {
+                if (WarpSystem.getInstance().isOnProxy()) {
                     String server = SpawnManager.getInstance().getRespawnServer();
 
-                    if(server != null && !WarpSystem.getInstance().getCurrentServer().equals(server)) {
+                    if (server != null && !WarpSystem.getInstance().getCurrentServer().equals(server)) {
                         builder.addLore(Editor.ITEM_SUB_TITLE_WARNING + Lang.get("Already_linked") + " §8(§7" + Lang.get("Server") + ": '" + server + "'§8)");
                         builder.addLore("", Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Rightclick") + ": " + (runnable != null ? "§4" + Lang.get("Reset") + " §7(§c" + ChatColor.stripColor(Lang.get("Confirm")) + "§7)" : "§7" + Lang.get("Reset")));
                         return builder.getItem();
@@ -142,11 +142,11 @@ public class POptions extends PageItem {
 
             @Override
             public void onClick(InventoryClickEvent e, Player player) {
-                if(WarpSystem.getInstance().isOnProxy()) {
+                if (WarpSystem.getInstance().isOnProxy()) {
                     String server = SpawnManager.getInstance().getRespawnServer();
 
-                    if(server != null && !WarpSystem.getInstance().getCurrentServer().equals(server)) {
-                        if(runnable == null) {
+                    if (server != null && !WarpSystem.getInstance().getCurrentServer().equals(server)) {
+                        if (runnable == null) {
                             runnable = new BukkitRunnable() {
                                 @Override
                                 public void run() {
@@ -167,7 +167,7 @@ public class POptions extends PageItem {
                     }
                 }
 
-                if(e.isLeftClick()) clone.setRespawnUsage(clone.getRespawnUsage().previous());
+                if (e.isLeftClick()) clone.setRespawnUsage(clone.getRespawnUsage().previous());
                 else clone.setRespawnUsage(clone.getRespawnUsage().next());
 
                 update();
@@ -175,10 +175,10 @@ public class POptions extends PageItem {
 
             @Override
             public boolean canClick(ClickType click) {
-                if(WarpSystem.getInstance().isOnProxy()) {
+                if (WarpSystem.getInstance().isOnProxy()) {
                     String server = SpawnManager.getInstance().getRespawnServer();
 
-                    if(server != null && !WarpSystem.getInstance().getCurrentServer().equals(server)) {
+                    if (server != null && !WarpSystem.getInstance().getCurrentServer().equals(server)) {
                         return click == ClickType.RIGHT;
                     }
                 }
@@ -214,11 +214,11 @@ public class POptions extends PageItem {
 
             @Override
             public void onClick(AnvilClickEvent e) {
-                if(!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
+                if (!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
 
                 String input = e.getInput();
 
-                if(input == null) {
+                if (input == null) {
                     e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Enter_Name"));
                     return;
                 }
@@ -256,7 +256,7 @@ public class POptions extends PageItem {
             @Override
             public ItemStack craftItem() {
                 List<String> lore = new ArrayList<>();
-                for(String s : clone.getBroadCastMessages()) {
+                for (String s : clone.getBroadCastMessages()) {
                     lore.addAll(TextAlignment.lineBreak("§7- '§f" + Spawn.prepareBroadcastMessage(s, p) + "§7'", 100));
                 }
 
@@ -271,7 +271,7 @@ public class POptions extends PageItem {
 
             @Override
             public void onOtherClick(InventoryClickEvent e) {
-                if(e.isRightClick() && !clone.getBroadCastMessages().isEmpty()) {
+                if (e.isRightClick() && !clone.getBroadCastMessages().isEmpty()) {
                     clone.getBroadCastMessages().remove(clone.getBroadCastMessages().size() - 1);
                     update();
                 }

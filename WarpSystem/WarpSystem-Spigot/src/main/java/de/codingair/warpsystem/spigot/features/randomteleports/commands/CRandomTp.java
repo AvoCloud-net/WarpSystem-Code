@@ -37,13 +37,13 @@ public class CRandomTp extends WSCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                if(sender.hasPermission(WarpSystem.PERMISSION_MODIFY_RANDOM_TELEPORTER)) {
-                    if(RandomTeleportManager.getInstance().isBuyable())
+                if (sender.hasPermission(WarpSystem.PERMISSION_MODIFY_RANDOM_TELEPORTER)) {
+                    if (RandomTeleportManager.getInstance().isBuyable())
                         sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<buy, blocks, info, go>");
                     else
                         sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<blocks, info, go>");
                 } else {
-                    if(RandomTeleportManager.getInstance().isBuyable())
+                    if (RandomTeleportManager.getInstance().isBuyable())
                         sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<buy, info, go>");
                     else {
                         sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<info, go>");
@@ -53,16 +53,16 @@ public class CRandomTp extends WSCommandBuilder {
             }
         }.setOnlyPlayers(true));
 
-        if(RandomTeleportManager.getInstance().isBuyable()) {
+        if (RandomTeleportManager.getInstance().isBuyable()) {
             getBaseComponent().addChild(new CommandComponent("buy") {
                 @Override
                 public boolean runCommand(CommandSender sender, String label, String[] args) {
                     //TextComponent
 
-                    if(!RandomTeleportManager.getInstance().canBuy((Player) sender)) {
+                    if (!RandomTeleportManager.getInstance().canBuy((Player) sender)) {
                         sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Bought_Too_Much").replace("%AMOUNT%", RandomTeleportManager.getInstance().getMaxTeleportAmount((Player) sender) + ""));
                         return false;
-                    } else if(RandomTeleportManager.getInstance().getFreeTeleportAmount((Player) sender) == -1) {
+                    } else if (RandomTeleportManager.getInstance().getFreeTeleportAmount((Player) sender) == -1) {
                         sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Info_Unlimited"));
                         return false;
                     }
@@ -70,7 +70,7 @@ public class CRandomTp extends WSCommandBuilder {
                     double bank = Bank.adapter().getMoney((Player) sender);
                     double costs = RandomTeleportManager.getInstance().getCosts();
 
-                    if(bank >= costs) {
+                    if (bank >= costs) {
                         SimpleMessage sm = new SimpleMessage(Lang.getPrefix() + Lang.get("RandomTP_Buy").replace("%AMOUNT%", fancyCosts(costs)), WarpSystem.getInstance());
 
                         sm.replace("%YES%", new ChatButton(Lang.get("RandomTP_Buy_Yes")) {
@@ -80,7 +80,7 @@ public class CRandomTp extends WSCommandBuilder {
 
                                 double bank = Bank.adapter().getMoney((Player) sender);
 
-                                if(bank >= costs) {
+                                if (bank >= costs) {
                                     Bank.adapter().withdraw(player, costs);
                                     UUID u = WarpSystem.getInstance().getPlayerDataManager().get((Player) sender);
                                     RandomTeleportManager.getInstance().setBoughtTeleports(u, RandomTeleportManager.getInstance().getBoughtTeleports(u) + 1);
@@ -141,15 +141,15 @@ public class CRandomTp extends WSCommandBuilder {
                 int teleports = RandomTeleportManager.getInstance().getTeleports((Player) sender);
                 int max = RandomTeleportManager.getInstance().getMaxTeleportAmount((Player) sender);
 
-                if(free == -1) {
+                if (free == -1) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Info_Unlimited"));
                 } else {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Info")
                             .replace("%LEFT%", Math.max(free + bought - teleports, 0) + "")
                             .replace("%ALL%", (free + bought) + ""));
 
-                    if(RandomTeleportManager.getInstance().isBuyable()) {
-                        if(max == -1) {
+                    if (RandomTeleportManager.getInstance().isBuyable()) {
+                        if (max == -1) {
                             sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Info_Buyable_Unlimited"));
                         } else {
                             sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Info_Buyable")
@@ -165,18 +165,18 @@ public class CRandomTp extends WSCommandBuilder {
         getBaseComponent().addChild(new CommandComponent("go") {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                if(!(sender instanceof Player)) {
+                if (!(sender instanceof Player)) {
                     sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " go " + WarpSystem.opt().cmdArg() + "[server-1, server-2, ...; world-1, world-2, ...] <player>");
                     return false;
                 }
 
-                if(WarpSystem.cooldown().checkPlayer((Player) sender, Origin.RandomTP)) return false;
+                if (WarpSystem.cooldown().checkPlayer((Player) sender, Origin.RandomTP)) return false;
 
                 Player p = (Player) sender;
                 RandomTeleportManager.getInstance().tryToTeleport(p.getName(), p.getWorld(), false, new Callback<Integer>() {
                     @Override
                     public void accept(Integer result) {
-                        if(result == 0) {
+                        if (result == 0) {
                             WarpSystem.cooldown().register((Player) sender, Origin.RandomTP);
                         }
                     }

@@ -31,20 +31,20 @@ public class MessageButton extends SyncAnvilGUIButton {
 
     @Override
     public ItemStack craftItem() {
-        if(object == null) return new ItemStack(Material.AIR);
+        if (object == null) return new ItemStack(Material.AIR);
 
         MessageAction action = object.getAction(Action.MESSAGE);
         List<String> messages = action == null ? null : action.getValue();
         List<String> messageInfo = new ArrayList<>();
 
-        if(messages != null) {
-            for(String msg : messages) {
+        if (messages != null) {
+            for (String msg : messages) {
                 messageInfo.add("§7- '§f" + ChatColor.translateAll('&', msg) + "§7'");
             }
         }
 
         List<String> lore = new ArrayList<>();
-        if(messages != null) lore.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
+        if (messages != null) lore.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
 
         return new ItemBuilder(XMaterial.BOOK)
                 .setName("§6§n" + Lang.get("Message"))
@@ -57,23 +57,23 @@ public class MessageButton extends SyncAnvilGUIButton {
 
     @Override
     public void onClick(AnvilClickEvent e) {
-        if(!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
+        if (!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
 
         String input = e.getInput();
 
-        if(input == null) {
+        if (input == null) {
             e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Enter_Something"));
             return;
         }
 
-        if(!isOkay(input)) {
+        if (!isOkay(input)) {
             return;
         }
 
         e.setClose(true);
 
         MessageAction action = object.getAction(Action.MESSAGE);
-        if(action == null) {
+        if (action == null) {
             action = new MessageAction(input);
             object.addAction(action);
         } else {
@@ -99,9 +99,9 @@ public class MessageButton extends SyncAnvilGUIButton {
 
     @Override
     public void onOtherClick(InventoryClickEvent e) {
-        if(e.getClick() == ClickType.RIGHT) {
-            if(object.hasAction(Action.MESSAGE)) {
-                if(object.getAction(MessageAction.class).getValue().size() == 1) object.removeAction(Action.MESSAGE);
+        if (e.getClick() == ClickType.RIGHT) {
+            if (object.hasAction(Action.MESSAGE)) {
+                if (object.getAction(MessageAction.class).getValue().size() == 1) object.removeAction(Action.MESSAGE);
                 else object.getAction(MessageAction.class).getValue().remove(object.getAction(MessageAction.class).getValue().size() - 1);
             }
             update();

@@ -1,16 +1,16 @@
 package de.codingair.warpsystem.spigot.features.warps.managers;
 
 import de.codingair.codingapi.files.ConfigFile;
-import de.codingair.codingapi.tools.io.ConfigWriter;
+import de.codingair.codingapi.tools.io.ConfigMask;
 import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.io.JSON.JSONParser;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableForSetupAssistant;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types.WarpAction;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.DestinationType;
@@ -42,11 +42,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@AvailableForSetupAssistant(type = "WarpGUI", config = "Config")
-@Function(name = "Enabled", defaultValue = "true", configPath = "WarpSystem.Functions.WarpGUI", clazz = Boolean.class)
-@Function(name = "Teleport message", defaultValue = "true", configPath = "WarpSystem.Send.Teleport_Message.WarpGUI", clazz = Boolean.class)
-@Function(name = "Different GUI for each world", defaultValue = "false", configPath = "WarpSystem.GUI.Bound_to_world", clazz = Boolean.class)
-@Function(name = "Use /warp for WarpGUI", defaultValue = "false", configPath = "WarpSystem.Commands.Warp.GUI", clazz = Boolean.class)
+@AvailableForSetupAssistant (type = "WarpGUI", config = "Config")
+@Function (name = "Enabled", defaultValue = "true", configPath = "WarpSystem.Functions.WarpGUI", clazz = Boolean.class)
+@Function (name = "Teleport message", defaultValue = "true", configPath = "WarpSystem.Send.Teleport_Message.WarpGUI", clazz = Boolean.class)
+@Function (name = "Different GUI for each world", defaultValue = "false", configPath = "WarpSystem.GUI.Bound_to_world", clazz = Boolean.class)
+@Function (name = "Use /warp for WarpGUI", defaultValue = "false", configPath = "WarpSystem.Commands.Warp.GUI", clazz = Boolean.class)
 public class IconManager implements Manager {
     private final List<Icon> icons = new ArrayList<>();
     private ItemStack background = null;
@@ -60,7 +60,7 @@ public class IconManager implements Manager {
     }
 
     public boolean load(boolean loader) {
-        if(WarpSystem.getInstance().getFileManager().getFile("ActionIcons") == null) WarpSystem.getInstance().getFileManager().loadFile("ActionIcons", "/Memory/");
+        if (WarpSystem.getInstance().getFileManager().getFile("ActionIcons") == null) WarpSystem.getInstance().getFileManager().loadFile("ActionIcons", "/Memory/");
 
         //Load
         boolean success = true;
@@ -73,13 +73,13 @@ public class IconManager implements Manager {
         WarpSystem.log("    > Loading background");
         Object data = config.get("Background_Item", null);
 
-        if(data != null) {
-            if(data instanceof String) {
+        if (data != null) {
+            if (data instanceof String) {
                 this.background = ItemBuilder.getFromJSON((String) data).getItem();
-            } else this.background = new ConfigWriter(file).getItemStack("Background_Item");
+            } else this.background = new ConfigMask(file).getItemStack("Background_Item");
         }
 
-        if(this.background == null) {
+        if (this.background == null) {
             WarpSystem.log("      ...no background available > create standard");
             this.background = new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE).setHideName(true).getItem();
         } else WarpSystem.log("      ...got 1 background");
@@ -87,20 +87,20 @@ public class IconManager implements Manager {
         WarpSystem.log("    > Loading Icons");
         icons.clear();
         List<?> l = file.getConfig().getList("Icons");
-        if(l != null)
-            for(Object s : l) {
-                if(s instanceof Map) {
+        if (l != null)
+            for (Object s : l) {
+                if (s instanceof Map) {
                     JSON json = new JSON((Map<?, ?>) s);
 
                     Icon icon = new Icon();
                     try {
                         icon.read(json);
                         icons.add(icon);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         success = false;
                     }
-                } else if(s instanceof String) {
+                } else if (s instanceof String) {
                     try {
                         JSON json = (JSON) new JSONParser().parse((String) s);
 
@@ -108,22 +108,22 @@ public class IconManager implements Manager {
                         try {
                             icon.read(json);
                             icons.add(icon);
-                        } catch(IconReadException e) {
+                        } catch (IconReadException e) {
                             e.printStackTrace();
                             success = false;
                         }
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
 
         new CWarps().register();
-        if(WarpSystem.getInstance().getFileManager().getFile("Config").getConfig().getBoolean("WarpSystem.Commands.Warp.GUI", false) && !FeatureType.SIMPLE_WARPS.isActive()) {
+        if (WarpSystem.getInstance().getFileManager().getFile("Config").getConfig().getBoolean("WarpSystem.Commands.Warp.GUI", false) && !FeatureType.SIMPLE_WARPS.isActive()) {
             new CWarp().register();
         }
 
-        if(!success) {
+        if (!success) {
             TextComponent base = new TextComponent(Lang.getPrefix() + "§cTry to use WarpSystem ");
             TextComponent link = new TextComponent("§c§nv3.0.1");
             TextComponent end = new TextComponent("§c to convert your icons!");
@@ -137,7 +137,7 @@ public class IconManager implements Manager {
             Bukkit.getPluginManager().registerEvents(new Listener() {
                 @EventHandler
                 public void onJoin(PlayerJoinEvent e) {
-                    if(e.getPlayer().hasPermission(WarpSystem.PERMISSION_ADMIN)) {
+                    if (e.getPlayer().hasPermission(WarpSystem.PERMISSION_ADMIN)) {
                         Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
                             e.getPlayer().sendMessage(" ");
                             e.getPlayer().sendMessage(Lang.getPrefix() + "§4Warning! §cCouldn't load all icons successfully.");
@@ -148,8 +148,8 @@ public class IconManager implements Manager {
                 }
             }, WarpSystem.getInstance());
 
-            for(Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                if(onlinePlayer.hasPermission(WarpSystem.PERMISSION_ADMIN)) {
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                if (onlinePlayer.hasPermission(WarpSystem.PERMISSION_ADMIN)) {
                     Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
                         onlinePlayer.sendMessage(" ");
                         onlinePlayer.sendMessage(Lang.getPrefix() + "§4Warning! §cCouldn't load all icons successfully.");
@@ -162,7 +162,7 @@ public class IconManager implements Manager {
 
         int icons = this.icons.size();
         clean(null);
-        if(icons > this.icons.size()) {
+        if (icons > this.icons.size()) {
             WarpSystem.log("      ...cleaned a total of " + (icons - this.icons.size()) + " icon(s)");
         }
 
@@ -171,18 +171,18 @@ public class IconManager implements Manager {
     }
 
     private void clean(Icon page) {
-        if(page != null && !page.isPage()) throw new IllegalArgumentException("Given icon is not a category!");
+        if (page != null && !page.isPage()) throw new IllegalArgumentException("Given icon is not a category!");
         Icon[] iconList = new Icon[54];
 
-        for(Icon icon : getIcons(page)) {
+        for (Icon icon : getIcons(page)) {
             Icon other = iconList[icon.getSlot()];
 
-            if(other == null) iconList[icon.getSlot()] = icon;
-            else if(other.isPage() && icon.isPage()) {
+            if (other == null) iconList[icon.getSlot()] = icon;
+            else if (other.isPage() && icon.isPage()) {
                 List<Icon> l0 = getIcons(icon);
                 List<Icon> l1 = getIcons(other);
 
-                if(l0.size() >= l1.size()) {
+                if (l0.size() >= l1.size()) {
                     remove(other);
                     iconList[icon.getSlot()] = icon;
                 } else {
@@ -191,9 +191,9 @@ public class IconManager implements Manager {
 
                 l0.clear();
                 l1.clear();
-            } else if(other.isPage() && !icon.isPage()) {
+            } else if (other.isPage() && !icon.isPage()) {
                 remove(icon);
-            } else if(!other.isPage() && icon.isPage()) {
+            } else if (!other.isPage() && icon.isPage()) {
                 remove(other);
                 iconList[icon.getSlot()] = icon;
             } else {
@@ -203,7 +203,7 @@ public class IconManager implements Manager {
 
         List<Icon> pages = getPages(page);
 
-        for(Icon icon : pages) {
+        for (Icon icon : pages) {
             clean(icon);
         }
 
@@ -212,26 +212,26 @@ public class IconManager implements Manager {
 
     public void save(boolean saver) {
         //Save
-        if(!saver) WarpSystem.log("  > Saving Icons");
+        if (!saver) WarpSystem.log("  > Saving Icons");
 
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("ActionIcons");
         FileConfiguration config = file.getConfig();
 
-        ConfigWriter writer = new ConfigWriter(file);
+        ConfigMask writer = new ConfigMask(file);
 
-        if(!saver) WarpSystem.log("    > Saving background");
+        if (!saver) WarpSystem.log("    > Saving background");
         writer.put("Background_Item", this.background);
-        if(!saver) WarpSystem.log("      ...saved 1 background");
+        if (!saver) WarpSystem.log("      ...saved 1 background");
 
-        if(!saver) WarpSystem.log("    > Saving Icons");
+        if (!saver) WarpSystem.log("    > Saving Icons");
         List<JSON> icons = new ArrayList<>();
-        for(Icon icon : this.icons) {
+        for (Icon icon : this.icons) {
             JSON json = new JSON();
             icon.write(json);
             icons.add(json);
         }
         config.set("Icons", icons);
-        if(!saver) WarpSystem.log("      ...saved " + icons.size() + " Icon(s)");
+        if (!saver) WarpSystem.log("      ...saved " + icons.size() + " Icon(s)");
 
         config.set("DecoIcons", null);
         config.set("GlobalWarps", null);
@@ -249,19 +249,19 @@ public class IconManager implements Manager {
     public List<Icon> getPages() {
         List<Icon> icons = new ArrayList<>();
 
-        for(Icon icon : this.icons) {
-            if(icon.isPage()) icons.add(icon);
+        for (Icon icon : this.icons) {
+            if (icon.isPage()) icons.add(icon);
         }
 
         return icons;
     }
 
     public List<Icon> getPages(Icon page) {
-        if(page != null && !page.isPage()) throw new IllegalArgumentException("Given icon is not a category!");
+        if (page != null && !page.isPage()) throw new IllegalArgumentException("Given icon is not a category!");
         List<Icon> icons = new ArrayList<>();
 
-        for(Icon icon : this.icons) {
-            if(icon.isPage() && Objects.equals(page, icon.getPage())) icons.add(icon);
+        for (Icon icon : this.icons) {
+            if (icon.isPage() && Objects.equals(page, icon.getPage())) icons.add(icon);
         }
 
         return icons;
@@ -279,14 +279,14 @@ public class IconManager implements Manager {
         do {
             available = true;
 
-            if(slot > 53) {
+            if (slot > 53) {
                 available = false;
                 break;
             }
 
-            if(page == null) {
-                for(Icon c : getPages()) {
-                    if(c.getSlot() == slot) {
+            if (page == null) {
+                for (Icon c : getPages()) {
+                    if (c.getSlot() == slot) {
                         slot++;
                         available = false;
                         break;
@@ -294,24 +294,24 @@ public class IconManager implements Manager {
                 }
             }
 
-            for(Icon warp : getIcons(page)) {
-                if(warp.getSlot() == slot) {
+            for (Icon warp : getIcons(page)) {
+                if (warp.getSlot() == slot) {
                     slot++;
                     available = false;
                     break;
                 }
             }
-        } while(!available);
+        } while (!available);
 
-        if(available) return slot;
+        if (available) return slot;
         else return -999;
     }
 
     public boolean importPageData(PageData pageData) {
-        if(this.existsPage(pageData.getName())) return false;
+        if (this.existsPage(pageData.getName())) return false;
 
         int slot = getNextFreeSlot(null);
-        if(slot == -999) return false;
+        if (slot == -999) return false;
 
         Icon icon = new Icon(pageData.getName(), STANDARD_ITEM().setName(pageData.getName()).getItem(), null, slot, pageData.getPermission());
         icon.setPage(true);
@@ -319,22 +319,22 @@ public class IconManager implements Manager {
 
         boolean result = true;
 
-        for(WarpData warpData : pageData.getWarps()) {
-            if(!importWarpData(warpData)) result = false;
+        for (WarpData warpData : pageData.getWarps()) {
+            if (!importWarpData(warpData)) result = false;
         }
 
         return result;
     }
 
     public boolean importWarpData(WarpData warpData) {
-        if(SimpleWarpManager.getInstance().existsWarp(warpData.getName())) return false;
-        if(warpData.getPage() != null && !existsPage(warpData.getPage())) return false;
-        if(this.existsIcon(warpData.getName())) return false;
+        if (SimpleWarpManager.getInstance().existsWarp(warpData.getName())) return false;
+        if (warpData.getPage() != null && !existsPage(warpData.getPage())) return false;
+        if (this.existsIcon(warpData.getName())) return false;
 
         Icon page = warpData.getPage() == null ? null : getPage(warpData.getPage());
 
         int slot = getNextFreeSlot(page);
-        if(slot == -999) return false;
+        if (slot == -999) return false;
 
         SimpleWarpManager.getInstance().addWarp(new SimpleWarp(warpData));
 
@@ -344,55 +344,55 @@ public class IconManager implements Manager {
     }
 
     public boolean existsIcon(String name) {
-        if(name == null) return false;
+        if (name == null) return false;
         return getIcon(name) != null;
     }
 
     public boolean existsPage(String name) {
-        if(name == null) return false;
+        if (name == null) return false;
         return getPage(name) != null;
     }
 
     public Icon getPage(String name) {
-        if(name == null) return null;
+        if (name == null) return null;
         name = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', name));
 
-        for(Icon icon : this.icons) {
-            if(!icon.isPage()) continue;
-            if(icon.getNameWithoutColor().equalsIgnoreCase(name)) return icon;
+        for (Icon icon : this.icons) {
+            if (!icon.isPage()) continue;
+            if (icon.getNameWithoutColor().equalsIgnoreCase(name)) return icon;
         }
 
         return null;
     }
 
     public Icon getIcon(String name) {
-        if(name == null) return null;
+        if (name == null) return null;
         name = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', name));
 
-        for(Icon icon : this.icons) {
-            if(icon.isPage() || icon.getName() == null) continue;
-            if(icon.getNameWithoutColor().equalsIgnoreCase(name)) return icon;
+        for (Icon icon : this.icons) {
+            if (icon.isPage() || icon.getName() == null) continue;
+            if (icon.getNameWithoutColor().equalsIgnoreCase(name)) return icon;
         }
 
         return null;
     }
 
     public List<Icon> getIcons(Icon page) {
-        if(page != null && !page.isPage()) throw new IllegalArgumentException("Given icon is not a page!");
+        if (page != null && !page.isPage()) throw new IllegalArgumentException("Given icon is not a page!");
         List<Icon> icons = new ArrayList<>();
 
-        for(Icon icon : this.icons) {
-            if(Objects.equals(page, icon.getPage())) icons.add(icon);
+        for (Icon icon : this.icons) {
+            if (Objects.equals(page, icon.getPage())) icons.add(icon);
         }
 
         return icons;
     }
 
     public void remove(Icon icon) {
-        if(icon.isPage()) {
+        if (icon.isPage()) {
             List<Icon> warps = getIcons(icon);
 
-            for(Icon warp : warps) {
+            for (Icon warp : warps) {
                 remove(warp);
             }
         }
@@ -409,7 +409,7 @@ public class IconManager implements Manager {
     }
 
     public void setBackground(ItemStack background) {
-        if(background == null) background = new ItemStack(Material.AIR);
+        if (background == null) background = new ItemStack(Material.AIR);
         new ItemBuilder(background).removeLore().setName(null).setHideName(true).setHideStandardLore(true).setHideEnchantments(true);
         this.background = background;
     }

@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.spigot.features.portals.utils;
 
 import de.codingair.codingapi.tools.Location;
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.features.portals.managers.PortalManager;
@@ -29,45 +29,45 @@ public class Hologram implements Serializable {
     }
 
     @Override
-    public boolean read(DataWriter d) throws Exception {
+    public boolean read(DataMask d) throws Exception {
         this.text = d.getString("text");
         this.visible = d.getBoolean("visible");
         setHeight(d.getDouble("height"));
         this.location = new Location();
         this.location.read(d);
 
-        if(this.location.isEmpty()) this.location = null;
+        if (this.location.isEmpty()) this.location = null;
         return true;
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         d.put("text", this.text);
         d.put("visible", this.visible);
         d.put("height", this.height);
-        if(this.location != null) this.location.write(d);
+        if (this.location != null) this.location.write(d);
     }
 
     public void updatePlayer(Player player) {
-        if(this.hologram != null) this.hologram.addPlayer(player);
+        if (this.hologram != null) this.hologram.addPlayer(player);
     }
 
     public void hide() {
-        if(this.hologram != null) {
+        if (this.hologram != null) {
             this.hologram.setVisible(false);
             this.hologram.update();
         }
     }
 
     public boolean setVisible(boolean visible) {
-        if(this.visible != visible) {
+        if (this.visible != visible) {
             this.visible = visible;
             return true;
         } else return false;
     }
 
     public void update() {
-        if(visible && this.hologram == null && this.location != null && this.text != null)
+        if (visible && this.hologram == null && this.location != null && this.text != null)
             this.hologram = new de.codingair.codingapi.player.Hologram(location.clone().add(0, height, 0), WarpSystem.getInstance(), PortalManager.getInstance().getHologramUpdateInterval(), this.text) {
                 @Override
                 public String modifyText(Player player, String text) {
@@ -75,7 +75,7 @@ public class Hologram implements Serializable {
                 }
             };
 
-        if(this.hologram != null) {
+        if (this.hologram != null) {
             this.hologram.setVisible(this.visible);
             this.hologram.setText(this.text.replace("\\n", "\n"));
             this.hologram.teleport(this.location.clone().add(0, height, 0));
@@ -85,7 +85,7 @@ public class Hologram implements Serializable {
     }
 
     public void destroy() {
-        if(this.hologram != null) {
+        if (this.hologram != null) {
             setVisible(false);
             this.hologram.destroy();
         }
@@ -121,8 +121,8 @@ public class Hologram implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Hologram hologram = (Hologram) o;
         return visible == hologram.visible &&
                 Double.compare(hologram.height, height) == 0 &&

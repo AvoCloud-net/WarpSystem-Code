@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types;
 
 import de.codingair.codingapi.server.commands.builder.CommandBuilder;
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.warpsystem.base.transfer.packets.spigot.PerformCommandOnBungeePacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
@@ -36,7 +36,7 @@ public class CommandAction extends ActionObject<List<String>> {
         try {
             JSONArray json = (JSONArray) new JSONParser().parse(s);
             setValue(json);
-        } catch(ParseException e) {
+        } catch (ParseException e) {
             List<String> commands = new ArrayList<>();
             commands.add(s);
             setValue(commands);
@@ -45,19 +45,19 @@ public class CommandAction extends ActionObject<List<String>> {
 
     @Override
     public boolean perform(Player player) {
-        for(String command : getValue()) {
-            if(command.startsWith("/")) command = command.substring(1);
+        for (String command : getValue()) {
+            if (command.startsWith("/")) command = command.substring(1);
 
             String tag = command.contains(" ") ? command.split(" ")[0] : command;
 
             Command cmd = CommandBuilder.getCommand(tag);
 
-            if(WarpSystem.getInstance().isOnProxy() && cmd == null) {
+            if (WarpSystem.getInstance().isOnProxy() && cmd == null) {
                 WarpSystem.getDataHandler().send(new PerformCommandOnBungeePacket(player.getName(), command), player).thenAccept(packet -> {
-                    if(!packet.getBoolean()) player.sendMessage(Lang.getPrefix() + Lang.get("Unknown_Command"));
+                    if (!packet.getBoolean()) player.sendMessage(Lang.getPrefix() + Lang.get("Unknown_Command"));
                 });
             } else {
-                if(command.contains("%player%"))
+                if (command.contains("%player%"))
                     Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command.replace("%player%", player.getName()));
                 else player.performCommand(command);
             }
@@ -67,13 +67,13 @@ public class CommandAction extends ActionObject<List<String>> {
     }
 
     @Override
-    public boolean read(DataWriter d) {
+    public boolean read(DataMask d) {
         setValue(d.getList("commands"));
         return true;
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         d.put("commands", getValue());
     }
 

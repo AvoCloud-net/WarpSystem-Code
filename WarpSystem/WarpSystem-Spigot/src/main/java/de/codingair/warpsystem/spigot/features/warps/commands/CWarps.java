@@ -47,9 +47,9 @@ public class CWarps extends WSCommandBuilder {
         getBaseComponent().addChild(new MultiCommandComponent() {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
-                for(Icon c : manager.getPages()) {
-                    if(c.getName() == null) continue;
-                    if(!c.hasPermission() || sender.hasPermission(c.getPermission())) suggestions.add(c.getNameWithoutColor());
+                for (Icon c : manager.getPages()) {
+                    if (c.getName() == null) continue;
+                    if (!c.hasPermission() || sender.hasPermission(c.getPermission())) suggestions.add(c.getNameWithoutColor());
                 }
             }
 
@@ -58,13 +58,13 @@ public class CWarps extends WSCommandBuilder {
                 Icon category = manager.getPage(argument);
                 CommandSender target = sender;
 
-                if(category != null && category.hasPermission() && !sender.hasPermission(category.getPermission())) {
+                if (category != null && category.hasPermission() && !sender.hasPermission(category.getPermission())) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Player_Cannot_Use_Page"));
                     return false;
-                } else if(category == null && sender.hasPermission(WarpSystem.PERMISSION_WARP_GUI_OTHER)) {
+                } else if (category == null && sender.hasPermission(WarpSystem.PERMISSION_WARP_GUI_OTHER)) {
                     Player other = Bukkit.getPlayer(argument);
 
-                    if(other == null) {
+                    if (other == null) {
                         sender.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
                         return false;
                     }
@@ -86,14 +86,14 @@ public class CWarps extends WSCommandBuilder {
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 Icon category = manager.getPage(argument);
 
-                if(category != null && category.hasPermission() && !sender.hasPermission(category.getPermission())) {
+                if (category != null && category.hasPermission() && !sender.hasPermission(category.getPermission())) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Player_Cannot_Use_Page"));
                     return false;
                 }
 
                 Player other = Bukkit.getPlayer(argument);
 
-                if(other == null) {
+                if (other == null) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
                     return false;
                 }
@@ -107,7 +107,7 @@ public class CWarps extends WSCommandBuilder {
     public static void run(CommandSender sender, Icon category) {
         Player p = (Player) sender;
 
-        if(!WarpSystem.activated) return;
+        if (!WarpSystem.activated) return;
 
         new GWarps(p, category, false).open();
         Sound.ENTITY_PLAYER_LEVELUP.playSound(p);

@@ -29,10 +29,10 @@ import java.util.List;
 public class Invitation {
     private final String sender;
     private final String recipient; //notify if receiver != null | if recipient == null ? ALL
-    private int recipients = 1;
     private final boolean toSender; //only send if receiver.length == 1
     private final List<String> handled = new ArrayList<>();
     private final boolean bukkitOnly;
+    private int recipients = 1;
 
     protected Invitation(String sender, boolean bukkitOnly) {
         this.sender = sender;
@@ -57,26 +57,26 @@ public class Invitation {
         //check cooldown
         Player sender = Bukkit.getPlayer(this.sender);
 
-        if(accepted && sender != null) {
+        if (accepted && sender != null) {
             WarpSystem.cooldown().register(sender, Origin.TeleportRequest);
         }
 
         handled.add(recipient);
-        if(WarpSystem.getInstance().isOnProxy() && sender == null) WarpSystem.getDataHandler().send(new TeleportRequestHandledPacket(this.sender, recipient, accepted));
+        if (WarpSystem.getInstance().isOnProxy() && sender == null) WarpSystem.getDataHandler().send(new TeleportRequestHandledPacket(this.sender, recipient, accepted));
         TeleportCommandManager.getInstance().checkDestructionOf(this);
     }
 
     public void accept(Player player) {
-        if(!isRecipient(player.getName())) return;
+        if (!isRecipient(player.getName())) return;
         //to sender
         BungeePlayer sender = new BungeePlayer(this.sender);
 
-        if(WarpSystem.getInstance().getTeleportManager().isTeleporting(player)) {
+        if (WarpSystem.getInstance().getTeleportManager().isTeleporting(player)) {
             player.sendMessage(Lang.getPrefix() + Lang.get("Player_Is_Already_Teleporting"));
         } else {
-            if(sender.onSpigot()) {
-                if(sender.getSpigotPlayer().isOnline()) {
-                    if(recipient != null)
+            if (sender.onSpigot()) {
+                if (sender.getSpigotPlayer().isOnline()) {
+                    if (recipient != null)
                         sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_accepted_sender").replace("%PLAYER%", ChatColor.stripColor(player.getName())));
                     player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_accepted_other").replace("%PLAYER%", ChatColor.stripColor(sender.getName())));
 
@@ -100,7 +100,7 @@ public class Invitation {
             } else {
                 handle(player.getName(), true);
 
-                if(toSender) {
+                if (toSender) {
                     TeleportOptions options = new TeleportOptions(new Destination(new EmptyAdapter()), sender.getName());
                     options.setOrigin(Origin.TeleportRequest);
                     options.setWaitForTeleport(true);
@@ -113,12 +113,12 @@ public class Invitation {
                         @Override
                         public void accept(Result result) {
                             //move
-                            if(result == Result.SUCCESS) {
+                            if (result == Result.SUCCESS) {
                                 WarpSystem.getDataHandler().send(new PrepareTeleportPlayerToPlayerPacket(player.getName(), sender.getName()).setCosts(TeleportCommandManager.getInstance().getTpaCosts())).thenAccept(packet -> {
                                     int i = packet.a();
-                                    if(i == 0) {
+                                    if (i == 0) {
                                         //teleported
-                                        if(recipient != null)
+                                        if (recipient != null)
                                             sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_accepted_sender").replace("%PLAYER%", ChatColor.stripColor(player.getName())));
                                         player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_accepted_other").replace("%PLAYER%", ChatColor.stripColor(sender.getName())));
                                     } else {
@@ -126,7 +126,7 @@ public class Invitation {
                                     }
                                 });
                             } else {
-                                if(recipient != null)
+                                if (recipient != null)
                                     sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_denied_sender").replace("%PLAYER%", ChatColor.stripColor(player.getName())));
                                 player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_denied_other").replace("%PLAYER%", ChatColor.stripColor(sender.getName())));
                             }
@@ -138,8 +138,8 @@ public class Invitation {
                     //tp other
                     WarpSystem.getDataHandler().send(new StartTeleportToPlayerPacket(sender.getName(), player.getName(), player.getName(), sender.getName())).thenAccept(packet -> {
                         int id = packet.a();
-                        if(id == 0) {
-                            if(recipient != null)
+                        if (id == 0) {
+                            if (recipient != null)
                                 sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_accepted_sender").replace("%PLAYER%", ChatColor.stripColor(player.getName())));
                             player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_accepted_other").replace("%PLAYER%", ChatColor.stripColor(sender.getName())));
                         } else {
@@ -157,18 +157,18 @@ public class Invitation {
     }
 
     public void deny(Player player) {
-        if(!isRecipient(player.getName())) return;
+        if (!isRecipient(player.getName())) return;
         //to sender
         handle(player.getName(), false);
 
         BungeePlayer sender = new BungeePlayer(this.sender);
 
-        if(recipient != null) sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_denied_sender").replace("%PLAYER%", ChatColor.stripColor(player.getName())));
+        if (recipient != null) sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_denied_sender").replace("%PLAYER%", ChatColor.stripColor(player.getName())));
         player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_denied_other").replace("%PLAYER%", ChatColor.stripColor(sender.getName())));
     }
 
     public void timeOut(String player) {
-        if(!isRecipient(player)) return;
+        if (!isRecipient(player)) return;
         handle(player, false);
     }
 
@@ -194,9 +194,9 @@ public class Invitation {
         Value<Integer> handled = new Value<>(0);
         Value<Integer> sent = new Value<>(0);
 
-        if(recipient == null) {
-            for(Player player : Bukkit.getOnlinePlayers()) {
-                if(player.getName().equalsIgnoreCase(sender)) continue;
+        if (recipient == null) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.getName().equalsIgnoreCase(sender)) continue;
 
                 sendInvitation(player.getName(), new Callback<Long>() {
                     @Override
@@ -207,7 +207,7 @@ public class Invitation {
                 });
             }
 
-            if(WarpSystem.getInstance().isOnProxy() && !bukkitOnly) {
+            if (WarpSystem.getInstance().isOnProxy() && !bukkitOnly) {
                 WarpSystem.getDataHandler().send(new PrepareTeleportRequestPacket(sender, null, true)).thenAccept(packet -> {
                     long result = packet.a();
                     handled.setValue(handled.getValue() + (int) (result >> 32));
@@ -223,7 +223,7 @@ public class Invitation {
                     int handled = (int) (result >> 32);
                     int sent = result.intValue();
 
-                    if(handled == 0 || sent == 0) Invitation.this.handled.add(recipient);
+                    if (handled == 0 || sent == 0) Invitation.this.handled.add(recipient);
                     callback.accept(result);
                 }
             });
@@ -232,9 +232,9 @@ public class Invitation {
 
     private void sendInvitation(String player, Callback<Long> callback) {
         Player recipient = Bukkit.getPlayer(player);
-        if(recipient != null) {
+        if (recipient != null) {
             //on bukkit
-            if(TeleportCommandManager.getInstance().deniesTpaRequests(recipient.getName())) {
+            if (TeleportCommandManager.getInstance().deniesTpaRequests(recipient.getName())) {
                 callback.accept((((long) 1) << 32));
                 return;
             }
@@ -262,7 +262,7 @@ public class Invitation {
             m.send(recipient);
 
             callback.accept((((long) 1) << 32) | (1 & 0xffffffffL));
-        } else if(WarpSystem.getInstance().isOnProxy() && !bukkitOnly) {
+        } else if (WarpSystem.getInstance().isOnProxy() && !bukkitOnly) {
             //try on bungee
             WarpSystem.getDataHandler().send(new PrepareTeleportRequestPacket(sender, this.recipient, toSender)).thenAccept(packet -> callback.accept(packet.a()));
         } else callback.accept(0L);

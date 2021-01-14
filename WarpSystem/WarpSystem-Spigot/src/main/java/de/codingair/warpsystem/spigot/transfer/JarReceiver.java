@@ -19,18 +19,18 @@ public class JarReceiver implements PacketHandler<SendJarPacket> {
     private String name;
 
     private void receive(SendJarPacket packet) {
-        if(packet.opt == 0) {
-            if(!data.isEmpty()) throw new IllegalStateException("Too many opt=0 packets!");
+        if (packet.opt == 0) {
+            if (!data.isEmpty()) throw new IllegalStateException("Too many opt=0 packets!");
             name = new String(packet.data);
             return;
         }
 
         data.add(packet.data);
 
-        if(packet.opt == 2) {
+        if (packet.opt == 2) {
             try {
                 proceed();
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -49,9 +49,9 @@ public class JarReceiver implements PacketHandler<SendJarPacket> {
     }
 
     private File getCurrentJar() {
-        for(File file : WarpSystem.getInstance().getDataFolder().getParentFile().listFiles()) {
-            if(file.isDirectory()) continue;
-            if(file.getName().toLowerCase().contains("warpsystem")) {
+        for (File file : WarpSystem.getInstance().getDataFolder().getParentFile().listFiles()) {
+            if (file.isDirectory()) continue;
+            if (file.getName().toLowerCase().contains("warpsystem")) {
                 return file;
             }
         }
@@ -65,7 +65,7 @@ public class JarReceiver implements PacketHandler<SendJarPacket> {
 
         byte[] entireData = new byte[(data.size() - 1) * SendJarPacket.SIZE + data.get(data.size() - 1).length];
         int i = 0;
-        for(byte[] b : data) {
+        for (byte[] b : data) {
             System.arraycopy(b, 0, entireData, i, b.length);
             i += b.length;
         }

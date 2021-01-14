@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.spigot.features.spawn.managers;
 
 import de.codingair.codingapi.files.ConfigFile;
-import de.codingair.codingapi.tools.io.ConfigWriter;
+import de.codingair.codingapi.tools.io.ConfigMask;
 import de.codingair.warpsystem.base.transfer.packets.general.SendGlobalSpawnOptionsPacket;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
@@ -23,9 +23,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.util.Objects;
 
-@AvailableForSetupAssistant(type = "Spawn", config = "Config")
-@Function(name = "Enabled", defaultValue = "false", config = "Config", configPath = "WarpSystem.Functions.Spawn", clazz = Boolean.class)
-@Function(name = "Teleport message", defaultValue = "true", config = "Config", configPath = "WarpSystem.Send.Teleport_Message.Spawn", clazz = Boolean.class)
+@AvailableForSetupAssistant (type = "Spawn", config = "Config")
+@Function (name = "Enabled", defaultValue = "false", config = "Config", configPath = "WarpSystem.Functions.Spawn", clazz = Boolean.class)
+@Function (name = "Teleport message", defaultValue = "true", config = "Config", configPath = "WarpSystem.Send.Teleport_Message.Spawn", clazz = Boolean.class)
 public class SpawnManager implements Manager {
     private String spawnServer = null, respawnServer = null;
     private Spawn spawn;
@@ -39,15 +39,15 @@ public class SpawnManager implements Manager {
         ConfigFile file = WarpSystem.getInstance().getFileManager().loadFile("Teleporters", "/Memory/");
 
         spawn = new Spawn();
-        if(file.getConfig().contains("Spawn")) {
-            ConfigWriter reader = new ConfigWriter(file);
+        if (file.getConfig().contains("Spawn")) {
+            ConfigMask reader = new ConfigMask(file);
             reader.getSerializable("Spawn", this.spawn);
         }
 
-        if(spawn.getLocation() == null) {
+        if (spawn.getLocation() == null) {
             //import spawn
             Location l = readEssentialsSpawn();
-            if(l != null) this.spawn.addAction(new WarpAction(new Destination(new LocationAdapter(l))));
+            if (l != null) this.spawn.addAction(new WarpAction(new Destination(new LocationAdapter(l))));
             else this.spawn.addAction(new WarpAction(new Destination(new LocationAdapter(Bukkit.getWorlds().get(0).getSpawnLocation()))));
         }
 
@@ -61,11 +61,11 @@ public class SpawnManager implements Manager {
 
     private Location readEssentialsSpawn() {
         File target = new File(WarpSystem.getInstance().getDataFolder().getParent() + "/Essentials/spawn.yml");
-        if(!target.exists()) return null;
+        if (!target.exists()) return null;
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(target);
         String world = config.getString("spawns.default.world");
-        if(world == null) return null;
+        if (world == null) return null;
 
         return new de.codingair.codingapi.tools.Location(world,
                 config.getDouble("spawns.default.x"),
@@ -78,9 +78,9 @@ public class SpawnManager implements Manager {
 
     @Override
     public void save(boolean saver) {
-        if(this.spawn != null) {
+        if (this.spawn != null) {
             ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("Teleporters");
-            ConfigWriter writer = new ConfigWriter(file);
+            ConfigMask writer = new ConfigMask(file);
             writer.put("Spawn", this.spawn);
             file.saveConfig();
         }
@@ -88,7 +88,7 @@ public class SpawnManager implements Manager {
 
     @Override
     public void destroy() {
-        if(this.spawn != null) this.spawn.destroy();
+        if (this.spawn != null) this.spawn.destroy();
     }
 
     public Spawn getSpawn() {
@@ -96,7 +96,7 @@ public class SpawnManager implements Manager {
     }
 
     public void updateSpawn(Location location) {
-        if(this.spawn == null) this.spawn = new Spawn();
+        if (this.spawn == null) this.spawn = new Spawn();
         this.spawn.addAction(new WarpAction(new Destination(new LocationAdapter(location))));
     }
 
@@ -105,7 +105,7 @@ public class SpawnManager implements Manager {
     }
 
     public void updateGlobalOptions(String spawn, String respawn) {
-        if(!Objects.equals(this.spawnServer, spawn) || !Objects.equals(this.respawnServer, respawn)) {
+        if (!Objects.equals(this.spawnServer, spawn) || !Objects.equals(this.respawnServer, respawn)) {
             this.spawnServer = spawn;
             this.respawnServer = respawn;
 
@@ -116,8 +116,8 @@ public class SpawnManager implements Manager {
     public void applyGlobalOptions(String spawn, String respawn) {
         String s = WarpSystem.getInstance().getCurrentServer();
 
-        if(this.spawn != null && this.spawn.getUsage().isBungee() && !Objects.equals(s, spawn)) this.spawn.setUsage(this.spawn.getUsage().getLocal());
-        if(this.spawn != null && this.spawn.getRespawnUsage().isBungee() && !Objects.equals(s, respawn)) this.spawn.setRespawnUsage(this.spawn.getRespawnUsage().getLocal());
+        if (this.spawn != null && this.spawn.getUsage().isBungee() && !Objects.equals(s, spawn)) this.spawn.setUsage(this.spawn.getUsage().getLocal());
+        if (this.spawn != null && this.spawn.getRespawnUsage().isBungee() && !Objects.equals(s, respawn)) this.spawn.setRespawnUsage(this.spawn.getRespawnUsage().getLocal());
 
         this.spawnServer = spawn;
         this.respawnServer = respawn;

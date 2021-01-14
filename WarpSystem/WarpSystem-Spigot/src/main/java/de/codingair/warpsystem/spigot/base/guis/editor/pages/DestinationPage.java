@@ -44,7 +44,7 @@ public class DestinationPage extends PageItem {
 
             @Override
             public void onClick(InventoryClickEvent e, Player player) {
-                if(e.isRightClick()) {
+                if (e.isRightClick()) {
                     toggle(player);
                     update();
                 }
@@ -59,11 +59,11 @@ public class DestinationPage extends PageItem {
 
     private void toggle(Player player) {
         showOptions = !showOptions;
-        for(int i = 1; i < 8; i++) {
+        for (int i = 1; i < 8; i++) {
             removeButton(i, 2);
         }
 
-        if(getLast() != null && getLast().getCurrent() == this) getLast().updatePage();
+        if (getLast() != null && getLast().getCurrent() == this) getLast().updatePage();
         else initialize(player);
     }
 
@@ -80,13 +80,13 @@ public class DestinationPage extends PageItem {
     }
 
     public void updateDestinationButtons() {
-        if(destination.getId() == null && destination.getAdapter() == null && destination.getType() == null) {
+        if (destination.getId() == null && destination.getAdapter() == null && destination.getType() == null) {
             getLast().updateShowIcon();
         }
 
-        for(int i = 1; i < 8; i++) {
+        for (int i = 1; i < 8; i++) {
             Button button = getButton(i, 2);
-            if(button instanceof SyncButton) {
+            if (button instanceof SyncButton) {
                 ((SyncButton) button).update();
             }
         }

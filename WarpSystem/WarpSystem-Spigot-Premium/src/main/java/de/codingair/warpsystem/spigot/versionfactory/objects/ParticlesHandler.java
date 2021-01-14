@@ -32,19 +32,19 @@ public class ParticlesHandler {
         instance.setItem(0, new ItemComponent(new ItemBuilder(Skull.ArrowLeft).setName("§7» §c" + Lang.get("Back") + "§7 «").getItem()).setLink(instance.getMenuGUI()), false);
         instance.setItem(1, new ItemComponent(new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE).setHideName(true).getItem()));
 
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             int id = i;
 
-            if(i < instance.getParts().size() + 1) {
+            if (i < instance.getParts().size() + 1) {
                 instance.setItem(id + 2, new ItemComponent(new ItemBuilder(instance.getParts().size() >= id + 1 ? XMaterial.NETHER_STAR : XMaterial.BARRIER)
                         .setName("§c" + Lang.get("Animation") + " #" + (id + 1))
                         .getItem(), new ItemListener() {
                     @Override
                     public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                        if(clickType == ClickType.LEFT_CLICK) {
+                        if (clickType == ClickType.LEFT_CLICK) {
                             ic.setLink(instance.getAnimations()[id]);
 
-                            if(instance.getMenuGUI().getClone().getParticleParts().size() == id) {
+                            if (instance.getMenuGUI().getClone().getParticleParts().size() == id) {
                                 instance.getMenuGUI().getClone().getParticleParts().add(new ParticlePart(AnimationType.CIRCLE, Particle.FLAME, 1, 1, CustomAnimation.MAX_SPEED));
                                 instance.getAnimations()[id].initialize();
                                 instance.getMenuGUI().getAnimPlayer().update();
@@ -57,7 +57,7 @@ public class ParticlesHandler {
                             } else instance.getAnimations()[id].initialize();
                         } else {
                             ic.setLink(null);
-                            if(clickType == ClickType.RIGHT_CLICK && instance.getParts().size() >= id + 1) {
+                            if (clickType == ClickType.RIGHT_CLICK && instance.getParts().size() >= id + 1) {
                                 instance.getParts().remove(id);
                                 instance.getMenuGUI().getAnimPlayer().update();
                                 onHover(gui, ic, ic, player);
@@ -68,7 +68,7 @@ public class ParticlesHandler {
 
                     @Override
                     public void onHover(HotbarGUI gui, ItemComponent old, ItemComponent current, Player player) {
-                        if(instance.getParts().size() >= id + 1) {
+                        if (instance.getParts().size() >= id + 1) {
                             MessageAPI.sendActionBar(instance.getPlayer(), Menu.ACTION_BAR(instance.getParts().get(id).getAnimation().getDisplayName(), "§e" + Lang.get("Edit"), "§c" + Lang.get("Delete")), WarpSystem.getInstance(), Integer.MAX_VALUE);
                         } else MessageAPI.sendActionBar(instance.getPlayer(), "§3" + Lang.get("Leftclick") + ": §a" + Lang.get("Add"), WarpSystem.getInstance(), Integer.MAX_VALUE);
                     }

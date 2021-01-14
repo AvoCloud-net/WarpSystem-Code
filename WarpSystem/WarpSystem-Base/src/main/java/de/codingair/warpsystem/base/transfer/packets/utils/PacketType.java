@@ -73,18 +73,18 @@ public enum PacketType {
     }
 
     public static PacketType getById(int id) {
-        for(PacketType packetType : values()) {
-            if(packetType.getId() == id) return packetType;
+        for (PacketType packetType : values()) {
+            if (packetType.getId() == id) return packetType;
         }
 
         return null;
     }
 
     public static PacketType getByObject(Object packet) {
-        if(packet == null) return null;
+        if (packet == null) return null;
 
-        for(PacketType packetType : values()) {
-            if(packetType.getPacket().equals(packet.getClass())) return packetType;
+        for (PacketType packetType : values()) {
+            if (packetType.getPacket().equals(packet.getClass())) return packetType;
         }
 
         return null;

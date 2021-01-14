@@ -13,34 +13,34 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 public class SpawnListener implements Listener {
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler (priority = EventPriority.HIGH)
     public void onSpawn(PlayerSpawnLocationEvent e) {
         Spawn spawn = SpawnManager.getInstance().getSpawn();
-        if(spawn != null) {
+        if (spawn != null) {
             boolean b = spawn.getUsage() == Spawn.Usage.EVERY_JOIN || spawn.getUsage() == Spawn.Usage.LOCAL_EVERY_JOIN || spawn.getUsage() == Spawn.Usage.GLOBAL_EVERY_JOIN;
 
-            if(!e.getPlayer().hasPlayedBefore()) {
-                if(b || spawn.getUsage() == Spawn.Usage.FIRST_JOIN || spawn.getUsage() == Spawn.Usage.LOCAL_FIRST_JOIN || spawn.getUsage() == Spawn.Usage.GLOBAL_FIRST_JOIN) {
+            if (!e.getPlayer().hasPlayedBefore()) {
+                if (b || spawn.getUsage() == Spawn.Usage.FIRST_JOIN || spawn.getUsage() == Spawn.Usage.LOCAL_FIRST_JOIN || spawn.getUsage() == Spawn.Usage.GLOBAL_FIRST_JOIN) {
                     spawn.onJoin(e, true);
                 }
-            } else if(b) spawn.onJoin(e, false);
+            } else if (b) spawn.onJoin(e, false);
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler (priority = EventPriority.HIGH)
     public void onDeath(PlayerRespawnEvent e) {
-        if(WarpSystem.getInstance().isOnProxy()) {
+        if (WarpSystem.getInstance().isOnProxy()) {
             String respawn = SpawnManager.getInstance().getRespawnServer();
-            if(respawn != null && !respawn.equals(WarpSystem.getInstance().getCurrentServer())) {
+            if (respawn != null && !respawn.equals(WarpSystem.getInstance().getCurrentServer())) {
                 Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> WarpSystem.getDataHandler().send(new TeleportSpawnPacket(e.getPlayer().getName(), true), e.getPlayer()), 2L);
                 return;
             }
         }
 
         Spawn spawn = SpawnManager.getInstance().getSpawn();
-        if(spawn != null && spawn.isValid() && spawn.getRespawnUsage() != Spawn.RespawnUsage.DISABLED) {
+        if (spawn != null && spawn.isValid() && spawn.getRespawnUsage() != Spawn.RespawnUsage.DISABLED) {
             Location l = spawn.getLocation();
-            if(l != null && l.getWorld() != null) e.setRespawnLocation(spawn.getLocation());
+            if (l != null && l.getWorld() != null) e.setRespawnLocation(spawn.getLocation());
         }
     }
 }

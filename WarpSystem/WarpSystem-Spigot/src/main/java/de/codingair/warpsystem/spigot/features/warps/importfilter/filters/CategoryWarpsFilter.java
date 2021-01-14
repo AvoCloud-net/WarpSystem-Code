@@ -24,27 +24,27 @@ public class CategoryWarpsFilter implements Filter {
         try {
             File target = new File(WarpSystem.getInstance().getDataFolder().getParent() + "/CategoryWarps/Data.yml");
 
-            if(!target.exists()) return Result.MISSING_FILE;
+            if (!target.exists()) return Result.MISSING_FILE;
 
             FileConfiguration config = YamlConfiguration.loadConfiguration(target);
 
             HashMap<String, List<String>> categories = new HashMap<>();
 
-            for(String s : config.getKeys(true)) {
+            for (String s : config.getKeys(true)) {
                 String[] a = s.split("\\.");
-                if(a.length != 2) continue;
+                if (a.length != 2) continue;
 
                 String c = a[1];
 
-                for(String s_ : config.getKeys(true)) {
-                    if(!s_.startsWith("Categories." + c + ".")) continue;
+                for (String s_ : config.getKeys(true)) {
+                    if (!s_.startsWith("Categories." + c + ".")) continue;
 
                     String[] a_ = s_.split("\\.");
-                    if(a_.length != 3) continue;
+                    if (a_.length != 3) continue;
 
                     String warp = a_[2];
 
-                    if(!categories.containsKey(c)) categories.put(c, new ArrayList<>());
+                    if (!categories.containsKey(c)) categories.put(c, new ArrayList<>());
 
                     categories.get(c).add(warp);
                 }
@@ -52,10 +52,10 @@ public class CategoryWarpsFilter implements Filter {
 
             Result result = Result.DONE;
 
-            for(String s : categories.keySet()) {
+            for (String s : categories.keySet()) {
                 PageData cd = new PageData(s, "CategoryWarps." + s);
 
-                for(String s1 : categories.get(s)) {
+                for (String s1 : categories.get(s)) {
                     String path = "Categories." + s + "." + s1;
 
                     String world = config.getString(path + ".world", null);
@@ -65,18 +65,18 @@ public class CategoryWarpsFilter implements Filter {
                     float yaw = (float) config.getDouble(path + ".Yaw");
                     float pitch = (float) config.getDouble(path + ".Pitch");
 
-                    if(world == null) continue;
+                    if (world == null) continue;
 
                     WarpData wd = new WarpData(s1, s, "CategoryWarps." + s + "." + s1, world, x, y, z, yaw, pitch);
                     cd.getWarps().add(wd);
                 }
 
-                if(manager.existsPage(cd.getName()) && result != Result.ERROR) result = Result.UNAVAILABLE_NAME;
-                else if(!manager.importPageData(cd)) result = Result.ERROR;
+                if (manager.existsPage(cd.getName()) && result != Result.ERROR) result = Result.UNAVAILABLE_NAME;
+                else if (!manager.importPageData(cd)) result = Result.ERROR;
             }
 
             return result;
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             return Result.ERROR;
         }

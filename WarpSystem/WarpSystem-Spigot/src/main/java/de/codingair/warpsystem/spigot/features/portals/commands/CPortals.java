@@ -50,16 +50,16 @@ public class CPortals extends WSCommandBuilder {
                 AnvilGUI.openAnvil(WarpSystem.getInstance(), (Player) sender, new AnvilListener() {
                     @Override
                     public void onClick(AnvilClickEvent e) {
-                        if(!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
+                        if (!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
 
                         String input = e.getInput();
 
-                        if(input == null) {
+                        if (input == null) {
                             e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Enter_Name"));
                             return;
                         }
 
-                        if(PortalManager.getInstance().existsPortal(input)) {
+                        if (PortalManager.getInstance().existsPortal(input)) {
                             e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Name_Already_Exists"));
                             return;
                         }
@@ -69,7 +69,7 @@ public class CPortals extends WSCommandBuilder {
 
                     @Override
                     public void onClose(AnvilCloseEvent e) {
-                        if(e.isSubmitted()) {
+                        if (e.isSubmitted()) {
                             String name = e.getSubmittedText();
 
                             Portal portal = PortalFactory.build(name);
@@ -90,7 +90,7 @@ public class CPortals extends WSCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
-                if(PortalManager.getInstance().existsPortal(argument)) {
+                if (PortalManager.getInstance().existsPortal(argument)) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Name_Already_Exists"));
                     return false;
                 }

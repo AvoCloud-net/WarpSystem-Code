@@ -15,14 +15,14 @@ public class ChatInputListener implements Listener {
 
     @EventHandler
     public void onWalk(PlayerWalkEvent e) {
-        if(!e.getPlayer().equals(gui.getPlayer())) return;
+        if (!e.getPlayer().equals(gui.getPlayer())) return;
         gui.close();
-        if(gui.getCancelSound() != null) gui.getCancelSound().play(e.getPlayer());
+        if (gui.getCancelSound() != null) gui.getCancelSound().play(e.getPlayer());
     }
 
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent e) {
-        if(!e.getPlayer().equals(gui.getPlayer())) return;
+        if (!e.getPlayer().equals(gui.getPlayer())) return;
 
         gui.onInput(e.getMessage());
         e.setCancelled(true);
@@ -30,10 +30,10 @@ public class ChatInputListener implements Listener {
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
-        if(!e.getPlayer().equals(gui.getPlayer())) return;
+        if (!e.getPlayer().equals(gui.getPlayer())) return;
 
         String msg = e.getMessage();
-        if(msg.startsWith("$c.")) {
+        if (msg.startsWith("$c.")) {
             msg = msg.substring(3);
         }
 

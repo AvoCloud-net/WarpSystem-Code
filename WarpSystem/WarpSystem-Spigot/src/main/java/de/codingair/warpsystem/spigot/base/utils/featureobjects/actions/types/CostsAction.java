@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types;
 
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
@@ -19,23 +19,23 @@ public class CostsAction extends ActionObject<Double> {
 
     @Override
     public void read(String s) {
-        if(s != null) {
+        if (s != null) {
             setValue(Double.parseDouble(s));
         }
     }
 
     @Override
     public boolean perform(Player player) {
-        if(player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Costs)) return true;
-        if(Bank.adapter() == null) return true;
-        if(WarpSystem.getInstance().getTeleportManager().isTeleporting(player)) return false;
+        if (player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Costs)) return true;
+        if (Bank.adapter() == null) return true;
+        if (WarpSystem.getInstance().getTeleportManager().isTeleporting(player)) return false;
 
         double prize = getValue();
-        if(prize <= 0) return false;
+        if (prize <= 0) return false;
 
         double bank = Bank.adapter().getMoney(player);
 
-        if(bank < prize) {
+        if (bank < prize) {
             player.sendMessage(Lang.getPrefix() + Lang.get("Not_Enough_Money").replace("%AMOUNT%", (prize % ((int) prize) == 0 ? (int) prize : prize) + ""));
             return false;
         }
@@ -45,13 +45,13 @@ public class CostsAction extends ActionObject<Double> {
     }
 
     @Override
-    public boolean read(DataWriter d) {
+    public boolean read(DataMask d) {
         setValue(d.getDouble("costs"));
         return true;
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         d.put("costs", getValue());
     }
 

@@ -15,7 +15,7 @@ public abstract class PageItem extends Page {
 
         this.pageItem = pageItem;
 
-        if(preInitialize) initialize(p);
+        if (preInitialize) initialize(p);
     }
 
     public ItemStack getPageItem() {

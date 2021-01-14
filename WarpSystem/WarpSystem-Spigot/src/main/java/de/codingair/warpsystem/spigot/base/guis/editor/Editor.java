@@ -29,19 +29,18 @@ public class Editor<C> extends SimpleGUI {
     public static final String ITEM_SUB_TITLE_COLOR = "§3";
     public static final String TITLE_COLOR = "§c§n";
     public static final String ITEM_SUB_TITLE_WARNING = "§c";
-
-    private SoundData successSound = null;
     private final PageItem[] pages;
     private final C clone;
     private final Backup<C> backup;
     private final ShowIcon showIcon;
+    private SoundData successSound = null;
 
     public Editor(Player p, C clone, Backup<C> backup, ShowIcon showIcon, PageItem... pages) {
         super(p, new Layout(), pages[0], WarpSystem.getInstance());
 
         List<PageItem> temp = new ArrayList<>();
-        for(PageItem page : pages) {
-            if(page != null) temp.add(page);
+        for (PageItem page : pages) {
+            if (page != null) temp.add(page);
         }
 
         this.pages = temp.toArray(new PageItem[0]);
@@ -66,7 +65,7 @@ public class Editor<C> extends SimpleGUI {
 
             @Override
             public void onInvCloseEvent(InventoryCloseEvent e) {
-                if(isClosingForGUI() || isClosingByButton() || isClosingByOperation()) return;
+                if (isClosingForGUI() || isClosingByButton() || isClosingByOperation()) return;
                 backup.cancel(clone);
             }
 
@@ -96,19 +95,19 @@ public class Editor<C> extends SimpleGUI {
     }
 
     public void updatePage() {
-        if(getCurrent() != null) {
+        if (getCurrent() != null) {
             getCurrent().initialize(getPlayer());
 
-            for(int i = 10; i < 16; i++) {
+            for (int i = 10; i < 16; i++) {
                 removeButton(i);
                 Button b = getCurrent().getButton(i);
-                if(b != null) addButton(b);
+                if (b != null) addButton(b);
                 else setItem(i, null);
             }
-            for(int i = 19; i < 25; i++) {
+            for (int i = 19; i < 25; i++) {
                 removeButton(i);
                 Button b = getCurrent().getButton(i);
-                if(b != null) addButton(b);
+                if (b != null) addButton(b);
                 else setItem(i, null);
             }
 
@@ -123,7 +122,7 @@ public class Editor<C> extends SimpleGUI {
     }
 
     public void updateControllButtons() {
-        if(getButtonAt(8) == null) {
+        if (getButtonAt(8) == null) {
             initControllButtons();
             return;
         }
@@ -146,7 +145,7 @@ public class Editor<C> extends SimpleGUI {
             @Override
             public void onClick(InventoryClickEvent e, Player player) {
                 backup.cancel(clone);
-                if(getCancelSound() != null) getCancelSound().play(player);
+                if (getCancelSound() != null) getCancelSound().play(player);
             }
 
             @Override
@@ -167,10 +166,10 @@ public class Editor<C> extends SimpleGUI {
                 backup.applyTo(clone);
 
                 SoundData sound = getSuccessSound();
-                if(sound != null) sound.play(player);
+                if (sound != null) sound.play(player);
 
                 String msg = getSuccessMessage();
-                if(msg != null) getPlayer().sendMessage(msg);
+                if (msg != null) getPlayer().sendMessage(msg);
             }
 
             @Override
@@ -190,18 +189,18 @@ public class Editor<C> extends SimpleGUI {
 
         int slot = 1;
 
-        for(PageItem page : pages) {
+        for (PageItem page : pages) {
             Page link = null;
 
             Button b = page.getPageButton().setOption(option);
 
-            if(page == getCurrent()) {
+            if (page == getCurrent()) {
                 b.getItem().addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 1);
                 ItemMeta m = b.getItem().getItemMeta();
                 m.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 b.getItem().setItemMeta(m);
             } else {
-                for(Enchantment enchantment : b.getItem().getEnchantments().keySet()) {
+                for (Enchantment enchantment : b.getItem().getEnchantments().keySet()) {
                     b.getItem().removeEnchantment(enchantment);
                 }
                 link = page;
@@ -237,7 +236,7 @@ public class Editor<C> extends SimpleGUI {
     public void changePage(Page page, boolean update) {
         super.changePage(page, false);
         update();
-        if(update) getPlayer().updateInventory();
+        if (update) getPlayer().updateInventory();
     }
 
     @Override

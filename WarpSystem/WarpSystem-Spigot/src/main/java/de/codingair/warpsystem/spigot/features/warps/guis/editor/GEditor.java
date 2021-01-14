@@ -25,9 +25,9 @@ public class GEditor extends Editor<Icon> {
                     public void applyTo(Icon clone) {
                         icon.apply(clone);
 
-                        if(icon.isPage() && !IconManager.getInstance().existsPage(icon.getName())) {
+                        if (icon.isPage() && !IconManager.getInstance().existsPage(icon.getName())) {
                             IconManager.getInstance().getIcons().add(icon);
-                        } else if(!icon.isPage() && !IconManager.getInstance().existsIcon(icon.getName())) {
+                        } else if (!icon.isPage() && !IconManager.getInstance().existsIcon(icon.getName())) {
                             IconManager.getInstance().getIcons().add(icon);
                         }
                     }

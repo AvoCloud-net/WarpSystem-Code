@@ -40,7 +40,7 @@ public class GEditWarp extends SimpleGUI {
 
             @Override
             public void onInvCloseEvent(InventoryCloseEvent e) {
-                if(!isClosingForGUI() && !isClosingByButton() && !((GPage) GEditWarp.this.getMain()).saved) p.sendMessage(Lang.getPrefix() + Lang.get("SimpleWarp_Cancel_Edit"));
+                if (!isClosingForGUI() && !isClosingByButton() && !((GPage) GEditWarp.this.getMain()).saved) p.sendMessage(Lang.getPrefix() + Lang.get("SimpleWarp_Cancel_Edit"));
             }
 
             @Override
@@ -79,7 +79,7 @@ public class GEditWarp extends SimpleGUI {
             addButton(new NameButton(2, 0, false, new Value<>(clone.getName()), null) {
                 @Override
                 public String acceptName(String name) {
-                    if(!name.equalsIgnoreCase(warp.getName()) && !SimpleWarpManager.getInstance().reserveName(name)) {
+                    if (!name.equalsIgnoreCase(warp.getName()) && !SimpleWarpManager.getInstance().reserveName(name)) {
                         return Lang.getPrefix() + Lang.get("Name_Already_Exists");
                     }
                     return null;
@@ -97,11 +97,11 @@ public class GEditWarp extends SimpleGUI {
             addButton(new SyncAnvilGUIButton(4, 0, ClickType.LEFT) {
                 @Override
                 public void onClick(AnvilClickEvent e) {
-                    if(!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
+                    if (!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
 
                     String input = e.getInput(false);
 
-                    if(input == null) {
+                    if (input == null) {
                         e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Enter_Permission"));
                         return;
                     }
@@ -122,7 +122,7 @@ public class GEditWarp extends SimpleGUI {
                     boolean perm = SimpleWarpManager.getInstance().isOverwritePermissions();
 
                     List<String> lore = new ArrayList<>();
-                    if(permission != null && !perm) lore.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
+                    if (permission != null && !perm) lore.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
 
                     return new ItemBuilder(XMaterial.ENDER_EYE)
                             .setName("§6§n" + Lang.get("Permission"))
@@ -141,7 +141,7 @@ public class GEditWarp extends SimpleGUI {
 
                 @Override
                 public void onOtherClick(InventoryClickEvent e) {
-                    if(e.getClick() == ClickType.RIGHT) {
+                    if (e.getClick() == ClickType.RIGHT) {
                         clone.setPermission(null);
                         update();
                     }
@@ -158,10 +158,10 @@ public class GEditWarp extends SimpleGUI {
                 public ItemStack craftItem() {
                     double costs = clone.getCosts();
                     String costsPrint = costs + "";
-                    if(costsPrint.endsWith(".0")) costsPrint = costsPrint.substring(0, costsPrint.length() - 2);
+                    if (costsPrint.endsWith(".0")) costsPrint = costsPrint.substring(0, costsPrint.length() - 2);
 
                     List<String> lore = new ArrayList<>();
-                    if(costs != 0) lore.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
+                    if (costs != 0) lore.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
 
                     return new ItemBuilder(XMaterial.GOLD_NUGGET)
                             .setName("§6§n" + Lang.get("Costs"))
@@ -173,11 +173,11 @@ public class GEditWarp extends SimpleGUI {
 
                 @Override
                 public void onClick(AnvilClickEvent e) {
-                    if(!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
+                    if (!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
 
                     String input = e.getInput(false);
 
-                    if(input == null) {
+                    if (input == null) {
                         e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Enter_A_Positive_Number"));
                         return;
                     }
@@ -185,12 +185,12 @@ public class GEditWarp extends SimpleGUI {
                     double costs;
                     try {
                         costs = Double.parseDouble(input);
-                    } catch(NumberFormatException ex) {
+                    } catch (NumberFormatException ex) {
                         e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Enter_A_Positive_Number"));
                         return;
                     }
 
-                    if(costs < 0) {
+                    if (costs < 0) {
                         e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Enter_A_Positive_Number"));
                         return;
                     }
@@ -215,7 +215,7 @@ public class GEditWarp extends SimpleGUI {
 
                 @Override
                 public void onOtherClick(InventoryClickEvent e) {
-                    if(e.getClick() == ClickType.RIGHT) {
+                    if (e.getClick() == ClickType.RIGHT) {
                         clone.setCosts(0);
                         update();
                     }

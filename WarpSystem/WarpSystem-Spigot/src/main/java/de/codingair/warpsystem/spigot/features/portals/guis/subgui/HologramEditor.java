@@ -40,10 +40,9 @@ import java.util.Set;
 public class HologramEditor extends HotbarGUI {
     private final PortalEditor fallBack;
     private final Hologram hologram;
-
-    private BukkitRunnable alignRunnable;
     private final List<Location> alignTo = new ArrayList<>();
     private final boolean show = true;
+    private BukkitRunnable alignRunnable;
 
     public HologramEditor(Player player, PortalEditor fallBack, Hologram hologram) {
         super(player, WarpSystem.getInstance(), 2);
@@ -54,9 +53,9 @@ public class HologramEditor extends HotbarGUI {
         this.alignRunnable = new BukkitRunnable() {
             @Override
             public void run() {
-                if(!show) return;
+                if (!show) return;
 
-                for(Location location : alignTo) {
+                for (Location location : alignTo) {
                     Particle.VILLAGER_HAPPY.send(location, player);
                 }
             }
@@ -69,7 +68,7 @@ public class HologramEditor extends HotbarGUI {
 
     public static Number cut(double n) {
         double d = Double.parseDouble(new DecimalFormat("#.##").format(n).replace(",", "."));
-        if(d == (int) d) return (int) d;
+        if (d == (int) d) return (int) d;
         else return d;
     }
 
@@ -77,19 +76,19 @@ public class HologramEditor extends HotbarGUI {
         List<Integer> yValues = new ArrayList<>();
         Location l = null;
 
-        for(Location location : this.alignTo) {
-            if(l == null) {
+        for (Location location : this.alignTo) {
+            if (l == null) {
                 yValues.add(location.getBlockY());
                 l = location.clone();
             } else {
                 l.add(location);
-                if(!yValues.contains(location.getBlockY())) {
+                if (!yValues.contains(location.getBlockY())) {
                     yValues.add(location.getBlockY());
                 } else l.subtract(0, location.getY(), 0);
             }
         }
 
-        if(l == null) return null;
+        if (l == null) return null;
 
         l.setX(l.getX() / alignTo.size());
         l.setY(l.getY() / yValues.size());
@@ -103,12 +102,12 @@ public class HologramEditor extends HotbarGUI {
         List<Location> alignTo = new ArrayList<>(this.alignTo);
 
         Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
-            if(show) {
-                for(Location location : alignTo) {
+            if (show) {
+                for (Location location : alignTo) {
                     changeToAlignmentBlock(getPlayer(), location);
                 }
             } else {
-                for(Location location : alignTo) {
+                for (Location location : alignTo) {
                     sendBlockChange(getPlayer(), location.getBlock());
                 }
             }
@@ -116,7 +115,7 @@ public class HologramEditor extends HotbarGUI {
     }
 
     private void sendBlockChange(Player player, Block b) {
-        if(Version.get().isBiggerThan(Version.v1_12)) {
+        if (Version.get().isBiggerThan(Version.v1_12)) {
             //block data
             Class<?> blockDataClass = IReflection.getClass(IReflection.ServerPacket.BUKKIT_PACKET, "block.data.BlockData");
             IReflection.MethodAccessor sendBlockChange = IReflection.getMethod(Player.class, "sendBlockChange", null, new Class[] {org.bukkit.Location.class, blockDataClass});
@@ -132,7 +131,7 @@ public class HologramEditor extends HotbarGUI {
     }
 
     private void changeToAlignmentBlock(Player player, Location loc) {
-        if(Version.get().isBiggerThan(Version.v1_12)) {
+        if (Version.get().isBiggerThan(Version.v1_12)) {
             //block data
             Class<?> blockDataClass = IReflection.getClass(IReflection.ServerPacket.BUKKIT_PACKET, "block.data.BlockData");
             IReflection.MethodAccessor sendBlockChange = IReflection.getMethod(Player.class, "sendBlockChange", null, new Class[] {org.bukkit.Location.class, blockDataClass});
@@ -153,11 +152,11 @@ public class HologramEditor extends HotbarGUI {
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
                 close(false);
 
-                if(alignRunnable != null) {
+                if (alignRunnable != null) {
                     alignRunnable.cancel();
                     alignRunnable = null;
 
-                    for(Location l : alignTo) {
+                    for (Location l : alignTo) {
                         sendBlockChange(player, l.getBlock());
                     }
                     alignTo.clear();
@@ -184,7 +183,7 @@ public class HologramEditor extends HotbarGUI {
         setItem(2, new ItemComponent(new ItemBuilder(XMaterial.ENDER_EYE).setName("§7" + Lang.get("Position") + ": §e" + pos).getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType == ClickType.LEFT_CLICK || clickType == ClickType.SHIFT_LEFT_CLICK) {
+                if (clickType == ClickType.LEFT_CLICK || clickType == ClickType.SHIFT_LEFT_CLICK) {
                     setAlignBlocks(false);
                     alignTo.clear();
 
@@ -196,20 +195,20 @@ public class HologramEditor extends HotbarGUI {
 
                     String pos = "x=" + cut(hologram.getLocation().getX()) + ", y=" + cut(hologram.getLocation().getY()) + ", z=" + cut(hologram.getLocation().getZ());
                     updateDisplayName(getItem(2), "§7" + Lang.get("Position") + ": §e" + pos);
-                } else if(clickType == ClickType.RIGHT_CLICK || clickType == ClickType.SHIFT_RIGHT_CLICK) {
+                } else if (clickType == ClickType.RIGHT_CLICK || clickType == ClickType.SHIFT_RIGHT_CLICK) {
                     Block b = player.getTargetBlock((Set<Material>) null, 10);
-                    if(b != null && b.getType() != XMaterial.AIR.parseMaterial() && b.getType() != XMaterial.VOID_AIR.parseMaterial() && b.getType() != XMaterial.CAVE_AIR.parseMaterial()) {
+                    if (b != null && b.getType() != XMaterial.AIR.parseMaterial() && b.getType() != XMaterial.VOID_AIR.parseMaterial() && b.getType() != XMaterial.CAVE_AIR.parseMaterial()) {
                         Location l = new Location(b.getLocation()).add(0.5, 0.5, 0.5);
                         boolean removed = alignTo.remove(l);
 
                         Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
-                            if(!removed) {
+                            if (!removed) {
                                 alignTo.add(l);
                                 changeToAlignmentBlock(player, l);
                             } else sendBlockChange(player, l.getBlock());
 
                             Location newL = calculateMid();
-                            if(newL != null) {
+                            if (newL != null) {
                                 hologram.setLocation(newL);
                                 hologram.setVisible(true);
                                 hologram.update();
@@ -238,11 +237,11 @@ public class HologramEditor extends HotbarGUI {
         }));
 
         String text = hologram.getText();
-        if(text != null && text.length() > 60) text = text.substring(0, 60) + "§f...";
+        if (text != null && text.length() > 60) text = text.substring(0, 60) + "§f...";
         setItem(3, new ItemComponent(new ItemBuilder(Material.NAME_TAG).setName("§7" + Lang.get("Hologram_Text") + ": " + (hologram.getText() == null ? "§c-" : "'§f" + fallBack.getClone().prepareLine(text, getPlayer()) + "§7'")).getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType != ClickType.LEFT_CLICK) return;
+                if (clickType != ClickType.LEFT_CLICK) return;
                 //Start-Name
 
                 MessageAPI.stopSendingActionBar(getPlayer());
@@ -261,7 +260,7 @@ public class HologramEditor extends HotbarGUI {
                         hologram.update();
 
                         String text = e.getText();
-                        if(text.length() > 60) text = text.substring(0, 60) + "§f...";
+                        if (text.length() > 60) text = text.substring(0, 60) + "§f...";
                         updateDisplayName(ic, "§7" + Lang.get("Hologram_Text") + ": '§f" + fallBack.getClone().prepareLine(text, getPlayer()) + "§7'");
                     }
 
@@ -286,13 +285,13 @@ public class HologramEditor extends HotbarGUI {
         setItem(4, new ItemComponent(new ItemBuilder(XMaterial.STICK).setName("§7" + Lang.get("Hologram_Height") + ": §e" + hologram.getHeight()).getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType == ClickType.LEFT_CLICK) {
+                if (clickType == ClickType.LEFT_CLICK) {
                     hologram.setHeight(hologram.getHeight() - 0.1);
-                } else if(clickType == ClickType.SHIFT_LEFT_CLICK) {
+                } else if (clickType == ClickType.SHIFT_LEFT_CLICK) {
                     hologram.setHeight(hologram.getHeight() - 1);
-                } else if(clickType == ClickType.RIGHT_CLICK) {
+                } else if (clickType == ClickType.RIGHT_CLICK) {
                     hologram.setHeight(hologram.getHeight() + 0.1);
-                } else if(clickType == ClickType.SHIFT_RIGHT_CLICK) {
+                } else if (clickType == ClickType.SHIFT_RIGHT_CLICK) {
                     hologram.setHeight(hologram.getHeight() + 1);
                 }
 
@@ -314,7 +313,7 @@ public class HologramEditor extends HotbarGUI {
         setItem(5, new SyncItemComponent(new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType != ClickType.LEFT_CLICK) return;
+                if (clickType != ClickType.LEFT_CLICK) return;
                 hologram.setVisible(!hologram.isVisible());
                 hologram.update();
                 updateSingle(5);

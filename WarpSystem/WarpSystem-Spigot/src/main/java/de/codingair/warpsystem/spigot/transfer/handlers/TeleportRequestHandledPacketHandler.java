@@ -13,6 +13,6 @@ public class TeleportRequestHandledPacketHandler implements PacketHandler<Telepo
     @Override
     public void process(@NotNull TeleportRequestHandledPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         Invitation invitation = TeleportCommandManager.getInstance().getInvitation(packet.getSender(), packet.getRecipient());
-        if(invitation != null) invitation.handle(packet.getRecipient(), packet.isAccepted());
+        if (invitation != null) invitation.handle(packet.getRecipient(), packet.isAccepted());
     }
 }

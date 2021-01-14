@@ -49,35 +49,35 @@ public class GlobalWarpManager implements Manager, ProxyFeature {
     }
 
     public String getCaseCorrectlyName(String name) {
-        for(String warp : this.globalWarps.keySet()) {
-            if(warp.equalsIgnoreCase(name)) return warp;
+        for (String warp : this.globalWarps.keySet()) {
+            if (warp.equalsIgnoreCase(name)) return warp;
         }
 
         return name;
     }
 
     public boolean exists(String name) {
-        for(String warp : this.globalWarps.keySet()) {
-            if(warp.equalsIgnoreCase(name)) return true;
+        for (String warp : this.globalWarps.keySet()) {
+            if (warp.equalsIgnoreCase(name)) return true;
         }
 
         return false;
     }
 
     public void teleport(Player player, String id, Vector randomOffset, String displayName, String message, double costs, @NotNull Callback<GlobalWarpTeleportPacket.Result> callback) {
-        if(id == null) {
+        if (id == null) {
             callback.accept(GlobalWarpTeleportPacket.Result.WARP_NOT_EXISTS);
             return;
         }
 
         id = getCaseCorrectlyName(id);
-        if(!this.globalWarps.containsKey(id)) {
+        if (!this.globalWarps.containsKey(id)) {
             callback.accept(GlobalWarpTeleportPacket.Result.WARP_NOT_EXISTS);
             return;
         }
 
         double x = 0, y = 0, z = 0;
-        if(randomOffset != null) {
+        if (randomOffset != null) {
             x = randomOffset.getX();
             y = randomOffset.getY();
             z = randomOffset.getZ();
@@ -85,7 +85,7 @@ public class GlobalWarpManager implements Manager, ProxyFeature {
 
         Teleport t = TeleportManager.getInstance().getTeleport(player);
         boolean keepRotation = false;
-        if(t != null) keepRotation = !t.getDestination().getCustomOptions().isRotation();
+        if (t != null) keepRotation = !t.getDestination().getCustomOptions().isRotation();
 
         WarpSystem.getDataHandler().send(new GlobalWarpTeleportPacket(player.getName(), id, x, y, z, displayName, message, costs, keepRotation, player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Max_Players)), player).thenAccept(packet -> {
             callback.accept(GlobalWarpTeleportPacket.Result.getById(packet.a()));
@@ -114,7 +114,7 @@ public class GlobalWarpManager implements Manager, ProxyFeature {
 
     @Override
     public void onConnect() {
-        if(getGlobalWarps().isEmpty()) WarpSystem.getDataHandler().send(new RequestGlobalWarpNamesPacket());
+        if (getGlobalWarps().isEmpty()) WarpSystem.getDataHandler().send(new RequestGlobalWarpNamesPacket());
     }
 
     @Override

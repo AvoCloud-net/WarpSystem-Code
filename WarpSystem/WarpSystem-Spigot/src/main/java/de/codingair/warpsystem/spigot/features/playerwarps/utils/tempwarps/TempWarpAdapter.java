@@ -19,19 +19,19 @@ public class TempWarpAdapter {
 
         File f = new File(WarpSystem.getInstance().getDataFolder(), "Memory/TempWarps.yml");
 
-        if(f.exists()) {
+        if (f.exists()) {
             WarpSystem.getInstance().getFileManager().loadFile("TempWarps", "Memory/");
             ConfigFile configFile = WarpSystem.getInstance().getFileManager().getFile("TempWarps");
             FileConfiguration config = configFile.getConfig();
 
-            for(String s : config.getStringList("Warps")) {
+            for (String s : config.getStringList("Warps")) {
                 PlayerWarp warp = convert(TempWarp.getByJSONString(s));
-                if(warp != null) warps.add(warp);
+                if (warp != null) warps.add(warp);
             }
 
             WarpSystem.getInstance().getFileManager().unloadFile(configFile);
 
-            if(clear) {
+            if (clear) {
                 f.delete();
             }
         }

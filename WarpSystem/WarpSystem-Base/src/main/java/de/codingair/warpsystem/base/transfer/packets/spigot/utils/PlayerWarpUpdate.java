@@ -81,58 +81,58 @@ public class PlayerWarpUpdate extends PlayerWarpData implements Serializable {
         byte b = getFirstOption();                                  //options 1/3
         o.writeByte(b);
 
-        if(name != null) o.writeUTF(this.name);
+        if (name != null) o.writeUTF(this.name);
 
-        if(trusted != null) {
+        if (trusted != null) {
             o.writeByte(trusted.size());
-            for(User user : trusted) {
+            for (User user : trusted) {
                 user.write(o);
             }
         }
 
-        if(type != null) o.writeUTF(type);
-        if(skullId != null) o.writeUTF(skullId);
-        if(rgb != null) o.writeInt(rgb);
-        if(data != null) o.writeByte(data);
+        if (type != null) o.writeUTF(type);
+        if (skullId != null) o.writeUTF(skullId);
+        if (rgb != null) o.writeInt(rgb);
+        if (data != null) o.writeByte(data);
 
-        if(teleportMessage != null) o.writeUTF(teleportMessage);
+        if (teleportMessage != null) o.writeUTF(teleportMessage);
 
         b = getSecondOption();                                      //options 2/3
         o.writeByte(b);
 
-        if(teleportCosts != null) o.writeDouble(teleportCosts);
+        if (teleportCosts != null) o.writeDouble(teleportCosts);
 
-        if(classes != null) {
+        if (classes != null) {
             o.writeByte(classes.size());
-            for(byte c : classes) {
+            for (byte c : classes) {
                 o.writeByte(c);
             }
         }
 
-        if(description != null) {
+        if (description != null) {
             o.writeByte(description.size());
-            for(String s : description) {
+            for (String s : description) {
                 o.writeUTF(s);
             }
         }
 
-        if(started != null) o.writeLong(started);
-        if(time != null) o.writeLong(time);
-        if(creatorKey != null) o.writeUTF(creatorKey);
+        if (started != null) o.writeLong(started);
+        if (time != null) o.writeLong(time);
+        if (creatorKey != null) o.writeUTF(creatorKey);
 
-        if(performed != null) o.writeInt(performed);
+        if (performed != null) o.writeInt(performed);
 
         b = getThirdFirstOption();                                  //options 3/3
         o.writeByte(b);
 
-        if(server != null) o.writeUTF(server);
-        if(world != null) o.writeUTF(world);
-        if(x != null) o.writeDouble(x);
-        if(y != null) o.writeDouble(y);
-        if(z != null) o.writeDouble(z);
-        if(yaw != null) o.writeFloat(yaw);
-        if(pitch != null) o.writeFloat(pitch);
-        if(inactiveSales != null) o.writeByte(inactiveSales);
+        if (server != null) o.writeUTF(server);
+        if (world != null) o.writeUTF(world);
+        if (x != null) o.writeDouble(x);
+        if (y != null) o.writeDouble(y);
+        if (z != null) o.writeDouble(z);
+        if (yaw != null) o.writeFloat(yaw);
+        if (pitch != null) o.writeFloat(pitch);
+        if (inactiveSales != null) o.writeByte(inactiveSales);
     }
 
     @Override
@@ -142,62 +142,62 @@ public class PlayerWarpUpdate extends PlayerWarpData implements Serializable {
 
         byte options = i.readByte();                                        //options 1/3
 
-        if((options & 1) != 0) name = i.readUTF();
-        if((options & (1 << 1)) != 0) {
-            if(this.trusted == null) this.trusted = new ArrayList<>();
+        if ((options & 1) != 0) name = i.readUTF();
+        if ((options & (1 << 1)) != 0) {
+            if (this.trusted == null) this.trusted = new ArrayList<>();
             else this.trusted.clear();
 
             int size = i.readByte();
-            for(int i1 = 0; i1 < size; i1++) {
+            for (int i1 = 0; i1 < size; i1++) {
                 User user = new User();
                 user.read(i);
                 trusted.add(user);
             }
         }
-        if((options & (1 << 2)) != 0) type = i.readUTF();
-        if((options & (1 << 3)) != 0) skullId = i.readUTF();
-        if((options & (1 << 4)) != 0) rgb = i.readInt();
-        if((options & (1 << 5)) != 0) data = i.readByte();
+        if ((options & (1 << 2)) != 0) type = i.readUTF();
+        if ((options & (1 << 3)) != 0) skullId = i.readUTF();
+        if ((options & (1 << 4)) != 0) rgb = i.readInt();
+        if ((options & (1 << 5)) != 0) data = i.readByte();
         isPublic = (options & (1 << 6)) != 0;
-        if((options & (1 << 7)) != 0) teleportMessage = i.readUTF();
+        if ((options & (1 << 7)) != 0) teleportMessage = i.readUTF();
 
         options = i.readByte();                                             //options 2/3
 
-        if((options & 1) != 0) teleportCosts = i.readDouble();
-        if((options & (1 << 1)) != 0) {
-            if(this.classes == null) this.classes = new ArrayList<>();
+        if ((options & 1) != 0) teleportCosts = i.readDouble();
+        if ((options & (1 << 1)) != 0) {
+            if (this.classes == null) this.classes = new ArrayList<>();
             else this.classes.clear();
 
             int size = i.readByte();
-            for(int i1 = 0; i1 < size; i1++) {
+            for (int i1 = 0; i1 < size; i1++) {
                 classes.add(i.readByte());
             }
         }
-        if((options & (1 << 2)) != 0) {
-            if(this.description == null) this.description = new ArrayList<>();
+        if ((options & (1 << 2)) != 0) {
+            if (this.description == null) this.description = new ArrayList<>();
             else this.description.clear();
 
             int size = i.readByte();
-            for(int i1 = 0; i1 < size; i1++) {
+            for (int i1 = 0; i1 < size; i1++) {
                 description.add(i.readUTF());
             }
         }
-        if((options & (1 << 3)) != 0) started = i.readLong();
-        if((options & (1 << 4)) != 0) time = i.readLong();
-        if((options & (1 << 5)) != 0) creatorKey = i.readUTF();
+        if ((options & (1 << 3)) != 0) started = i.readLong();
+        if ((options & (1 << 4)) != 0) time = i.readLong();
+        if ((options & (1 << 5)) != 0) creatorKey = i.readUTF();
         notify = (options & (1 << 6)) != 0;
-        if((options & (1 << 7)) != 0) performed = i.readInt();
+        if ((options & (1 << 7)) != 0) performed = i.readInt();
 
         options = i.readByte();                                             //options 3/3
 
-        if((options & 1) != 0) server = i.readUTF();
-        if((options & (1 << 1)) != 0) world = i.readUTF();
-        if((options & (1 << 2)) != 0) x = i.readDouble();
-        if((options & (1 << 3)) != 0) y = i.readDouble();
-        if((options & (1 << 4)) != 0) z = i.readDouble();
-        if((options & (1 << 5)) != 0) yaw = i.readFloat();
-        if((options & (1 << 6)) != 0) pitch = i.readFloat();
-        if((options & (1 << 7)) != 0) inactiveSales = i.readByte();
+        if ((options & 1) != 0) server = i.readUTF();
+        if ((options & (1 << 1)) != 0) world = i.readUTF();
+        if ((options & (1 << 2)) != 0) x = i.readDouble();
+        if ((options & (1 << 3)) != 0) y = i.readDouble();
+        if ((options & (1 << 4)) != 0) z = i.readDouble();
+        if ((options & (1 << 5)) != 0) yaw = i.readFloat();
+        if ((options & (1 << 6)) != 0) pitch = i.readFloat();
+        if ((options & (1 << 7)) != 0) inactiveSales = i.readByte();
     }
 
     public String getOriginName() {

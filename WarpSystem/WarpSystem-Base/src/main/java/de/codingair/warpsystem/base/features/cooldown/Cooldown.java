@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.base.features.cooldown;
 
 import com.google.common.base.Preconditions;
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.warpsystem.base.transfer.utils.serializeable.Serializable;
 
 import java.io.DataInputStream;
@@ -45,22 +45,22 @@ public class Cooldown implements Serializable, de.codingair.codingapi.tools.io.u
     }
 
     @Override
-    public boolean read(DataWriter d) throws Exception {
+    public boolean read(DataMask d) throws Exception {
         throw new IllegalStateException("Not supported.");
     }
 
-    public boolean read(DataWriter d, long time) throws Exception {
+    public boolean read(DataMask d, long time) throws Exception {
         end = d.getLong("end") + time;
         hashId = d.getInteger("hash");
         return true;
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         throw new IllegalStateException("Not supported.");
     }
 
-    public void write(DataWriter d, long time) {
+    public void write(DataMask d, long time) {
         d.put("end", end - time);
         d.put("hash", hashId);
     }
@@ -78,8 +78,8 @@ public class Cooldown implements Serializable, de.codingair.codingapi.tools.io.u
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Cooldown cooldown = (Cooldown) o;
         return end == cooldown.end &&
                 hashId == cooldown.hashId &&

@@ -4,7 +4,7 @@ import de.codingair.codingapi.particles.animations.customanimations.CustomAnimat
 import de.codingair.codingapi.particles.animations.movables.LocationMid;
 import de.codingair.codingapi.tools.HitBox;
 import de.codingair.codingapi.tools.Location;
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
 import de.codingair.warpsystem.spigot.features.animations.utils.ParticlePart;
 import de.codingair.warpsystem.spigot.features.portals.managers.PortalManager;
@@ -31,11 +31,11 @@ public class Animation implements Serializable {
     }
 
     public HitBox getHitBox() {
-        if(this.animation == null) return null;
+        if (this.animation == null) return null;
 
-        if(hitBox == null) {
+        if (hitBox == null) {
             HitBox box = animation.getHitBox();
-            if(hitBox == null) hitBox = box;
+            if (hitBox == null) hitBox = box;
             else hitBox.addProperty(box);
         }
 
@@ -47,12 +47,12 @@ public class Animation implements Serializable {
     }
 
     public void setVisible(boolean visible) {
-        if(!visible && this.animation == null) return;
-        if(visible && this.animation == null) {
+        if (!visible && this.animation == null) return;
+        if (visible && this.animation == null) {
             try {
                 this.animation = effect.build(null, new LocationMid(this.location));
                 this.animation.setMaxDistance(PortalManager.getInstance().getMaxParticleDistance());
-            } catch(NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
                 e.printStackTrace();
             }
         }
@@ -62,13 +62,13 @@ public class Animation implements Serializable {
 
     public void update() {
         boolean visible = isVisible();
-        if(visible) setVisible(false);
+        if (visible) setVisible(false);
         this.animation = null;
-        if(visible) setVisible(true);
+        if (visible) setVisible(true);
     }
 
     @Override
-    public boolean read(DataWriter d) throws Exception {
+    public boolean read(DataMask d) throws Exception {
         this.effect = new ParticlePart();
         this.effect.read(d);
         this.location = new Location();
@@ -77,7 +77,7 @@ public class Animation implements Serializable {
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         this.effect.write(d);
         this.location.write(d);
     }
@@ -86,7 +86,7 @@ public class Animation implements Serializable {
     public void destroy() {
         this.effect.destroy();
         this.location.destroy();
-        if(this.animation != null) this.animation.setRunning(false);
+        if (this.animation != null) this.animation.setRunning(false);
     }
 
     public ParticlePart getEffect() {

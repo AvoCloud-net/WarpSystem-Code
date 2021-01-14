@@ -34,17 +34,17 @@ public class ClassesFilter implements Filter {
 
         int max = (page + 1) * maxSize;
         int i, amount, noMatch = 0;
-        if(chosen != null) {
+        if (chosen != null) {
             List<PlayerWarp> warps = PlayerWarpManager.getManager().filter(chosen, player);
             warps.sort(Comparator.comparing(o -> o.getName(false).toLowerCase()));
 
             amount = warps.size();
 
-            for(i = page * maxSize; i < max; i++) {
-                if(warps.size() <= i) break;
+            for (i = page * maxSize; i < max; i++) {
+                if (warps.size() <= i) break;
                 PlayerWarp w = warps.get(i);
 
-                if(search != null && !w.getName(false).toLowerCase().contains(search)) {
+                if (search != null && !w.getName(false).toLowerCase().contains(search)) {
                     noMatch++;
                     continue;
                 }
@@ -59,7 +59,7 @@ public class ClassesFilter implements Filter {
 
                     @Override
                     public void onClick(InventoryClickEvent e, Player player) {
-                        if(e.isLeftClick()) {
+                        if (e.isLeftClick()) {
                             ((PWList) getInterface()).getMain().setExtra(true, (Object[]) null);
                             w.perform(player);
                         } else ((PWList) getInterface()).getMain().setExtra(true, chosen);
@@ -76,8 +76,8 @@ public class ClassesFilter implements Filter {
         } else {
             amount = classes.size();
 
-            for(i = page * maxSize; i < max; i++) {
-                if(classes.size() <= i) break;
+            for (i = page * maxSize; i < max; i++) {
+                if (classes.size() <= i) break;
 
                 Category c = classes.get(i);
                 SyncButton b = new SyncButton(0) {
@@ -86,7 +86,7 @@ public class ClassesFilter implements Filter {
                         ItemBuilder builder = c.getBuilder().clone()
                                 .addLore("");
 
-                        if(selected != null && selected.contains(c)) {
+                        if (selected != null && selected.contains(c)) {
                             builder.addEnchantment(Enchantment.DAMAGE_ALL, 1);
                             builder.setHideEnchantments(true);
                             builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §c" + Lang.get("Deselect"));
@@ -97,14 +97,14 @@ public class ClassesFilter implements Filter {
 
                     @Override
                     public void onClick(InventoryClickEvent e, Player player) {
-                        if(selected == null) {
+                        if (selected == null) {
                             ((PWList) getInterface()).getMain().setExtra(true, new ArrayList<Category>() {{
                                 add(c);
                             }});
                             return;
-                        } else if(selected.contains(c)) {
+                        } else if (selected.contains(c)) {
                             selected.remove(c);
-                            if(selected.isEmpty()) {
+                            if (selected.isEmpty()) {
                                 ((PWList) getInterface()).getMain().setExtra(true, (Object[]) null);
                                 return;
                             }
@@ -143,7 +143,7 @@ public class ClassesFilter implements Filter {
 
     @Override
     public PWPage.FilterButton getControllButton(PWPage page, int warps) {
-        if(page.getExtra() == null) return null;
+        if (page.getExtra() == null) return null;
 
         return new ExtendedFilterButton(page, warps);
     }
@@ -164,7 +164,7 @@ public class ClassesFilter implements Filter {
 
         @Override
         public ItemStack craftItem() {
-            if(page == null || warps == -1) return null;
+            if (page == null || warps == -1) return null;
 
             Object[] extra = page.getExtra();
 
@@ -181,12 +181,12 @@ public class ClassesFilter implements Filter {
 
         @Override
         public void onOtherClick(InventoryClickEvent e) {
-            if(e.isShiftClick() && e.isRightClick()) page.setSearch(null);
-            else if(e.isLeftClick()) {
+            if (e.isShiftClick() && e.isRightClick()) page.setSearch(null);
+            else if (e.isLeftClick()) {
                 Object[] extra = page.getExtra();
-                if(extra.length == 1) page.setExtra(true, null, extra[0]);
+                if (extra.length == 1) page.setExtra(true, null, extra[0]);
                 else page.setExtra(true, extra[1]);
-            } else if(e.isRightClick()) {
+            } else if (e.isRightClick()) {
                 page.setExtra(true, (Object[]) null);
             }
 

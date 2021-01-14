@@ -28,7 +28,7 @@ public class WarpSignGUI extends Editor<WarpSign> {
                     public void applyTo(WarpSign clone) {
                         sign.apply(clone);
 
-                        if(SignManager.getInstance().getByLocation(sign.getLocation()) == null) {
+                        if (SignManager.getInstance().getByLocation(sign.getLocation()) == null) {
                             SignManager.getInstance().addWarpSign(sign);
                         }
 
@@ -73,7 +73,7 @@ public class WarpSignGUI extends Editor<WarpSign> {
         public ItemStack buildIcon() {
             ItemBuilder builder = new ItemBuilder(getType());
 
-            for(String line : lines) {
+            for (String line : lines) {
                 builder.addText("§7'§f" + warpSign.prepareLine(line) + "§7'");
             }
 
@@ -81,7 +81,7 @@ public class WarpSignGUI extends Editor<WarpSign> {
         }
 
         private Material getType() {
-            if(sign.getType().name().contains("WALL_")) {
+            if (sign.getType().name().contains("WALL_")) {
                 return Material.valueOf(sign.getType().name().replace("WALL_", ""));
             } else return sign.getType();
         }

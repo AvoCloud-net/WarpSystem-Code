@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.spigot.features.shortcuts.utils;
 
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.FeatureObject;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
@@ -27,13 +27,13 @@ public class Shortcut extends FeatureObject {
     }
 
     @Override
-    public boolean read(DataWriter d) throws Exception {
+    public boolean read(DataMask d) throws Exception {
         this.displayName = d.getString("Name");
         return super.read(d);
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         d.put("Name", this.displayName);
         super.write(d);
     }
@@ -42,16 +42,16 @@ public class Shortcut extends FeatureObject {
     public void apply(FeatureObject object) {
         super.apply(object);
 
-        if(object instanceof Shortcut) {
+        if (object instanceof Shortcut) {
             this.displayName = ((Shortcut) object).displayName;
         }
     }
 
     public boolean isActive() {
-        if(getActions().isEmpty()) return false;
+        if (getActions().isEmpty()) return false;
 
-        if(hasAction(Action.WARP)) {
-            if(getDestination().getType() == DestinationType.GlobalWarp || getDestination().getType() == DestinationType.Server) {
+        if (hasAction(Action.WARP)) {
+            if (getDestination().getType() == DestinationType.GlobalWarp || getDestination().getType() == DestinationType.Server) {
                 return WarpSystem.getInstance().isOnProxy();
             }
         }
@@ -73,9 +73,9 @@ public class Shortcut extends FeatureObject {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
-        if(!super.equals(o)) return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         Shortcut shortcut = (Shortcut) o;
         return displayName.equals(shortcut.displayName);
     }

@@ -17,9 +17,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
 public class FastEditingTool extends PlayerItem {
+    private final PortalBlockEditor editor;
     private long last = 0;
     private Location first = null, second = null;
-    private final PortalBlockEditor editor;
     private boolean remove = false;
 
     public FastEditingTool(PortalBlockEditor editor, Player player) {
@@ -32,18 +32,18 @@ public class FastEditingTool extends PlayerItem {
     @Override
     public void onInteract(PlayerInteractEvent e) {
         e.setCancelled(true);
-        if(System.currentTimeMillis() - last < 50) return;
+        if (System.currentTimeMillis() - last < 50) return;
         else last = System.currentTimeMillis();
 
-        if(locationsSet()) {
-            if(e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_AIR) {
+        if (locationsSet()) {
+            if (e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_AIR) {
                 reset();
                 update();
-            } else if(e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) {
-                if(!remove) {
+            } else if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) {
+                if (!remove) {
                     remove = true;
                     Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
-                        if(!remove) return;
+                        if (!remove) return;
                         remove = false;
                         update();
                     }, 20);
@@ -61,11 +61,11 @@ public class FastEditingTool extends PlayerItem {
                 int maxZ = Math.max(first.getBlockZ(), second.getBlockZ());
 
                 int i = 0;
-                for(int x = minX; x <= maxX; x++) {
-                    for(int y = minY; y <= maxY; y++) {
-                        for(int z = minZ; z <= maxZ; z++) {
+                for (int x = minX; x <= maxX; x++) {
+                    for (int y = minY; y <= maxY; y++) {
+                        for (int z = minZ; z <= maxZ; z++) {
                             Location l = new Location(first.getWorld(), x, y, z);
-                            if(editor.removePosition(l)) {
+                            if (editor.removePosition(l)) {
                                 i++;
                                 l.getBlock().setType(Material.AIR);
                             }
@@ -78,32 +78,32 @@ public class FastEditingTool extends PlayerItem {
                 play();
             }
         } else {
-            if(e.getAction() == Action.LEFT_CLICK_BLOCK) {
+            if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
                 first = e.getClickedBlock().getLocation();
                 update();
                 play();
-            } else if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            } else if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 second = e.getClickedBlock().getLocation();
                 update();
                 play();
-            } else if(e.getAction() == Action.LEFT_CLICK_AIR) {
+            } else if (e.getAction() == Action.LEFT_CLICK_AIR) {
                 first = e.getPlayer().getLocation();
                 update();
                 play();
-            } else if(e.getAction() == Action.RIGHT_CLICK_AIR) {
+            } else if (e.getAction() == Action.RIGHT_CLICK_AIR) {
                 second = e.getPlayer().getLocation();
                 update();
                 play();
             }
 
-            if(locationsSet()) editor.update();
+            if (locationsSet()) editor.update();
         }
     }
 
     public boolean locationsSet() {
         return first != null && second != null;
     }
-    
+
     public void play() {
         Sound.UI_BUTTON_CLICK.playSound(getPlayer(), 0.7F, 1F);
     }

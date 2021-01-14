@@ -24,11 +24,11 @@ public class PrepareTeleportRequestPacket implements RequestPacket<LongPacket> {
     @Override
     public void write(DataOutputStream out) throws IOException {
         byte options = (byte) (tpToSender ? 1 : 0);
-        if(recipient != null) options |= (1 << 1);
+        if (recipient != null) options |= (1 << 1);
 
         out.writeByte(options);
         out.writeUTF(sender);
-        if(recipient != null) out.writeUTF(recipient);
+        if (recipient != null) out.writeUTF(recipient);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class PrepareTeleportRequestPacket implements RequestPacket<LongPacket> {
         byte options = in.readByte();
         this.sender = in.readUTF();
         this.tpToSender = (options & 1) != 0;
-        if((options & (1 << 1)) != 0) this.recipient = in.readUTF();
+        if ((options & (1 << 1)) != 0) this.recipient = in.readUTF();
     }
 
     public String getSender() {

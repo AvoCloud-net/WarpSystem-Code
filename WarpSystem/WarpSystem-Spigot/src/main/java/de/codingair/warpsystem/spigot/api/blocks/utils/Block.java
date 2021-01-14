@@ -24,7 +24,7 @@ public abstract class Block implements Removable {
     @Override
     public void destroy() {
         API.removeRemovable(this);
-        if(location.getWorld() != null) location.getBlock().setType(Material.AIR);
+        if (location.getWorld() != null) location.getBlock().setType(Material.AIR);
     }
 
     @Override

@@ -32,7 +32,7 @@ public class CTpDeny extends WSCommandBuilder {
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
                 List<Invitation> invites = TeleportCommandManager.getInstance().getReceivedInvites(sender.getName());
 
-                for(Invitation invite : invites) {
+                for (Invitation invite : invites) {
                     suggestions.add(invite.getSender());
                 }
 
@@ -42,7 +42,7 @@ public class CTpDeny extends WSCommandBuilder {
             @Override
             public boolean runCommand(CommandSender commandSender, String label, String argument, String[] args) {
                 Invitation invitation = TeleportCommandManager.getInstance().getInvitation(argument, commandSender.getName());
-                if(invitation != null) {
+                if (invitation != null) {
                     //has invitation
                     invitation.deny((Player) commandSender);
                 } else {

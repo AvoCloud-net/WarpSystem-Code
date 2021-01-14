@@ -34,7 +34,7 @@ import java.util.List;
 public class DestinationPageHandler {
 
     public DestinationPageHandler(DestinationPage page, Player p, boolean showOptions) {
-        if(showOptions) new Options(page).setup(p);
+        if (showOptions) new Options(page).setup(p);
         else new Normal(page).setup(p);
     }
 
@@ -53,13 +53,13 @@ public class DestinationPageHandler {
                 public void onEnter(ChatInputEvent e) {
                     page.getDestination().getCustomOptions().setCustomMessage(e.getText());
 
-                    if(!e.getText().isEmpty()) {
+                    if (!e.getText().isEmpty()) {
                         Boolean send = page.getDestination().getCustomOptions().getMessage();
                         boolean sending = page.getOrigin().sendTeleportMessage();
-                        if(send != null && !send) {
-                            if(send == sending) page.getDestination().getCustomOptions().setMessage(true);
+                        if (send != null && !send) {
+                            if (send == sending) page.getDestination().getCustomOptions().setMessage(true);
                             else page.getDestination().getCustomOptions().setMessage(null);
-                        } else if(send == null && !sending) page.getDestination().getCustomOptions().setMessage(true);
+                        } else if (send == null && !sending) page.getDestination().getCustomOptions().setMessage(true);
                     }
                     e.setClose(true);
                 }
@@ -71,23 +71,23 @@ public class DestinationPageHandler {
                     ItemBuilder builder = new ItemBuilder(XMaterial.ENDER_EYE).setName("§6§n" + Lang.get("Teleport_Message") + "§8 (" + (sending ? "§7" + Lang.get("Enabled") : "§c" + Lang.get("Disabled")) + "§8)");
 
                     String message = page.getDestination().getCustomOptions().getCustomMessage();
-                    if(message != null) message = PAPI.convert(message, p).replace("%player%", p.getName()).replace("%PLAYER%", p.getName());
+                    if (message != null) message = PAPI.convert(message, p).replace("%player%", p.getName()).replace("%PLAYER%", p.getName());
 
 
                     List<String> msg = TextAlignment.lineBreak(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Current") + ": " + (message == null ? "§e" + Lang.get("Default") : "§7\"§f" + de.codingair.codingapi.utils.ChatColor.translateAlternateColorCodes('&', message) + "§7\""), 100);
 
                     builder.addLore(msg.remove(0));
-                    if(!msg.isEmpty()) builder.addLore(msg);
+                    if (!msg.isEmpty()) builder.addLore(msg);
 
                     builder.addLore("", Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §a" + Lang.get("Change") + " §8(§7" + Lang.get("Toggle") + "§8)");
-                    if(message != null) builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
+                    if (message != null) builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
 
                     return builder.getItem();
                 }
 
                 @Override
                 public boolean canTrigger(InventoryClickEvent e, ClickType trigger, Player player) {
-                    if(trigger == ClickType.LEFT && page.getDestination().getCustomOptions().getCustomMessage() != null) {
+                    if (trigger == ClickType.LEFT && page.getDestination().getCustomOptions().getCustomMessage() != null) {
                         TextComponent tc = new TextComponent(Lang.getPrefix() + "§7" + Lang.get("Teleport_Message") + ": ");
                         TextComponent click = new TextComponent("§e" + ChatColor.stripColor(Lang.get("Click_Hover")));
                         click.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[] {new TextComponent(Lang.get("Click_Hover"))}));
@@ -102,7 +102,7 @@ public class DestinationPageHandler {
 
                 @Override
                 public boolean canClick(ClickType click) {
-                    if(click == ClickType.RIGHT) {
+                    if (click == ClickType.RIGHT) {
                         return page.getDestination().getCustomOptions().getCustomMessage() != null;
                     }
 
@@ -111,16 +111,16 @@ public class DestinationPageHandler {
 
                 @Override
                 public void onOtherClick(InventoryClickEvent e) {
-                    if(e.getClick() == ClickType.RIGHT) {
+                    if (e.getClick() == ClickType.RIGHT) {
                         page.getDestination().getCustomOptions().setCustomMessage(null);
                         update();
-                    } else if(e.getClick() == ClickType.SHIFT_LEFT) {
+                    } else if (e.getClick() == ClickType.SHIFT_LEFT) {
                         Boolean send = page.getDestination().getCustomOptions().getMessage();
                         boolean sending = page.getOrigin().sendTeleportMessage();
 
-                        if(send == null) page.getDestination().getCustomOptions().setMessage(!sending);
-                        else if(send != sending) page.getDestination().getCustomOptions().setMessage(null);
-                        else if(send == sending) page.getDestination().getCustomOptions().setMessage(!send);
+                        if (send == null) page.getDestination().getCustomOptions().setMessage(!sending);
+                        else if (send != sending) page.getDestination().getCustomOptions().setMessage(null);
+                        else if (send == sending) page.getDestination().getCustomOptions().setMessage(!send);
                         update();
                     }
                 }
@@ -184,9 +184,9 @@ public class DestinationPageHandler {
             ItemButtonOption option = new StandardButtonOption();
 
             int slot = 1;
-            if(page.getExtra() != null && page.getExtra().length > 0) {
-                for(Button button : page.getExtra()) {
-                    if(slot == 7) break;
+            if (page.getExtra() != null && page.getExtra().length > 0) {
+                for (Button button : page.getExtra()) {
+                    if (slot == 7) break;
                     button.setSlot(slot++ + 18);
                     button.setOption(option);
                     page.addButton(button);
@@ -197,10 +197,10 @@ public class DestinationPageHandler {
                 @Override
                 public ItemStack craftItem() {
                     String name = null;
-                    if(page.getDestination().getType() == DestinationType.SimpleWarp) name = page.getDestination().getId();
+                    if (page.getDestination().getType() == DestinationType.SimpleWarp) name = page.getDestination().getId();
 
                     List<String> lore = new ArrayList<>();
-                    if(name != null) lore.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
+                    if (name != null) lore.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
                     else lore.add("§3" + Lang.get("Shift_Leftclick") + ": §a" + Lang.get("Create") + Lang.PREMIUM_LORE);
 
                     ItemBuilder builder = new ItemBuilder(XMaterial.ENDER_PEARL).setName(Editor.ITEM_TITLE_COLOR + Lang.get("SimpleWarps"))
@@ -220,8 +220,8 @@ public class DestinationPageHandler {
 
                 @Override
                 public void onClick(InventoryClickEvent e, Player player) {
-                    if(e.isLeftClick()) {
-                        if(e.isShiftClick()) {
+                    if (e.isLeftClick()) {
+                        if (e.isShiftClick()) {
                             Lang.PREMIUM_CHAT(player);
                         } else {
 
@@ -248,8 +248,8 @@ public class DestinationPageHandler {
                                 }
                             }, true);
                         }
-                    } else if(e.isRightClick()) {
-                        if(e.isShiftClick()) {
+                    } else if (e.isRightClick()) {
+                        if (e.isShiftClick()) {
                             Lang.PREMIUM_CHAT(player);
                         } else {
                             page.getDestination().setId(null);
@@ -262,15 +262,15 @@ public class DestinationPageHandler {
                 }
             }.setOption(option));
 
-            if(WarpSystem.getInstance().isOnProxy()) {
+            if (WarpSystem.getInstance().isOnProxy()) {
                 page.addButton(new SyncButton(slot++, 2) {
                     @Override
                     public ItemStack craftItem() {
                         String name = null;
-                        if(page.getDestination().getType() == DestinationType.GlobalWarp) name = page.getDestination().getId();
+                        if (page.getDestination().getType() == DestinationType.GlobalWarp) name = page.getDestination().getId();
 
                         List<String> lore = name == null ? null : new ArrayList<>();
-                        if(lore != null) lore.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
+                        if (lore != null) lore.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
 
                         return new ItemBuilder(XMaterial.ENDER_EYE).setName(Editor.ITEM_TITLE_COLOR + Lang.get("GlobalWarps"))
                                 .setLore("§3" + Lang.get("Current") + ": " + (name == null ? "§c" + Lang.get("Not_Set") : "§7'§f" + ChatColor.translateAlternateColorCodes('&', name) + "§7'"),
@@ -281,7 +281,7 @@ public class DestinationPageHandler {
 
                     @Override
                     public void onClick(InventoryClickEvent e, Player player) {
-                        if(e.isLeftClick()) {
+                        if (e.isLeftClick()) {
                             page.getLast().setClosingForGUI(true);
                             page.getLast().changeGUI(new GGlobalWarpList(player) {
                                 @Override
@@ -305,7 +305,7 @@ public class DestinationPageHandler {
                                     lore.add("§3" + Lang.get("Leftclick") + ": §b" + Lang.get("Choose"));
                                 }
                             }, true);
-                        } else if(e.isRightClick()) {
+                        } else if (e.isRightClick()) {
                             page.getDestination().setId(null);
                             page.getDestination().setAdapter(null);
                             page.getDestination().setType(null);
@@ -333,9 +333,9 @@ public class DestinationPageHandler {
         }
 
         public void updateDestinationButtons() {
-            for(int i = 1; i < 8; i++) {
+            for (int i = 1; i < 8; i++) {
                 Button button = page.getButton(i, 2);
-                if(button instanceof SyncButton) {
+                if (button instanceof SyncButton) {
                     ((SyncButton) button).update();
                 }
             }

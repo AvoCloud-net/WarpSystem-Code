@@ -6,7 +6,7 @@ import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.Location;
 import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.io.lib.JSONArray;
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
@@ -88,16 +88,16 @@ public class PlayerWarp extends FeatureObject {
         options.addCallback(new Callback<Result>() {
             @Override
             public void accept(Result res) {
-                if(res == Result.SUCCESS) {
+                if (res == Result.SUCCESS) {
                     PlayerWarpTeleportProcessPacket packet = PlayerWarpManager.getManager().checkBungeeCord() ? new PlayerWarpTeleportProcessPacket(name, owner.getId()) : null;
-                    if(packet != null && !isOwner(player) && !isTrusted(player)) packet.setIncreasePerformed(true);
+                    if (packet != null && !isOwner(player) && !isTrusted(player)) packet.setIncreasePerformed(true);
 
-                    if(options.getFinalCosts(player).doubleValue() > 0 && !isOwner(player) && !isTrusted(player)) {
-                        if(packet != null) packet.setIncreaseSales(true);
+                    if (options.getFinalCosts(player).doubleValue() > 0 && !isOwner(player) && !isTrusted(player)) {
+                        if (packet != null) packet.setIncreaseSales(true);
                         increaseInactiveSales();
                     }
 
-                    if(packet != null) {
+                    if (packet != null) {
                         //update on BungeeCord
                         WarpSystem.getDataHandler().send(packet, player);
                     }
@@ -107,9 +107,9 @@ public class PlayerWarp extends FeatureObject {
             }
         });
 
-        if(this.teleportMessage != null) options.setMessage(Lang.getPrefix() + ChatColor.translateAlternateColorCodes('&', this.teleportMessage));
+        if (this.teleportMessage != null) options.setMessage(Lang.getPrefix() + ChatColor.translateAlternateColorCodes('&', this.teleportMessage));
 
-        if(isOwner(player) || isTrusted(player)) performed--;
+        if (isOwner(player) || isTrusted(player)) performed--;
         else {
             options.setCosts(this.teleportCosts);
         }
@@ -121,24 +121,24 @@ public class PlayerWarp extends FeatureObject {
     public void apply(FeatureObject object) {
         super.apply(object);
 
-        if(object instanceof PlayerWarp) {
+        if (object instanceof PlayerWarp) {
             PlayerWarp w = (PlayerWarp) object;
 
             this.owner = w.owner;
 
-            if(this.trusted == null) this.trusted = new ArrayList<>(w.trusted);
+            if (this.trusted == null) this.trusted = new ArrayList<>(w.trusted);
             else {
                 this.trusted.clear();
                 this.trusted.addAll(w.trusted);
             }
 
-            if(this.description == null) this.description = new ArrayList<>(w.description);
+            if (this.description == null) this.description = new ArrayList<>(w.description);
             else {
                 this.description.clear();
                 this.description.addAll(w.description);
             }
 
-            if(this.classes == null) this.classes = new ArrayList<>(w.classes);
+            if (this.classes == null) this.classes = new ArrayList<>(w.classes);
             else {
                 this.classes.clear();
                 this.classes.addAll(w.classes);
@@ -165,14 +165,14 @@ public class PlayerWarp extends FeatureObject {
         data.setOwner(new PlayerWarpData.User(this.owner.jsonPrefix, this.owner.name, this.owner.id));
 
         List<PlayerWarpData.User> trusted = new ArrayList<>();
-        for(User user : this.trusted) {
+        for (User user : this.trusted) {
             trusted.add(new PlayerWarpData.User(user.jsonPrefix, user.name, user.id));
         }
         data.setTrusted(trusted);
 
         data.setType(this.item.getType().name());
         data.setSkullId(this.item.getSkullId());
-        if(this.item.getColor() != null) data.setRGB(this.item.getColor().getColor().asRGB());
+        if (this.item.getColor() != null) data.setRGB(this.item.getColor().getColor().asRGB());
         data.setData(this.item.getData());
 
         data.setPublic(this.isPublic);
@@ -181,7 +181,7 @@ public class PlayerWarp extends FeatureObject {
         data.setInactiveSales(this.inactiveSales);
 
         List<Byte> classes = new ArrayList<>();
-        for(Category c : this.classes) {
+        for (Category c : this.classes) {
             classes.add((byte) c.getId());
         }
         data.setClasses(classes);
@@ -189,7 +189,7 @@ public class PlayerWarp extends FeatureObject {
         data.setDescription(new ArrayList<>(this.description));
         data.setBorn(this.born);
         data.setStarted(this.started);
-        if(isTimeDependent()) data.setTime(this.time);
+        if (isTimeDependent()) data.setTime(this.time);
         data.setCreatorKey(this.creatorKey);
         data.setNotify(this.notify);
         data.setPerformed(this.performed);
@@ -210,33 +210,33 @@ public class PlayerWarp extends FeatureObject {
     }
 
     public void setData(PlayerWarpData d) {
-        if(d.name != null) this.name = d.name;
-        if(d.owner != null) this.owner = new User("owner", d.owner.getName(), d.owner.getId());
+        if (d.name != null) this.name = d.name;
+        if (d.owner != null) this.owner = new User("owner", d.owner.getName(), d.owner.getId());
 
-        if(d.trusted != null) {
-            if(this.trusted == null) this.trusted = new ArrayList<>();
+        if (d.trusted != null) {
+            if (this.trusted == null) this.trusted = new ArrayList<>();
             else this.trusted.clear();
 
-            for(PlayerWarpData.User user : d.trusted) {
+            for (PlayerWarpData.User user : d.trusted) {
                 trusted.add(new User(null, user.getName(), user.getId()));
             }
         }
 
-        if(this.item == null) this.item = new ItemBuilder();
-        if(d.data != null) this.item.setData(d.data);
-        if(d.type != null) {
+        if (this.item == null) this.item = new ItemBuilder();
+        if (d.data != null) this.item.setData(d.data);
+        if (d.type != null) {
             Optional<XMaterial> m = XMaterial.matchXMaterial(d.type, d.data == null || Version.get().isBiggerThan(Version.v1_12) ? 0 : d.data);
 
-            if(!m.isPresent()) {
+            if (!m.isPresent()) {
                 throw new IllegalArgumentException("Error at loading PlayerWarp(Owner-Name=" + (d.owner == null ? owner.getName() : d.owner.getName()) + "; Warp-Name=" + (d.name == null ? name : d.name) + "). Material is null: (" + d.type + ", " + d.data + ")");
             } else {
                 this.item.setType(m.get().parseMaterial(true, true, XMaterial.STONE.parseMaterial()));
                 this.item.setData(m.get().getData());
             }
-        } else if(d.data != null) {
+        } else if (d.data != null) {
             Optional<XMaterial> m = XMaterial.matchXMaterial(item.getType().name(), Version.get().isBiggerThan(Version.v1_12) ? 0 : d.data);
 
-            if(!m.isPresent()) {
+            if (!m.isPresent()) {
                 throw new IllegalArgumentException("Error at loading PlayerWarp(Owner-Name=" + (d.owner == null ? owner.getName() : d.owner.getName()) + "; Warp-Name=" + (d.name == null ? name : d.name) + "). Material is null: (" + d.type + ", " + d.data + ")");
             } else {
                 this.item.setType(m.get().parseMaterial(true, true, XMaterial.STONE.parseMaterial()));
@@ -244,65 +244,65 @@ public class PlayerWarp extends FeatureObject {
             }
         }
 
-        if(d.skullId != null) this.item.setSkullId(d.skullId);
-        if(d.rgb != null && d.rgb > 0) this.item.setColor(DyeColor.getByColor(Color.fromRGB(d.rgb)));
+        if (d.skullId != null) this.item.setSkullId(d.skullId);
+        if (d.rgb != null && d.rgb > 0) this.item.setColor(DyeColor.getByColor(Color.fromRGB(d.rgb)));
 
-        if(d.isPublic != null) this.isPublic = d.isPublic;
-        if(d.teleportMessage != null) this.teleportMessage = d.teleportMessage;
-        if(d.teleportCosts != null) this.teleportCosts = d.teleportCosts;
-        if(d.getInactiveSales() != null) this.inactiveSales = d.inactiveSales;
+        if (d.isPublic != null) this.isPublic = d.isPublic;
+        if (d.teleportMessage != null) this.teleportMessage = d.teleportMessage;
+        if (d.teleportCosts != null) this.teleportCosts = d.teleportCosts;
+        if (d.getInactiveSales() != null) this.inactiveSales = d.inactiveSales;
 
-        if(d.classes != null) {
-            if(this.classes == null) this.classes = new ArrayList<>();
+        if (d.classes != null) {
+            if (this.classes == null) this.classes = new ArrayList<>();
             else this.classes.clear();
 
-            for(Byte b : d.classes) {
+            for (Byte b : d.classes) {
                 Category c = PlayerWarpManager.getManager().getWarpClass(b);
-                if(c != null) classes.add(c);
+                if (c != null) classes.add(c);
             }
         }
 
-        if(d.description != null) {
-            if(this.description == null) this.description = new ArrayList<>();
+        if (d.description != null) {
+            if (this.description == null) this.description = new ArrayList<>();
             else this.description.clear();
 
             this.description.addAll(d.description);
         }
-        if(d.born != null) this.born = d.born;
-        if(d.started != null) this.started = d.started;
-        if(d.time != null) this.time = d.time;
-        if(d.creatorKey != null) this.creatorKey = d.creatorKey;
-        if(d.notify != null) this.notify = d.notify;
-        if(d.performed != null) this.performed = d.performed;
+        if (d.born != null) this.born = d.born;
+        if (d.started != null) this.started = d.started;
+        if (d.time != null) this.time = d.time;
+        if (d.creatorKey != null) this.creatorKey = d.creatorKey;
+        if (d.notify != null) this.notify = d.notify;
+        if (d.performed != null) this.performed = d.performed;
 
         boolean createDestination = getAction(Action.WARP) == null;
         GlobalLocationAdapter a = createDestination ? new GlobalLocationAdapter(null, new Location()) : (GlobalLocationAdapter) ((Destination) getAction(Action.WARP).getValue()).getAdapter();
         Location l = a.getLocation();
 
-        if(d.server != null) a.setServer(d.server);
-        if(d.world != null) l.setWorldName(d.world);
-        if(d.x != null) l.setX(d.x);
-        if(d.y != null) l.setY(d.y);
-        if(d.z != null) l.setZ(d.z);
-        if(d.yaw != null) l.setYaw(d.yaw);
-        if(d.pitch != null) l.setPitch(d.pitch);
+        if (d.server != null) a.setServer(d.server);
+        if (d.world != null) l.setWorldName(d.world);
+        if (d.x != null) l.setX(d.x);
+        if (d.y != null) l.setY(d.y);
+        if (d.z != null) l.setZ(d.z);
+        if (d.yaw != null) l.setYaw(d.yaw);
+        if (d.pitch != null) l.setPitch(d.pitch);
 
-        if(createDestination) addAction(new WarpAction(new Destination(a)));
+        if (createDestination) addAction(new WarpAction(new Destination(a)));
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         super.write(d);
 
         JSONArray trustedMembers = new JSONArray();
-        for(User user : this.trusted) {
+        for (User user : this.trusted) {
             JSON userJson = new JSON();
             user.write(userJson);
             trustedMembers.add(userJson);
         }
 
         JSONArray classes = new JSONArray();
-        for(Category c : this.classes) {
+        for (Category c : this.classes) {
             classes.add(ChatColor.stripColor(c.getName()));
         }
 
@@ -324,12 +324,12 @@ public class PlayerWarp extends FeatureObject {
     }
 
     @Override
-    public boolean read(DataWriter d) throws Exception {
+    public boolean read(DataMask d) throws Exception {
         boolean success = super.read(d);
-        if(this.trusted == null) this.trusted = new ArrayList<>();
+        if (this.trusted == null) this.trusted = new ArrayList<>();
         else this.trusted.clear();
 
-        if(this.classes == null) this.classes = new ArrayList<>();
+        if (this.classes == null) this.classes = new ArrayList<>();
         else this.classes.clear();
 
         this.owner.read(d);
@@ -338,7 +338,7 @@ public class PlayerWarp extends FeatureObject {
         this.teleportMessage = d.getString("tpmsg");
         this.item = d.getItemBuilder("item");
 
-        if(!XMaterial.isNewVersion() && this.item.getType() == XMaterial.PLAYER_HEAD.parseMaterial(false, false)) {
+        if (!XMaterial.isNewVersion() && this.item.getType() == XMaterial.PLAYER_HEAD.parseMaterial(false, false)) {
             this.item.setType(XMaterial.PLAYER_HEAD.parseMaterial(true, false));
             this.item.setDurability(XMaterial.PLAYER_HEAD.getData());
             this.item.setData(XMaterial.PLAYER_HEAD.getData());
@@ -353,11 +353,11 @@ public class PlayerWarp extends FeatureObject {
         this.creatorKey = d.getString("key");
         this.notify = d.getBoolean("notify");
 
-        if(born > 0 && started == 0) started = born;
+        if (born > 0 && started == 0) started = born;
 
         JSONArray array = d.getList("trusted");
-        if(array != null)
-            for(Object o : array) {
+        if (array != null)
+            for (Object o : array) {
                 JSON data = new JSON((Map<?, ?>) o);
                 User user = new User();
                 user.read(data);
@@ -365,31 +365,31 @@ public class PlayerWarp extends FeatureObject {
             }
 
         array = d.getList("classes");
-        if(array != null)
-            for(Object o : array) {
+        if (array != null)
+            for (Object o : array) {
                 String name = (String) o;
                 Category c = PlayerWarpManager.getManager().getWarpClass(name);
-                if(c != null) this.classes.add(c);
+                if (c != null) this.classes.add(c);
             }
 
         //check "force player heads"
-        if(PlayerWarpManager.getManager().isForcePlayerHead()) resetItem();
+        if (PlayerWarpManager.getManager().isForcePlayerHead()) resetItem();
 
         //check "custom teleport costs"
-        if(!PlayerWarpManager.getManager().isCustomTeleportCosts()) this.teleportCosts = 0;
+        if (!PlayerWarpManager.getManager().isCustomTeleportCosts()) this.teleportCosts = 0;
         return success;
     }
 
     @Override
     public void destroy() {
         super.destroy();
-        if(this.trusted != null) this.trusted.clear();
-        if(this.classes != null) this.classes.clear();
-        if(this.description != null) this.description.clear();
+        if (this.trusted != null) this.trusted.clear();
+        if (this.classes != null) this.classes.clear();
+        if (this.description != null) this.description.clear();
     }
 
     public PlayerWarp changeItem(ItemBuilder item) {
-        if(this.item == null) {
+        if (this.item == null) {
             return setItem(item);
         }
 
@@ -406,9 +406,9 @@ public class PlayerWarp extends FeatureObject {
     }
 
     public boolean isSameItem(ItemBuilder item) {
-        if(this.item == null && item == null) return true;
+        if (this.item == null && item == null) return true;
 
-        if(this.item != null && item != null) {
+        if (this.item != null && item != null) {
             return this.item.getType() == item.getType()
                     && this.item.getData() == item.getData()
                     && this.item.getDurability() == item.getDurability()
@@ -422,7 +422,7 @@ public class PlayerWarp extends FeatureObject {
     }
 
     public void resetItem() {
-        if(isStandardItem()) return;
+        if (isStandardItem()) return;
         changeItem(getStandardItemBuilder());
     }
 
@@ -430,7 +430,7 @@ public class PlayerWarp extends FeatureObject {
         ItemBuilder builder = new ItemBuilder(XMaterial.PLAYER_HEAD);
 
         String id = WarpSystem.getInstance().getHeadManager().getSkinId(owner.getId());
-        if(id != null) builder.setSkullId(id);
+        if (id != null) builder.setSkullId(id);
 
         return builder;
     }
@@ -441,9 +441,9 @@ public class PlayerWarp extends FeatureObject {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
-        if(!super.equals(o)) return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         PlayerWarp warp = (PlayerWarp) o;
         return owner.equals(warp.owner) &&
                 name.equals(warp.name);
@@ -483,8 +483,8 @@ public class PlayerWarp extends FeatureObject {
     }
 
     public boolean isTrusted(UUID id) {
-        for(User user : this.trusted) {
-            if(user.getId().equals(id)) return true;
+        for (User user : this.trusted) {
+            if (user.getId().equals(id)) return true;
         }
 
         return false;
@@ -504,13 +504,13 @@ public class PlayerWarp extends FeatureObject {
     }
 
     public String getName(boolean color) {
-        if(name == null) return null;
+        if (name == null) return null;
         String s = ChatColor.translateAlternateColorCodes('&', name);
         return color ? s : ChatColor.stripColor(s);
     }
 
     public boolean equalsName(String name) {
-        if(name == null) return false;
+        if (name == null) return false;
         name = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', name.replace(" ", "_")));
         return getName(false).equalsIgnoreCase(name);
     }
@@ -537,7 +537,7 @@ public class PlayerWarp extends FeatureObject {
         ItemBuilder b = item.clone()
                 .setName(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Name") + ": §f" + (highlight == null ? name : ChatColor.highlight(name, highlight, "§e§n", "§f", true)).replace("_", " "));
 
-        if(PlayerWarpManager.getManager().isAllowDescription()) {
+        if (PlayerWarpManager.getManager().isAllowDescription()) {
             b.setLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Description") + ":" + (description.isEmpty() ? " §c-" : ""))
                     .addLore(getPreparedDescription());
 
@@ -549,8 +549,8 @@ public class PlayerWarp extends FeatureObject {
         b.setHideStandardLore(true);
         b.setHideEnchantments(true);
 
-        if(teleportCosts > 0) b.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Costs") + ": §7" + getCutTeleportCosts() + " " + Lang.get("Coins"));
-        if(isPublic) b.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Teleports") + ": §7" + getPerformed());
+        if (teleportCosts > 0) b.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Costs") + ": §7" + getCutTeleportCosts() + " " + Lang.get("Coins"));
+        if (isPublic) b.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Teleports") + ": §7" + getPerformed());
 
         return b;
     }
@@ -574,12 +574,12 @@ public class PlayerWarp extends FeatureObject {
 
     public Number getCutTeleportCosts() {
         Number n = teleportCosts;
-        if(n.intValue() == teleportCosts) return n.intValue();
+        if (n.intValue() == teleportCosts) return n.intValue();
         return teleportCosts;
     }
 
     public void born() {
-        if(this.born > 0) return;
+        if (this.born > 0) return;
         this.born = System.currentTimeMillis();
     }
 
@@ -608,33 +608,33 @@ public class PlayerWarp extends FeatureObject {
         return time;
     }
 
+    public PlayerWarp setTime(long time) {
+        this.time = time;
+        return this;
+    }
+
     public boolean isTimeDependent() {
         return this.time > 0 || ((getServer() == null || Objects.deepEquals(WarpSystem.getInstance().getCurrentServer(), getServer())) && PlayerWarpManager.getManager().isTime());
     }
 
     public String getServer() {
         WarpAction a = getAction(WarpAction.class);
-        if(a == null) return null;
+        if (a == null) return null;
         return ((GlobalLocationAdapter) a.getValue().getAdapter()).getServer();
     }
 
-    public PlayerWarp setTime(long time) {
-        this.time = time;
-        return this;
-    }
-
     public PlayerWarp setTimeIfEnabled(long time) {
-        if(PlayerWarpManager.getManager().isTime()) this.time = time;
+        if (PlayerWarpManager.getManager().isTime()) this.time = time;
         return this;
     }
 
     public long getLeftTime() {
-        if(this.started == 0) return this.time;
+        if (this.started == 0) return this.time;
         else return Math.max(started + time - System.currentTimeMillis(), 0);
     }
 
     public long getPassedTime() {
-        if(this.started == 0) return 0;
+        if (this.started == 0) return 0;
         else return Math.min(System.currentTimeMillis() - started, time);
     }
 
@@ -647,7 +647,7 @@ public class PlayerWarp extends FeatureObject {
     }
 
     public boolean isBeingEdited() {
-        if(owner == null || owner.getPlayer() == null) return false;
+        if (owner == null || owner.getPlayer() == null) return false;
         return API.getRemovable(owner.getPlayer(), PWEditor.class) != null;
     }
 
@@ -660,13 +660,13 @@ public class PlayerWarp extends FeatureObject {
     }
 
     public long getExpireDate() {
-        if(this.started == 0) return 0;
+        if (this.started == 0) return 0;
         return this.started + this.time;
     }
 
     public float getRefundFactor() {
-        if(this.started == 0) return 1;
-        else if(PlayerWarpManager.getManager().isInternalRefundFactor()) return ((float) (int) (((float) getLeftTime() / (float) (getExpireDate() - getBorn())) * 10000)) / 10000;
+        if (this.started == 0) return 1;
+        else if (PlayerWarpManager.getManager().isInternalRefundFactor()) return ((float) (int) (((float) getLeftTime() / (float) (getExpireDate() - getBorn())) * 10000)) / 10000;
         else return 1;
     }
 
@@ -691,11 +691,11 @@ public class PlayerWarp extends FeatureObject {
     }
 
     private List<String> getPreparedDescription() {
-        if(description.isEmpty()) return null;
+        if (description.isEmpty()) return null;
 
         List<String> description = new ArrayList<>();
 
-        for(String s : this.description) {
+        for (String s : this.description) {
             description.add("§f" + s);
         }
 
@@ -734,10 +734,10 @@ public class PlayerWarp extends FeatureObject {
         double money = getInactiveSales() * teleportCosts;
 
         Adapter a = Bank.adapter();
-        if(a != null) {
+        if (a != null) {
             resetInactiveSales();
 
-            if(PlayerWarpManager.getManager().checkBungeeCord()) {
+            if (PlayerWarpManager.getManager().checkBungeeCord()) {
                 PlayerWarpTeleportProcessPacket packet = new PlayerWarpTeleportProcessPacket(name, owner.getId(), false, true, false);
                 WarpSystem.getDataHandler().send(packet, player);
             }
@@ -789,14 +789,14 @@ public class PlayerWarp extends FeatureObject {
         }
 
         @Override
-        public boolean read(DataWriter d) {
+        public boolean read(DataMask d) {
             this.name = d.getString(p() + "name");
             this.id = UUID.fromString(d.getString(p() + "id"));
             return true;
         }
 
         @Override
-        public void write(DataWriter d) {
+        public void write(DataMask d) {
             d.put(p() + "name", this.name);
             d.put(p() + "id", id.toString());
         }
@@ -811,8 +811,8 @@ public class PlayerWarp extends FeatureObject {
 
         @Override
         public boolean equals(Object o) {
-            if(this == o) return true;
-            if(o == null || getClass() != o.getClass()) return false;
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
             User user = (User) o;
             return id.equals(user.id);
         }
@@ -840,7 +840,7 @@ public class PlayerWarp extends FeatureObject {
 
         public Player getPlayer() {
             Player p = Bukkit.getPlayer(id);
-            if(p != null && !p.getName().equals(this.name)) this.name = p.getName();
+            if (p != null && !p.getName().equals(this.name)) this.name = p.getName();
             return p;
         }
     }

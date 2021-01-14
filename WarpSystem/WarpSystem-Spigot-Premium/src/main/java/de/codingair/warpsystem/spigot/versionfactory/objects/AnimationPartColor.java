@@ -21,13 +21,13 @@ public class AnimationPartColor implements ItemListener {
 
     @Override
     public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-        if(!instance.getPart().getParticle().isColorable()) return;
+        if (!instance.getPart().getParticle().isColorable()) return;
 
-        if(clickType == ClickType.LEFT_CLICK) {
-            if(instance.getPart().getColor() == null) instance.getPart().setColor(Color.RED);
+        if (clickType == ClickType.LEFT_CLICK) {
+            if (instance.getPart().getColor() == null) instance.getPart().setColor(Color.RED);
             else instance.getPart().setColor(instance.getColor().previous());
-        } else if(clickType == ClickType.RIGHT_CLICK) {
-            if(instance.getPart().getColor() == null) instance.getPart().setColor(Color.RED);
+        } else if (clickType == ClickType.RIGHT_CLICK) {
+            if (instance.getPart().getColor() == null) instance.getPart().setColor(Color.RED);
             else instance.getPart().setColor(instance.getColor().next());
         }
 
@@ -37,7 +37,7 @@ public class AnimationPartColor implements ItemListener {
 
     @Override
     public void onHover(HotbarGUI gui, ItemComponent old, ItemComponent current, Player player) {
-        if(instance.getPart().getParticle().isColorable()) {
+        if (instance.getPart().getParticle().isColorable()) {
             MessageAPI.sendActionBar(instance.getPlayer(), Menu.PREVIOUS_NEXT(Lang.get("Particle_Effect")), WarpSystem.getInstance(), Integer.MAX_VALUE);
         } else {
             MessageAPI.sendActionBar(instance.getPlayer(), "§c" + Lang.get("ParticleType_Doesnt_Support_Colors"), WarpSystem.getInstance(), Integer.MAX_VALUE);

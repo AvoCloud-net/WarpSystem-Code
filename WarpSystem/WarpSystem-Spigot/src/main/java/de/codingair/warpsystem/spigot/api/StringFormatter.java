@@ -33,7 +33,7 @@ public class StringFormatter {
     public static String convertInTimeFormat(long time, int highlight, String highlighter, String reset) {
         long days = 0, hours = 0, min = 0, sec = 0;
 
-        if(time > 0) {
+        if (time > 0) {
             days = Math.max(TimeUnit.DAYS.convert(time, TimeUnit.MILLISECONDS), 0);
             time -= TimeUnit.MILLISECONDS.convert(days, TimeUnit.DAYS);
             hours = Math.max(TimeUnit.HOURS.convert(time, TimeUnit.MILLISECONDS), 0);
@@ -46,29 +46,29 @@ public class StringFormatter {
 
         StringBuilder builder = new StringBuilder();
 
-        if(days > 0 || highlight > 0) {
-            if(!builder.toString().isEmpty()) builder.append(", ");
-            if(highlight == 1) builder.append(highlighter).append("»");
+        if (days > 0 || highlight > 0) {
+            if (!builder.toString().isEmpty()) builder.append(", ");
+            if (highlight == 1) builder.append(highlighter).append("»");
             builder.append(days).append("d");
-            if(highlight == 1) builder.append(highlighter).append("«").append(reset);
+            if (highlight == 1) builder.append(highlighter).append("«").append(reset);
         }
 
-        if(hours > 0 || highlight > 0) {
-            if(!builder.toString().isEmpty()) builder.append(", ");
-            if(highlight == 2) builder.append(highlighter).append("»");
+        if (hours > 0 || highlight > 0) {
+            if (!builder.toString().isEmpty()) builder.append(", ");
+            if (highlight == 2) builder.append(highlighter).append("»");
             builder.append(hours).append("h");
-            if(highlight == 2) builder.append(highlighter).append("«").append(reset);
+            if (highlight == 2) builder.append(highlighter).append("«").append(reset);
         }
 
-        if(min > 0 || highlight > 0) {
-            if(!builder.toString().isEmpty()) builder.append(", ");
-            if(highlight == 3) builder.append(highlighter).append("»");
+        if (min > 0 || highlight > 0) {
+            if (!builder.toString().isEmpty()) builder.append(", ");
+            if (highlight == 3) builder.append(highlighter).append("»");
             builder.append(min).append("m");
-            if(highlight == 3) builder.append(highlighter).append("«").append(reset);
+            if (highlight == 3) builder.append(highlighter).append("«").append(reset);
         }
 
-        if((days + hours + min + sec == 0) || highlight == 5 || sec > 0) {
-            if(!builder.toString().isEmpty()) builder.append(", ");
+        if ((days + hours + min + sec == 0) || highlight == 5 || sec > 0) {
+            if (!builder.toString().isEmpty()) builder.append(", ");
             builder.append(sec).append("s");
         }
         return builder.toString();
@@ -79,22 +79,22 @@ public class StringFormatter {
 
         text = text.trim().toLowerCase();
 
-        if(text.contains("d")) {
+        if (text.contains("d")) {
             String[] a = text.split("d")[0].split(" ");
             d = Long.parseLong(a[a.length - 1]);
         }
 
-        if(text.contains("h")) {
+        if (text.contains("h")) {
             String[] a = text.split("h")[0].split(" ");
             h = Long.parseLong(a[a.length - 1]);
         }
 
-        if(text.contains("m")) {
+        if (text.contains("m")) {
             String[] a = text.split("m")[0].split(" ");
             m = Long.parseLong(a[a.length - 1]);
         }
 
-        if(text.contains("s")) {
+        if (text.contains("s")) {
             String[] a = text.split("s")[0].split(" ");
             s = Long.parseLong(a[a.length - 1]);
         }
@@ -103,11 +103,11 @@ public class StringFormatter {
     }
 
     public static long convertFromTimeFormat(String s, long def) {
-        if(s == null || (!s.contains("d") && !s.contains("h") && !s.contains("m") && !s.contains("s"))) return def;
+        if (s == null || (!s.contains("d") && !s.contains("h") && !s.contains("m") && !s.contains("s"))) return def;
 
         try {
             return convertFromTimeFormat(s);
-        } catch(NumberFormatException ex) {
+        } catch (NumberFormatException ex) {
             return def;
         }
     }

@@ -35,7 +35,7 @@ public class SpawnEditor extends HotbarGUI {
 
     public static Number cut(double n) {
         double d = Double.parseDouble(new DecimalFormat("#.##").format(n).replace(",", "."));
-        if(d == (int) d) return (int) d;
+        if (d == (int) d) return (int) d;
         else return d;
     }
 
@@ -65,7 +65,7 @@ public class SpawnEditor extends HotbarGUI {
         setItem(2, new SyncItemComponent(new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType == ClickType.LEFT_CLICK || clickType == ClickType.SHIFT_LEFT_CLICK) {
+                if (clickType == ClickType.LEFT_CLICK || clickType == ClickType.SHIFT_LEFT_CLICK) {
                     clone.setSpawn(new Location(player.getLocation()));
                     updateSingle(2);
                 }

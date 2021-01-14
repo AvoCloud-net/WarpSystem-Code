@@ -22,7 +22,7 @@ public class StatusButton extends SyncButton {
 
     @Override
     public ItemStack craftItem() {
-        if(object == null) return new ItemStack(Material.AIR);
+        if (object == null) return new ItemStack(Material.AIR);
 
         return new ItemBuilder(object.isDisabled() ? XMaterial.RED_DYE : XMaterial.LIME_DYE)
                 .setName("§6§n" + Lang.get("Status"))
@@ -36,7 +36,7 @@ public class StatusButton extends SyncButton {
 
     @Override
     public void onClick(InventoryClickEvent e, Player player) {
-        if(e.isLeftClick()) {
+        if (e.isLeftClick()) {
             object.setDisabled(!object.isDisabled());
             update();
         }

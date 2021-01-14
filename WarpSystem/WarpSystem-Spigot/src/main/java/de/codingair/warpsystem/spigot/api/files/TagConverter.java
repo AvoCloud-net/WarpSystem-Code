@@ -15,7 +15,7 @@ public class TagConverter {
     }
 
     protected boolean convert() {
-        if(convert.isEmpty()) return false;
+        if (convert.isEmpty()) return false;
         FileConfiguration fromConfig = this.from.getConfig();
         FileConfiguration toConfig = this.to.getConfig();
         convert.forEach((from, to) -> toConfig.set(to, fromConfig.get(from)));

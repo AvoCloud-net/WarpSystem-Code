@@ -41,15 +41,15 @@ public enum BlockType {
     }
 
     public static BlockType getByEditMaterial(ItemStack item) {
-        if(item == null) return null;
+        if (item == null) return null;
 
         ItemBuilder builder = new ItemBuilder(item);
 
-        for(BlockType value : values()) {
-            if(Version.get().isBiggerThan(Version.v1_12)) {
-                if(!value.hasEditMaterial()) continue;
-                if(builder.getType() == value.getExactEditMaterial()) return value;
-            } else if(builder.equalsSimply(value.editMaterial)) return value;
+        for (BlockType value : values()) {
+            if (Version.get().isBiggerThan(Version.v1_12)) {
+                if (!value.hasEditMaterial()) continue;
+                if (builder.getType() == value.getExactEditMaterial()) return value;
+            } else if (builder.equalsSimply(value.editMaterial)) return value;
         }
 
         return null;

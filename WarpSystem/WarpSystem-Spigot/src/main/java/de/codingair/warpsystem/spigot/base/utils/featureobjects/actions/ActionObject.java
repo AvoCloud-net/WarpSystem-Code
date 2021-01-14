@@ -44,7 +44,7 @@ public abstract class ActionObject<T> implements Serializable {
     }
 
     public void destroy() {
-        if(this.value instanceof Serializable) {
+        if (this.value instanceof Serializable) {
             ((Serializable) this.value).destroy();
         }
     }

@@ -22,7 +22,7 @@ public class SendUUIDPacket implements ResponsePacket {
     @Override
     public void write(DataOutputStream out) throws IOException {
         out.writeByte(this.options);
-        if(this.id != null) {
+        if (this.id != null) {
             out.writeLong(this.id.getMostSignificantBits());
             out.writeLong(this.id.getLeastSignificantBits());
         }
@@ -31,7 +31,7 @@ public class SendUUIDPacket implements ResponsePacket {
     @Override
     public void read(DataInputStream in) throws IOException {
         this.options = in.readByte();
-        if((this.options & 1) == 1) this.id = new UUID(in.readLong(), in.readLong());
+        if ((this.options & 1) == 1) this.id = new UUID(in.readLong(), in.readLong());
     }
 
     public UUID getId() {

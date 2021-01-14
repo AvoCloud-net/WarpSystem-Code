@@ -23,10 +23,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class PWPage extends Page {
+    private final int size;
     protected FilterType filter;
     protected Object[] extra;
     protected String search;
-    private final int size;
     private int maxPage = 0;
     private int page = 0;
 
@@ -70,21 +70,21 @@ public class PWPage extends Page {
         updateTitle();
 
         int slot = 0;
-        for(Button button : data.getKey()) {
+        for (Button button : data.getKey()) {
             button.setSlot(slot++);
             addButton(button);
             button.setOption(new StandardButtonOption());
 
-            if(slot == 7 || slot == 16 || slot == 25 || slot == 34 || slot == 43 || slot == 52 || slot == 61) slot += 2;
+            if (slot == 7 || slot == 16 || slot == 25 || slot == 34 || slot == 43 || slot == 52 || slot == 61) slot += 2;
         }
 
-        if(filter.createButtonInList()) addButton(new SyncButton(slot) {
+        if (filter.createButtonInList()) addButton(new SyncButton(slot) {
             @Override
             public ItemStack craftItem() {
                 ItemBuilder builder = new ItemBuilder(XMaterial.NETHER_STAR);
 
-                if(PlayerWarpManager.isProtected(p)) builder.setName("§7" + Lang.get("Create") + " (§c" + Lang.get("Protected_Area") + "§7)");
-                else if(PlayerWarpManager.getManager().hasPermission(p)) builder.setName("§b" + Lang.get("Create"));
+                if (PlayerWarpManager.isProtected(p)) builder.setName("§7" + Lang.get("Create") + " (§c" + Lang.get("Protected_Area") + "§7)");
+                else if (PlayerWarpManager.getManager().hasPermission(p)) builder.setName("§b" + Lang.get("Create"));
                 else builder.setName("§7" + Lang.get("Create") + " (§c" + Lang.get("Maximum_reached") + "§7)");
 
                 return builder.getItem();
@@ -122,7 +122,7 @@ public class PWPage extends Page {
 
         //filter
         FilterButton b = filter.getControllButton(this, data.getValue());
-        if(b != null) {
+        if (b != null) {
             b.setSlot(17);
             b.setOption(new StandardButtonOption());
             b.update();
@@ -156,7 +156,7 @@ public class PWPage extends Page {
     public void setExtra(boolean update, Object... extra) {
         this.extra = extra;
 
-        if(update) resetPage();
+        if (update) resetPage();
     }
 
     public int getPage() {
@@ -204,7 +204,7 @@ public class PWPage extends Page {
 
         @Override
         public ItemStack craftItem() {
-            if(page == null) return null;
+            if (page == null) return null;
 
             return new ItemBuilder(XMaterial.COMPASS).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Filter") + ":§7 " + page.filter.getFilterName())
                     .setLore(page.getSearch() == null || !page.filter.searchable(page) ? null : Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Search_Short") + ": §7'§f" + page.getSearch() + "§7'",
@@ -221,18 +221,18 @@ public class PWPage extends Page {
 
         @Override
         public void onOtherClick(InventoryClickEvent e) {
-            if(FilterType.active() > 1) {
-                if(e.isShiftClick() && e.isRightClick()) page.setSearch(null);
-                else if(page.filter.deleteExtraBeforeChangeFilter() && page.extra != null) page.extra = null;
-                else if(e.isLeftClick()) {
+            if (FilterType.active() > 1) {
+                if (e.isShiftClick() && e.isRightClick()) page.setSearch(null);
+                else if (page.filter.deleteExtraBeforeChangeFilter() && page.extra != null) page.extra = null;
+                else if (e.isLeftClick()) {
                     page.filter = page.filter.previous();
                     page.extra = page.filter.getStandardExtra((PWList) page.getLast());
-                } else if(e.isRightClick()) {
+                } else if (e.isRightClick()) {
                     page.filter = page.filter.next();
                     page.extra = page.filter.getStandardExtra((PWList) page.getLast());
                 }
             } else {
-                if(e.isRightClick()) page.setSearch(null);
+                if (e.isRightClick()) page.setSearch(null);
             }
 
             page.resetPage();
@@ -240,7 +240,7 @@ public class PWPage extends Page {
 
         @Override
         public void onTrigger(InventoryClickEvent e, ClickType trigger, Player player) {
-            if(page.search == null) super.onTrigger(e, trigger, player);
+            if (page.search == null) super.onTrigger(e, trigger, player);
             else onOtherClick(e);
         }
 

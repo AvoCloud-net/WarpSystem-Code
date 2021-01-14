@@ -19,39 +19,39 @@ public enum PluginVersion {
 
     public static PluginVersion getVersion(String version) {
         version = version.split("-", -1)[0];
-        if(!version.startsWith("v")) version = "v" + version;
+        if (!version.startsWith("v")) version = "v" + version;
         version = version.replace(".", "_");
         try {
             return valueOf(version);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             return UNKNOWN;
         }
     }
 
     public static PluginVersion getOld() {
-        if(old == null) old = getVersion(WarpSystem.getInstance().getOldVersion());
+        if (old == null) old = getVersion(WarpSystem.getInstance().getOldVersion());
         return old;
     }
 
     public static PluginVersion getCurrent() {
-        if(current == null) current = getVersion(WarpSystem.getInstance().getDescription().getVersion());
+        if (current == null) current = getVersion(WarpSystem.getInstance().getDescription().getVersion());
         return current;
     }
 
     public static PluginVersion getUpcoming() {
-        if(upcoming == null) upcoming = values[getCurrent().ordinal() + 1];
+        if (upcoming == null) upcoming = values[getCurrent().ordinal() + 1];
         return upcoming;
     }
 
     public PluginVersion previous() {
         int i = ordinal() - 1;
-        if(i <= 0) i = values().length - 1;
+        if (i <= 0) i = values().length - 1;
         return values[i];
     }
 
     public PluginVersion next() {
         int i = ordinal() + 1;
-        if(i >= values.length) i = 1;
+        if (i >= values.length) i = 1;
         return values[i];
     }
 

@@ -40,10 +40,10 @@ public class ParticlesHandler {
                 .getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType == ClickType.LEFT_CLICK) {
+                if (clickType == ClickType.LEFT_CLICK) {
                     ic.setLink(instance.getAnimations()[0]);
 
-                    if(instance.getMenuGUI().getClone().getParticleParts().size() == 0) {
+                    if (instance.getMenuGUI().getClone().getParticleParts().size() == 0) {
                         instance.getMenuGUI().getClone().getParticleParts().add(new ParticlePart(AnimationType.CIRCLE, Particle.FLAME, 1, 1, CustomAnimation.MAX_SPEED));
                         instance.getAnimations()[0].initialize();
                         instance.getMenuGUI().getAnimPlayer().update();
@@ -56,7 +56,7 @@ public class ParticlesHandler {
                     } else instance.getAnimations()[0].initialize();
                 } else {
                     ic.setLink(null);
-                    if(clickType == ClickType.RIGHT_CLICK && instance.getParts().size() >= 1) {
+                    if (clickType == ClickType.RIGHT_CLICK && instance.getParts().size() >= 1) {
                         instance.getParts().remove(0);
                         instance.getMenuGUI().getAnimPlayer().update();
                         onHover(gui, ic, ic, player);
@@ -67,7 +67,7 @@ public class ParticlesHandler {
 
             @Override
             public void onHover(HotbarGUI gui, ItemComponent old, ItemComponent current, Player player) {
-                if(instance.getParts().size() >= 1) {
+                if (instance.getParts().size() >= 1) {
                     MessageAPI.sendActionBar(instance.getPlayer(), Menu.ACTION_BAR(instance.getParts().get(0).getAnimation().getDisplayName(), "§e" + Lang.get("Edit"), "§c" + Lang.get("Delete")), WarpSystem.getInstance(), Integer.MAX_VALUE);
                 } else MessageAPI.sendActionBar(instance.getPlayer(), "§3" + Lang.get("Leftclick") + ": §a" + Lang.get("Add"), WarpSystem.getInstance(), Integer.MAX_VALUE);
             }
@@ -78,7 +78,7 @@ public class ParticlesHandler {
             }
         }).setLink(this.instance.getAnimations()[0]));
 
-        if(!this.instance.getParts().isEmpty()) {
+        if (!this.instance.getParts().isEmpty()) {
             instance.setItem(3, new ItemComponent(new ItemBuilder(XMaterial.BARRIER)
                     .setName("§c" + Lang.get("Animation") + " #" + 2)
                     .getItem(), new PremiumOnlyItemListener()));

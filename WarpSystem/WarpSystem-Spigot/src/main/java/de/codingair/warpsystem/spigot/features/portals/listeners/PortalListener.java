@@ -38,29 +38,6 @@ public class PortalListener implements Listener, Ticker {
         API.addTicker(this);
     }
 
-    @Override
-    public void onTick() {
-
-    }
-
-    @Override
-    public void onSecond() {
-        try {
-            lock.tryLock(100, TimeUnit.MILLISECONDS);
-            try {
-                waiting.entrySet().removeIf(entry -> {
-                    if(entry.getValue().enteredPortal(entry.getKey(), entry.getKey().getLocation()) == 1) {
-                        entry.getValue().perform(entry.getKey());
-                        return false;
-                    } else return true;
-                });
-            } finally {
-                lock.unlock();
-            }
-        } catch(InterruptedException ignored) {
-        }
-    }
-
     public static void waiting(Player player, Portal portal) {
         instance.lock.lock();
         try {
@@ -79,46 +56,69 @@ public class PortalListener implements Listener, Ticker {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @Override
+    public void onTick() {
+
+    }
+
+    @Override
+    public void onSecond() {
+        try {
+            lock.tryLock(100, TimeUnit.MILLISECONDS);
+            try {
+                waiting.entrySet().removeIf(entry -> {
+                    if (entry.getValue().enteredPortal(entry.getKey(), entry.getKey().getLocation()) == 1) {
+                        entry.getValue().perform(entry.getKey());
+                        return false;
+                    } else return true;
+                });
+            } finally {
+                lock.unlock();
+            }
+        } catch (InterruptedException ignored) {
+        }
+    }
+
+    @EventHandler (priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent e) {
         List<Portal> portals = new ArrayList<>(PortalManager.getInstance().getPortals());
-        for(Portal portal : portals) {
+        for (Portal portal : portals) {
             portal.updatePlayer(e.getPlayer());
         }
         portals.clear();
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler (priority = EventPriority.LOWEST)
     public void onQuit(PlayerQuitEvent e) {
         PortalEditor editor = PortalEditor.EDITORS.remove(e.getPlayer().getName());
-        if(editor != null) editor.getBackup().cancel(editor.getClone());
+        if (editor != null) editor.getBackup().cancel(editor.getClone());
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler (priority = EventPriority.LOWEST)
     public void onWalk(PlayerWalkEvent e) {
-        for(Portal portal : PortalManager.getInstance().getPortals()) {
-            if(!portal.isVisible() || portal.isEditMode()) continue;
+        for (Portal portal : PortalManager.getInstance().getPortals()) {
+            if (!portal.isVisible() || portal.isEditMode()) continue;
 
             int test = portal.enteredPortal(e.getPlayer(), e.getFrom(), e.getTo());
 
-            if(test == 1) RuleListener.noDamageTo(e.getPlayer());
+            if (test == 1) RuleListener.noDamageTo(e.getPlayer());
 
-            if(test == 1) {
+            if (test == 1) {
                 //entered
-                for(de.codingair.warpsystem.spigot.features.portals.utils.PortalListener l : portal.getListeners()) {
+                for (de.codingair.warpsystem.spigot.features.portals.utils.PortalListener l : portal.getListeners()) {
                     l.onEnter(e.getPlayer());
                 }
-            } else if(test == -1) {
+            } else if (test == -1) {
                 //left
-                for(de.codingair.warpsystem.spigot.features.portals.utils.PortalListener l : portal.getListeners()) {
+                for (de.codingair.warpsystem.spigot.features.portals.utils.PortalListener l : portal.getListeners()) {
                     l.onLeave(e.getPlayer());
                 }
 
                 done(e.getPlayer());
-            } else if(test == 2) {
+            } else if (test == 2) {
                 //entered and left
-                if(portal.isSkip()) {
-                    for(de.codingair.warpsystem.spigot.features.portals.utils.PortalListener l : portal.getListeners()) {
+                if (portal.isSkip()) {
+                    for (de.codingair.warpsystem.spigot.features.portals.utils.PortalListener l : portal.getListeners()) {
                         l.onEnter(e.getPlayer());
                     }
                 }
@@ -126,31 +126,31 @@ public class PortalListener implements Listener, Ticker {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void onPortal(PlayerPortalEvent e) {
         Player player = e.getPlayer();
-        if(PortalManager.getInstance().getNoTeleport().contains(player)
+        if (PortalManager.getInstance().getNoTeleport().contains(player)
                 || PortalManager.getInstance().isEditing(player)
                 || WarpSystem.getInstance().getTeleportManager().isTeleporting(player)
                 || API.getRemovable(player, PortalEditor.class) != null) {
             e.setCancelled(true);
         }
 
-        for(Portal portal : PortalManager.getInstance().getPortals()) {
-            if(portal.enteredPortal(player, e.getFrom()) == 1) {
+        for (Portal portal : PortalManager.getInstance().getPortals()) {
+            if (portal.enteredPortal(player, e.getFrom()) == 1) {
                 e.setCancelled(true);
                 return;
             }
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void onPortal(EntityPortalEvent e) {
-        if(e.getEntity() instanceof LivingEntity) {
+        if (e.getEntity() instanceof LivingEntity) {
             LivingEntity le = (LivingEntity) e.getEntity();
 
-            for(Portal portal : PortalManager.getInstance().getPortals()) {
-                if(portal.enteredPortal(le, e.getFrom()) == 1) {
+            for (Portal portal : PortalManager.getInstance().getPortals()) {
+                if (portal.enteredPortal(le, e.getFrom()) == 1) {
                     e.setCancelled(true);
                     return;
                 }
@@ -158,44 +158,44 @@ public class PortalListener implements Listener, Ticker {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler (priority = EventPriority.LOWEST)
     public void onBlockPlace(BlockPlaceEvent e) {
-        for(Portal portal : PortalManager.getInstance().getPortals()) {
-            if(portal == null) continue;
-            if(!portal.isVisible() || portal.isEditMode()) continue;
+        for (Portal portal : PortalManager.getInstance().getPortals()) {
+            if (portal == null) continue;
+            if (!portal.isVisible() || portal.isEditMode()) continue;
 
-            if(portal.isAround(e.getBlock().getLocation(), 1)) {
+            if (portal.isAround(e.getBlock().getLocation(), 1)) {
                 Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), portal::update, 1);
             }
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler (priority = EventPriority.LOWEST)
     public void onBucketFill(PlayerBucketFillEvent e) {
-        for(Portal portal : PortalManager.getInstance().getPortals()) {
-            if(portal == null) continue;
-            if(!portal.isVisible() || portal.isEditMode()) continue;
+        for (Portal portal : PortalManager.getInstance().getPortals()) {
+            if (portal == null) continue;
+            if (!portal.isVisible() || portal.isEditMode()) continue;
 
-            if(portal.isAround(e.getBlockClicked().getLocation(), 0)) {
+            if (portal.isAround(e.getBlockClicked().getLocation(), 0)) {
                 e.setCancelled(true);
                 Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), portal::update, 1);
             }
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler (priority = EventPriority.LOWEST)
     public void onBlockBreak(BlockBreakEvent e) {
-        for(Portal portal : PortalManager.getInstance().getPortals()) {
-            if(portal == null) continue;
+        for (Portal portal : PortalManager.getInstance().getPortals()) {
+            if (portal == null) continue;
 
-            if(portal.isEditMode() && portal.getEditing() != null) {
-                if(portal.getEditing().isAround(e.getBlock().getLocation(), 0)) {
+            if (portal.isEditMode() && portal.getEditing() != null) {
+                if (portal.getEditing().isAround(e.getBlock().getLocation(), 0)) {
                     e.setCancelled(true);
                 }
-            } else if(portal.isVisible()) {
-                if(portal.isAround(e.getBlock().getLocation(), 0))
+            } else if (portal.isVisible()) {
+                if (portal.isAround(e.getBlock().getLocation(), 0))
                     e.setCancelled(true);
-                else if(portal.isAround(e.getBlock().getLocation(), 1)) {
+                else if (portal.isAround(e.getBlock().getLocation(), 1)) {
                     Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), portal::update, 1);
                 }
             }

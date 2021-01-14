@@ -26,13 +26,19 @@ public class TargetPositionButton extends EditorButton {
         super(x, warp, original, isEditing, page, player);
     }
 
+    public static Number cut(float n) {
+        double d = Double.parseDouble(new DecimalFormat("#.##").format(n).replace(",", "."));
+        if (d == (int) d) return (int) d;
+        else return d;
+    }
+
     @Override
     public ItemStack craftItem() {
         ItemBuilder builder = new ItemBuilder(XMaterial.ENDER_PEARL);
 
         builder.setName(Editor.ITEM_TITLE_COLOR + Lang.get("Target_Position"));
 
-        if(PlayerWarpManager.getManager().isEconomy() && !original.getAction(WarpAction.class).getValue().equals(warp.getAction(WarpAction.class).getValue())) {
+        if (PlayerWarpManager.getManager().isEconomy() && !original.getAction(WarpAction.class).getValue().equals(warp.getAction(WarpAction.class).getValue())) {
             String costsMessage = PWEditor.getCostsMessage(PlayerWarpManager.getManager().getPositionChangeCosts(), page);
             builder.addLore(costsMessage, costsMessage != null ? "" : null);
         }
@@ -40,24 +46,24 @@ public class TargetPositionButton extends EditorButton {
         Destination d = (Destination) warp.getAction(Action.WARP).getValue();
         GlobalLocationAdapter a = (GlobalLocationAdapter) d.getAdapter();
         de.codingair.codingapi.tools.Location l = a.getLocation();
-        if(a.getServer() != null) builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Server") + ": §7" + a.getServer());
+        if (a.getServer() != null) builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Server") + ": §7" + a.getServer());
         builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("World") + ": §7" + l.getWorldName());
         builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Position") + ": §7" + l.getBlockX() + ", " + l.getBlockY() + ", " + l.getBlockZ());
         builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Direction") + ": §7" + cut(l.getYaw()) + ", " + cut(l.getPitch()));
 
         String info;
 
-        if(PlayerWarpManager.isProtected(player)) info = "§7" + Lang.get("Change") + " (§c" + Lang.get("Protected_Area") + "§7)";
-        else if(equalsLocation(l, player.getLocation())) info = "§7" + Lang.get("Change");
+        if (PlayerWarpManager.isProtected(player)) info = "§7" + Lang.get("Change") + " (§c" + Lang.get("Protected_Area") + "§7)";
+        else if (equalsLocation(l, player.getLocation())) info = "§7" + Lang.get("Change");
         else info = "§a" + Lang.get("Change");
 
         builder.addLore("", Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": " + info);
 
-        if(!original.getAction(WarpAction.class).getValue().equals(warp.getAction(WarpAction.class).getValue())) {
+        if (!original.getAction(WarpAction.class).getValue().equals(warp.getAction(WarpAction.class).getValue())) {
             builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Rightclick") + ": §c" + Lang.get("Reset"));
         }
 
-        if(builder.getLore().get(builder.getLore().size() - 1).isEmpty()) builder.getLore().remove(builder.getLore().size() - 1);
+        if (builder.getLore().get(builder.getLore().size() - 1).isEmpty()) builder.getLore().remove(builder.getLore().size() - 1);
 
         return builder.getItem();
     }
@@ -70,7 +76,7 @@ public class TargetPositionButton extends EditorButton {
 
     @Override
     public void onClick(InventoryClickEvent e, Player player) {
-        if(e.getClick() == ClickType.LEFT && !equalsLocation(((Destination) warp.getAction(Action.WARP).getValue()).buildLocation(), player.getLocation())) {
+        if (e.getClick() == ClickType.LEFT && !equalsLocation(((Destination) warp.getAction(Action.WARP).getValue()).buildLocation(), player.getLocation())) {
             Destination d = (Destination) warp.getAction(Action.WARP).getValue();
             GlobalLocationAdapter a = (GlobalLocationAdapter) d.getAdapter();
             de.codingair.codingapi.tools.Location l = a.getLocation();
@@ -79,7 +85,7 @@ public class TargetPositionButton extends EditorButton {
 
             update();
             updateCosts();
-        } else if(e.getClick() == ClickType.RIGHT && !original.getAction(WarpAction.class).getValue().equals(warp.getAction(WarpAction.class).getValue())) {
+        } else if (e.getClick() == ClickType.RIGHT && !original.getAction(WarpAction.class).getValue().equals(warp.getAction(WarpAction.class).getValue())) {
             Destination d = (Destination) warp.getAction(Action.WARP).getValue();
             GlobalLocationAdapter a = (GlobalLocationAdapter) d.getAdapter();
             de.codingair.codingapi.tools.Location l = (de.codingair.codingapi.tools.Location) d.buildLocation();
@@ -102,11 +108,5 @@ public class TargetPositionButton extends EditorButton {
         l1.trim(1);
 
         return l.equals(l1);
-    }
-
-    public static Number cut(float n) {
-        double d = Double.parseDouble(new DecimalFormat("#.##").format(n).replace(",", "."));
-        if(d == (int) d) return (int) d;
-        else return d;
     }
 }

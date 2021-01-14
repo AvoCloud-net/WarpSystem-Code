@@ -13,8 +13,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class BungeeBukkitListener implements Listener {
-    private String[] notice = null;
     private final TimeMap<String, String> loginMessage = new TimeMap<>();
+    private String[] notice = null;
 
     public BungeeBukkitListener() {
         WarpSystem.getDataHandler().registerHandler(InitialPacket.class, new InitialPacketHandler(this));
@@ -24,16 +24,16 @@ public class BungeeBukkitListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         String message = loginMessage.remove(e.getPlayer().getName());
-        if(message != null) e.getPlayer().sendMessage(message);
+        if (message != null) e.getPlayer().sendMessage(message);
 
         Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
-            if(notice != null && (e.getPlayer().hasPermission(WarpSystem.PERMISSION_NOTIFY) || e.getPlayer().isOp())) e.getPlayer().sendMessage(notice);
+            if (notice != null && (e.getPlayer().hasPermission(WarpSystem.PERMISSION_NOTIFY) || e.getPlayer().isOp())) e.getPlayer().sendMessage(notice);
         }, 20 * 4L);
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
-        if(Bukkit.getOnlinePlayers().size() <= 1 && WarpSystem.getInstance().isOnProxy()) {
+        if (Bukkit.getOnlinePlayers().size() <= 1 && WarpSystem.getInstance().isOnProxy()) {
             WarpSystem.getInstance().setOnBungeeCord(false);
         }
     }
@@ -44,7 +44,7 @@ public class BungeeBukkitListener implements Listener {
 
     public void process(PrepareLoginMessagePacket packet) {
         Player p = Bukkit.getPlayer(packet.getPlayer());
-        if(p != null) p.sendMessage(packet.getMessage());
+        if (p != null) p.sendMessage(packet.getMessage());
         else loginMessage.put(packet.getPlayer(), packet.getMessage(), 10000);
     }
 }

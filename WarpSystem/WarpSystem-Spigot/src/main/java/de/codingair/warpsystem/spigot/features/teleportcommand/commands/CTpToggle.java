@@ -28,7 +28,7 @@ public class CTpToggle extends WSCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                if(TeleportCommandManager.getInstance().toggleDenyForceTps((Player) sender))
+                if (TeleportCommandManager.getInstance().toggleDenyForceTps((Player) sender))
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Teleports_toggled_disabling"));
                 else
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Teleports_toggled_enabling"));

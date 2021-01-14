@@ -22,7 +22,7 @@ public class SendJarPacket implements Packet {
     @Override
     public void write(DataOutputStream out) throws IOException {
         out.writeByte(opt);
-        if(opt != 1) out.writeShort(data.length);
+        if (opt != 1) out.writeShort(data.length);
         out.write(data);
     }
 
@@ -30,7 +30,7 @@ public class SendJarPacket implements Packet {
     public void read(DataInputStream in) throws IOException {
         opt = in.readByte();
         int length = SIZE;
-        if(opt != 1) length = in.readUnsignedShort();
+        if (opt != 1) length = in.readUnsignedShort();
 
         data = new byte[length];
         in.read(data);

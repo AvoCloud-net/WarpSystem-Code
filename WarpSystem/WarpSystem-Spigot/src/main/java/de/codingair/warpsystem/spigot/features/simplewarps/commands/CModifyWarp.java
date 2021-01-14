@@ -50,14 +50,14 @@ public class CModifyWarp extends WSCommandBuilder {
         getBaseComponent().addChild(new MultiCommandComponent() {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
-                for(SimpleWarp value : m.getWarps().values()) {
+                for (SimpleWarp value : m.getWarps().values()) {
                     suggestions.add(value.getName(true));
                 }
             }
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
-                if(!m.existsWarp(argument)) {
+                if (!m.existsWarp(argument)) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("WARP_DOES_NOT_EXISTS"));
                     return true;
                 }
@@ -74,7 +74,7 @@ public class CModifyWarp extends WSCommandBuilder {
         getBaseComponent().getChild(null).addChild(new MultiCommandComponent() {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
-                for(World w : Bukkit.getWorlds()) {
+                for (World w : Bukkit.getWorlds()) {
                     suggestions.add(w.getName());
                 }
             }
@@ -83,7 +83,7 @@ public class CModifyWarp extends WSCommandBuilder {
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 World w = Bukkit.getWorld(argument);
 
-                if(w == null) {
+                if (w == null) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("World_Not_Exists"));
                     return true;
                 }
@@ -98,14 +98,14 @@ public class CModifyWarp extends WSCommandBuilder {
             public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
                 List<String> l = new ArrayList<>();
 
-                if(sender instanceof Player) {
+                if (sender instanceof Player) {
                     Player p = (Player) sender;
 
-                    if(args.length == 3) l.add(cut(p.getLocation().getX()) + "");
-                    else if(args.length == 4) l.add(cut(p.getLocation().getY()) + "");
-                    else if(args.length == 5) l.add(cut(p.getLocation().getZ()) + "");
-                    else if(args.length == 6) l.add(cut(p.getLocation().getYaw()) + "");
-                    else if(args.length == 7) l.add(cut(p.getLocation().getPitch()) + "");
+                    if (args.length == 3) l.add(cut(p.getLocation().getX()) + "");
+                    else if (args.length == 4) l.add(cut(p.getLocation().getY()) + "");
+                    else if (args.length == 5) l.add(cut(p.getLocation().getZ()) + "");
+                    else if (args.length == 6) l.add(cut(p.getLocation().getYaw()) + "");
+                    else if (args.length == 7) l.add(cut(p.getLocation().getPitch()) + "");
                 }
 
                 return l;
@@ -113,17 +113,17 @@ public class CModifyWarp extends WSCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                if(args.length == 5 || args.length == 7) {
+                if (args.length == 5 || args.length == 7) {
                     SimpleWarp warp = m.getWarp(args[0]);
 
-                    if(warp == null) {
+                    if (warp == null) {
                         sender.sendMessage(Lang.getPrefix() + Lang.get("WARP_DOES_NOT_EXISTS"));
                         return true;
                     }
 
                     World w = Bukkit.getWorld(args[1]);
 
-                    if(w == null) {
+                    if (w == null) {
                         sender.sendMessage(Lang.getPrefix() + Lang.get("World_Not_Exists"));
                         return true;
                     }
@@ -137,7 +137,7 @@ public class CModifyWarp extends WSCommandBuilder {
                         float yaw = 0;
                         float pitch = 0;
 
-                        if(args.length == 7) {
+                        if (args.length == 7) {
                             //with yaw + pitch
                             yaw = Float.parseFloat(args[5].replace(",", "."));
                             pitch = Float.parseFloat(args[6].replace(",", "."));
@@ -146,7 +146,7 @@ public class CModifyWarp extends WSCommandBuilder {
                         warp.setLocation(new Location(w, x, y, z, yaw, pitch));
                         sender.sendMessage(Lang.getPrefix() + "§a" + Lang.get("Changes_have_been_saved"));
                         return true;
-                    } catch(NumberFormatException ignored) {
+                    } catch (NumberFormatException ignored) {
                     }
                 }
 

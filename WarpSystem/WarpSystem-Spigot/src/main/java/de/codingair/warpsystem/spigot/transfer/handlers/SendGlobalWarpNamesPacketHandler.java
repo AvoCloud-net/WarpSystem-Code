@@ -14,7 +14,7 @@ public class SendGlobalWarpNamesPacketHandler implements PacketHandler<SendGloba
     @Override
     public void process(@NotNull SendGlobalWarpNamesPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         GlobalWarpManager gwManager = WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS);
-        if(packet.isStart()) {
+        if (packet.isStart()) {
             gwManager.getGlobalWarps().clear();
         }
         gwManager.getGlobalWarps().putAll(packet.getNames());

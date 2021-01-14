@@ -26,10 +26,10 @@ public class TeleportCostsButton extends EditorAnvilButton {
 
         try {
             amount = Double.parseDouble(e.getInput().replace(",", "."));
-        } catch(NumberFormatException ignored) {
+        } catch (NumberFormatException ignored) {
         }
 
-        if(amount == null || amount < 0 || amount > PlayerWarpManager.getManager().getMaxTeleportCosts()) {
+        if (amount == null || amount < 0 || amount > PlayerWarpManager.getManager().getMaxTeleportCosts()) {
             player.sendMessage(Lang.getPrefix() + Lang.get("Enter_Amount_between").replace("%X%", 0 + "").replace("%Y%", PlayerWarpManager.getManager().getMaxTeleportCosts() + ""));
             return;
         }
@@ -57,13 +57,13 @@ public class TeleportCostsButton extends EditorAnvilButton {
         builder.setName(Editor.ITEM_TITLE_COLOR + Lang.get("Teleport_Costs"));
 
         double costs = warp.getTeleportCosts() - original.getTeleportCosts();
-        if(costs > 0) builder.addLore(PWEditor.getCostsMessage(costs * PlayerWarpManager.getManager().getTeleportCosts(), page));
-        else if(costs < 0) builder.addLore(PWEditor.getFreeMessage("≤" + original.getTeleportCosts() + " " + Lang.get("Coins"), page));
+        if (costs > 0) builder.addLore(PWEditor.getCostsMessage(costs * PlayerWarpManager.getManager().getTeleportCosts(), page));
+        else if (costs < 0) builder.addLore(PWEditor.getFreeMessage("≤" + original.getTeleportCosts() + " " + Lang.get("Coins"), page));
 
         builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Current") + ": §e" + PWEditor.cut(warp.getTeleportCosts()) + " " + Lang.get("Coins"));
         builder.addLore("", Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §a" + Lang.get("Change"));
-        if(warp.getTeleportCosts() > 0) builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
-        else if(warp.getTeleportCosts() != original.getTeleportCosts()) builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Rightclick") + ": §c" + Lang.get("Reset"));
+        if (warp.getTeleportCosts() > 0) builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
+        else if (warp.getTeleportCosts() != original.getTeleportCosts()) builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Rightclick") + ": §c" + Lang.get("Reset"));
 
         return builder.getItem();
     }
@@ -75,9 +75,9 @@ public class TeleportCostsButton extends EditorAnvilButton {
 
     @Override
     public void onOtherClick(InventoryClickEvent e) {
-        if(e.isRightClick()) {
-            if(warp.getTeleportCosts() > 0) warp.setTeleportCosts(0);
-            else if(warp.getTeleportCosts() != original.getTeleportCosts()) warp.setTeleportCosts(original.getTeleportCosts());
+        if (e.isRightClick()) {
+            if (warp.getTeleportCosts() > 0) warp.setTeleportCosts(0);
+            else if (warp.getTeleportCosts() != original.getTeleportCosts()) warp.setTeleportCosts(original.getTeleportCosts());
 
             update();
             updateCosts();

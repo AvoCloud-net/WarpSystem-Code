@@ -40,7 +40,7 @@ public class PWList extends SimpleGUI {
 
             @Override
             public void onInvCloseEvent(InventoryCloseEvent e) {
-                if(!isClosingForGUI() && getMain().filter.deleteExtraBeforeChangeFilter() && getMain().extra != null) {
+                if (!isClosingForGUI() && getMain().filter.deleteExtraBeforeChangeFilter() && getMain().extra != null) {
                     getMain().extra = null;
                     Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> open(), 1);
                 }

@@ -14,33 +14,33 @@ import org.bukkit.util.Vector;
 public class ServerAdapter extends DestinationAdapter {
     @Override
     public boolean teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback) {
-        if(!WarpSystem.getInstance().isOnProxy()) {
-            if(callback != null) callback.accept(Result.NOT_ON_BUNGEE_CORD);
+        if (!WarpSystem.getInstance().isOnProxy()) {
+            if (callback != null) callback.accept(Result.NOT_ON_BUNGEE_CORD);
             return false;
         }
 
         WarpSystem.getDataHandler().send(new PrepareServerSwitchPacket(player.getName(), id, message, player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Max_Players)), player).thenAccept(packet -> {
             int result = packet.a();
-            if(callback != null) {
-                if(result == 0) callback.accept(Result.SUCCESS);
-                else if(result == 1) callback.accept(Result.SERVER_NOT_AVAILABLE);
-                else if(result == 2) callback.accept(Result.ALREADY_ON_TARGET_SERVER);
-                else if(result == 3) callback.accept(Result.SERVER_NOT_AVAILABLE);
-                else if(result == 4) callback.accept(Result.ERROR);
-                else if(result == 5) callback.accept(Result.TARGET_SERVER_IS_FULL);
+            if (callback != null) {
+                if (result == 0) callback.accept(Result.SUCCESS);
+                else if (result == 1) callback.accept(Result.SERVER_NOT_AVAILABLE);
+                else if (result == 2) callback.accept(Result.ALREADY_ON_TARGET_SERVER);
+                else if (result == 3) callback.accept(Result.SERVER_NOT_AVAILABLE);
+                else if (result == 4) callback.accept(Result.ERROR);
+                else if (result == 5) callback.accept(Result.TARGET_SERVER_IS_FULL);
             }
 
-            if(result == 2) player.sendMessage(Lang.getPrefix() + Lang.get("Player_Is_Already_On_Target_Server"));
+            if (result == 2) player.sendMessage(Lang.getPrefix() + Lang.get("Player_Is_Already_On_Target_Server"));
         });
         return false;
     }
 
     @Override
     public SimulatedTeleportResult simulate(Player player, String id, boolean checkPermission) {
-        if(!WarpSystem.getInstance().isOnProxy())
+        if (!WarpSystem.getInstance().isOnProxy())
             return new SimulatedTeleportResult(null, Result.NOT_ON_BUNGEE_CORD);
 
-        if(WarpSystem.getInstance().getCurrentServer().equalsIgnoreCase(id))
+        if (WarpSystem.getInstance().getCurrentServer().equalsIgnoreCase(id))
             return new SimulatedTeleportResult(Lang.getPrefix() + Lang.get("Player_Is_Already_On_Target_Server"), Result.ALREADY_ON_TARGET_SERVER);
         return new SimulatedTeleportResult(null, Result.SUCCESS);
     }

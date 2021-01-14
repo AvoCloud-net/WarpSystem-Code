@@ -45,7 +45,7 @@ public class PrepareCoordinationTeleportPacket implements RequestPacket<IntegerP
         out.writeByte(b);
 
         out.writeUTF(this.player);
-        if(this.server != null) out.writeUTF(this.server);
+        if (this.server != null) out.writeUTF(this.server);
         out.writeUTF(this.world);
         out.writeUTF(this.destinationName);
         out.writeDouble(this.x);
@@ -53,8 +53,8 @@ public class PrepareCoordinationTeleportPacket implements RequestPacket<IntegerP
         out.writeDouble(this.z);
         out.writeFloat(this.yaw);
         out.writeFloat(this.pitch);
-        if(costs != 0) out.writeDouble(costs);
-        if(message != null) out.writeUTF(message);
+        if (costs != 0) out.writeDouble(costs);
+        if (message != null) out.writeUTF(message);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class PrepareCoordinationTeleportPacket implements RequestPacket<IntegerP
         byte b = in.readByte();
 
         this.player = in.readUTF();
-        if((b & 1) != 0) this.server = in.readUTF();
+        if ((b & 1) != 0) this.server = in.readUTF();
         this.world = in.readUTF();
         this.destinationName = in.readUTF();
         this.x = in.readDouble();
@@ -70,8 +70,8 @@ public class PrepareCoordinationTeleportPacket implements RequestPacket<IntegerP
         this.z = in.readDouble();
         this.yaw = in.readFloat();
         this.pitch = in.readFloat();
-        if((b & (1 << 1)) != 0) this.costs = in.readDouble();
-        if((b & (1 << 2)) != 0) this.message = in.readUTF();
+        if ((b & (1 << 1)) != 0) this.costs = in.readDouble();
+        if ((b & (1 << 2)) != 0) this.message = in.readUTF();
     }
 
     public String getPlayer() {

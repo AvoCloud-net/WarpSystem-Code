@@ -14,14 +14,14 @@ public class PlayerWarpPlaceholderExpansion extends WarpSystemPlaceholderExpansi
 
     @Override
     public String onRequest(Player player, String id) {
-        if(player == null) return null;
+        if (player == null) return null;
         id = id.toLowerCase();
-        if(!id.startsWith("playerwarps_")) return null;
+        if (!id.startsWith("playerwarps_")) return null;
         id = id.replace("playerwarps_", "");
 
         List<PlayerWarp> warps = PlayerWarpManager.getManager().getOwnWarps(player);
 
-        switch(id) {
+        switch (id) {
             case "count":
                 return warps.size() + "";
             case "max":

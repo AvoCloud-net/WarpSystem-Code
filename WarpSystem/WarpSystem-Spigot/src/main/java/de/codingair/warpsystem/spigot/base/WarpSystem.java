@@ -18,11 +18,11 @@ import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.api.PAPI;
 import de.codingair.warpsystem.spigot.api.SpigotAPI;
 import de.codingair.warpsystem.spigot.base.commands.CWarpSystem;
-import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.listeners.*;
 import de.codingair.warpsystem.spigot.base.managers.*;
 import de.codingair.warpsystem.spigot.base.setupassistant.SetupAssistantManager;
 import de.codingair.warpsystem.spigot.base.setupassistant.utils.SetupAssistantListener;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.ProxyFeature;
 import de.codingair.warpsystem.spigot.base.utils.options.OptionBundle;
 import de.codingair.warpsystem.spigot.base.utils.options.Options;
@@ -57,8 +57,6 @@ import java.util.logging.Level;
 public class WarpSystem extends JavaPlugin implements Proxy {
     public static final String PERMISSION_NOTIFY = "warpsystem.notify";
     public static final String PERMISSION_MODIFY = "warpsystem.modify";
-    public static String PERMISSION_ADMIN = "warpsystem.admin"; //will be set after removing all non-final permission (if permissions are disabled)
-
     public static final String PERMISSION_MODIFY_WARP_GUI = "warpsystem.modify.warpgui";
     public static final String PERMISSION_MODIFY_SHORTCUTS = "warpsystem.modify.shortcuts";
     public static final String PERMISSION_MODIFY_WARP_SIGNS = "warpsystem.modify.warpsigns";
@@ -68,12 +66,22 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     public static final String PERMISSION_MODIFY_RANDOM_TELEPORTER = "warpsystem.modify.randomteleporters";
     public static final String PERMISSION_MODIFY_PLAYER_WARPS = "warpsystem.modify.playerwarps";
     public static final String PERMISSION_MODIFY_SPAWN = "warpsystem.modify.spawn";
-
     public static final String PERMISSION_USE_TELEPORT_COMMAND = "warpsystem.use.teleportCommand";
     public static final String PERMISSION_USE_TELEPORT_COMMAND_TP = PERMISSION_USE_TELEPORT_COMMAND + ".tp";
     public static final String PERMISSION_USE_TELEPORT_COMMAND_TP_TOGGLE = PERMISSION_USE_TELEPORT_COMMAND + ".tptoggle";
     public static final String PERMISSION_USE_TELEPORT_COMMAND_TPALL = PERMISSION_USE_TELEPORT_COMMAND + ".tpall";
     public static final String PERMISSION_USE_TELEPORT_COMMAND_TPA_ALL = PERMISSION_USE_TELEPORT_COMMAND + ".tpaall";
+    public static final String PERMISSION_WARP_GUI_OTHER = "warpsystem.warpgui.other";
+    public static final String PERMISSION_HIDE_ALL_ICONS = "warpgui.hideall";
+    public static final String PERMISSION_SIMPLE_WARPS_DIRECT_TELEPORT = "warpsystem.simplewarp.directteleport";
+    public static final String PERMISSION_GLOBAL_WARPS_DIRECT_TELEPORT = "warpsystem.globalwarp.directteleport";
+    public static final String PERMISSION_RANDOM_TELEPORT_SELECTION_SELF = "warpsystem.randomteleporters.selection";
+    public static final String PERMISSION_RANDOM_TELEPORT_SELECTION_OTHER = "warpsystem.randomteleporters.selection.other";
+    public static final String PERMISSION_ByPass_Teleport_Costs = "warpsystem.bypass.teleport.costs";
+    public static final String PERMISSION_ByPass_Teleport_Delay = "warpsystem.bypass.teleport.delay";
+    public static final String PERMISSION_ByPass_Teleport_Max_Players = "warpsystem.bypass.teleport.maxplayers";
+    public static final String PERMISSION_ByPass_Teleport_Cooldown = "warpsystem.bypass.cooldown";
+    public static String PERMISSION_ADMIN = "warpsystem.admin"; //will be set after removing all non-final permission (if permissions are disabled)
     public static String PERMISSION_USE_TELEPORT_COMMAND_BACK = PERMISSION_USE_TELEPORT_COMMAND + ".back";
     public static String PERMISSION_USE_TELEPORT_COMMAND_BACK_DETECT_DEATHS = PERMISSION_USE_TELEPORT_COMMAND_BACK + ".deaths";
     public static String PERMISSION_USE_TELEPORT_COMMAND_TPA = PERMISSION_USE_TELEPORT_COMMAND + ".tpa";
@@ -81,19 +89,6 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     public static String PERMISSION_USE_TELEPORT_COMMAND_TP_DENY = PERMISSION_USE_TELEPORT_COMMAND + ".tpdeny";
     public static String PERMISSION_USE_TELEPORT_COMMAND_TPA_TOGGLE = PERMISSION_USE_TELEPORT_COMMAND + ".tpatoggle";
     public static String PERMISSION_USE_TELEPORT_COMMAND_TPA_HERE = PERMISSION_USE_TELEPORT_COMMAND + ".tpahere";
-
-    public static final String PERMISSION_WARP_GUI_OTHER = "warpsystem.warpgui.other";
-    public static final String PERMISSION_HIDE_ALL_ICONS = "warpgui.hideall";
-    public static final String PERMISSION_SIMPLE_WARPS_DIRECT_TELEPORT = "warpsystem.simplewarp.directteleport";
-    public static final String PERMISSION_GLOBAL_WARPS_DIRECT_TELEPORT = "warpsystem.globalwarp.directteleport";
-    public static final String PERMISSION_RANDOM_TELEPORT_SELECTION_SELF = "warpsystem.randomteleporters.selection";
-    public static final String PERMISSION_RANDOM_TELEPORT_SELECTION_OTHER = "warpsystem.randomteleporters.selection.other";
-
-    public static final String PERMISSION_ByPass_Teleport_Costs = "warpsystem.bypass.teleport.costs";
-    public static final String PERMISSION_ByPass_Teleport_Delay = "warpsystem.bypass.teleport.delay";
-    public static final String PERMISSION_ByPass_Teleport_Max_Players = "warpsystem.bypass.teleport.maxplayers";
-    public static final String PERMISSION_ByPass_Teleport_Cooldown = "warpsystem.bypass.cooldown";
-
     public static String PERMISSION_USE_WARP_GUI = "warpsystem.use.warpgui";
     public static String PERMISSION_USE_WARP_SIGNS = "warpsystem.use.warpsigns";
     public static String PERMISSION_USE_GLOBAL_WARPS = "warpsystem.use.globalwarps";
@@ -104,33 +99,29 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     public static String PERMISSION_USE_SPAWN = "warpsystem.use.spawn";
 
     public static boolean activated = false;
-    private static WarpSystem instance;
     public static boolean updateAvailable = false;
-    private OptionBundle options;
-    private GeneralOptions generalOptions;
-
-    private boolean onBungeeCord = false;
-    private String bungeePluginVersion = null;
-    private String server = null;
+    private static WarpSystem instance;
     private final List<ProxyFeature> proxyFeatureList = new ArrayList<>();
-
     private final TeleportManager teleportManager = TeleportManager.getInstance();
     private final FileManager fileManager = new FileManager(this);
-    private DataManager dataManager;
     private final HeadManager headManager = new HeadManager();
     private final SetupAssistantManager setupAssistantManager = new SetupAssistantManager();
     private final CooldownManager cooldownManager = new CooldownManager();
-    private ServerManager serverManager;
-
-    private UpdateNotifier updateNotifier;
-
     private final Timer timer = new Timer();
+    private final SpigotHandler dataHandler = new SpigotHandler(this);
+    private final PlayerDataManager playerDataManager = new PlayerDataManager();
+    private OptionBundle options;
+    private GeneralOptions generalOptions;
+    private boolean onBungeeCord = false;
+    private String bungeePluginVersion = null;
+    private String server = null;
+    private DataManager dataManager;
+    private ServerManager serverManager;
+    private UpdateNotifier updateNotifier;
     private boolean old = false;
     private boolean ERROR = true;
     private boolean shouldSave = true;
     private String oldVersion = null;
-    private final SpigotHandler dataHandler = new SpigotHandler(this);
-    private final PlayerDataManager playerDataManager = new PlayerDataManager();
     private UTFConfig oldConfig = null;
 
     public static boolean hasPermission(CommandSender sender, String permission) {
@@ -138,8 +129,8 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     }
 
     public static void updateCommandList() {
-        if(Version.get().isBiggerThan(Version.v1_12)) {
-            for(Player player : Bukkit.getOnlinePlayers()) {
+        if (Version.get().isBiggerThan(Version.v1_12)) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
                 IReflection.MethodAccessor updateCommands = IReflection.getMethod(Player.class, "updateCommands");
                 updateCommands.invoke(player);
             }
@@ -155,10 +146,10 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     }
 
     public static <E extends Options> E getOptions(Class<? extends E> clazz) {
-        if(instance == null) return null;
+        if (instance == null) return null;
 
-        for(Options option : getInstance().options.getOptions()) {
-            if(option.getClass().equals(clazz)) return (E) option;
+        for (Options option : getInstance().options.getOptions()) {
+            if (option.getClass().equals(clazz)) return (E) option;
         }
 
         return null;
@@ -168,10 +159,18 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         return getInstance().generalOptions;
     }
 
+    public static SpigotHandler getDataHandler() {
+        return getInstance().dataHandler;
+    }
+
+    public static CooldownManager cooldown() {
+        return getInstance().cooldownManager;
+    }
+
     @Override
     public void onEnable() {
         Version.load();
-        if(!checkSpigot()) return;
+        if (!checkSpigot()) return;
 
         timer.start();
 
@@ -205,7 +204,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             Lang.initPreDefinedLanguages(this);
 
             oldVersion = fileManager.getFile("Config").getConfig().getString("Do_Not_Edit.Last_Version", "0");
-            if(!oldVersion.equals(getDescription().getVersion())) createBackup();
+            if (!oldVersion.equals(getDescription().getVersion())) createBackup();
 
             //load cooldown list
             cooldownManager.load();
@@ -223,16 +222,16 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             cWarpSystem.register();
 
             boolean createBackup = false;
-            if(!this.dataManager.load()) createBackup = true;
+            if (!this.dataManager.load()) createBackup = true;
             log(" ");
             log("Loading TeleportManager");
-            if(!this.teleportManager.load()) createBackup = true;
+            if (!this.teleportManager.load()) createBackup = true;
 
-            if(createBackup) {
+            if (createBackup) {
                 log(" ");
                 log(" ");
                 log("Loading with errors > Create backup...");
-                if(oldVersion.equals(getDescription().getVersion())) createBackup();
+                if (oldVersion.equals(getDescription().getVersion())) createBackup();
                 log("Backup successfully created");
                 log(" ");
             }
@@ -268,20 +267,20 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
             this.ERROR = false;
 
-            if(!Bukkit.getOnlinePlayers().isEmpty()) this.dataHandler.send(new RequestInitialPacket());
+            if (!Bukkit.getOnlinePlayers().isEmpty()) this.dataHandler.send(new RequestInitialPacket());
             BungeeBukkitListener packetListener = new BungeeBukkitListener();
             Bukkit.getPluginManager().registerEvents(packetListener, this);
 
             ConfigFile config = fileManager.getFile("Config");
-            if(config.getConfig().getBoolean("WarpSystem.Functions.CommandBlocks", true))
+            if (config.getConfig().getBoolean("WarpSystem.Functions.CommandBlocks", true))
                 Bukkit.getPluginManager().registerEvents(new CommandBlockListener(), this);
-        } catch(Throwable ex) {
+        } catch (Throwable ex) {
             //make error-report
 
-            if(!getDataFolder().exists()) {
+            if (!getDataFolder().exists()) {
                 try {
                     getDataFolder().createNewFile();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -289,18 +288,18 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             BufferedWriter writer = null;
             try {
                 File log = new File(getDataFolder(), "ErrorReport.txt");
-                if(log.exists()) log.delete();
+                if (log.exists()) log.delete();
 
                 writer = new BufferedWriter(new FileWriter(log));
 
                 PrintWriter printWriter = new PrintWriter(writer);
                 ex.printStackTrace(printWriter);
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             } finally {
                 try {
                     writer.close();
-                } catch(Exception ignored) {
+                } catch (Exception ignored) {
                 }
             }
 
@@ -340,18 +339,18 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
     private void checkPermissions() {
         ConfigFile config = fileManager.getFile("Config");
-        if(config.getConfig().getString("Do_Not_Edit.Last_Version", "0").equals("0")) {
+        if (config.getConfig().getString("Do_Not_Edit.Last_Version", "0").equals("0")) {
             config.getConfig().set("WarpSystem.Permissions", false);
             config.saveConfig();
         }
 
-        if(!config.getConfig().getBoolean("WarpSystem.Permissions", true)) {
-            for(Field f : getClass().getDeclaredFields()) {
-                if(!Modifier.isFinal(f.getModifiers()) && f.getName().startsWith("PERMISSION_USE_")) {
+        if (!config.getConfig().getBoolean("WarpSystem.Permissions", true)) {
+            for (Field f : getClass().getDeclaredFields()) {
+                if (!Modifier.isFinal(f.getModifiers()) && f.getName().startsWith("PERMISSION_USE_")) {
                     f.setAccessible(true);
                     try {
                         f.set(this, null);
-                    } catch(IllegalAccessException e) {
+                    } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
                 }
@@ -369,7 +368,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
     @Override
     public void onDisable() {
-        if(Version.type() == Type.BUKKIT) return;
+        if (Version.type() == Type.BUKKIT) return;
 
         API.getInstance().onDisable(this);
         SpigotAPI.getInstance().onDisable(this);
@@ -400,7 +399,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     }
 
     private boolean checkSpigot() {
-        if(Version.type() == Type.BUKKIT) {
+        if (Version.type() == Type.BUKKIT) {
             shouldSave = false;
             log(" ");
             log(" ");
@@ -419,9 +418,9 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     }
 
     private void loadOptions() {
-        if(this.options == null) this.options = new OptionBundle(generalOptions = new GeneralOptions(), new WarpGUIOptions(), new WarpSignOptions(), new PortalOptions());
+        if (this.options == null) this.options = new OptionBundle(generalOptions = new GeneralOptions(), new WarpGUIOptions(), new WarpSignOptions(), new PortalOptions());
         this.options.read();
-        for(Options option : this.options.getOptions()) {
+        for (Options option : this.options.getOptions()) {
             option.write();
         }
     }
@@ -431,7 +430,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
         try {
             API.getInstance().reload(this);
-        } catch(InvalidDescriptionException | FileNotFoundException | InvalidPluginException e) {
+        } catch (InvalidDescriptionException | FileNotFoundException | InvalidPluginException e) {
             e.printStackTrace();
         }
     }
@@ -448,17 +447,17 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     }
 
     private void save(boolean saver) {
-        if(!this.shouldSave) return;
+        if (!this.shouldSave) return;
         try {
-            if(!this.ERROR) {
-                if(!saver) {
+            if (!this.ERROR) {
+                if (!saver) {
                     timer.start();
 
                     log(" ");
                     log("__________________________________________________________");
                     log(" ");
                     log("                       WarpSystem [" + getDescription().getVersion() + "]");
-                    if(updateAvailable) {
+                    if (updateAvailable) {
                         log(" ");
                         log("New update available [" + updateNotifier.getVersion() + " - " + WarpSystem.this.updateNotifier.getUpdateInfo() + "]. Download it on \n\n" + updateNotifier.getDownload() + "\n");
                     }
@@ -472,15 +471,15 @@ public class WarpSystem extends JavaPlugin implements Proxy {
                 //save cooldown list
                 cooldownManager.save();
 
-                if(!saver) log("Saving options");
+                if (!saver) log("Saving options");
                 fileManager.getFile("Config").loadConfig();
                 this.options.write();
 
-                if(!saver) log("Saving features");
+                if (!saver) log("Saving features");
                 this.dataManager.save(saver);
                 this.teleportManager.save();
 
-                if(!saver) {
+                if (!saver) {
                     log(" ");
                     log("Finished (" + timer.result() + ")");
                     log(" ");
@@ -488,7 +487,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
                     log(" ");
                 }
             }
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             getLogger().log(Level.SEVERE, "Error at saving data! Exception: \n\n");
             ex.printStackTrace();
             getLogger().log(Level.SEVERE, "\n");
@@ -498,10 +497,10 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     private void checkOldDirectory() {
         File file = getDataFolder();
 
-        if(file.exists()) {
+        if (file.exists()) {
             File warps = new File(file, "Memory/Warps.yml");
 
-            if(warps.exists()) {
+            if (warps.exists()) {
                 old = true;
                 renameUnnecessaryFiles();
             }
@@ -521,18 +520,18 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         File backupFolder = new File(getDataFolder().getPath() + "/Backups/", TimeFetcher.getYear() + "_" + (TimeFetcher.getMonthNum() + 1) + "_" + TimeFetcher.getDay() + " " + TimeFetcher.getHour() + "_" + TimeFetcher.getMinute() + "_" + TimeFetcher.getSecond());
         backupFolder.mkdirs();
 
-        for(File file : getDataFolder().listFiles()) {
-            if(file.getName().equals("Backups") || file.getName().equals("ErrorReport.txt")) continue;
+        for (File file : getDataFolder().listFiles()) {
+            if (file.getName().equals("Backups") || file.getName().equals("ErrorReport.txt")) continue;
             File dest = new File(backupFolder, file.getName());
 
             try {
-                if(file.isDirectory()) {
+                if (file.isDirectory()) {
                     copyFolder(file, dest);
                     continue;
                 }
 
                 copyFileUsingFileChannels(file, dest);
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -540,10 +539,10 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
     private void copyFolder(File source, File dest) throws IOException {
         dest.mkdirs();
-        for(File file : source.listFiles()) {
+        for (File file : source.listFiles()) {
             File copy = new File(dest, file.getName());
 
-            if(file.isDirectory()) {
+            if (file.isDirectory()) {
                 copyFolder(file, copy);
                 continue;
             }
@@ -574,10 +573,10 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     }
 
     public synchronized void setOnBungeeCord(boolean onBungeeCord) {
-        if(this.onBungeeCord == onBungeeCord) return;
+        if (this.onBungeeCord == onBungeeCord) return;
 
         this.onBungeeCord = onBungeeCord;
-        if(onBungeeCord) {
+        if (onBungeeCord) {
             this.proxyFeatureList.forEach(ProxyFeature::onConnect);
         } else {
             this.proxyFeatureList.forEach(ProxyFeature::onDisconnect);
@@ -590,10 +589,6 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
     public boolean isOld() {
         return old;
-    }
-
-    public static SpigotHandler getDataHandler() {
-        return getInstance().dataHandler;
     }
 
     public DataManager getDataManager() {
@@ -638,10 +633,6 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
     public String getOldVersion() {
         return oldVersion;
-    }
-
-    public static CooldownManager cooldown() {
-        return getInstance().cooldownManager;
     }
 
     public UTFConfig getOldConfig() {

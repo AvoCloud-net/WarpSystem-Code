@@ -20,28 +20,28 @@ public class SpawnEditor extends Editor<Spawn> {
         super(p, clone, new Backup<Spawn>(spawn) {
             @Override
             public void applyTo(Spawn clone) {
-                if(WarpSystem.getInstance().isOnProxy() && clone.getUsage().getName().contains("/spawn")) {
+                if (WarpSystem.getInstance().isOnProxy() && clone.getUsage().getName().contains("/spawn")) {
                     String server = SpawnManager.getInstance().getSpawnServer();
 
-                    if(server != null && !WarpSystem.getInstance().getCurrentServer().equals(server)) {
+                    if (server != null && !WarpSystem.getInstance().getCurrentServer().equals(server)) {
                         clone.setUsage(clone.getUsage().getWithoutSpawnCommand());
                     }
                 }
 
                 spawn.apply(clone);
 
-                if(WarpSystem.getInstance().isOnProxy()) {
+                if (WarpSystem.getInstance().isOnProxy()) {
                     String s = WarpSystem.getInstance().getCurrentServer();
 
                     String spawnServer = SpawnManager.getInstance().getSpawnServer();
                     String respawnServer = SpawnManager.getInstance().getRespawnServer();
 
 
-                    if(spawn.getUsage().isBungee()) spawnServer = s;
-                    else if(s.equals(spawnServer)) spawnServer = null;
+                    if (spawn.getUsage().isBungee()) spawnServer = s;
+                    else if (s.equals(spawnServer)) spawnServer = null;
 
-                    if(spawn.getRespawnUsage().isBungee()) respawnServer = s;
-                    else if(s.equals(respawnServer)) respawnServer = null;
+                    if (spawn.getRespawnUsage().isBungee()) respawnServer = s;
+                    else if (s.equals(respawnServer)) respawnServer = null;
 
                     SpawnManager.getInstance().updateGlobalOptions(spawnServer, respawnServer);
                 }

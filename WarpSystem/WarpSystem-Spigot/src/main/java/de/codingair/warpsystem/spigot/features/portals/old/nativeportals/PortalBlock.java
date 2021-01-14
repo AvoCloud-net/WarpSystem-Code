@@ -11,7 +11,7 @@ public class PortalBlock {
 
         try {
             this.loc.getBlock();
-        } catch(Throwable t) {
+        } catch (Throwable t) {
         }
     }
 

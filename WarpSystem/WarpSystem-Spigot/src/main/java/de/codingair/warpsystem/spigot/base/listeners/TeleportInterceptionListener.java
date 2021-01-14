@@ -12,10 +12,10 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class TeleportInterceptionListener implements Listener {
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler (priority = EventPriority.HIGH)
     public void onTeleport(PlayerTeleportEvent e) {
-        if(!e.getPlayer().isOnline()) return; //catch fake players
-        if(!WarpSystem.opt().isTeleportInterceptions() || TeleportManager.getInstance().isTeleporting(e.getPlayer())) return;
+        if (!e.getPlayer().isOnline()) return; //catch fake players
+        if (!WarpSystem.opt().isTeleportInterceptions() || TeleportManager.getInstance().isTeleporting(e.getPlayer())) return;
 
         e.setCancelled(true);
         Location to = e.getTo();

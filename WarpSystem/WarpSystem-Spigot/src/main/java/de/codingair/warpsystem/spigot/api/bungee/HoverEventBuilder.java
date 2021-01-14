@@ -8,8 +8,8 @@ public class HoverEventBuilder {
     public static HoverEvent build(HoverEvent.Action action, String text) {
         try {
             return new HoverEvent(action, new net.md_5.bungee.api.chat.hover.content.Text(text));
-        } catch(Throwable t) {
-            return new HoverEvent(action, new BaseComponent[]{new TextComponent(text)});
+        } catch (Throwable t) {
+            return new HoverEvent(action, new BaseComponent[] {new TextComponent(text)});
         }
     }
 }

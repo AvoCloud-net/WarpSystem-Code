@@ -38,7 +38,7 @@ public class PTrusted extends PageItem {
     }
 
     private static String getFreeMessage(PlayerWarp warp, PlayerWarp original, PageItem page) {
-        if(warp.getTrusted().size() - original.getTrusted().size() >= 0) return null;
+        if (warp.getTrusted().size() - original.getTrusted().size() >= 0) return null;
         return PWEditor.getFreeMessage(-(warp.getTrusted().size() - original.getTrusted().size()) + " " + Lang.get("Trusted_members"), page);
     }
 
@@ -50,7 +50,7 @@ public class PTrusted extends PageItem {
                 .addLore(PWEditor.getCostsMessage(Math.max(warp.getTrusted().size() - original.getTrusted().size(), 0) * PlayerWarpManager.getManager().getTrustedMemberCosts(), PTrusted.this))
                 .addLore(Lang.getStringList("PlayerWarp_Trusted_Benefits"));
 
-        if(!warp.getTrusted().equals(original.getTrusted())) {
+        if (!warp.getTrusted().equals(original.getTrusted())) {
             builder.addLore("", Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Shift_Rightclick") + ": §c" + Lang.get("Reset"));
         }
 
@@ -62,7 +62,7 @@ public class PTrusted extends PageItem {
         return new Button(0, getPageItem()) {
             @Override
             public void onClick(InventoryClickEvent e, Player player) {
-                if(e.getClick() == ClickType.SHIFT_RIGHT) {
+                if (e.getClick() == ClickType.SHIFT_RIGHT) {
                     warp.getTrusted().clear();
                     warp.getTrusted().addAll(original.getTrusted());
 
@@ -89,12 +89,12 @@ public class PTrusted extends PageItem {
 
         int[] slots = new int[] {19, 20, 21, 22, 23, 24, 15, 14, 13, 12, 11, 10};
 
-        for(int slot : slots) {
+        for (int slot : slots) {
             removeButton(slot);
         }
 
         int i;
-        for(i = 0; i < warp.getTrusted().size(); i++) {
+        for (i = 0; i < warp.getTrusted().size(); i++) {
             PlayerWarp.User user = warp.getTrusted().get(i);
 
             addButton(new SyncButton(slots[i]) {
@@ -110,7 +110,7 @@ public class PTrusted extends PageItem {
 
                 @Override
                 public void onClick(InventoryClickEvent e, Player player) {
-                    if(e.isRightClick()) {
+                    if (e.isRightClick()) {
                         warp.getTrusted().remove(user);
                         getLast().updatePage();
                         updateIcon();
@@ -119,28 +119,28 @@ public class PTrusted extends PageItem {
             }.setOption(option));
         }
 
-        if(i < slots.length) {
+        if (i < slots.length) {
             addButton(new SyncAnvilGUIButton(slots[i]) {
                 @Override
                 public void onClick(AnvilClickEvent e) {
                     String input = e.getInput();
 
-                    if(input == null) {
+                    if (input == null) {
                         e.getPlayer().sendMessage(Lang.get("Prefix") + Lang.get("Enter_Name"));
                         return;
                     }
 
                     Player other;
-                    if((other = Bukkit.getPlayer(input)) == null) {
-                        if(WarpSystem.getInstance().isOnProxy()) {
+                    if ((other = Bukkit.getPlayer(input)) == null) {
+                        if (WarpSystem.getInstance().isOnProxy()) {
                             WarpSystem.getDataHandler().send(new RequestUUIDPacket(input), p).thenAccept(packet -> {
                                 UUID uuid = packet.getId();
-                                if(uuid == null) {
+                                if (uuid == null) {
                                     e.getPlayer().sendMessage(Lang.get("Prefix") + Lang.get("Player_is_not_online"));
                                     return;
                                 }
 
-                                if(warp.isTrusted(uuid)) {
+                                if (warp.isTrusted(uuid)) {
                                     e.getPlayer().sendMessage(Lang.get("Prefix") + Lang.get("Already_Trusted"));
                                     return;
                                 }
@@ -154,12 +154,12 @@ public class PTrusted extends PageItem {
                         } else e.getPlayer().sendMessage(Lang.get("Prefix") + Lang.get("Player_is_not_online"));
 
                         return;
-                    } else if(other.equals(p) && warp.isOwner(p)) {
+                    } else if (other.equals(p) && warp.isOwner(p)) {
                         e.getPlayer().sendMessage(Lang.get("Prefix") + Lang.get("Yourself_Trusted_Info"));
                         return;
                     }
 
-                    if(warp.isTrusted(other)) {
+                    if (warp.isTrusted(other)) {
                         e.getPlayer().sendMessage(Lang.get("Prefix") + Lang.get("Already_Trusted"));
                         return;
                     }

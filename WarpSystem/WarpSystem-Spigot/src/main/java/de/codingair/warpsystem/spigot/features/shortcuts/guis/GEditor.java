@@ -26,12 +26,12 @@ public class GEditor extends Editor<Shortcut> {
                         boolean reload = !shortcut.getDisplayName().equalsIgnoreCase(clone.getDisplayName());
                         shortcut.apply(clone);
 
-                        if(ShortcutManager.getInstance().getShortcut(shortcut.getDisplayName()) == null) {
+                        if (ShortcutManager.getInstance().getShortcut(shortcut.getDisplayName()) == null) {
                             reload = true;
                             ShortcutManager.getInstance().getShortcuts().add(shortcut);
                         }
 
-                        if(reload) ShortcutManager.getInstance().reloadCommand(shortcut, true);
+                        if (reload) ShortcutManager.getInstance().reloadCommand(shortcut, true);
                     }
 
                     @Override

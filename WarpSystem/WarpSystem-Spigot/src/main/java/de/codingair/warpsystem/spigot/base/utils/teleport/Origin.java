@@ -38,8 +38,8 @@ public enum Origin {
     }
 
     public static Origin getByClass(FeatureObject clazz) {
-        for(Origin value : values()) {
-            if(value.clazz == clazz.getClass()) return value;
+        for (Origin value : values()) {
+            if (value.clazz == clazz.getClass()) return value;
         }
 
         return UNKNOWN;
@@ -54,7 +54,7 @@ public enum Origin {
     }
 
     public boolean sendTeleportMessage() {
-        if(configName == null) return false;
+        if (configName == null) return false;
         return WarpSystem.getInstance().getFileManager().getFile("Config").getConfig().getBoolean("WarpSystem.Send.Teleport_Message." + getConfigName(), true);
     }
 

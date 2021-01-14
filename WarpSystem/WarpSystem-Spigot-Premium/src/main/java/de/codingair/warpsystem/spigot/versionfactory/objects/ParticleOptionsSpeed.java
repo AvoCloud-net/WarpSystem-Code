@@ -20,9 +20,9 @@ public class ParticleOptionsSpeed implements ItemListener {
 
     @Override
     public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-        if(clickType == ClickType.LEFT_CLICK) {
+        if (clickType == ClickType.LEFT_CLICK) {
             instance.getPart().setSpeed(instance.getPart().getSpeed() - 1);
-        } else if(clickType == ClickType.RIGHT_CLICK) {
+        } else if (clickType == ClickType.RIGHT_CLICK) {
             instance.getPart().setSpeed(instance.getPart().getSpeed() + 1);
         } else return;
 

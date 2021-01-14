@@ -22,19 +22,19 @@ public class SendGlobalSpawnOptionsPacket implements Packet {
     @Override
     public void write(DataOutputStream out) throws IOException {
         byte options = (byte) (this.spawn != null ? 1 : 0);
-        if(this.respawn != null) options |= (1 << 1);
+        if (this.respawn != null) options |= (1 << 1);
         out.writeByte(options);
 
-        if(this.spawn != null) out.writeUTF(this.spawn);
-        if(this.respawn != null) out.writeUTF(this.respawn);
+        if (this.spawn != null) out.writeUTF(this.spawn);
+        if (this.respawn != null) out.writeUTF(this.respawn);
     }
 
     @Override
     public void read(DataInputStream in) throws IOException {
         byte options = in.readByte();
 
-        if((options & 1) != 0) this.spawn = in.readUTF();
-        if((options & (1 << 1)) != 0) this.respawn = in.readUTF();
+        if ((options & 1) != 0) this.spawn = in.readUTF();
+        if ((options & (1 << 1)) != 0) this.respawn = in.readUTF();
     }
 
     public String getSpawn() {

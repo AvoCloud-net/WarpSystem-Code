@@ -37,14 +37,14 @@ public class CommandButton extends SyncChatInputGUIButton {
 
     @Override
     public ItemStack craftItem() {
-        if(object == null) return new ItemStack(Material.AIR);
+        if (object == null) return new ItemStack(Material.AIR);
 
         CommandAction action = object.getAction(Action.COMMAND);
         List<String> commands = action == null ? null : action.getValue();
         List<String> commandInfo = new ArrayList<>();
 
-        if(commands != null) {
-            for(String command : commands) {
+        if (commands != null) {
+            for (String command : commands) {
                 String tag = command.contains(" ") ? command.split(" ")[0] : command;
 
                 List<String> list = TextAlignment.lineBreak("§7- '§f" + command + "§7'" + (CommandBuilder.exists(tag) ? "" : " §8(§c" + Lang.get("Doesnt_Exist") + "§8)"), 200);
@@ -54,7 +54,7 @@ public class CommandButton extends SyncChatInputGUIButton {
         }
 
         List<String> lore = new ArrayList<>();
-        if(commands != null) lore.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
+        if (commands != null) lore.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
 
         return new ItemBuilder(XMaterial.REDSTONE)
                 .setName("§6§n" + Lang.get("Command"))
@@ -70,19 +70,19 @@ public class CommandButton extends SyncChatInputGUIButton {
     public void onEnter(ChatInputEvent e) {
         String input = e.getText();
 
-        if(input == null) {
+        if (input == null) {
             e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Enter_Command"));
             return;
         }
 
-        if(!input.startsWith("/")) input = "/" + input;
+        if (!input.startsWith("/")) input = "/" + input;
 
-        if(checkInput != null && !checkInput.apply(input)) return;
+        if (checkInput != null && !checkInput.apply(input)) return;
 
         e.setClose(true);
 
         CommandAction action = object.getAction(Action.COMMAND);
-        if(action == null) {
+        if (action == null) {
             action = new CommandAction(input);
             object.addAction(action);
         } else {
@@ -94,9 +94,9 @@ public class CommandButton extends SyncChatInputGUIButton {
 
     @Override
     public void onOtherClick(InventoryClickEvent e) {
-        if(e.getClick() == ClickType.RIGHT) {
-            if(object.hasAction(Action.COMMAND)) {
-                if(object.getAction(CommandAction.class).getValue().size() == 1) object.removeAction(Action.COMMAND);
+        if (e.getClick() == ClickType.RIGHT) {
+            if (object.hasAction(Action.COMMAND)) {
+                if (object.getAction(CommandAction.class).getValue().size() == 1) object.removeAction(Action.COMMAND);
                 else object.getAction(CommandAction.class).getValue().remove(object.getAction(CommandAction.class).getValue().size() - 1);
             }
             update();

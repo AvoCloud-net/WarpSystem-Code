@@ -3,7 +3,7 @@ package de.codingair.warpsystem.spigot.versionfactory.handlers;
 import de.codingair.codingapi.API;
 import de.codingair.codingapi.player.chat.ChatButton;
 import de.codingair.codingapi.player.chat.SimpleMessage;
-import de.codingair.codingapi.tools.io.ConfigWriter;
+import de.codingair.codingapi.tools.io.ConfigMask;
 import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.io.lib.JSONArray;
 import de.codingair.codingapi.tools.items.ItemBuilder;
@@ -55,23 +55,23 @@ public class PlayerWarpHandler extends PlayerWarpManager {
 
     @Override
     public int getMaxAmount(Player player) {
-        if(player.isOp()) return 3;
+        if (player.isOp()) return 3;
 
-        if(WarpSystem.PERMISSION_USE_PLAYER_WARPS != null) {
+        if (WarpSystem.PERMISSION_USE_PLAYER_WARPS != null) {
             int amount = 0;
-            for(PermissionAttachmentInfo effectivePermission : player.getEffectivePermissions()) {
-                if(!effectivePermission.getValue()) continue;
+            for (PermissionAttachmentInfo effectivePermission : player.getEffectivePermissions()) {
+                if (!effectivePermission.getValue()) continue;
                 String perm = effectivePermission.getPermission();
 
-                if(perm.equals("*") || perm.equalsIgnoreCase("warpsystem.*")) return 3;
-                if(perm.toLowerCase().startsWith("warpsystem.playerwarps.")) {
+                if (perm.equals("*") || perm.equalsIgnoreCase("warpsystem.*")) return 3;
+                if (perm.toLowerCase().startsWith("warpsystem.playerwarps.")) {
                     String s = perm.substring(23);
-                    if(s.equals("*") || s.equalsIgnoreCase("n")) return 3;
+                    if (s.equals("*") || s.equalsIgnoreCase("n")) return 3;
 
                     try {
                         int i = Math.min(Integer.parseInt(s), 3);
-                        if(i > amount) amount = i;
-                    } catch(Throwable ignored) {
+                        if (i > amount) amount = i;
+                    } catch (Throwable ignored) {
                     }
                 }
             }
@@ -116,9 +116,9 @@ public class PlayerWarpHandler extends PlayerWarpManager {
         List<String> reminds = config.getStringList("Inactive.Reminds");
         this.inactiveReminds = new ArrayList<>();
 
-        for(String data : reminds) {
+        for (String data : reminds) {
             long time = StringFormatter.convertFromTimeFormat(data);
-            if(time > 0) inactiveReminds.add(time);
+            if (time > 0) inactiveReminds.add(time);
         }
 
         this.inactiveTime = StringFormatter.convertFromTimeFormat(config.getString("PlayerWarps.Inactive.Time_After_Expiration", null), 2592000000L);
@@ -220,8 +220,8 @@ public class PlayerWarpHandler extends PlayerWarpManager {
 
         //loading PlayerWarps
         List<?> data = playerWarpsData.getConfig().getList("PlayerWarps");
-        if(data != null)
-            for(Object o : data) {
+        if (data != null)
+            for (Object o : data) {
                 JSON json = new JSON((Map<?, ?>) o);
                 PlayerWarp p = new PlayerWarp();
 
@@ -229,13 +229,13 @@ public class PlayerWarpHandler extends PlayerWarpManager {
                     p.read(json);
                     add(p);
                     size++;
-                } catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
 
         List<PlayerWarp> imported = TempWarpAdapter.convertTempWarps(true);
-        for(PlayerWarp playerWarp : imported) {
+        for (PlayerWarp playerWarp : imported) {
             add(playerWarp);
         }
 
@@ -243,14 +243,14 @@ public class PlayerWarpHandler extends PlayerWarpManager {
         new CPlayerWarps(config.getStringList("PlayerWarps.General.PlayerWarps_Command_Aliases")).register();
 
         List<String> aliases = config.getStringList("PlayerWarps.General.Command_References");
-        if(!aliases.isEmpty()) new CPlayerWarpReference(aliases.remove(0), aliases.toArray(new String[0])).register();
+        if (!aliases.isEmpty()) new CPlayerWarpReference(aliases.remove(0), aliases.toArray(new String[0])).register();
 
         WarpSystem.log("    ...got " + warpCategories.size() + " Class(es)");
-        if(!imported.isEmpty()) WarpSystem.log("    ...got " + imported.size() + " imported TempWarp(s)");
+        if (!imported.isEmpty()) WarpSystem.log("    ...got " + imported.size() + " imported TempWarp(s)");
         imported.clear();
 
-        if(!bungeeCord) WarpSystem.log("    ...got " + size + " PlayerWarp(s)");
-        if(economy && time) API.addTicker(this);
+        if (!bungeeCord) WarpSystem.log("    ...got " + size + " PlayerWarp(s)");
+        if (economy && time) API.addTicker(this);
 
         Bukkit.getPluginManager().registerEvents(this.listener, WarpSystem.getInstance());
         return true;
@@ -258,30 +258,30 @@ public class PlayerWarpHandler extends PlayerWarpManager {
 
     @Override
     public void save(boolean saver) {
-        if(!saver) WarpSystem.log("  > Saving PlayerWarps...");
+        if (!saver) WarpSystem.log("  > Saving PlayerWarps...");
         playerWarpsData.clearConfig();
 
         JSONArray a = null;
-        if(!bungeeCord || !WarpSystem.getInstance().isOnProxy()) {
+        if (!bungeeCord || !WarpSystem.getInstance().isOnProxy()) {
             a = new JSONArray();
 
-            for(List<PlayerWarp> data : this.warps.values()) {
-                for(PlayerWarp w : data) {
+            for (List<PlayerWarp> data : this.warps.values()) {
+                for (PlayerWarp w : data) {
                     JSON json = new JSON();
                     w.write(json);
                     a.add(json);
                 }
             }
             playerWarpsData.getConfig().set("PlayerWarps", a);
-        } else if(!saver) WarpSystem.log("    ...skipping PlayerWarp(s) > Saved on BungeeCord");
+        } else if (!saver) WarpSystem.log("    ...skipping PlayerWarp(s) > Saved on BungeeCord");
 
         config.loadConfig();
-        ConfigWriter writer = new ConfigWriter(config);
+        ConfigMask writer = new ConfigMask(config);
         writer.put("PlayerWarps.Hide_Limit_Info", hideLimitInfo);
         config.saveConfig();
 
         playerWarpsData.saveConfig();
-        if(!saver && a != null) WarpSystem.log("    ...saved " + a.size() + " PlayerWarp(s)");
+        if (!saver && a != null) WarpSystem.log("    ...saved " + a.size() + " PlayerWarp(s)");
     }
 
     @Override
@@ -310,25 +310,25 @@ public class PlayerWarpHandler extends PlayerWarpManager {
             boolean timeDependent = PlayerWarpManager.getManager().isEconomy();
             double money = 0;
             List<PlayerWarp> warps = PlayerWarpManager.getManager().getOwnWarps(e.getPlayer());
-            for(PlayerWarp warp : warps) {
-                if(timeDependent && warp.isExpired()) {
+            for (PlayerWarp warp : warps) {
+                if (timeDependent && warp.isExpired()) {
                     notify.add(warp);
                 }
 
                 money += warp.getInactiveSales() * warp.getTeleportCosts();
             }
 
-            if(money > 0 || !notify.isEmpty() || (e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS) && !((PlayerWarpHandler) PlayerWarpManager.getManager()).hideLimitInfo)) {
+            if (money > 0 || !notify.isEmpty() || (e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS) && !((PlayerWarpHandler) PlayerWarpManager.getManager()).hideLimitInfo)) {
                 double finalMoney = money;
                 Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
-                    if(!notify.isEmpty()) {
-                        for(PlayerWarp warp : notify) {
+                    if (!notify.isEmpty()) {
+                        for (PlayerWarp warp : notify) {
                             e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Warp_expiring").replace("%NAME%", warp.getName()).replace("%TIME_LEFT%", StringFormatter.convertInTimeFormat(PlayerWarpManager.getManager().getInactiveTime() - (System.currentTimeMillis() - warp.getExpireDate()), 0, "", "")));
                         }
                         notify.clear();
                     }
 
-                    if(finalMoney > 0) {
+                    if (finalMoney > 0) {
                         SimpleMessage message = new SimpleMessage(Lang.getPrefix() + Lang.get("Warp_Money_Available").replace("%AMOUNT%", new ImprovedDouble(finalMoney).toString()), WarpSystem.getInstance());
                         message.replace("%BUTTON%", new ChatButton(Lang.get("Warp_Money_Available_Button")) {
                             @Override
@@ -344,7 +344,7 @@ public class PlayerWarpHandler extends PlayerWarpManager {
                     }
 
                     Player player = e.getPlayer();
-                    if(player.hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS) && !((PlayerWarpHandler) PlayerWarpManager.getManager()).hideLimitInfo) {
+                    if (player.hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS) && !((PlayerWarpHandler) PlayerWarpManager.getManager()).hideLimitInfo) {
                         SimpleMessage message = new SimpleMessage(Lang.getPrefix() + "§7PlayerWarps are §climited §7to §c3 warps §7per §7player. §8[", WarpSystem.getInstance());
 
                         TextComponent upgrade = new TextComponent("§6§nPremium");

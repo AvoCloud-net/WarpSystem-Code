@@ -3,7 +3,7 @@ package de.codingair.warpsystem.spigot.features.simplewarps;
 import de.codingair.codingapi.tools.Location;
 import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.io.JSON.JSONParser;
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
 import de.codingair.warpsystem.spigot.features.simplewarps.managers.SimpleWarpManager;
 import de.codingair.warpsystem.spigot.features.warps.importfilter.WarpData;
@@ -57,7 +57,7 @@ public class SimpleWarp implements Serializable {
     }
 
     @Override
-    public boolean read(DataWriter d) throws Exception {
+    public boolean read(DataMask d) throws Exception {
         this.name = d.getString("Name");
         this.permission = d.getString("Permission");
         this.location = d.getLocation("Location");
@@ -70,7 +70,7 @@ public class SimpleWarp implements Serializable {
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         this.location.trim(4);
 
         d.put("Name", this.name);
@@ -112,7 +112,7 @@ public class SimpleWarp implements Serializable {
     }
 
     public String getPermission() {
-        if(this.name != null && SimpleWarpManager.getInstance().isOverwritePermissions()) return SimpleWarpManager.PERMISSION.replace("%WARP%", ChatColor.stripColor(this.name));
+        if (this.name != null && SimpleWarpManager.getInstance().isOverwritePermissions()) return SimpleWarpManager.PERMISSION.replace("%WARP%", ChatColor.stripColor(this.name));
         return permission;
     }
 
@@ -153,7 +153,7 @@ public class SimpleWarp implements Serializable {
     }
 
     public void increaseTeleports() {
-        if(this.teleports == Integer.MAX_VALUE) return;
+        if (this.teleports == Integer.MAX_VALUE) return;
         this.teleports++;
     }
 
@@ -173,7 +173,7 @@ public class SimpleWarp implements Serializable {
     public void apply(SimpleWarp warp) {
         try {
             this.apply(warp.toString());
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -181,7 +181,7 @@ public class SimpleWarp implements Serializable {
     public SimpleWarp clone() {
         try {
             return new SimpleWarp(toString());
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

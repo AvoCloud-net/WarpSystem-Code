@@ -34,7 +34,7 @@ public class OwnWarpFilter implements Filter {
             private BukkitRunnable runnable;
 
             private Number cut(Number n) {
-                if(n.intValue() == n.doubleValue()) return n.intValue();
+                if (n.intValue() == n.doubleValue()) return n.intValue();
                 return n.doubleValue();
             }
 
@@ -51,25 +51,25 @@ public class OwnWarpFilter implements Filter {
 
             @Override
             public void onClick(InventoryClickEvent e, Player player) {
-                if(e.isLeftClick()) {
-                    if(e.isShiftClick()) {
+                if (e.isLeftClick()) {
+                    if (e.isShiftClick()) {
                         //draw money
                         double money = w.collectInactiveSales(player);
                         player.sendMessage(Lang.getPrefix() + Lang.get("Warp_Draw_Money_Info").replace("%NAME%", w.getName()).replace("%AMOUNT%", new ImprovedDouble(money).toString()));
 
                         update();
                     } else w.perform(player);
-                } else if(e.isRightClick() && !e.isShiftClick()) {
+                } else if (e.isRightClick() && !e.isShiftClick()) {
                     GUI g = new PWEditor(player, w);
                     g.setOpenSound(null);
                     getInterface().changeGUI(g, true);
                 } else {
-                    if(runnable != null) {
+                    if (runnable != null) {
                         //delete
                         double refund = PlayerWarpManager.getManager().delete(w, true);
-                        if(refund == -1) return;
+                        if (refund == -1) return;
 
-                        if(refund > 0 && PlayerWarpManager.getManager().isEconomy() && w.isOwner(player)) {
+                        if (refund > 0 && PlayerWarpManager.getManager().isEconomy() && w.isOwner(player)) {
                             Bank.adapter().deposit(player, refund);
                             player.sendMessage(Lang.getPrefix() + Lang.get("Warp_Deleted_Info").replace("%NAME%", w.getName(true)).replace("%PRICE%", CPlayerWarps.cut(refund) + ""));
                         } else player.sendMessage(Lang.getPrefix() + Lang.get("Warp_was_deleted").replace("%NAME%", w.getName(true)));
@@ -104,18 +104,18 @@ public class OwnWarpFilter implements Filter {
         List<PlayerWarp> warps = PlayerWarpManager.getManager().getOwnWarps(player);
 
         List<Button> buttons = new ArrayList<>();
-        if(createButtonInList() && PlayerWarpManager.getManager().hasPermission(player)) maxSize--;
+        if (createButtonInList() && PlayerWarpManager.getManager().hasPermission(player)) maxSize--;
 
         ItemButtonOption option = new ItemButtonOption();
         option.setClickSound(new SoundData(Sound.UI_BUTTON_CLICK, 0.7F, 1F));
 
         int max = (page + 1) * maxSize;
         int i, noMatch = 0;
-        for(i = page * maxSize; i < max + noMatch; i++) {
-            if(warps.size() <= i) break;
+        for (i = page * maxSize; i < max + noMatch; i++) {
+            if (warps.size() <= i) break;
             PlayerWarp w = warps.get(i);
 
-            if(search != null && !w.getName(false).toLowerCase().contains(search)) {
+            if (search != null && !w.getName(false).toLowerCase().contains(search)) {
                 noMatch++;
                 continue;
             }

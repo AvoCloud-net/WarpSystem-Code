@@ -12,7 +12,7 @@ public class HeadManager {
     private ConfigFile file = null;
 
     private void checkFile() {
-        if(this.file == null) this.file = WarpSystem.getInstance().getFileManager().loadFile("PlayerSkins", "Memory/");
+        if (this.file == null) this.file = WarpSystem.getInstance().getFileManager().loadFile("PlayerSkins", "Memory/");
     }
 
     public Head getHead(UUID uuid) {
@@ -20,7 +20,7 @@ public class HeadManager {
     }
 
     public String getSkinId(UUID uuid) {
-        if(uuid == null) return null;
+        if (uuid == null) return null;
         checkFile();
         return this.file.getConfig().getString(uuid.toString());
     }
@@ -29,13 +29,13 @@ public class HeadManager {
         Called in UUIDListener after getting an unique Id.
      */
     public boolean update(Player player, UUID uuid) {
-        if(uuid == null || !player.isOnline()) return false;
+        if (uuid == null || !player.isOnline()) return false;
         checkFile();
 
         Head head = new Head(player);
 
         String id = this.file.getConfig().getString(uuid.toString());
-        if(!Objects.equals(head.getId(), id)) {
+        if (!Objects.equals(head.getId(), id)) {
             this.file.getConfig().set(uuid.toString(), head.getId());
             this.file.saveConfig();
             return true;

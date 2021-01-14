@@ -25,7 +25,7 @@ public class CooldownDataPacket implements Packet {
         out.writeLong(cooldown[0].getPlayer().getMostSignificantBits());
         out.writeLong(cooldown[0].getPlayer().getLeastSignificantBits());
         out.writeInt(cooldown.length);
-        for(Cooldown c : cooldown) {
+        for (Cooldown c : cooldown) {
             out.writeLong(c.getEnd());
             out.writeInt(c.getHashId());
         }
@@ -37,7 +37,7 @@ public class CooldownDataPacket implements Packet {
 
         int size = in.readInt();
         this.cooldown = new Cooldown[size];
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             cooldown[i] = new Cooldown(id, in.readLong(), in.readInt());
         }
     }

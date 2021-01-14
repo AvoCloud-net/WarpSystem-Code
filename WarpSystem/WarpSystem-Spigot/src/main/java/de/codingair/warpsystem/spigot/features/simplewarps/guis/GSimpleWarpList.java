@@ -22,7 +22,7 @@ public abstract class GSimpleWarpList extends GUIList<SimpleWarp> {
 
     @Override
     public void addListItems(List<ListItem<SimpleWarp>> listItems) {
-        for(SimpleWarp value : SimpleWarpManager.getInstance().getWarps().values()) {
+        for (SimpleWarp value : SimpleWarpManager.getInstance().getWarps().values()) {
             listItems.add(new ListItem<SimpleWarp>(value) {
                 @Override
                 public ItemStack buildItem() {
@@ -52,7 +52,7 @@ public abstract class GSimpleWarpList extends GUIList<SimpleWarp> {
 
     public Number round(double n) {
         double d = Double.parseDouble(new DecimalFormat("#.##").format(n).replace(",", "."));
-        if(d == (int) d) return (int) d;
+        if (d == (int) d) return (int) d;
         else return d;
     }
 }

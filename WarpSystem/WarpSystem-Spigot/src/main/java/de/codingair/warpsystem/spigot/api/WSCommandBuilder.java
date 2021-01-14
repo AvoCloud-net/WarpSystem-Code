@@ -17,17 +17,17 @@ public class WSCommandBuilder extends CommandBuilder {
     }
 
     private static String[] important(String name, boolean important) {
-        if(!important) return null;
+        if (!important) return null;
         return c().getStringList(name + "." + "Aliases").toArray(new String[0]);
     }
 
     private static String[] normal(String name, boolean important) {
-        if(important) return null;
+        if (important) return null;
         return c().getStringList(name + "." + "Aliases").toArray(new String[0]);
     }
 
     private static FileConfiguration c() {
-        if(config == null) config = WarpSystem.getInstance().getFileManager().loadFile("Commands", "/").getConfig();
+        if (config == null) config = WarpSystem.getInstance().getFileManager().loadFile("Commands", "/").getConfig();
         return config;
     }
 }

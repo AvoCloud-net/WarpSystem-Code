@@ -28,11 +28,11 @@ public class PermissionButton extends SyncAnvilGUIButton {
 
     @Override
     public void onClick(AnvilClickEvent e) {
-        if(!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
+        if (!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
 
         String input = e.getInput(false);
 
-        if(input == null) {
+        if (input == null) {
             e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Enter_Permission"));
             return;
         }
@@ -48,12 +48,12 @@ public class PermissionButton extends SyncAnvilGUIButton {
 
     @Override
     public ItemStack craftItem() {
-        if(object == null) return new ItemStack(Material.AIR);
+        if (object == null) return new ItemStack(Material.AIR);
 
         String permission = object.getPermission();
 
         List<String> lore = new ArrayList<>();
-        if(permission != null) lore.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
+        if (permission != null) lore.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
 
         return new ItemBuilder(XMaterial.ENDER_EYE)
                 .setName("§6§n" + Lang.get("Permission"))
@@ -65,14 +65,14 @@ public class PermissionButton extends SyncAnvilGUIButton {
 
     @Override
     public ItemStack craftAnvilItem(ClickType trigger) {
-        if(object == null) return new ItemStack(Material.AIR);
+        if (object == null) return new ItemStack(Material.AIR);
 
         return new ItemBuilder(XMaterial.PAPER).setName(object.getPermission() == null ? Lang.get("Permission") + "..." : object.getPermission()).getItem();
     }
 
     @Override
     public void onOtherClick(InventoryClickEvent e) {
-        if(e.getClick() == ClickType.RIGHT) {
+        if (e.getClick() == ClickType.RIGHT) {
             object.setPermission(null);
             update();
         }

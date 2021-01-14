@@ -39,9 +39,8 @@ public class AnimationHotBarEditor extends HotbarGUI {
     private final Animation animation;
     private final ParticleRotation rotation;
     private final ParticleOptions options;
-
-    private BukkitRunnable alignRunnable;
     private final List<Location> alignTo = new ArrayList<>();
+    private BukkitRunnable alignRunnable;
     private boolean show = true;
 
     public AnimationHotBarEditor(Player player, PortalEditor fallBack, Animation animation) {
@@ -59,8 +58,8 @@ public class AnimationHotBarEditor extends HotbarGUI {
         this.alignRunnable = new BukkitRunnable() {
             @Override
             public void run() {
-                if(!show) return;
-                for(Location location : alignTo) {
+                if (!show) return;
+                for (Location location : alignTo) {
                     Particle.VILLAGER_HAPPY.send(location, player);
                 }
             }
@@ -93,7 +92,7 @@ public class AnimationHotBarEditor extends HotbarGUI {
 
     public static Number cut(double n) {
         double d = Double.parseDouble(new DecimalFormat("#.##").format(n).replace(",", "."));
-        if(d == (int) d) return (int) d;
+        if (d == (int) d) return (int) d;
         else return d;
     }
 
@@ -107,19 +106,19 @@ public class AnimationHotBarEditor extends HotbarGUI {
         List<Integer> yValues = new ArrayList<>();
         Location l = null;
 
-        for(Location location : this.alignTo) {
-            if(l == null) {
+        for (Location location : this.alignTo) {
+            if (l == null) {
                 yValues.add(location.getBlockY());
                 l = location.clone();
             } else {
                 l.add(location);
-                if(!yValues.contains(location.getBlockY())) {
+                if (!yValues.contains(location.getBlockY())) {
                     yValues.add(location.getBlockY());
                 } else l.subtract(0, location.getY(), 0);
             }
         }
 
-        if(l == null) return null;
+        if (l == null) return null;
 
         l.setX(l.getX() / alignTo.size());
         l.setY(l.getY() / yValues.size());
@@ -134,12 +133,12 @@ public class AnimationHotBarEditor extends HotbarGUI {
         List<Location> alignTo = new ArrayList<>(this.alignTo);
 
         Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
-            if(show) {
-                for(Location location : alignTo) {
+            if (show) {
+                for (Location location : alignTo) {
                     changeToAlignmentBlock(getPlayer(), location);
                 }
             } else {
-                for(Location location : alignTo) {
+                for (Location location : alignTo) {
                     sendBlockChange(getPlayer(), location.getBlock());
                 }
             }
@@ -147,7 +146,7 @@ public class AnimationHotBarEditor extends HotbarGUI {
     }
 
     private void sendBlockChange(Player player, Block b) {
-        if(Version.get().isBiggerThan(Version.v1_12)) {
+        if (Version.get().isBiggerThan(Version.v1_12)) {
             //block data
             Class<?> blockDataClass = IReflection.getClass(IReflection.ServerPacket.BUKKIT_PACKET, "block.data.BlockData");
             IReflection.MethodAccessor sendBlockChange = IReflection.getMethod(Player.class, "sendBlockChange", null, new Class[] {org.bukkit.Location.class, blockDataClass});
@@ -163,7 +162,7 @@ public class AnimationHotBarEditor extends HotbarGUI {
     }
 
     private void changeToAlignmentBlock(Player player, Location loc) {
-        if(Version.get().isBiggerThan(Version.v1_12)) {
+        if (Version.get().isBiggerThan(Version.v1_12)) {
             //block data
             Class<?> blockDataClass = IReflection.getClass(IReflection.ServerPacket.BUKKIT_PACKET, "block.data.BlockData");
             IReflection.MethodAccessor sendBlockChange = IReflection.getMethod(Player.class, "sendBlockChange", null, new Class[] {org.bukkit.Location.class, blockDataClass});
@@ -183,11 +182,11 @@ public class AnimationHotBarEditor extends HotbarGUI {
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
                 close(false);
 
-                if(alignRunnable != null) {
+                if (alignRunnable != null) {
                     alignRunnable.cancel();
                     alignRunnable = null;
 
-                    for(Location l : alignTo) {
+                    for (Location l : alignTo) {
                         sendBlockChange(player, l.getBlock());
                     }
                     alignTo.clear();
@@ -213,30 +212,30 @@ public class AnimationHotBarEditor extends HotbarGUI {
         setItem(2, new ItemComponent(new ItemBuilder(XMaterial.ENDER_EYE).setName("§7" + Lang.get("Position") + ": §e" + pos).getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType == ClickType.LEFT_CLICK || clickType == ClickType.SHIFT_LEFT_CLICK) {
+                if (clickType == ClickType.LEFT_CLICK || clickType == ClickType.SHIFT_LEFT_CLICK) {
                     setAlignBlocks(false);
                     alignTo.clear();
 
-                    if(animation.getEffect().getHeight() == 0) animation.getEffect().setHeight(1);
+                    if (animation.getEffect().getHeight() == 0) animation.getEffect().setHeight(1);
                     animation.setLocation(new Location(player.getLocation()));
                     animation.update();
 
                     String pos = animation.getLocation() == null ? "§c-" : "x=" + cut(animation.getLocation().getX()) + ", y=" + cut(animation.getLocation().getY()) + "z=" + cut(animation.getLocation().getZ());
                     updateDisplayName(getItem(2), "§7" + Lang.get("Position") + ": §e" + pos);
-                } else if(clickType == ClickType.RIGHT_CLICK || clickType == ClickType.SHIFT_RIGHT_CLICK) {
+                } else if (clickType == ClickType.RIGHT_CLICK || clickType == ClickType.SHIFT_RIGHT_CLICK) {
                     Block b = player.getTargetBlock((Set<Material>) null, 10);
-                    if(b != null && b.getType() != XMaterial.AIR.parseMaterial() && b.getType() != XMaterial.VOID_AIR.parseMaterial() && b.getType() != XMaterial.CAVE_AIR.parseMaterial()) {
+                    if (b != null && b.getType() != XMaterial.AIR.parseMaterial() && b.getType() != XMaterial.VOID_AIR.parseMaterial() && b.getType() != XMaterial.CAVE_AIR.parseMaterial()) {
                         Location l = new Location(b.getLocation()).add(0.5, 0.5, 0.5);
                         boolean removed = alignTo.remove(l);
 
                         Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
-                            if(!removed) {
+                            if (!removed) {
                                 alignTo.add(l);
                                 changeToAlignmentBlock(player, l);
                             } else sendBlockChange(player, l.getBlock());
 
                             Location newL = calculateMid();
-                            if(newL != null) {
+                            if (newL != null) {
                                 animation.getEffect().setHeight(0);
                                 animation.setLocation(newL);
                                 animation.update();
@@ -265,13 +264,13 @@ public class AnimationHotBarEditor extends HotbarGUI {
         setItem(3, new ItemComponent(new ItemBuilder(XMaterial.NETHER_STAR).setName("§7" + Lang.get("Particle_Effect") + ": '§e" + getParticleName() + "§7'").getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType == ClickType.LEFT_CLICK) {
+                if (clickType == ClickType.LEFT_CLICK) {
                     getPart().setParticle(getPart().getParticle().previous(true));
-                } else if(clickType == ClickType.SHIFT_LEFT_CLICK) {
+                } else if (clickType == ClickType.SHIFT_LEFT_CLICK) {
                     getPart().setParticle(getPart().getParticle().previous(true, true));
-                } else if(clickType == ClickType.RIGHT_CLICK) {
+                } else if (clickType == ClickType.RIGHT_CLICK) {
                     getPart().setParticle(getPart().getParticle().next(true));
-                } else if(clickType == ClickType.SHIFT_RIGHT_CLICK) {
+                } else if (clickType == ClickType.SHIFT_RIGHT_CLICK) {
                     getPart().setParticle(getPart().getParticle().next(true, true));
                 } else return;
 
@@ -303,7 +302,7 @@ public class AnimationHotBarEditor extends HotbarGUI {
 
     private String getParticleName() {
         String s = getPart() == null ? null : getPart().getParticle() == null ? null : getPart().getParticle().name();
-        if(s == null) return null;
+        if (s == null) return null;
 
         return s.substring(0, 1).toUpperCase() + s.substring(1);
     }

@@ -35,7 +35,7 @@ public class Value {
     }
 
     private ConfigFile config() {
-        if(cache == null) cache = WarpSystem.getInstance().getFileManager().loadFile(config, configPath);
+        if (cache == null) cache = WarpSystem.getInstance().getFileManager().loadFile(config, configPath);
         return cache;
     }
 
@@ -44,17 +44,17 @@ public class Value {
     }
 
     public boolean set(String s) {
-        if(startValue == null) startValue = getCurrentValue();
+        if (startValue == null) startValue = getCurrentValue();
         s = s.trim();
 
-        if(s.startsWith("\"") || s.startsWith("'")) s = s.substring(1);
-        if(s.endsWith("\"") || s.endsWith("'")) s = s.substring(0, s.length() - 1);
+        if (s.startsWith("\"") || s.startsWith("'")) s = s.substring(1);
+        if (s.endsWith("\"") || s.endsWith("'")) s = s.substring(0, s.length() - 1);
 
         try {
             config().getConfig().set(valuePath, Adapter.transform(clazz, s));
             config().saveConfig();
             return true;
-        } catch(Exception e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -66,7 +66,7 @@ public class Value {
     public String getType() {
         try {
             return ChatColor.stripColor(Lang.get(type.replace(" ", "_")).trim());
-        } catch(IllegalStateException ignored) {
+        } catch (IllegalStateException ignored) {
             return type;
         }
     }
@@ -82,7 +82,7 @@ public class Value {
     public String getName() {
         try {
             return ChatColor.stripColor(Lang.get(name.replace(" ", "_")).trim());
-        } catch(IllegalStateException ignored) {
+        } catch (IllegalStateException ignored) {
             return name;
         }
     }
@@ -126,29 +126,29 @@ public class Value {
 
         public static Object transform(Class<?> clazz, String value) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, IllegalArgumentException {
             Adapter a = getByClass(clazz);
-            if(a == UNKNOWN) return value;
+            if (a == UNKNOWN) return value;
             return a.transform(value);
         }
 
         public static Adapter getByClass(Class<?> clazz) {
-            for(Adapter value : values()) {
-                if(clazz.equals(value.clazz)) return value;
+            for (Adapter value : values()) {
+                if (clazz.equals(value.clazz)) return value;
             }
 
             return UNKNOWN;
         }
 
         public Object transform(String s) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
-            if(this.equals(Boolean)) {
-                if(s.equalsIgnoreCase("true")) return true;
-                else if(s.equalsIgnoreCase("false")) return false;
+            if (this.equals(Boolean)) {
+                if (s.equalsIgnoreCase("true")) return true;
+                else if (s.equalsIgnoreCase("false")) return false;
                 else throw new IllegalArgumentException("'" + s + "' is not a Boolean.");
             }
 
             Method m = clazz.getDeclaredMethod(method, String.class);
 
-            if(comma) s = s.replace(",", ".");
-            if(Number.class.isInstance(clazz) && s.contains(" ")) s = s.split(" ")[0];
+            if (comma) s = s.replace(",", ".");
+            if (Number.class.isInstance(clazz) && s.contains(" ")) s = s.split(" ")[0];
 
             return m.invoke(null, s);
         }

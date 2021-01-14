@@ -74,7 +74,7 @@ public class CShortcuts extends WSCommandBuilder {
         getComponent("edit").addChild(new MultiCommandComponent() {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
-                for(Shortcut shortcut : ShortcutManager.getInstance().getShortcuts()) {
+                for (Shortcut shortcut : ShortcutManager.getInstance().getShortcuts()) {
                     suggestions.add(shortcut.getDisplayName());
                 }
             }
@@ -83,7 +83,7 @@ public class CShortcuts extends WSCommandBuilder {
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 Shortcut shortcut = ShortcutManager.getInstance().getShortcut(argument);
 
-                if(shortcut == null) {
+                if (shortcut == null) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Shortcut_does_not_exist"));
                     return false;
                 }
@@ -104,7 +104,7 @@ public class CShortcuts extends WSCommandBuilder {
         getComponent("delete").addChild(new MultiCommandComponent() {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
-                for(Shortcut shortcut : ShortcutManager.getInstance().getShortcuts()) {
+                for (Shortcut shortcut : ShortcutManager.getInstance().getShortcuts()) {
                     suggestions.add(shortcut.getDisplayName());
                 }
             }
@@ -113,7 +113,7 @@ public class CShortcuts extends WSCommandBuilder {
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 Shortcut shortcut = ShortcutManager.getInstance().getShortcut(argument);
 
-                if(shortcut == null) {
+                if (shortcut == null) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Shortcut_does_not_exist"));
                     return false;
                 }
@@ -129,7 +129,7 @@ public class CShortcuts extends WSCommandBuilder {
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 List<String> message = new ArrayList<>();
 
-                if(ShortcutManager.getInstance().getShortcuts().isEmpty()) {
+                if (ShortcutManager.getInstance().getShortcuts().isEmpty()) {
                     message.add(" ");
                     message.add("  §3§lShortcuts: §c-");
                     message.add(" ");
@@ -138,8 +138,8 @@ public class CShortcuts extends WSCommandBuilder {
                     return false;
                 }
 
-                for(Shortcut shortcut : ShortcutManager.getInstance().getShortcuts()) {
-                    if(shortcut.getDestination() == null || shortcut.getDestination().getId() == null)
+                for (Shortcut shortcut : ShortcutManager.getInstance().getShortcuts()) {
+                    if (shortcut.getDestination() == null || shortcut.getDestination().getId() == null)
                         message.add("  §7\"§e" + shortcut.getDisplayName() + "§7\" » §c-");
                     else message.add("  §7\"§e" + shortcut.getDisplayName() + "§7\" » §b" + shortcut.getDestination().getId() + " §7(" + shortcut.getDestination().getType() + ")");
                 }

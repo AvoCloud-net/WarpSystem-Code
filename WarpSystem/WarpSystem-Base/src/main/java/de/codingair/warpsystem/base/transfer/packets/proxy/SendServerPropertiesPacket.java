@@ -23,7 +23,7 @@ public class SendServerPropertiesPacket implements Packet {
     public void write(DataOutputStream out) throws IOException {
         out.writeShort((short) properties.size());
 
-        for(Map.Entry<String, ServerPing> e : properties.entrySet()) {
+        for (Map.Entry<String, ServerPing> e : properties.entrySet()) {
             out.writeUTF(e.getKey());
             e.getValue().write(out);
         }
@@ -34,7 +34,7 @@ public class SendServerPropertiesPacket implements Packet {
         int size = in.readUnsignedShort();
         this.properties = new HashMap<>();
 
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             ServerPing properties = new ServerPing();
 
             String server = in.readUTF();

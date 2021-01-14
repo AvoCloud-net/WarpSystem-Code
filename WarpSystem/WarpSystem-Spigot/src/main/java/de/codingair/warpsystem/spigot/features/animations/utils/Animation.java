@@ -5,7 +5,7 @@ import de.codingair.codingapi.server.sounds.SoundData;
 import de.codingair.codingapi.tools.Location;
 import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.io.lib.JSONArray;
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
 
 import java.util.ArrayList;
@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Map;
 
 public class Animation implements Serializable {
-    private String name = null;
-    private Location teleportLoc = null;
     private final List<Buff> buffList = new ArrayList<>();
     private final List<ParticlePart> particleParts = new ArrayList<>();
+    private String name = null;
+    private Location teleportLoc = null;
     private SoundData tickSound = new SoundData(Sound.BLOCK_NOTE_BLOCK_HARP, 1F, 0.5F);
     private SoundData teleportSound = new SoundData(Sound.ENTITY_ENDERMAN_TELEPORT, 1F, 1F);
 
@@ -37,7 +37,7 @@ public class Animation implements Serializable {
     }
 
     @Override
-    public boolean read(DataWriter d) {
+    public boolean read(DataMask d) {
         buffList.clear();
         particleParts.clear();
 
@@ -45,7 +45,7 @@ public class Animation implements Serializable {
         this.teleportLoc = d.getLocation("teleportlocation");
 
         JSONArray buffArray = d.getList("bufflist");
-        for(Object o : buffArray) {
+        for (Object o : buffArray) {
             JSON data = new JSON((Map<?, ?>) o);
             Buff b = new Buff();
             b.read(data);
@@ -53,7 +53,7 @@ public class Animation implements Serializable {
         }
 
         JSONArray particleArray = d.getList("particleparts");
-        for(Object o : particleArray) {
+        for (Object o : particleArray) {
             JSON data = new JSON((Map<?, ?>) o);
             ParticlePart p = new ParticlePart();
             p.read(data);
@@ -69,12 +69,12 @@ public class Animation implements Serializable {
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         d.put("name", this.name);
         d.put("teleportlocation", this.teleportLoc);
 
         JSONArray buffArray = new JSONArray();
-        for(Buff buff : this.buffList) {
+        for (Buff buff : this.buffList) {
             JSON data = new JSON();
             buff.write(data);
             buffArray.add(data);
@@ -82,7 +82,7 @@ public class Animation implements Serializable {
         d.put("bufflist", buffArray);
 
         JSONArray particleArray = new JSONArray();
-        for(ParticlePart part : this.particleParts) {
+        for (ParticlePart part : this.particleParts) {
             JSON data = new JSON();
             part.write(data);
             particleArray.add(data);
@@ -110,11 +110,11 @@ public class Animation implements Serializable {
         this.name = clone.name;
         this.teleportLoc = clone.teleportLoc;
 
-        for(Buff buff : clone.getBuffList()) {
+        for (Buff buff : clone.getBuffList()) {
             this.buffList.add(new Buff(buff));
         }
 
-        for(ParticlePart part : clone.getParticleParts()) {
+        for (ParticlePart part : clone.getParticleParts()) {
             this.particleParts.add(new ParticlePart(part));
         }
 

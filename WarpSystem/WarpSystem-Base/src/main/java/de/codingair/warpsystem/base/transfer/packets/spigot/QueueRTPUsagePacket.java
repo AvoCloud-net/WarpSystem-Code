@@ -35,9 +35,9 @@ public class QueueRTPUsagePacket implements Packet {
         options |= (server != null ? 1 : 0) << 7;
         out.writeByte(options);
 
-        if(server != null) out.writeUTF(server);
+        if (server != null) out.writeUTF(server);
 
-        for(UUID id : ids) {
+        for (UUID id : ids) {
             out.writeLong(id.getMostSignificantBits());
             out.writeLong(id.getLeastSignificantBits());
         }
@@ -50,8 +50,8 @@ public class QueueRTPUsagePacket implements Packet {
         boolean server = (size & (1 << 7)) != 0;
         size = size & 0b00111111;
 
-        if(server) this.server = in.readUTF();
-        for(int i = 0; i < size; i++) {
+        if (server) this.server = in.readUTF();
+        for (int i = 0; i < size; i++) {
             ids.add(new UUID(in.readLong(), in.readLong()));
         }
     }

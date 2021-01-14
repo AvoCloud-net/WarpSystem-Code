@@ -24,7 +24,7 @@ public class NBTHelper {
         ItemMeta meta = item.getItemMeta();
 
         meta.getPersistentDataContainer().set(getInstance().world, PersistentDataType.STRING, sign.getLocation().getWorldName());
-        meta.getPersistentDataContainer().set(getInstance().location, PersistentDataType.INTEGER_ARRAY, new int[]{sign.getLocation().getBlockX(), sign.getLocation().getBlockY(), sign.getLocation().getBlockZ()});
+        meta.getPersistentDataContainer().set(getInstance().location, PersistentDataType.INTEGER_ARRAY, new int[] {sign.getLocation().getBlockX(), sign.getLocation().getBlockY(), sign.getLocation().getBlockZ()});
 
         item.setItemMeta(meta);
     }
@@ -34,21 +34,21 @@ public class NBTHelper {
 
         PersistentDataContainer container = meta.getPersistentDataContainer();
 
-        if(container.has(getInstance().world, PersistentDataType.STRING)) {
+        if (container.has(getInstance().world, PersistentDataType.STRING)) {
             String worldName = container.get(getInstance().world, PersistentDataType.STRING);
             int[] location = container.get(getInstance().location, PersistentDataType.INTEGER_ARRAY);
 
             World world = Bukkit.getWorld(worldName);
-            if(world == null) return null;
+            if (world == null) return null;
 
-            return new Location(world, location[0], location[1],location[2]);
+            return new Location(world, location[0], location[1], location[2]);
         }
 
         return null;
     }
 
     public static NBTHelper getInstance() {
-        if(instance == null) instance = new NBTHelper();
+        if (instance == null) instance = new NBTHelper();
         return instance;
     }
 }

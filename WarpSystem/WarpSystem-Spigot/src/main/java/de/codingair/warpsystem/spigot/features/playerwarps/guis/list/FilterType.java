@@ -15,15 +15,15 @@ public enum FilterType {
     ALL_PLAYERS(AllPlayers.class, Lang.get("Filter_All_Players"), 2, PlayerWarpManager.getManager().isAllowPublicWarps() || PlayerWarpManager.getManager().isAllowTrustedMembers()),
     CLASSES(ClassesFilter.class, Lang.get("Filter_Classes"), 3, PlayerWarpManager.getManager().isClasses());
 
-    private Filter instance;
     private final String filterName;
     private final int id;
     private final boolean enabled;
+    private Filter instance;
 
     FilterType(Class<? extends Filter> clazz, String filterName, int id, boolean enabled) {
         try {
             this.instance = clazz.newInstance();
-        } catch(InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
 
@@ -34,8 +34,8 @@ public enum FilterType {
 
     public static int active() {
         int i = 0;
-        for(FilterType value : values()) {
-            if(value.isEnabled()) i++;
+        for (FilterType value : values()) {
+            if (value.isEnabled()) i++;
         }
         return i;
     }
@@ -46,11 +46,11 @@ public enum FilterType {
 
     public FilterType next() {
         int next = id + 1;
-        if(next >= values().length) next = 0;
+        if (next >= values().length) next = 0;
 
-        while(!values()[next].isEnabled()) {
+        while (!values()[next].isEnabled()) {
             next++;
-            if(next >= values().length) next = 0;
+            if (next >= values().length) next = 0;
         }
 
         return values()[next];
@@ -58,11 +58,11 @@ public enum FilterType {
 
     public FilterType previous() {
         int previous = id - 1;
-        if(previous < 0) previous = values().length - 1;
+        if (previous < 0) previous = values().length - 1;
 
-        while(!values()[previous].isEnabled()) {
+        while (!values()[previous].isEnabled()) {
             previous--;
-            if(previous < 0) previous = values().length - 1;
+            if (previous < 0) previous = values().length - 1;
         }
 
         return values()[previous];

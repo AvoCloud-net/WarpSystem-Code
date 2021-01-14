@@ -19,10 +19,10 @@ public class CustomAdapter extends DestinationAdapter {
     @Override
     public boolean teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback) {
         this.destination.teleport(player, id, randomOffset, displayName, checkPermission, message, costs).whenComplete((suc, err) -> {
-            if(callback == null) return;
+            if (callback == null) return;
 
-            if(suc == null) {
-                if(err != null) {
+            if (suc == null) {
+                if (err != null) {
                     err.printStackTrace();
                     callback.accept(Result.ERROR);
                 } else throw new IllegalStateException("Completed a teleport with nothing via the API!");

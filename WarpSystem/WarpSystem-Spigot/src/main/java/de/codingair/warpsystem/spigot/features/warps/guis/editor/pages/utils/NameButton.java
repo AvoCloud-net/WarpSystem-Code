@@ -34,7 +34,7 @@ public abstract class NameButton extends de.codingair.warpsystem.spigot.base.gui
 
     @Override
     public ItemStack craftItem() {
-        if(name == null || icon == null) return new ItemStack(Material.AIR);
+        if (name == null || icon == null) return new ItemStack(Material.AIR);
 
         return new ItemBuilder(XMaterial.NAME_TAG)
                 .setName(Editor.ITEM_TITLE_COLOR + Lang.get("Name"))
@@ -45,7 +45,7 @@ public abstract class NameButton extends de.codingair.warpsystem.spigot.base.gui
 
     @Override
     public void onOtherClick(InventoryClickEvent e) {
-        if(e.getClick() == ClickType.SHIFT_LEFT) {
+        if (e.getClick() == ClickType.SHIFT_LEFT) {
             icon.setHideName(!icon.isHideName());
             update();
             updateShowItem();
@@ -54,17 +54,17 @@ public abstract class NameButton extends de.codingair.warpsystem.spigot.base.gui
 
     @Override
     public String acceptName(String name) {
-        if(name == null) return null;
+        if (name == null) return null;
 
         name = ChatColor.stripColor(ChatColor.translateAll('&', name));
-        if(startName != null && startName.equalsIgnoreCase(name)) return null;
+        if (startName != null && startName.equalsIgnoreCase(name)) return null;
 
-        if(icon.isPage()) {
-            if((icon.getName() == null || !icon.getName().equalsIgnoreCase(name)) && IconManager.getInstance().existsPage(name)) {
+        if (icon.isPage()) {
+            if ((icon.getName() == null || !icon.getName().equalsIgnoreCase(name)) && IconManager.getInstance().existsPage(name)) {
                 return Lang.getPrefix() + Lang.get("Name_Already_Exists");
             }
         } else {
-            if((icon.getName() == null || !icon.getNameWithoutColor().equalsIgnoreCase(name)) && IconManager.getInstance().existsIcon(name)) {
+            if ((icon.getName() == null || !icon.getNameWithoutColor().equalsIgnoreCase(name)) && IconManager.getInstance().existsIcon(name)) {
                 return Lang.getPrefix() + Lang.get("Name_Already_Exists");
             }
         }

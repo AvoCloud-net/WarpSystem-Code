@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.spigot.versionfactory.handlers;
 
 import de.codingair.codingapi.API;
-import de.codingair.codingapi.tools.io.ConfigWriter;
+import de.codingair.codingapi.tools.io.ConfigMask;
 import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.io.lib.JSONArray;
 import de.codingair.codingapi.tools.items.ItemBuilder;
@@ -31,7 +31,7 @@ import java.util.Map;
 public class PlayerWarpHandler extends PlayerWarpManager {
     @Override
     public boolean hasPermission(Player player) {
-        if(player.isOp()) return true;
+        if (player.isOp()) return true;
 
         int warps = de.codingair.warpsystem.spigot.features.playerwarps.managers.PlayerWarpManager.getManager().getOwnWarps(player).size();
         int maxAmount = getMaxAmount(player);
@@ -41,23 +41,23 @@ public class PlayerWarpHandler extends PlayerWarpManager {
 
     @Override
     public int getMaxAmount(Player player) {
-        if(player.isOp()) return -1;
+        if (player.isOp()) return -1;
 
-        if(WarpSystem.PERMISSION_USE_PLAYER_WARPS != null) {
+        if (WarpSystem.PERMISSION_USE_PLAYER_WARPS != null) {
             int amount = 0;
-            for(PermissionAttachmentInfo effectivePermission : player.getEffectivePermissions()) {
-                if(!effectivePermission.getValue()) continue;
+            for (PermissionAttachmentInfo effectivePermission : player.getEffectivePermissions()) {
+                if (!effectivePermission.getValue()) continue;
                 String perm = effectivePermission.getPermission();
 
-                if(perm.equals("*") || perm.equalsIgnoreCase("warpsystem.*")) return -1;
-                if(perm.toLowerCase().startsWith("warpsystem.playerwarps.")) {
+                if (perm.equals("*") || perm.equalsIgnoreCase("warpsystem.*")) return -1;
+                if (perm.toLowerCase().startsWith("warpsystem.playerwarps.")) {
                     String s = perm.substring(23);
-                    if(s.equals("*") || s.equalsIgnoreCase("n")) return -1;
+                    if (s.equals("*") || s.equalsIgnoreCase("n")) return -1;
 
                     try {
                         int i = Integer.parseInt(s);
-                        if(i > amount) amount = i;
-                    } catch(Throwable ignored) {
+                        if (i > amount) amount = i;
+                    } catch (Throwable ignored) {
                     }
                 }
             }
@@ -89,9 +89,9 @@ public class PlayerWarpHandler extends PlayerWarpManager {
         List<String> reminds = config.getStringList("Inactive.Reminds");
         this.inactiveReminds = new ArrayList<>();
 
-        for(String data : reminds) {
+        for (String data : reminds) {
             long time = StringFormatter.convertFromTimeFormat(data);
-            if(time > 0) inactiveReminds.add(time);
+            if (time > 0) inactiveReminds.add(time);
         }
 
         this.inactiveTime = StringFormatter.convertFromTimeFormat(config.getString("PlayerWarps.Inactive.Time_After_Expiration", null), 2592000000L);
@@ -164,15 +164,15 @@ public class PlayerWarpHandler extends PlayerWarpManager {
         this.classesMax = config.getInt("PlayerWarps.General.Categories.Max", 2);
 
         List<?> l = config.getList("PlayerWarps.General.Categories.Classes");
-        if(l != null)
-            for(Object o : l) {
-                if(o instanceof Map) {
+        if (l != null)
+            for (Object o : l) {
+                if (o instanceof Map) {
                     JSON json = new JSON((Map<?, ?>) o);
                     Category c = new Category();
                     try {
                         c.read(json);
                         this.warpCategories.add(c);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -180,8 +180,8 @@ public class PlayerWarpHandler extends PlayerWarpManager {
 
         //loading PlayerWarps
         List<?> data = playerWarpsData.getConfig().getList("PlayerWarps");
-        if(data != null)
-            for(Object o : data) {
+        if (data != null)
+            for (Object o : data) {
                 JSON json = new JSON((Map<?, ?>) o);
                 PlayerWarp p = new PlayerWarp();
 
@@ -189,13 +189,13 @@ public class PlayerWarpHandler extends PlayerWarpManager {
                     p.read(json);
                     add(p);
                     size++;
-                } catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
 
         List<PlayerWarp> imported = TempWarpAdapter.convertTempWarps(true);
-        for(PlayerWarp playerWarp : imported) {
+        for (PlayerWarp playerWarp : imported) {
             add(playerWarp);
         }
 
@@ -203,14 +203,14 @@ public class PlayerWarpHandler extends PlayerWarpManager {
         new CPlayerWarps(config.getStringList("PlayerWarps.General.PlayerWarps_Command_Aliases")).register();
 
         List<String> aliases = config.getStringList("PlayerWarps.General.Command_References");
-        if(!aliases.isEmpty()) new CPlayerWarpReference(aliases.remove(0), aliases.toArray(new String[0])).register();
+        if (!aliases.isEmpty()) new CPlayerWarpReference(aliases.remove(0), aliases.toArray(new String[0])).register();
 
         WarpSystem.log("    ...got " + warpCategories.size() + " Class(es)");
-        if(!imported.isEmpty()) WarpSystem.log("    ...got " + imported.size() + " imported TempWarp(s)");
+        if (!imported.isEmpty()) WarpSystem.log("    ...got " + imported.size() + " imported TempWarp(s)");
         imported.clear();
 
-        if(!bungeeCord) WarpSystem.log("    ...got " + size + " PlayerWarp(s)");
-        if(economy && time) API.addTicker(this);
+        if (!bungeeCord) WarpSystem.log("    ...got " + size + " PlayerWarp(s)");
+        if (economy && time) API.addTicker(this);
 
         WarpSystem.getInstance().getBungeeFeatureList().add(this);
         Bukkit.getPluginManager().registerEvents(this.listener, WarpSystem.getInstance());
@@ -220,24 +220,24 @@ public class PlayerWarpHandler extends PlayerWarpManager {
 
     @Override
     public void save(boolean saver) {
-        if(!saver) WarpSystem.log("  > Saving PlayerWarps...");
+        if (!saver) WarpSystem.log("  > Saving PlayerWarps...");
         playerWarpsData.clearConfig();
 
         JSONArray a = null;
-        if(!bungeeCord || !WarpSystem.getInstance().isOnProxy()) {
+        if (!bungeeCord || !WarpSystem.getInstance().isOnProxy()) {
             a = new JSONArray();
 
-            for(List<PlayerWarp> data : this.warps.values()) {
-                for(PlayerWarp w : data) {
+            for (List<PlayerWarp> data : this.warps.values()) {
+                for (PlayerWarp w : data) {
                     JSON json = new JSON();
                     w.write(json);
                     a.add(json);
                 }
             }
             playerWarpsData.getConfig().set("PlayerWarps", a);
-        } else if(!saver) WarpSystem.log("    ...skipping PlayerWarp(s) > Saved on BungeeCord");
+        } else if (!saver) WarpSystem.log("    ...skipping PlayerWarp(s) > Saved on BungeeCord");
 
-        if(warpCategories.isEmpty()) {
+        if (warpCategories.isEmpty()) {
             this.warpCategories.add(new Category(new ItemBuilder(XMaterial.EMERALD), "&a&lShop", 1, new ArrayList<String>() {{
                 add("&7This class marks a warp");
                 add("&7as a &aShop&7!");
@@ -270,42 +270,42 @@ public class PlayerWarpHandler extends PlayerWarpManager {
         }
 
         JSONArray array = new JSONArray();
-        for(Category c : this.warpCategories) {
+        for (Category c : this.warpCategories) {
             JSON json = new JSON();
             c.write(json);
             array.add(json);
         }
 
         config.loadConfig();
-        ConfigWriter writer = new ConfigWriter(config);
+        ConfigMask writer = new ConfigMask(config);
         writer.put("PlayerWarps.General.Categories.Classes", array);
         config.saveConfig();
 
         playerWarpsData.saveConfig();
-        if(!saver && a != null) WarpSystem.log("    ...saved " + a.size() + " PlayerWarp(s)");
+        if (!saver && a != null) WarpSystem.log("    ...saved " + a.size() + " PlayerWarp(s)");
     }
 
     @Override
     public void onConnect() {
-        if(bungeeCord) {
-            if(!getWarps().isEmpty()) {
+        if (bungeeCord) {
+            if (!getWarps().isEmpty()) {
                 List<List<PlayerWarpData>> uploads = new ArrayList<>();
 
                 List<PlayerWarpData> l = new ArrayList<>();
-                for(List<PlayerWarp> value : getWarps().values()) {
-                    for(PlayerWarp w : value) {
+                for (List<PlayerWarp> value : getWarps().values()) {
+                    for (PlayerWarp w : value) {
                         l.add(w.getData());
 
-                        if(l.size() == 100) {
+                        if (l.size() == 100) {
                             uploads.add(new ArrayList<>(l));
                             l.clear();
                         }
                     }
                 }
 
-                if(!l.isEmpty()) uploads.add(l);
+                if (!l.isEmpty()) uploads.add(l);
 
-                for(List<PlayerWarpData> upload : uploads) {
+                for (List<PlayerWarpData> upload : uploads) {
                     SendPlayerWarpsPacket p = new SendPlayerWarpsPacket(upload);
                     p.setClearable(true);
                     WarpSystem.getDataHandler().send(p);
@@ -320,8 +320,8 @@ public class PlayerWarpHandler extends PlayerWarpManager {
 
     @Override
     public void onDisconnect() {
-        if(bungeeCord) {
-            for(List<PlayerWarp> value : this.warps.values()) {
+        if (bungeeCord) {
+            for (List<PlayerWarp> value : this.warps.values()) {
                 value.clear();
             }
             this.warps.clear();

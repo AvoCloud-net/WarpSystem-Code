@@ -26,7 +26,7 @@ public class ActiveTimeButton extends EditorButton {
 
     @Override
     public boolean canClick(ClickType click) {
-        if(editing > 0) return click == ClickType.LEFT || click == ClickType.RIGHT || click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT;
+        if (editing > 0) return click == ClickType.LEFT || click == ClickType.RIGHT || click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT;
         else
             return click == ClickType.LEFT || click == ClickType.RIGHT || (click == ClickType.SHIFT_RIGHT && isEditing && original.getLeftTime() > 500 && (original.getLeftTime() > PlayerWarpManager.getManager().getMinTime() || warp.getTime() > PlayerWarpManager.getManager().getMinTime()) && Math.abs(original.getLeftTime() - warp.getTime()) >= 1000);
     }
@@ -37,14 +37,14 @@ public class ActiveTimeButton extends EditorButton {
 
         builder.setName(Editor.ITEM_TITLE_COLOR + Lang.get("Active_Time"));
 
-        if(isEditing && original.getLeftTime() > 500) {
+        if (isEditing && original.getLeftTime() > 500) {
             long diff;
-            if(warp.getLeftTime() <= 0) diff = -original.getLeftTime();
+            if (warp.getLeftTime() <= 0) diff = -original.getLeftTime();
             else diff = warp.getTime() - original.getLeftTime();
 
             builder.addLore(PWEditor.getCostsMessage(diff / 60000D * PlayerWarpManager.getManager().getActiveTimeCosts(), page));
 
-            if(editing == 0) {
+            if (editing == 0) {
                 builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Current") + ": §7" + StringFormatter.convertInTimeFormat(original.getLeftTime(), 0, "", ""));
             } else {
                 builder.addLore("§7   " + StringFormatter.convertInTimeFormat(original.getLeftTime(), 0, "", ""));
@@ -59,13 +59,13 @@ public class ActiveTimeButton extends EditorButton {
 
         builder.addLore("");
 
-        if(editing > 0) {
+        if (editing > 0) {
             builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §c- §8(§7" + Lang.get("Shift") + ": §b←§8)");
             builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Rightclick") + ": §a+ §8(§7" + Lang.get("Shift") + ": §b→§8)");
         } else {
             builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §a" + Lang.get("Choose"));
             builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Rightclick") + ": §a" + Lang.get("Change"));
-            if(isEditing && original.getLeftTime() > 500 && (original.getLeftTime() > PlayerWarpManager.getManager().getMinTime() || warp.getTime() > PlayerWarpManager.getManager().getMinTime()) && Math.abs(original.getLeftTime() - warp.getTime()) >= 1000)
+            if (isEditing && original.getLeftTime() > 500 && (original.getLeftTime() > PlayerWarpManager.getManager().getMinTime() || warp.getTime() > PlayerWarpManager.getManager().getMinTime()) && Math.abs(original.getLeftTime() - warp.getTime()) >= 1000)
                 builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Shift_Rightclick") + ": §c" + Lang.get("Reset"));
         }
 
@@ -74,28 +74,28 @@ public class ActiveTimeButton extends EditorButton {
 
     @Override
     public void onClick(InventoryClickEvent e, Player player) {
-        if(e.isLeftClick() && (editing > 0 || e.isShiftClick())) {
-            if(e.isShiftClick()) {
+        if (e.isLeftClick() && (editing > 0 || e.isShiftClick())) {
+            if (e.isShiftClick()) {
                 editing--;
-                if(editing < 0) editing = getUnits().length;
-            } else if(editing > 0) {
+                if (editing < 0) editing = getUnits().length;
+            } else if (editing > 0) {
                 TimeUnit unit = getUnits()[editing - 1];
                 long time = TimeUnit.MILLISECONDS.convert(1, unit);
                 long min = PlayerWarpManager.getManager().getMinTime();
 
                 long ms = warp.getTime() - (((long) (warp.getTime() / 60000D)) * 60000);
 
-                if(warp.getTime() == min) warp.setTime(PlayerWarpManager.getManager().getMaxTime());
-                else if(warp.getTime() > min && warp.getTime() - time < min) warp.setTime(min);
-                else if(ms > 500 && warp.getTime() - ms >= min) warp.setTime(warp.getTime() - ms - (unit != TimeUnit.MINUTES ? time : 0));
+                if (warp.getTime() == min) warp.setTime(PlayerWarpManager.getManager().getMaxTime());
+                else if (warp.getTime() > min && warp.getTime() - time < min) warp.setTime(min);
+                else if (ms > 500 && warp.getTime() - ms >= min) warp.setTime(warp.getTime() - ms - (unit != TimeUnit.MINUTES ? time : 0));
                 else warp.setTime(warp.getTime() - time);
             }
             update();
-        } else if(e.isRightClick()) {
-            if(editing > 0 || !e.isShiftClick()) {
-                if(e.isShiftClick() || editing == 0) {
+        } else if (e.isRightClick()) {
+            if (editing > 0 || !e.isShiftClick()) {
+                if (e.isShiftClick() || editing == 0) {
                     editing++;
-                    if(editing - 1 == getUnits().length) editing = 0;
+                    if (editing - 1 == getUnits().length) editing = 0;
                 } else {
                     TimeUnit unit = getUnits()[editing - 1];
                     long time = TimeUnit.MILLISECONDS.convert(1, unit);
@@ -103,9 +103,9 @@ public class ActiveTimeButton extends EditorButton {
 
                     long ms = warp.getTime() - (((long) (warp.getTime() / 60000D)) * 60000);
 
-                    if(warp.getTime() == max) warp.setTime(PlayerWarpManager.getManager().getMinTime());
-                    else if(warp.getTime() < max && warp.getTime() + time > max) warp.setTime(max);
-                    else if(ms > 500 && warp.getTime() + (60000L - ms) <= max)
+                    if (warp.getTime() == max) warp.setTime(PlayerWarpManager.getManager().getMinTime());
+                    else if (warp.getTime() < max && warp.getTime() + time > max) warp.setTime(max);
+                    else if (ms > 500 && warp.getTime() + (60000L - ms) <= max)
                         warp.setTime(warp.getTime() + ((unit == TimeUnit.MINUTES ? 60000 : 0) - ms) + (unit != TimeUnit.MINUTES ? time : 0));
                     else warp.setTime(warp.getTime() + time);
                 }
@@ -122,12 +122,12 @@ public class ActiveTimeButton extends EditorButton {
                     e.setCancelled(true);
                     e.setClose(false);
 
-                    if(e.getSlot() != AnvilSlot.OUTPUT) return;
+                    if (e.getSlot() != AnvilSlot.OUTPUT) return;
 
                     long time;
                     try {
                         time = StringFormatter.convertFromTimeFormat(e.getInput());
-                    } catch(Exception ex) {
+                    } catch (Exception ex) {
                         time = -1;
                     }
 
@@ -136,7 +136,7 @@ public class ActiveTimeButton extends EditorButton {
 
                     playSound(e.getClickType(), player);
 
-                    if(time < min || time > max) {
+                    if (time < min || time > max) {
                         player.sendMessage(Lang.getPrefix() + Lang.get("Enter_Something_between")
                                 .replace("%X%", StringFormatter.convertInTimeFormat(PlayerWarpManager.getManager().getMinTime(), 10, "", ""))
                                 .replace("%Y%", StringFormatter.convertInTimeFormat(PlayerWarpManager.getManager().getMaxTime(), 10, "", ""))
@@ -152,7 +152,7 @@ public class ActiveTimeButton extends EditorButton {
 
                 @Override
                 public void onClose(AnvilCloseEvent e) {
-                    if(e.getPost() == null) {
+                    if (e.getPost() == null) {
                         getInterface().reinitialize();
                         e.setPost(() -> getInterface().open());
                         getInterface().setClosingForGUI(false);

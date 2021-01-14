@@ -17,7 +17,7 @@ public class NavigationCommand extends NaturalCommandComponent {
     @Override
     public boolean runCommand(CommandSender sender, String label, String[] args) {
         SetupAssistant a = SetupAssistantManager.getInstance().getAssistant();
-        if(a.getPlayer().equals(sender)) {
+        if (a.getPlayer().equals(sender)) {
             a.process(args[args.length - 1]);
         }
         return false;

@@ -5,8 +5,8 @@ import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.proxy.TeleportPlayerToCoordsPacket;
 import de.codingair.warpsystem.spigot.api.players.BungeePlayer;
-import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.listeners.TeleportListener;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
@@ -34,8 +34,8 @@ public class TeleportPlayerToCoordsPacketHandler implements PacketHandler<Telepo
         de.codingair.codingapi.tools.Location l = new de.codingair.codingapi.tools.Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
         TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(l)), destination);
 
-        if(packet.getGate() != null && packet.getPlayer() != null) {
-            if(!packet.getGate().equals(packet.getPlayer())) {
+        if (packet.getGate() != null && packet.getPlayer() != null) {
+            if (!packet.getGate().equals(packet.getPlayer())) {
                 BungeePlayer end = new BungeePlayer(packet.getGate(), packet.getGate());
                 end.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", packet.getPlayer()).replace("%warp%", "x=" + cut(x) + ", y=" + cut(y) + ", z=" + cut(z)));
             }
@@ -44,7 +44,7 @@ public class TeleportPlayerToCoordsPacketHandler implements PacketHandler<Telepo
                     Lang.get("Teleported_To_By").replace("%gate%", packet.getGate())));
         }
 
-        if(packet.getDestinationName() == null) options.setOrigin(Origin.TeleportCommand);
+        if (packet.getDestinationName() == null) options.setOrigin(Origin.TeleportCommand);
         options.setSkip(true);
 
         TeleportListener.setSpawnPositionOrTeleport(packet.getPlayer(), options);
@@ -52,7 +52,7 @@ public class TeleportPlayerToCoordsPacketHandler implements PacketHandler<Telepo
 
     private Number cut(double n) {
         double d = Double.parseDouble(new DecimalFormat("#.##").format(n).replace(",", "."));
-        if(d == (int) d) return (int) d;
+        if (d == (int) d) return (int) d;
         else return d;
     }
 }

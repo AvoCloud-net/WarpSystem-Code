@@ -35,15 +35,14 @@ import java.util.UUID;
 
 public class PortalBlockEditor implements Removable {
     private final UUID uniqueId = UUID.randomUUID();
-    private boolean ended = false;
     private final Player player;
     private final Portal portal;
-    private ItemStack[] old;
-
-    private BukkitRunnable alignRunnable;
     private final List<Block> alignTo = new ArrayList<>();
-    private boolean show = true;
     private final FastEditingTool fastEditingTool;
+    private boolean ended = false;
+    private ItemStack[] old;
+    private BukkitRunnable alignRunnable;
+    private boolean show = true;
 
     public PortalBlockEditor(Player player, Portal portal) {
         this.player = player;
@@ -54,9 +53,9 @@ public class PortalBlockEditor implements Removable {
         this.alignRunnable = new BukkitRunnable() {
             @Override
             public void run() {
-                if(!show) return;
+                if (!show) return;
 
-                for(Block b : alignTo) {
+                for (Block b : alignTo) {
                     Particle.VILLAGER_HAPPY.send(b.getLocation().add(0.5, 0.5, 0.5), player);
                 }
             }
@@ -87,7 +86,7 @@ public class PortalBlockEditor implements Removable {
     public void init() {
         this.old = new ItemStack[9];
 
-        for(int i = 0; i < 9; i++) {
+        for (int i = 0; i < 9; i++) {
             old[i] = this.player.getInventory().getItem(i);
             this.player.getInventory().setItem(i, new ItemStack(Material.AIR));
         }
@@ -95,13 +94,13 @@ public class PortalBlockEditor implements Removable {
         this.player.getInventory().setItem(0, fastEditingTool);
 
         int slot = 2;
-        for(BlockType value : BlockType.values()) {
-            if(value == BlockType.CUSTOM) continue;
+        for (BlockType value : BlockType.values()) {
+            if (value == BlockType.CUSTOM) continue;
             this.player.getInventory().setItem(slot++, value.getEditMaterial().setName(value.getName()).getItem());
         }
 
-        for(PortalBlock block : portal.getBlocks()) {
-            if(block.getType() == BlockType.CUSTOM) {
+        for (PortalBlock block : portal.getBlocks()) {
+            if (block.getType() == BlockType.CUSTOM) {
                 this.alignTo.add(block.getLocation().getBlock());
             }
         }
@@ -113,17 +112,17 @@ public class PortalBlockEditor implements Removable {
             @Override
             public void onInteract(PlayerInteractEvent e) {
                 e.setCancelled(true);
-                if(System.currentTimeMillis() - last < 50) return;
+                if (System.currentTimeMillis() - last < 50) return;
                 else last = System.currentTimeMillis();
 
                 Block b = player.getTargetBlock((Set<Material>) null, 10);
-                if(b != null && b.getType() != XMaterial.AIR.parseMaterial() && b.getType() != XMaterial.VOID_AIR.parseMaterial() && b.getType() != XMaterial.CAVE_AIR.parseMaterial() && b.getType() != XMaterial.CHEST.parseMaterial() && b.getType() != XMaterial.TRAPPED_CHEST.parseMaterial()) {
+                if (b != null && b.getType() != XMaterial.AIR.parseMaterial() && b.getType() != XMaterial.VOID_AIR.parseMaterial() && b.getType() != XMaterial.CAVE_AIR.parseMaterial() && b.getType() != XMaterial.CHEST.parseMaterial() && b.getType() != XMaterial.TRAPPED_CHEST.parseMaterial()) {
                     Material m = b.getType();
 
                     IReflection.MethodAccessor isFuel = IReflection.getSaveMethod(Material.class, "isFuel", boolean.class);
                     boolean fuel = isFuel != null && (boolean) isFuel.invoke(m);
 
-                    if(!m.isOccluding() && (fuel || !m.isSolid())) {
+                    if (!m.isOccluding() && (fuel || !m.isSolid())) {
                         VFac.build(VKey.PortalBlockEditorHandler, PortalBlockEditor.this, b, player);
                     }
                 }
@@ -140,13 +139,13 @@ public class PortalBlockEditor implements Removable {
             }
         }.setFreezed(true));
 
-        if(this.player.getInventory().getHeldItemSlot() == 0) {
+        if (this.player.getInventory().getHeldItemSlot() == 0) {
             fastEditingTool.onHover(null);
         } else {
             MessageAPI.sendActionBar(player, Lang.get("Drop_To_Leave"), WarpSystem.getInstance(), Integer.MAX_VALUE);
         }
 
-        if(this.player.getInventory().getHeldItemSlot() == 8) {
+        if (this.player.getInventory().getHeldItemSlot() == 8) {
             item.onHover(null);
         }
     }
@@ -154,17 +153,17 @@ public class PortalBlockEditor implements Removable {
     public void update() {
         int slot = 2;
         boolean fastEditing = fastEditingTool.locationsSet();
-        for(BlockType value : BlockType.values()) {
-            if(value == BlockType.CUSTOM) continue;
+        for (BlockType value : BlockType.values()) {
+            if (value == BlockType.CUSTOM) continue;
             this.player.getInventory().setItem(slot++, value.getEditMaterial().setName(value.getName() + (fastEditing ? "§8 (§e" + Lang.get("Fast_Editing") + "§8)" : "")).getItem());
         }
     }
 
     public Portal end() {
-        if(ended) return null;
+        if (ended) return null;
         ended = true;
 
-        if(alignRunnable != null) {
+        if (alignRunnable != null) {
             alignRunnable.cancel();
             alignRunnable = null;
 
@@ -173,13 +172,13 @@ public class PortalBlockEditor implements Removable {
         }
 
         List<PlayerItem> items = API.getRemovables(getPlayer(), PlayerItem.class);
-        for(PlayerItem item : items) {
+        for (PlayerItem item : items) {
             item.destroy();
         }
         items.clear();
 
         int slot = 0;
-        for(ItemStack itemStack : old) {
+        for (ItemStack itemStack : old) {
             this.player.getInventory().setItem(slot++, itemStack == null ? new ItemStack(Material.AIR) : itemStack);
         }
         this.player.updateInventory();
@@ -198,14 +197,14 @@ public class PortalBlockEditor implements Removable {
     public boolean removePosition(Location location) {
         PortalBlock block = null;
 
-        for(PortalBlock b : this.portal.getBlocks()) {
-            if(b.getLocation().equals(location)) {
+        for (PortalBlock b : this.portal.getBlocks()) {
+            if (b.getLocation().equals(location)) {
                 block = b;
                 break;
             }
         }
 
-        if(block != null) {
+        if (block != null) {
             portal.removePortalBlock(block);
             update();
             return true;
@@ -219,12 +218,12 @@ public class PortalBlockEditor implements Removable {
 
         List<Block> alignTo = new ArrayList<>(this.alignTo);
         Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
-            if(show) {
-                for(Block b : alignTo) {
+            if (show) {
+                for (Block b : alignTo) {
                     changeToAlignmentBlock(getPlayer(), b.getLocation());
                 }
             } else {
-                for(Block b : alignTo) {
+                for (Block b : alignTo) {
                     sendBlockChange(getPlayer(), b);
                 }
             }
@@ -234,7 +233,7 @@ public class PortalBlockEditor implements Removable {
     }
 
     public void sendBlockChange(Player player, Block b) {
-        if(Version.get().isBiggerThan(Version.v1_12)) {
+        if (Version.get().isBiggerThan(Version.v1_12)) {
             //block data
             Class<?> blockDataClass = IReflection.getClass(IReflection.ServerPacket.BUKKIT_PACKET, "block.data.BlockData");
             IReflection.MethodAccessor sendBlockChange = IReflection.getMethod(Player.class, "sendBlockChange", null, new Class[] {org.bukkit.Location.class, blockDataClass});
@@ -250,7 +249,7 @@ public class PortalBlockEditor implements Removable {
     }
 
     public void changeToAlignmentBlock(Player player, Location loc) {
-        if(Version.get().isBiggerThan(Version.v1_12)) {
+        if (Version.get().isBiggerThan(Version.v1_12)) {
             //block data
             Class<?> blockDataClass = IReflection.getClass(IReflection.ServerPacket.BUKKIT_PACKET, "block.data.BlockData");
             IReflection.MethodAccessor sendBlockChange = IReflection.getMethod(Player.class, "sendBlockChange", null, new Class[] {org.bukkit.Location.class, blockDataClass});

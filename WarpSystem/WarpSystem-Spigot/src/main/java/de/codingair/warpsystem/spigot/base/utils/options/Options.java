@@ -21,7 +21,7 @@ public abstract class Options {
     public Options(String name, String path) {
         this(WarpSystem.getInstance().getFileManager().getFile(name));
 
-        if(this.file == null) {
+        if (this.file == null) {
             this.file = WarpSystem.getInstance().getFileManager().loadFile(name, path);
         }
     }
@@ -35,7 +35,7 @@ public abstract class Options {
     }
 
     public void reloadFile(boolean save) {
-        if(save) this.file.saveConfig();
+        if (save) this.file.saveConfig();
         this.file.loadConfig();
     }
 
@@ -48,7 +48,7 @@ public abstract class Options {
     }
 
     public void set(Option option) {
-        if(option.hasChanged()) getConfig().set(option.getPath(), option.getValue());
+        if (option.hasChanged()) getConfig().set(option.getPath(), option.getValue());
     }
 
     public abstract Options clone();
@@ -61,15 +61,15 @@ public abstract class Options {
 
     @Override
     public boolean equals(Object obj) {
-        if(this.getClass().isInstance(obj)) {
+        if (this.getClass().isInstance(obj)) {
             Options other = (Options) obj;
 
-            for(Field field : getClass().getDeclaredFields()) {
+            for (Field field : getClass().getDeclaredFields()) {
                 field.setAccessible(true);
 
                 try {
-                    if(!Objects.equals(field.get(this), field.get(other))) return false;
-                } catch(IllegalAccessException e) {
+                    if (!Objects.equals(field.get(this), field.get(other))) return false;
+                } catch (IllegalAccessException e) {
                     e.printStackTrace();
                     return false;
                 }

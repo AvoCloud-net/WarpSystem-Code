@@ -52,7 +52,7 @@ public class CSetSpawn extends WSCommandBuilder {
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 Spawn spawn = SpawnManager.getInstance().getSpawn();
 
-                if(!spawn.hasAction(Action.WARP)) {
+                if (!spawn.hasAction(Action.WARP)) {
                     spawn.addAction(new WarpAction(new Destination(new LocationAdapter(((Player) sender).getLocation()))));
                 }
 

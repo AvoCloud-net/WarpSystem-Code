@@ -15,7 +15,7 @@ public class QueueRTPUsagePacketHandler implements PacketHandler<QueueRTPUsagePa
     @Override
     public void process(@NotNull QueueRTPUsagePacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         List<UUID> l = packet.getIds();
-        for(UUID uuid : l) {
+        for (UUID uuid : l) {
             RandomTeleportManager.getInstance().increaseTeleports(uuid);
         }
         l.clear();

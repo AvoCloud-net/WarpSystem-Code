@@ -50,7 +50,7 @@ public class CSetWarp extends WSCommandBuilder {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
                 SimpleWarpManager hManager = WarpSystem.getInstance().getDataManager().getManager(FeatureType.SIMPLE_WARPS);
-                for(SimpleWarp value : hManager.getWarps().values()) {
+                for (SimpleWarp value : hManager.getWarps().values()) {
                     suggestions.add(value.getName(true));
                 }
             }
@@ -58,7 +58,7 @@ public class CSetWarp extends WSCommandBuilder {
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 SimpleWarpManager hManager = WarpSystem.getInstance().getDataManager().getManager(FeatureType.SIMPLE_WARPS);
-                if(hManager.existsWarp(argument)) {
+                if (hManager.existsWarp(argument)) {
                     SimpleMessage simpleMessage = new SimpleMessage(Lang.getPrefix() + Lang.get("Warp_Confirm_Overwrite").replace("%WARP%", hManager.getWarp(argument).getFormattedName()), WarpSystem.getInstance());
 
                     simpleMessage.replace("%YES%", new ChatButton(Lang.get("Warp_Confirm_Overwrite_Yes"), Lang.get("Click_Hover")) {
@@ -104,7 +104,7 @@ public class CSetWarp extends WSCommandBuilder {
         getComponent((String) null).addChild(new CommandComponent("true") {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                if(SimpleWarpManager.getInstance().existsWarp(args[0])) {
+                if (SimpleWarpManager.getInstance().existsWarp(args[0])) {
                     SimpleWarpManager.getInstance().getWarp(args[0]).setLocation(Location.getByLocation(((Player) sender).getLocation()));
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_Overwritten"));
                 } else getComponent((String) null).runCommand(sender, args[0], args);

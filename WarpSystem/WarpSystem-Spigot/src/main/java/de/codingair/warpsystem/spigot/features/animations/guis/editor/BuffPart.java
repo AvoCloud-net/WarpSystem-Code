@@ -32,16 +32,16 @@ public class BuffPart extends HotbarGUI {
     }
 
     public static PotionEffectType next(PotionEffectType type) {
-        for(int i = 0; i < PotionEffectType.values().length; i++) {
-            if(PotionEffectType.values()[i].equals(type)) return i + 1 == PotionEffectType.values().length ? PotionEffectType.values()[0] : PotionEffectType.values()[i + 1];
+        for (int i = 0; i < PotionEffectType.values().length; i++) {
+            if (PotionEffectType.values()[i].equals(type)) return i + 1 == PotionEffectType.values().length ? PotionEffectType.values()[0] : PotionEffectType.values()[i + 1];
         }
 
         throw new IllegalArgumentException("Couldn't found PotionEffectType with type=" + type.getName());
     }
 
     public static PotionEffectType previous(PotionEffectType type) {
-        for(int i = 0; i < PotionEffectType.values().length; i++) {
-            if(PotionEffectType.values()[i].equals(type)) {
+        for (int i = 0; i < PotionEffectType.values().length; i++) {
+            if (PotionEffectType.values()[i].equals(type)) {
                 return i - 1 < 0 ? PotionEffectType.values()[PotionEffectType.values().length - 1] : PotionEffectType.values()[i - 1];
             }
         }
@@ -55,9 +55,9 @@ public class BuffPart extends HotbarGUI {
         setItem(2, new ItemComponent(new ItemBuilder(XMaterial.SPLASH_POTION).setName("§7" + Lang.get("Potion_Effect_Type") + ": '§e" + getPotionName() + "§7'").getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType == ClickType.LEFT_CLICK) {
+                if (clickType == ClickType.LEFT_CLICK) {
                     getBuff().setType(previous(getBuff().getType()));
-                } else if(clickType == ClickType.RIGHT_CLICK) {
+                } else if (clickType == ClickType.RIGHT_CLICK) {
                     getBuff().setType(next(getBuff().getType()));
                 } else return;
 
@@ -79,9 +79,9 @@ public class BuffPart extends HotbarGUI {
         setItem(3, new ItemComponent(new ItemBuilder(XMaterial.GUNPOWDER).setName("§7" + Lang.get("Level") + ": §e" + getLevel()).getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType == ClickType.LEFT_CLICK) {
+                if (clickType == ClickType.LEFT_CLICK) {
                     getBuff().setLevel(getBuff().getLevel() - 1);
-                } else if(clickType == ClickType.RIGHT_CLICK) {
+                } else if (clickType == ClickType.RIGHT_CLICK) {
                     getBuff().setLevel(getBuff().getLevel() + 1);
                 } else return;
 
@@ -103,9 +103,9 @@ public class BuffPart extends HotbarGUI {
         setItem(4, new ItemComponent(new ItemBuilder(XMaterial.CLOCK).setName("§7" + Lang.get("Potion_Effect_Time_before_Teleport") + ": §e" + getTimeBeforeTeleport()).getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType == ClickType.LEFT_CLICK) {
+                if (clickType == ClickType.LEFT_CLICK) {
                     getBuff().setTimeBeforeTeleport(getBuff().getTimeBeforeTeleport() - 1);
-                } else if(clickType == ClickType.RIGHT_CLICK) {
+                } else if (clickType == ClickType.RIGHT_CLICK) {
                     getBuff().setTimeBeforeTeleport(getBuff().getTimeBeforeTeleport() + 1);
                 } else return;
 
@@ -127,9 +127,9 @@ public class BuffPart extends HotbarGUI {
         setItem(5, new ItemComponent(new ItemBuilder(XMaterial.MILK_BUCKET).setName("§7" + Lang.get("Potion_Effect_Time_after_Teleport") + ": §e" + getTimeAfterTeleport()).getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType == ClickType.LEFT_CLICK) {
+                if (clickType == ClickType.LEFT_CLICK) {
                     getBuff().setTimeAfterTeleport(getBuff().getTimeAfterTeleport() - 1);
-                } else if(clickType == ClickType.RIGHT_CLICK) {
+                } else if (clickType == ClickType.RIGHT_CLICK) {
                     getBuff().setTimeAfterTeleport(getBuff().getTimeAfterTeleport() + 1);
                 } else return;
 
@@ -163,7 +163,7 @@ public class BuffPart extends HotbarGUI {
 
     private String getPotionName() {
         String s = getBuff() == null ? null : getBuff().getType() == null ? null : getBuff().getType().getName();
-        if(s == null) return null;
+        if (s == null) return null;
 
         return s.substring(0, 1).toUpperCase() + s.substring(1);
     }

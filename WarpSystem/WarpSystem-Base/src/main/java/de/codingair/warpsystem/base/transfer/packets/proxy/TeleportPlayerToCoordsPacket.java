@@ -54,22 +54,22 @@ public class TeleportPlayerToCoordsPacket implements Packet {
 
         out.writeByte(b);
         out.writeUTF(this.gate);
-        if(!gate.equalsIgnoreCase(player)) out.writeUTF(this.player);
+        if (!gate.equalsIgnoreCase(player)) out.writeUTF(this.player);
         out.writeDouble(this.x);
         out.writeDouble(this.y);
         out.writeDouble(this.z);
-        if(costs != 0) out.writeDouble(costs);
-        if(destinationName != null) out.writeUTF(destinationName);
-        if(yaw != 0) out.writeFloat(yaw);
-        if(pitch != 0) out.writeFloat(pitch);
-        if(world != null) out.writeUTF(world);
+        if (costs != 0) out.writeDouble(costs);
+        if (destinationName != null) out.writeUTF(destinationName);
+        if (yaw != 0) out.writeFloat(yaw);
+        if (pitch != 0) out.writeFloat(pitch);
+        if (world != null) out.writeUTF(world);
     }
 
     @Override
     public void read(DataInputStream in) throws IOException {
         byte b = in.readByte();
 
-        if((b & 1) != 0) {
+        if ((b & 1) != 0) {
             this.gate = in.readUTF();
             this.player = in.readUTF();
         } else this.gate = this.player = in.readUTF();
@@ -79,13 +79,13 @@ public class TeleportPlayerToCoordsPacket implements Packet {
         this.relativeX = (b & (1 << 1)) != 0;
         this.relativeY = (b & (1 << 2)) != 0;
         this.relativeZ = (b & (1 << 3)) != 0;
-        if((b & (1 << 4)) != 0) this.costs = in.readDouble();
-        if((b & (1 << 5)) != 0) this.destinationName = in.readUTF();
-        if((b & (1 << 6)) != 0) {
+        if ((b & (1 << 4)) != 0) this.costs = in.readDouble();
+        if ((b & (1 << 5)) != 0) this.destinationName = in.readUTF();
+        if ((b & (1 << 6)) != 0) {
             this.yaw = in.readFloat();
             this.pitch = in.readFloat();
         }
-        if((b & (1 << 7)) != 0) this.world = in.readUTF();
+        if ((b & (1 << 7)) != 0) this.world = in.readUTF();
     }
 
     public String getWorld() {

@@ -33,22 +33,22 @@ public class PrepareTeleportPacket implements RequestPacket<LongPacket> {
     public void write(DataOutputStream out) throws IOException {
         byte options = (byte) (target == null ? 1 : 0);
 
-        if(target != null) {
-            if(!sender.equalsIgnoreCase(target)) options |= (1 << 1);
-            if(recipient != null) options |= (1 << 2);
+        if (target != null) {
+            if (!sender.equalsIgnoreCase(target)) options |= (1 << 1);
+            if (recipient != null) options |= (1 << 2);
         }
 
         out.writeByte(options);
         out.writeUTF(sender);
 
-        if(target == null) {
+        if (target == null) {
             out.writeDouble(x);
             out.writeDouble(y);
             out.writeDouble(z);
             out.writeUTF(recipient);
         } else {
-            if(!sender.equalsIgnoreCase(target)) out.writeUTF(target);
-            if(recipient != null) out.writeUTF(recipient);
+            if (!sender.equalsIgnoreCase(target)) out.writeUTF(target);
+            if (recipient != null) out.writeUTF(recipient);
         }
     }
 
@@ -58,13 +58,13 @@ public class PrepareTeleportPacket implements RequestPacket<LongPacket> {
 
         this.sender = in.readUTF();
 
-        if((options & 1) != 0) {
+        if ((options & 1) != 0) {
             //target is null
             this.recipient = in.readUTF();
         } else {
-            if((options & (1 << 1)) != 0) this.target = in.readUTF();
+            if ((options & (1 << 1)) != 0) this.target = in.readUTF();
             else this.target = this.sender;
-            if((options & (1 << 2)) != 0) this.recipient = in.readUTF();
+            if ((options & (1 << 2)) != 0) this.recipient = in.readUTF();
         }
     }
 

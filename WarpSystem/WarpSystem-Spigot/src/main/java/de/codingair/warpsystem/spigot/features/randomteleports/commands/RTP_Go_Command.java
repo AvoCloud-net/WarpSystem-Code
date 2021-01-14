@@ -31,40 +31,40 @@ public class RTP_Go_Command extends NaturalCommandComponent {
 
     @Override
     public boolean runCommand(@NotNull CommandSender sender, String label, String[] args) {
-        if(args.length >= 1 && args[0].equalsIgnoreCase("go")) {
-            if(sender instanceof Player && WarpSystem.cooldown().checkPlayer((Player) sender, Origin.RandomTP)) return false;
+        if (args.length >= 1 && args[0].equalsIgnoreCase("go")) {
+            if (sender instanceof Player && WarpSystem.cooldown().checkPlayer((Player) sender, Origin.RandomTP)) return false;
 
             StringBuilder builder = new StringBuilder();
             int endOfCMD = 0;
-            for(int i = 1; i < args.length; i++) {
+            for (int i = 1; i < args.length; i++) {
                 endOfCMD = i;
 
                 String s = args[i];
                 builder.append(args[i]);
 
-                if(!s.contains("]")) builder.append(" ");
+                if (!s.contains("]")) builder.append(" ");
                 else break;
             }
             endOfCMD++;
 
             String player = args.length >= endOfCMD + 1 ? args[endOfCMD] : null;
 
-            if(player != null && !checkOther(sender)) {
+            if (player != null && !checkOther(sender)) {
                 getBase().noPermission(sender, label, this);
                 return false;
             }
 
-            if(player == null && !(sender instanceof Player)) {
+            if (player == null && !(sender instanceof Player)) {
                 sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " go " + WarpSystem.opt().cmdArg() + "[server-1, server-2, ...; world-1, world-2, ...] <player>");
                 return false;
             }
 
-            if(player == null) player = sender.getName();
+            if (player == null) player = sender.getName();
             String finalPlayer = player;
 
             String cmd = builder.toString().trim();
 
-            if(!cmd.startsWith("[") || !cmd.endsWith("]")) {
+            if (!cmd.startsWith("[") || !cmd.endsWith("]")) {
                 sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " go " + WarpSystem.opt().cmdArg() + "[server-1, server-2, ...; world-1, world-2, ...]" + (checkOther(sender) ? " [player]" : ""));
                 return false;
             } else cmd = cmd.substring(1, cmd.length() - 1).replace(" ", "").toLowerCase();
@@ -72,15 +72,15 @@ public class RTP_Go_Command extends NaturalCommandComponent {
             String[] data = cmd.split(";");
 
             Player p = Bukkit.getPlayer(player);
-            if(p == null) {
+            if (p == null) {
                 sender.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
                 return false;
             }
 
-            if(!RandomTeleportManager.getInstance().canTeleport(p)) {
-                if(player.equalsIgnoreCase(sender.getName())) sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_No_Teleports_Left"));
+            if (!RandomTeleportManager.getInstance().canTeleport(p)) {
+                if (player.equalsIgnoreCase(sender.getName())) sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_No_Teleports_Left"));
                 else {
-                    if(sender instanceof Player) {
+                    if (sender instanceof Player) {
                         sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Other_No_Teleports_Left").replace("%PLAYER%", finalPlayer));
                     } else {
                         //console
@@ -91,16 +91,16 @@ public class RTP_Go_Command extends NaturalCommandComponent {
                 return false;
             }
 
-            if(data.length == 1) {
+            if (data.length == 1) {
                 //only local world
                 //test@test1, test@test2, test@test3
                 String[] worlds = data[0].replaceAll("\\p{Blank}*[a-z]*@", "").split(",");
 
                 World target = Bukkit.getWorld(worlds[(int) (Math.random() * worlds.length)]);
-                if(processTarget(sender, player, finalPlayer, target)) return false;
-            } else if(data.length == 2) {
+                if (processTarget(sender, player, finalPlayer, target)) return false;
+            } else if (data.length == 2) {
                 //on server
-                if(!WarpSystem.getInstance().isOnProxy()) {
+                if (!WarpSystem.getInstance().isOnProxy()) {
                     sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " go " + WarpSystem.opt().cmdArg() + "[world-1, world-2, ...] [player]");
                     return false;
                 }
@@ -111,13 +111,13 @@ public class RTP_Go_Command extends NaturalCommandComponent {
                 String targetServer = data[0];
                 targetWorld = data[1];
 
-                if(!targetServer.equalsIgnoreCase(WarpSystem.getInstance().getCurrentServer())) {
+                if (!targetServer.equalsIgnoreCase(WarpSystem.getInstance().getCurrentServer())) {
                     VFac.build(VKey.RTP_Go_Command_Handler, player, targetServer, targetWorld, finalPlayer, sender, p);
                     return false;
                 }
 
                 World target = Bukkit.getWorld(targetWorld);
-                if(processTarget(sender, player, finalPlayer, target)) return false;
+                if (processTarget(sender, player, finalPlayer, target)) return false;
             }
         }
 
@@ -125,7 +125,7 @@ public class RTP_Go_Command extends NaturalCommandComponent {
     }
 
     private boolean processTarget(@NotNull CommandSender sender, String player, String finalPlayer, World target) {
-        if(target == null) {
+        if (target == null) {
             sender.sendMessage(Lang.getPrefix() + Lang.get("World_Not_Exists"));
             return true;
         }
@@ -133,16 +133,16 @@ public class RTP_Go_Command extends NaturalCommandComponent {
         RandomTeleportManager.getInstance().tryToTeleport(player, target, false, new Callback<Integer>() {
             @Override
             public void accept(Integer result) {
-                if(!finalPlayer.equalsIgnoreCase(sender.getName())) {
-                    if(result == 0) sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Teleported_Other").replace("%PLAYER%", finalPlayer));
-                    else if(result == 1) sender.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
-                    else if(result == 2) sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_No_Location_Found"));
-                    else if(result == 4) sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Other_No_Teleports_Left").replace("%PLAYER%", finalPlayer));
-                } else if(result == 0 && sender instanceof Player) {
+                if (!finalPlayer.equalsIgnoreCase(sender.getName())) {
+                    if (result == 0) sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Teleported_Other").replace("%PLAYER%", finalPlayer));
+                    else if (result == 1) sender.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
+                    else if (result == 2) sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_No_Location_Found"));
+                    else if (result == 4) sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Other_No_Teleports_Left").replace("%PLAYER%", finalPlayer));
+                } else if (result == 0 && sender instanceof Player) {
                     WarpSystem.cooldown().register((Player) sender, Origin.RandomTP);
                 }
 
-                if(result == 3) sender.sendMessage(Lang.getPrefix() + Lang.get("Server_Is_Not_Online"));
+                if (result == 3) sender.sendMessage(Lang.getPrefix() + Lang.get("Server_Is_Not_Online"));
             }
         });
         return false;
@@ -151,19 +151,19 @@ public class RTP_Go_Command extends NaturalCommandComponent {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         List<String> sug = new ArrayList<>();
-        if(args.length == 1) {
+        if (args.length == 1) {
             //add old
             sug.add("go");
-        } else if(args.length >= 2 && args[0].equalsIgnoreCase("go")) {
+        } else if (args.length >= 2 && args[0].equalsIgnoreCase("go")) {
             StringBuilder builder = new StringBuilder();
-            for(int i = 1; i < args.length; i++) {
+            for (int i = 1; i < args.length; i++) {
                 builder.append(args[i]);
                 builder.append(" ");
             }
             String cmd = builder.toString();
             cmd = cmd.substring(0, cmd.length() - 1);
 
-            if(WarpSystem.getInstance().isOnProxy()) {
+            if (WarpSystem.getInstance().isOnProxy()) {
                 applyProxySuggestions(sender, cmd, args, sug);
             } else {
                 applySuggestions(sender, cmd, sug);
@@ -174,9 +174,9 @@ public class RTP_Go_Command extends NaturalCommandComponent {
 
     private void applyProxySuggestions(CommandSender commandSender, String command, String[] args, List<String> sug) {
         boolean other = checkOther(commandSender);
-        if(command.startsWith("\"") && command.endsWith("\"")) command = command.substring(1, command.length() - 1);
+        if (command.startsWith("\"") && command.endsWith("\"")) command = command.substring(1, command.length() - 1);
 
-        if(!RandomTeleportManager.getInstance().hasRegisteredServers()) return;
+        if (!RandomTeleportManager.getInstance().hasRegisteredServers()) return;
 
         boolean editingLast = !command.endsWith(" ");
 
@@ -184,9 +184,9 @@ public class RTP_Go_Command extends NaturalCommandComponent {
         int semi = command.indexOf(';');
         int end = command.lastIndexOf(']');
 
-        if(start == -1 || end == -1) {
+        if (start == -1 || end == -1) {
             //data
-            if(semi == -1) {
+            if (semi == -1) {
                 String last = args.length == 0 ? "" : args[args.length - 1];
 
                 //server + local worlds
@@ -196,9 +196,9 @@ public class RTP_Go_Command extends NaturalCommandComponent {
 
                 Set<String> serverList = RandomTeleportManager.getInstance().getServer();
                 int max = serverList.size();
-                for(String s : serverList) {
-                    if(!command.contains(s + ",") && !command.contains(s + ";")) {
-                        if(max > 1 && count + 1 < max) {
+                for (String s : serverList) {
+                    if (!command.contains(s + ",") && !command.contains(s + ";")) {
+                        if (max > 1 && count + 1 < max) {
                             add(last, startSug + s + ",", sug);
                         }
 
@@ -206,7 +206,7 @@ public class RTP_Go_Command extends NaturalCommandComponent {
                     }
                 }
                 serverList.clear();
-            } else if(start != -1) {
+            } else if (start != -1) {
                 //worlds of given servers
                 command = command.substring(start + 1).replace(" ", ""); //remove first bracket
 
@@ -218,19 +218,19 @@ public class RTP_Go_Command extends NaturalCommandComponent {
                 String last = args[args.length - 1];
 
                 int max = 0;
-                for(String server : servers) {
+                for (String server : servers) {
                     List<String> worldList = RandomTeleportManager.getInstance().getWorlds(server);
                     max += worldList.size();
                 }
 
-                for(String server : servers) {
+                for (String server : servers) {
                     List<String> worldList = RandomTeleportManager.getInstance().getWorlds(server);
                     int count = count(worlds, ',') - (editingLast ? 1 : 0);
 
-                    for(String world : worldList) {
+                    for (String world : worldList) {
                         String w = server + "@" + world;
-                        if(!worlds.contains(w + ",") && !worlds.contains(w + "]")) {
-                            if(max > 1 && count + 1 < max) {
+                        if (!worlds.contains(w + ",") && !worlds.contains(w + "]")) {
+                            if (max > 1 && count + 1 < max) {
                                 add(last, w + ",", sug);
                             }
 
@@ -239,19 +239,19 @@ public class RTP_Go_Command extends NaturalCommandComponent {
                     }
                 }
             }
-        } else if(other && command.length() > end + 1) {
+        } else if (other && command.length() > end + 1) {
             //player
             String rest = command.substring(end + 2);
 
-            if(rest.contains(" ")) return;
+            if (rest.contains(" ")) return;
             WarpSystem.getInstance().getPlayerDataManager().getCached().forEach(c -> {
-                if(rest.isEmpty() || c.getName().toLowerCase().startsWith(rest)) sug.add(c.getName());
+                if (rest.isEmpty() || c.getName().toLowerCase().startsWith(rest)) sug.add(c.getName());
             });
         }
     }
 
     private void add(String last, String argument, List<String> sug) {
-        if(last.isEmpty() || argument.startsWith(last)) {
+        if (last.isEmpty() || argument.startsWith(last)) {
             sug.add(argument);
         }
     }
@@ -263,7 +263,7 @@ public class RTP_Go_Command extends NaturalCommandComponent {
         int start = command.indexOf('[');
         int end = command.lastIndexOf(']');
 
-        if(start == -1 || end == -1) {
+        if (start == -1 || end == -1) {
             //data
             command = command.replace(" ", ""); //remove first bracket
             String startSug = start == -1 || args.length <= 1 ? "[" : "";
@@ -274,37 +274,37 @@ public class RTP_Go_Command extends NaturalCommandComponent {
             int max = Bukkit.getWorlds().size();
             int count = count(command, ',') - (editingLast ? 1 : 0);
 
-            for(World world : Bukkit.getWorlds()) {
+            for (World world : Bukkit.getWorlds()) {
                 String w = world.getName();
-                if(!command.contains(w + ",") && !command.contains(w + "]")) {
-                    if(max > 1 && count + 1 < max) {
+                if (!command.contains(w + ",") && !command.contains(w + "]")) {
+                    if (max > 1 && count + 1 < max) {
                         add(suggestions, last, startSug + w + ",");
                     }
 
                     add(suggestions, last, startSug + w + "]");
                 }
             }
-        } else if(checkOther(sender) && command.length() > end + 1) {
+        } else if (checkOther(sender) && command.length() > end + 1) {
             //player
             String rest = command.substring(end + 2);
 
-            if(rest.contains(" ")) return;
-            for(Player player : Bukkit.getOnlinePlayers()) {
-                if(rest.isEmpty() || player.getName().toLowerCase().startsWith(rest)) suggestions.add(player.getName());
+            if (rest.contains(" ")) return;
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (rest.isEmpty() || player.getName().toLowerCase().startsWith(rest)) suggestions.add(player.getName());
             }
         }
     }
 
     private int count(String s, char c) {
         int i = 0;
-        for(char c1 : s.toCharArray()) {
-            if(c1 == c) i++;
+        for (char c1 : s.toCharArray()) {
+            if (c1 == c) i++;
         }
         return i;
     }
 
     private void add(List<String> suggestions, String last, String argument) {
-        if(last.isEmpty() || argument.startsWith(last)) {
+        if (last.isEmpty() || argument.startsWith(last)) {
             suggestions.add(argument);
         }
     }

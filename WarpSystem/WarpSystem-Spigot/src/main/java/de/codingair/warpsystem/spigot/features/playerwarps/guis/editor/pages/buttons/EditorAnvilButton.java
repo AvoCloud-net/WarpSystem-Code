@@ -24,7 +24,7 @@ public abstract class EditorAnvilButton extends SyncAnvilGUIButton {
 
     @Override
     public void update(boolean updateGUI) {
-        if(this.warp == null) return;
+        if (this.warp == null) return;
         super.update(updateGUI);
     }
 

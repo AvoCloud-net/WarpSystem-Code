@@ -5,7 +5,7 @@ import de.codingair.codingapi.particles.animations.standalone.AnimationType;
 import de.codingair.codingapi.server.sounds.Sound;
 import de.codingair.codingapi.server.sounds.SoundData;
 import de.codingair.codingapi.tools.Location;
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.utils.Removable;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.guis.editor.pages.SoundPage;
@@ -51,12 +51,12 @@ public class EffectPortal extends FeatureObject implements Removable {
         portal.setDisplayName(this.name);
         portal.setSpawn(this.location);
 
-        if(link != null) portal.setDestination(new Destination(link.name, DestinationType.Portal));
+        if (link != null) portal.setDestination(new Destination(link.name, DestinationType.Portal));
 
         EffectPortal data = useLink && link != null ? link : this;
-        if(data.animation != null)
-            for(ParticlePart particlePart : data.animation.getParticleParts()) {
-                if(particlePart != null) portal.getAnimations().add(new de.codingair.warpsystem.spigot.features.portals.utils.Animation(particlePart, location));
+        if (data.animation != null)
+            for (ParticlePart particlePart : data.animation.getParticleParts()) {
+                if (particlePart != null) portal.getAnimations().add(new de.codingair.warpsystem.spigot.features.portals.utils.Animation(particlePart, location));
             }
 
         portal.getHologram().setText(holoText);
@@ -64,27 +64,27 @@ public class EffectPortal extends FeatureObject implements Removable {
         portal.getHologram().setHeight(0);
         portal.getHologram().setVisible(holoStatus);
 
-        if(!SoundPage.isStandardSound(teleportSound)) portal.addAction(new SoundAction(teleportSound));
+        if (!SoundPage.isStandardSound(teleportSound)) portal.addAction(new SoundAction(teleportSound));
 
         return portal;
     }
 
-    public boolean read(DataWriter d, EffectPortal link) throws Exception {
+    public boolean read(DataMask d, EffectPortal link) throws Exception {
         super.read(d);
 
-        if(d.get("skip") == null) setSkip(true);
+        if (d.get("skip") == null) setSkip(true);
 
-        if(d.get("Destination") != null) {
+        if (d.get("Destination") != null) {
             //old pattern
 
             Destination destination;
             try {
                 destination = new Destination((String) d.get("Destination"));
-            } catch(Throwable ex) {
+            } catch (Throwable ex) {
                 destination = new Destination(d.get("Destination"), DestinationType.Location);
             }
 
-            if(destination.getType() == DestinationType.Location) addAction(new WarpAction(destination));
+            if (destination.getType() == DestinationType.Location) addAction(new WarpAction(destination));
             else removeAction(Action.WARP);
 
             this.location = Location.getByJSONString(d.get("Start"));
@@ -111,7 +111,7 @@ public class EffectPortal extends FeatureObject implements Removable {
             AnimationManager.getInstance().addAnimation(animation);
             this.animation = AnimationManager.getInstance().getAnimation(name);
 
-            if(hasDestinationPortal()) {
+            if (hasDestinationPortal()) {
                 Location destinationHoloPos = Location.getByLocation(getDestination().buildLocation().clone());
                 destinationHoloPos.setY(destinationHoloPos.getY() + hologramHeight);
                 destinationHoloPos.setYaw(0);
@@ -137,7 +137,7 @@ public class EffectPortal extends FeatureObject implements Removable {
 
             holoPos = Location.getByLocation(location);
             holoPos.setY(holoPos.getY() + hologramHeight);
-        } else if(d.get("start") != null) {
+        } else if (d.get("start") != null) {
             this.location = Location.getByJSONString(d.getString("start"));
 
             AnimationType animationType = AnimationType.valueOf(d.getString("animationtype"));
@@ -165,7 +165,7 @@ public class EffectPortal extends FeatureObject implements Removable {
             this.animation = AnimationManager.getInstance().getAnimation(name);
 
             double hologramHeight = Double.parseDouble(d.get("hologramheight") + "");
-            if(hasDestinationPortal()) {
+            if (hasDestinationPortal()) {
                 Location destinationHoloPos = Location.getByLocation(getDestination().buildLocation().clone());
                 destinationHoloPos.setY(destinationHoloPos.getY() + hologramHeight);
                 destinationHoloPos.setYaw(0);
@@ -190,7 +190,7 @@ public class EffectPortal extends FeatureObject implements Removable {
             holoPos = Location.getByLocation(location);
             holoPos.setY(holoPos.getY() + hologramHeight);
         } else {
-            if(d.getString("ep.anim.name") == null) {
+            if (d.getString("ep.anim.name") == null) {
                 //link
                 useLink = true;
             } else {
@@ -209,7 +209,7 @@ public class EffectPortal extends FeatureObject implements Removable {
         this.holoPos.setYaw(0);
         this.holoPos.setPitch(0);
 
-        if(!useLink() && this.teleportSound != null && this.teleportSound.getSound() == null) this.teleportSound.setSound(Sound.ENTITY_ENDERMAN_TELEPORT);
+        if (!useLink() && this.teleportSound != null && this.teleportSound.getSound() == null) this.teleportSound.setSound(Sound.ENTITY_ENDERMAN_TELEPORT);
         return true;
     }
 

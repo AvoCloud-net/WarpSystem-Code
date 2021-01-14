@@ -17,12 +17,12 @@ public class TeleportDelay extends TeleportStage {
 
     @Override
     public void destroy() {
-        if(this.animation != null) {
+        if (this.animation != null) {
             this.animation.setRunning(false);
             this.animation = null;
         }
 
-        if(this.runnable != null) {
+        if (this.runnable != null) {
             this.runnable.cancel();
             this.runnable = null;
         }
@@ -34,13 +34,13 @@ public class TeleportDelay extends TeleportStage {
     public void start() {
         teleport.motionRestricted = true;
         int delay = teleport.getOptions().getDelay(player);
-        if(delay == 0) {
+        if (delay == 0) {
             end();
             return;
         }
 
         boolean hasAnimation;
-        if(hasAnimation = teleport.getOptions().isTeleportAnimation()) {
+        if (hasAnimation = teleport.getOptions().isTeleportAnimation()) {
             this.animation = new AnimationPlayer(player, new PlayerMid(player), AnimationManager.getInstance().getActive(), delay, true, teleport.getOptions().isPublicAnimations());
             this.animation.setTeleportSound(false);
             this.animation.setRunning(true);
@@ -51,10 +51,10 @@ public class TeleportDelay extends TeleportStage {
         String[] text = new String[] {"", ""};
         String msg = Lang.get("Teleporting_Info");
 
-        if(d == Display.TITLE) {
+        if (d == Display.TITLE) {
             MessageAPI.sendTitle(player, " ", " ", 0, 1, 0);
             int i = msg.indexOf("\n");
-            if(i != -1) {
+            if (i != -1) {
                 text[0] = msg.substring(0, i);
                 text[1] = msg.substring(i + 2);
             } else text[0] = msg;
@@ -65,15 +65,15 @@ public class TeleportDelay extends TeleportStage {
 
             @Override
             public void run() {
-                if(left == 0) {
+                if (left == 0) {
                     end();
                     return;
                 }
 
-                if(!hasAnimation && AnimationManager.getInstance().getActive().getTickSound() != null) AnimationManager.getInstance().getActive().getTickSound().play(player);
+                if (!hasAnimation && AnimationManager.getInstance().getActive().getTickSound() != null) AnimationManager.getInstance().getActive().getTickSound().play(player);
 
-                if(d == Display.ACTION_BAR) MessageAPI.sendActionBar(player, msg.replace("%seconds%", left + ""));
-                else if(d == TeleportDelay.Display.TITLE) {
+                if (d == Display.ACTION_BAR) MessageAPI.sendActionBar(player, msg.replace("%seconds%", left + ""));
+                else if (d == TeleportDelay.Display.TITLE) {
                     int fadeIn = left == delay ? 5 : 0;
                     int fadeOut = left == 1 ? 5 : 0;
                     MessageAPI.sendTitle(player, text[0].replace("%seconds%", left + ""), text[1].replace("%seconds%", left + ""), fadeIn, 25 - fadeOut, fadeOut, false, false, false);

@@ -20,12 +20,12 @@ public class InteractListener implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        if(e.getAction() != Action.RIGHT_CLICK_BLOCK || blocked.contains(e.getPlayer())) return;
+        if (e.getAction() != Action.RIGHT_CLICK_BLOCK || blocked.contains(e.getPlayer())) return;
         Block b = e.getClickedBlock();
-        if(b == null) return;
+        if (b == null) return;
         org.bukkit.Location loc = b.getLocation();
 
-        if(addingNewBlock.contains(e.getPlayer())) {
+        if (addingNewBlock.contains(e.getPlayer())) {
             RandomTeleportManager.getInstance().getInteractBlocks().add(new Location(loc));
             e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Block_Added"));
             addingNewBlock.remove(e.getPlayer());
@@ -33,8 +33,8 @@ public class InteractListener implements Listener {
             return;
         }
 
-        for(Location l : RandomTeleportManager.getInstance().getInteractBlocks()) {
-            if(l.equals(loc)) {
+        for (Location l : RandomTeleportManager.getInstance().getInteractBlocks()) {
+            if (l.equals(loc)) {
                 blocked.add(e.getPlayer(), 1);
                 RandomTeleportManager.getInstance().tryToTeleport(e.getPlayer());
                 break;
@@ -42,21 +42,21 @@ public class InteractListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler (priority = EventPriority.LOWEST)
     public void onBreak(BlockBreakEvent e) {
         Block b = e.getBlock();
         org.bukkit.Location loc = b.getLocation();
 
         Location remove = null;
-        for(Location l : RandomTeleportManager.getInstance().getInteractBlocks()) {
-            if(l.equals(loc)) {
+        for (Location l : RandomTeleportManager.getInstance().getInteractBlocks()) {
+            if (l.equals(loc)) {
                 remove = l;
                 break;
             }
         }
 
-        if(remove != null) {
-            if(e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_RANDOM_TELEPORTER)) {
+        if (remove != null) {
+            if (e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_RANDOM_TELEPORTER)) {
                 RandomTeleportManager.getInstance().getInteractBlocks().remove(remove);
                 e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Block_Removed"));
             } else {

@@ -17,11 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -32,10 +28,10 @@ public class SpigotHandler extends OneWayDataHandler<Player> implements PluginMe
 
     @Override
     public void registering() {
-        for(PacketType value : PacketType.values()) {
+        for (PacketType value : PacketType.values()) {
             registerPacket(value.getPacket());
         }
-        
+
         registerHandler(SendGlobalSpawnOptionsPacket.class, new SendGlobalSpawnOptionsPacketHandler());
         registerHandler(TeleportSpawnPacket.class, new TeleportSpawnPacketHandler());
         registerHandler(PrepareCoordinationTeleportPacket.class, new PrepareCoordinationTeleportPacketHandler());
@@ -67,15 +63,15 @@ public class SpigotHandler extends OneWayDataHandler<Player> implements PluginMe
 
     @Override
     protected void send(byte[] data, Player p) {
-        if(p == null) p = getAny();
-        if(p == null) return; //nobody online
+        if (p == null) p = getAny();
+        if (p == null) return; //nobody online
 
         p.sendPluginMessage(getProxy(), channelProxy, data);
     }
 
     @Override
     public void onPluginMessageReceived(@NotNull String tag, @NotNull Player player, @NotNull byte[] bytes) {
-        if(tag.equals(getChannelBackend())) receive(bytes, player);
+        if (tag.equals(getChannelBackend())) receive(bytes, player);
     }
 
     public void send(@NotNull Packet packet) {

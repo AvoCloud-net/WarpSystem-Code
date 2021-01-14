@@ -29,14 +29,14 @@ public class SGlobalWarp implements Serializable {
     public void write(DataOutputStream out) throws IOException {
         out.writeUTF(this.name);
         out.writeBoolean(this.server != null);
-        if(this.server != null) out.writeUTF(this.server);
+        if (this.server != null) out.writeUTF(this.server);
         this.loc.write(out);
     }
 
     @Override
     public void read(DataInputStream in) throws IOException {
         this.name = in.readUTF();
-        if(in.readBoolean()) this.server = in.readUTF();
+        if (in.readBoolean()) this.server = in.readUTF();
         this.loc = new SLocation();
         this.loc.read(in);
     }
@@ -67,8 +67,8 @@ public class SGlobalWarp implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         SGlobalWarp that = (SGlobalWarp) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(server, that.server) &&

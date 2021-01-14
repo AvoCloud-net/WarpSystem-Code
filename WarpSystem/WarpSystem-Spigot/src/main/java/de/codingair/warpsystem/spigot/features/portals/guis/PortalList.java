@@ -23,14 +23,14 @@ public abstract class PortalList extends GUIList<Portal> {
 
     public static Number cut(double n) {
         double d = Double.parseDouble(new DecimalFormat("#.##").format(n).replace(",", "."));
-        if(d == (int) d) return (int) d;
+        if (d == (int) d) return (int) d;
         else return d;
     }
 
     @Override
     public void addListItems(List<ListItem<Portal>> listItems) {
-        for(Portal portal : PortalManager.getInstance().getPortals()) {
-            if(portal.getSpawn() == null) continue;
+        for (Portal portal : PortalManager.getInstance().getPortals()) {
+            if (portal.getSpawn() == null) continue;
 
             listItems.add(new ListItem<Portal>(portal) {
                 @Override

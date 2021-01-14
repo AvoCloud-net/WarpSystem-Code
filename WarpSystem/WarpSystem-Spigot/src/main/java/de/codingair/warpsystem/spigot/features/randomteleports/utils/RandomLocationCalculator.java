@@ -2,7 +2,6 @@ package de.codingair.warpsystem.spigot.features.randomteleports.utils;
 
 import de.codingair.codingapi.server.Environment;
 import de.codingair.codingapi.server.specification.Version;
-import de.codingair.codingapi.tools.Area;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.Location;
 import de.codingair.codingapi.utils.Node;
@@ -15,7 +14,6 @@ import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.WorldBorder;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -28,13 +26,13 @@ public abstract class RandomLocationCalculator implements Runnable {
     private final org.bukkit.Location startLocation;
     private final Player check;
     private final Callback<Location> callback;
-    private long lastReaction = 0;
     private final double minRange;
     private final double maxRange;
     private final double diffRange;
+    private long lastReaction = 0;
 
     public RandomLocationCalculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<Location> callback) {
-        if(Version.get().isBiggerThan(8)) check = new PermissionPlayer_v1_9(player);
+        if (Version.get().isBiggerThan(8)) check = new PermissionPlayer_v1_9(player);
         else check = new PermissionPlayer_v1_8(player);
 
         this.callback = callback;
@@ -49,10 +47,10 @@ public abstract class RandomLocationCalculator implements Runnable {
         Location location = null;
         try {
             location = calculate();
-        } catch(InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if(location != null) {
+        if (location != null) {
             location.setX(location.getBlockX() + 0.5);
             location.setY(location.getBlockY() + 0.5);
             location.setZ(location.getBlockZ() + 0.5);
@@ -70,8 +68,8 @@ public abstract class RandomLocationCalculator implements Runnable {
         Random r = new Random();
 
         long maxTime = (long) ((maxRange - minRange) / 2);
-        if(maxTime < 1000) maxTime = 1000;
-        if(maxTime > 5000) maxTime = 5000;
+        if (maxTime < 1000) maxTime = 1000;
+        if (maxTime > 5000) maxTime = 5000;
 
         do {
             location.setY(startLocation.getY());
@@ -82,12 +80,12 @@ public abstract class RandomLocationCalculator implements Runnable {
             location.setZ(z + offset.getValue());
 
             PaperLib.getChunkAtAsync(location).join();
-            if(start + maxTime < System.currentTimeMillis()) {
+            if (start + maxTime < System.currentTimeMillis()) {
                 return null;
             }
 
-            if(correct(location, false)) location.setY(calculateYCoord(location));
-        } while(!checkY(location) || blockedMaterial(location) || !correct(location, true));
+            if (correct(location, false)) location.setY(calculateYCoord(location));
+        } while (!checkY(location) || blockedMaterial(location) || !correct(location, true));
         return location;
     }
 
@@ -119,7 +117,7 @@ public abstract class RandomLocationCalculator implements Runnable {
     }
 
     private int getHighestY(World w) {
-        switch(w.getEnvironment()) {
+        switch (w.getEnvironment()) {
             case NETHER:
                 return RandomTeleportManager.getInstance().getNetherHeight();
             case THE_END:
@@ -131,39 +129,39 @@ public abstract class RandomLocationCalculator implements Runnable {
 
     private int calculateYCoord(Location location) {
         Location loc = location.clone();
-        if(location.getWorld().getEnvironment() != World.Environment.NORMAL) loc.setY(getHighestY(loc.getWorld()));
+        if (location.getWorld().getEnvironment() != World.Environment.NORMAL) loc.setY(getHighestY(loc.getWorld()));
 
-        if(location.getWorld().getEnvironment() == World.Environment.NETHER) {
+        if (location.getWorld().getEnvironment() == World.Environment.NETHER) {
             int free = 0;
-            while(free < 2 && loc.getY() >= 0) {
-                if(Environment.canBeEntered(loc.getBlock().getType())) free++;
+            while (free < 2 && loc.getY() >= 0) {
+                if (Environment.canBeEntered(loc.getBlock().getType())) free++;
 
                 loc.setY(loc.getY() - 1);
             }
 
-            while(Environment.canBeEntered(loc.getBlock().getType()) && loc.getBlockY() > 0) {
+            while (Environment.canBeEntered(loc.getBlock().getType()) && loc.getBlockY() > 0) {
                 loc.setY(loc.getY() - 1);
             }
 
             loc.setY(loc.getY() + 1);
         } else {
-            if(!Environment.canBeEntered(loc.getBlock().getType())) {
-                while(!Environment.canBeEntered(loc.getBlock().getType())) {
+            if (!Environment.canBeEntered(loc.getBlock().getType())) {
+                while (!Environment.canBeEntered(loc.getBlock().getType())) {
                     loc.setY(loc.getY() + 4);
                 }
 
-                while(Environment.canBeEntered(loc.getBlock().getType())) {
+                while (Environment.canBeEntered(loc.getBlock().getType())) {
                     loc.setY(loc.getY() - 1);
                 }
 
                 loc.setY(loc.getY() + 1);
             } else {
-                while(Environment.canBeEntered(loc.getBlock().getType()) && loc.getBlockY() > 0) {
+                while (Environment.canBeEntered(loc.getBlock().getType()) && loc.getBlockY() > 0) {
                     loc.setY(loc.getY() - 4);
                 }
 
-                if(loc.getBlockY() > 0) {
-                    while(!Environment.canBeEntered(loc.getBlock().getType())) {
+                if (loc.getBlockY() > 0) {
+                    while (!Environment.canBeEntered(loc.getBlock().getType())) {
                         loc.setY(loc.getY() + 1);
                     }
                 }
@@ -185,22 +183,22 @@ public abstract class RandomLocationCalculator implements Runnable {
         unsafe.add("FIRE");
         unsafe.add("MAGMA");
 
-        for(String s : unsafe) {
-            if(b.getType().name().toUpperCase().contains(s)) return false;
+        for (String s : unsafe) {
+            if (b.getType().name().toUpperCase().contains(s)) return false;
         }
 
         return true;
     }
 
     protected boolean isProtected(Location location) throws InterruptedException {
-        synchronized(this) {
+        synchronized (this) {
             Value<BlockBreakEvent> eventValue = new Value<>(null);
             Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> {
                 BlockBreakEvent event = new BlockBreakEvent(location.getBlock(), this.check); //check is a bukkit/Player instance
                 eventValue.setValue(event);
                 Bukkit.getPluginManager().callEvent(event);
 
-                synchronized(RandomLocationCalculator.this) {
+                synchronized (RandomLocationCalculator.this) {
                     RandomLocationCalculator.this.notify();
                 }
             });

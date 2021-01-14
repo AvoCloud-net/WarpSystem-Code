@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types;
 
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.ActionObject;
@@ -31,7 +31,7 @@ public class MessageAction extends ActionObject<List<String>> {
         try {
             JSONArray json = (JSONArray) new JSONParser().parse(s);
             setValue(json);
-        } catch(ParseException e) {
+        } catch (ParseException e) {
             List<String> messages = new ArrayList<>();
             messages.add(s);
             setValue(messages);
@@ -40,8 +40,8 @@ public class MessageAction extends ActionObject<List<String>> {
 
     @Override
     public boolean perform(Player player) {
-        for(String message : getValue()) {
-            if(message == null) player.sendMessage(" ");
+        for (String message : getValue()) {
+            if (message == null) player.sendMessage(" ");
             else player.sendMessage(ChatColor.translateAll('&', message));
         }
 
@@ -49,13 +49,13 @@ public class MessageAction extends ActionObject<List<String>> {
     }
 
     @Override
-    public boolean read(DataWriter d) {
+    public boolean read(DataMask d) {
         setValue(d.getList("messages"));
         return true;
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         d.put("messages", getValue());
     }
 

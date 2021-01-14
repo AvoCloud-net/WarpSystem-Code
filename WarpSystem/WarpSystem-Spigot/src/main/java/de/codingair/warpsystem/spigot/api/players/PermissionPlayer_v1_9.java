@@ -39,6 +39,10 @@ import java.util.*;
 public class PermissionPlayer_v1_9 implements Player {
     private Player player;
 
+    public PermissionPlayer_v1_9(Player player) {
+        this.player = player;
+    }
+
     public void sendRawMessage(@Nullable UUID uuid, @NotNull String s) {
 
     }
@@ -75,12 +79,12 @@ public class PermissionPlayer_v1_9 implements Player {
         return null;
     }
 
-    public void setInvisible(boolean b) {
-
-    }
-
     public boolean isInvisible() {
         return false;
+    }
+
+    public void setInvisible(boolean b) {
+
     }
 
     public void sendMessage(@Nullable UUID uuid, @NotNull String s) {
@@ -89,10 +93,6 @@ public class PermissionPlayer_v1_9 implements Player {
 
     public void sendMessage(@Nullable UUID uuid, @NotNull String[] strings) {
 
-    }
-
-    public PermissionPlayer_v1_9(Player player) {
-        this.player = player;
     }
 
     public void sendBlockChange(Location location, int i, byte b) {
@@ -1188,12 +1188,12 @@ public class PermissionPlayer_v1_9 implements Player {
         return false;
     }
 
-    public Set<UUID> getCollidableExemptions() {
-        return null;
-    }
-
     public void setCollidable(boolean b) {
 
+    }
+
+    public Set<UUID> getCollidableExemptions() {
+        return null;
     }
 
     public <T> T getMemory(MemoryKey<T> memoryKey) {

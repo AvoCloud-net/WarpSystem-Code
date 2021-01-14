@@ -23,19 +23,19 @@ public class AllWarps implements Filter {
     public Node<List<Button>, Integer> getListItems(int maxSize, int page, Player player, String search, Object... extra) {
         List<PlayerWarp> warps = PlayerWarpManager.getManager().getWarps(player, true);
         warps.removeIf(PlayerWarp::isExpired);
-        if(search != null) warps.removeIf(w -> !w.getName(false).toLowerCase().contains(search));
+        if (search != null) warps.removeIf(w -> !w.getName(false).toLowerCase().contains(search));
         warps.sort(Comparator.comparing(o -> o.getName(false).toLowerCase()));
 
         List<Button> buttons = new ArrayList<>();
 
         int max = (page + 1) * maxSize;
         int i, noMatch = 0;
-        for(i = page * maxSize; i < max + noMatch; i++) {
-            if(warps.size() <= i) break;
+        for (i = page * maxSize; i < max + noMatch; i++) {
+            if (warps.size() <= i) break;
             PlayerWarp w = warps.get(i);
 
             SyncButton b;
-            if(w.isOwner(player) || player.hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS)) b = OwnWarpFilter.getOwnWarpIcon(w, search);
+            if (w.isOwner(player) || player.hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS)) b = OwnWarpFilter.getOwnWarpIcon(w, search);
             else b = new SyncButton(0) {
                 @Override
                 public ItemStack craftItem() {

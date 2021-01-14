@@ -138,7 +138,7 @@ public class TeleportOptions {
     }
 
     public double getCosts(Player player) {
-        if(player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Costs)) return 0;
+        if (player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Costs)) return 0;
         return costs;
     }
 
@@ -151,7 +151,7 @@ public class TeleportOptions {
     }
 
     public boolean isSkip() {
-        if(skip == null) return false;
+        if (skip == null) return false;
         return skip;
     }
 
@@ -196,8 +196,8 @@ public class TeleportOptions {
     }
 
     public SoundData getTeleportSound() {
-        if(teleportSound == null) teleportSound = AnimationManager.getInstance().getActive().getTeleportSound();
-        if(this.teleportSound == null) this.teleportSound = SoundPage.createStandard();
+        if (teleportSound == null) teleportSound = AnimationManager.getInstance().getActive().getTeleportSound();
+        if (this.teleportSound == null) this.teleportSound = SoundPage.createStandard();
         return teleportSound;
     }
 
@@ -214,7 +214,7 @@ public class TeleportOptions {
     }
 
     public void fireCallbacks(Result result) {
-        for(Callback<Result> teleportResultCallback : this.callback) {
+        for (Callback<Result> teleportResultCallback : this.callback) {
             teleportResultCallback.accept(result);
         }
 
@@ -226,7 +226,7 @@ public class TeleportOptions {
     }
 
     public TeleportOptions addCallback(Callback<Result> callback) {
-        if(callback == null) return this;
+        if (callback == null) return this;
         this.callback.add(callback);
         return this;
     }
@@ -252,7 +252,7 @@ public class TeleportOptions {
     }
 
     public String getPaymentDeniedMessage(Player player) {
-        if(this.paymentDeniedMessage == null) return null;
+        if (this.paymentDeniedMessage == null) return null;
         return this.paymentDeniedMessage.replace("%AMOUNT%", getFinalCosts(player) + "");
     }
 
@@ -293,8 +293,8 @@ public class TeleportOptions {
     }
 
     public int getDelay(Player player) {
-        if(player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Delay) || (skip != null && skip)) return 0;
-        if(destination != null) return destination.getCustomOptions().getDelay(delay);
+        if (player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Delay) || (skip != null && skip)) return 0;
+        if (destination != null) return destination.getCustomOptions().getDelay(delay);
         return delay;
     }
 

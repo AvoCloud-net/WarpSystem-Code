@@ -12,7 +12,7 @@ public class RandomTPWorldsPacketHandler implements PacketHandler<RandomTPWorlds
     @Override
     public void process(@NotNull RandomTPWorldsPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         RandomTeleportManager man = RandomTeleportManager.getInstance();
-        if(man == null) return;
+        if (man == null) return;
         man.updateWorlds(packet.getData());
     }
 }

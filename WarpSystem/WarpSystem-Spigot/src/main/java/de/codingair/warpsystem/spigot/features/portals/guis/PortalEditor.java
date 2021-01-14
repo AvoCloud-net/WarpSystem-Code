@@ -49,15 +49,15 @@ public class PortalEditor extends Editor<Portal> {
                 portal.setEditMode(false);
                 portal.setVisible(true);
 
-                if(!PortalManager.getInstance().getPortals().contains(portal)) {
+                if (!PortalManager.getInstance().getPortals().contains(portal)) {
                     PortalManager.getInstance().addPortal(portal);
                 } else {
-                    if(!oldName.equals(newName)) {
-                        for(Portal p : PortalManager.getInstance().getPortals()) {
-                            if(p.getDestination() == null) continue;
-                            
-                            if(p.getDestination().getType() == DestinationType.Portal) {
-                                if(p.getDestination().getId().equals(oldName)) {
+                    if (!oldName.equals(newName)) {
+                        for (Portal p : PortalManager.getInstance().getPortals()) {
+                            if (p.getDestination() == null) continue;
+
+                            if (p.getDestination().getType() == DestinationType.Portal) {
+                                if (p.getDestination().getId().equals(oldName)) {
                                     p.getDestination().setId(newName);
                                 }
                             }
@@ -69,7 +69,7 @@ public class PortalEditor extends Editor<Portal> {
             @Override
             public void cancel(Portal value) {
                 clone.destroy();
-                if(PortalManager.getInstance().getPortals().contains(portal)) {
+                if (PortalManager.getInstance().getPortals().contains(portal)) {
                     portal.setEditMode(false);
                     portal.setVisible(true);
                 } else portal.destroy();
@@ -84,14 +84,14 @@ public class PortalEditor extends Editor<Portal> {
                         .addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Current") + ": " + (target == null ? "§c" + Lang.get("Not_Set") : "§7'§f" + ChatColor.translateAlternateColorCodes('&', target.getDisplayName()) + "§7'"));
 
                 builder.addLore("", Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §a" + (target == null ? Lang.get("Set") : Lang.get("Change")));
-                if(target != null) builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
+                if (target != null) builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
 
                 return builder.getItem();
             }
 
             @Override
             public void onClick(InventoryClickEvent e, Player player) {
-                if(e.isLeftClick()) {
+                if (e.isLeftClick()) {
                     PortalEditor editor = API.getRemovable(player, PortalEditor.class);
                     editor.changeGUI(new PortalList(player) {
                         @Override
@@ -136,14 +136,14 @@ public class PortalEditor extends Editor<Portal> {
 
     @Override
     public void open(Player player) {
-        if(!openForFirstTime) EDITORS.put(player.getName(), this);
+        if (!openForFirstTime) EDITORS.put(player.getName(), this);
 
         super.open(player);
     }
 
     @Override
     public void destroy() {
-        if(!isClosingForGUI()) EDITORS.remove(getPlayer().getName());
+        if (!isClosingForGUI()) EDITORS.remove(getPlayer().getName());
         super.destroy();
     }
 
@@ -154,7 +154,7 @@ public class PortalEditor extends Editor<Portal> {
 
     @Override
     public List<String> finishButtonLoreAddition() {
-        if(clone == null) return super.finishButtonLoreAddition();
+        if (clone == null) return super.finishButtonLoreAddition();
         return new ArrayList<String>() {{
             add("");
             add("§7" + Lang.get("Portal_Blocks") + ": " + (canFinish() ? "§7" : "§c") + clone.getBlocks().size());

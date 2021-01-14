@@ -2,8 +2,6 @@ package de.codingair.warpsystem.spigot.versionfactory;
 
 import de.codingair.codingapi.server.reflections.IReflection;
 
-import java.lang.reflect.InvocationTargetException;
-
 public class VFac {
     public static final String PATH = "de.codingair.warpsystem.spigot.versionfactory.";
     public static final String OBJECTS = PATH + "objects.";
@@ -23,7 +21,7 @@ public class VFac {
         try {
             Class<?> c = Class.forName(path);
             return build(c, args);
-        } catch(ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             throw new IllegalStateException("Could not build an instance with path=\"" + path + "\".", e);
         }
     }
@@ -31,13 +29,13 @@ public class VFac {
     private static <A> A build(Class<?> c, Object... args) {
         try {
             Class<?>[] classes = new Class[args.length];
-            for(int i = 0; i < args.length; i++) {
+            for (int i = 0; i < args.length; i++) {
                 classes[i] = args[i].getClass();
             }
 
             //noinspection unchecked
             return (A) IReflection.getConstructor(c, classes).newInstance(args);
-        } catch(NullPointerException | ClassCastException e) {
+        } catch (NullPointerException | ClassCastException e) {
             throw new IllegalStateException("Could not build an instance of " + c.getName(), e);
         }
     }
@@ -46,7 +44,7 @@ public class VFac {
         try {
             Class.forName(OBJECTS + path);
             return true;
-        } catch(ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             return false;
         }
     }

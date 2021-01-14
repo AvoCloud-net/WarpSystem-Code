@@ -7,7 +7,7 @@ import de.codingair.codingapi.tools.HitBox;
 import de.codingair.codingapi.tools.Location;
 import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.io.lib.JSONArray;
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.base.managers.PostWorldManager;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.FeatureObject;
@@ -23,19 +23,16 @@ import org.bukkit.util.Vector;
 import java.util.*;
 
 public class Portal extends FeatureObject {
+    protected final List<PortalListener> listeners = new ArrayList<>();
+    protected final List<BlockHierarchy> merged = new ArrayList<>();
     protected boolean editMode = false;
     protected Portal editing = null;
-
     protected byte trigger;
     protected Location spawn;
     protected List<PortalBlock> blocks;
     protected List<Animation> animations;
     protected boolean visible = false;
-    protected final List<PortalListener> listeners = new ArrayList<>();
-
     protected Hologram hologram = new Hologram(this);
-
-    protected final List<BlockHierarchy> merged = new ArrayList<>();
     protected Location[] cachedEdges = null;
     protected Axis cachedAxis = null;
 
@@ -74,7 +71,7 @@ public class Portal extends FeatureObject {
         options.addCallback(new Callback<Result>() {
             @Override
             public void accept(Result result) {
-                if(result == Result.REMAINING_COOLDOWN) {
+                if (result == Result.REMAINING_COOLDOWN) {
                     de.codingair.warpsystem.spigot.features.portals.listeners.PortalListener.waiting(player, Portal.this);
                 } else de.codingair.warpsystem.spigot.features.portals.listeners.PortalListener.done(player);
             }
@@ -83,12 +80,12 @@ public class Portal extends FeatureObject {
     }
 
     @Override
-    public boolean read(DataWriter d) throws Exception {
+    public boolean read(DataMask d) throws Exception {
         super.read(d);
 
-        if(d.getBoolean("skip")) {
+        if (d.getBoolean("skip")) {
             Destination dest = getDestination();
-            if(dest != null) dest.getCustomOptions().setDelay(0);
+            if (dest != null) dest.getCustomOptions().setDelay(0);
             setSkip(false);
         }
 
@@ -99,9 +96,9 @@ public class Portal extends FeatureObject {
 
         this.blocks = new ArrayList<>();
         JSONArray jsonArray = d.getList("blocks");
-        if(jsonArray != null) {
-            for(Object o : jsonArray) {
-                if(o instanceof Map) {
+        if (jsonArray != null) {
+            for (Object o : jsonArray) {
+                if (o instanceof Map) {
                     JSON json = new JSON((Map<?, ?>) o);
 
                     PortalBlock block = new PortalBlock();
@@ -111,12 +108,12 @@ public class Portal extends FeatureObject {
             }
         }
 
-        if(!blocks.isEmpty()) world = blocks.get(0).getLocation().getWorldName();
+        if (!blocks.isEmpty()) world = blocks.get(0).getLocation().getWorldName();
 
         jsonArray = d.getList("packedblocks");
-        if(jsonArray != null) {
-            for(Object o : jsonArray) {
-                if(o instanceof Map) {
+        if (jsonArray != null) {
+            for (Object o : jsonArray) {
+                if (o instanceof Map) {
                     JSON json = new JSON((Map<?, ?>) o);
 
                     BlockHierarchy b = new BlockHierarchy(world);
@@ -128,9 +125,9 @@ public class Portal extends FeatureObject {
 
         this.animations = new ArrayList<>();
         jsonArray = d.getList("animations");
-        if(jsonArray != null) {
-            for(Object o : jsonArray) {
-                if(o instanceof Map) {
+        if (jsonArray != null) {
+            for (Object o : jsonArray) {
+                if (o instanceof Map) {
                     JSON json = new JSON((Map<?, ?>) o);
 
                     Animation animation = new Animation();
@@ -142,17 +139,17 @@ public class Portal extends FeatureObject {
         this.hologram = d.getSerializable("hologram", this.hologram);
         this.trigger = d.getByte("trigger");
 
-        if(this.spawn != null) this.spawn.destroy();
+        if (this.spawn != null) this.spawn.destroy();
         else this.spawn = new Location();
         this.spawn = d.getSerializable("spawn", this.spawn);
-        if(this.spawn.isEmpty()) this.spawn = null;
+        if (this.spawn.isEmpty()) this.spawn = null;
 
         mergeBlocks();
         return true;
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         super.write(d);
 
         d.put("name", displayName);
@@ -164,7 +161,7 @@ public class Portal extends FeatureObject {
         List<BlockHierarchy> hierarchies = new ArrayList<>();
         MergeAlgorithm.mergeByType(hierarchies, this.blocks);
 
-        for(BlockHierarchy b : hierarchies) {
+        for (BlockHierarchy b : hierarchies) {
             JSON json = new JSON();
             b.write(json);
             data.add(json);
@@ -173,7 +170,7 @@ public class Portal extends FeatureObject {
 
         data = new ArrayList<>();
 
-        for(Animation animation : this.animations) {
+        for (Animation animation : this.animations) {
             JSON json = new JSON();
             animation.write(json);
             data.add(json);
@@ -192,16 +189,16 @@ public class Portal extends FeatureObject {
         this.cachedEdges = null;
         this.cachedAxis = null;
         this.merged.clear();
-        if(this.blocks != null) this.blocks.clear();
-        if(this.animations != null) {
-            for(Animation animation : this.animations) {
-                if(animation != null) animation.getAnimation().setRunning(false);
+        if (this.blocks != null) this.blocks.clear();
+        if (this.animations != null) {
+            for (Animation animation : this.animations) {
+                if (animation != null) animation.getAnimation().setRunning(false);
             }
             this.animations.clear();
         }
-        if(this.listeners != null) this.listeners.clear();
+        if (this.listeners != null) this.listeners.clear();
 
-        if(this.spawn != null) this.spawn.destroy();
+        if (this.spawn != null) this.spawn.destroy();
 
         trigger = 0;
     }
@@ -209,11 +206,11 @@ public class Portal extends FeatureObject {
     @Override
     public void apply(FeatureObject object) {
         super.apply(object);
-        if(!(object instanceof Portal)) return;
+        if (!(object instanceof Portal)) return;
 
         Portal portal = (Portal) object;
         boolean visible = isVisible();
-        if(visible) setVisible(false);
+        if (visible) setVisible(false);
 
         this.cachedEdges = null;
         this.cachedAxis = null;
@@ -223,7 +220,7 @@ public class Portal extends FeatureObject {
         this.blocks.addAll(portal.getBlocks());
 
         this.animations.clear();
-        for(Animation animation : portal.getAnimations()) {
+        for (Animation animation : portal.getAnimations()) {
             this.animations.add(new Animation(animation));
         }
 
@@ -234,16 +231,16 @@ public class Portal extends FeatureObject {
 
         this.hologram.destroy();
         this.hologram.apply(((Portal) object).hologram);
-        if(this.hologram.getText() == null) this.hologram.setText(this.displayName);
+        if (this.hologram.getText() == null) this.hologram.setText(this.displayName);
 
         this.trigger = portal.trigger;
         setSpawn(portal.spawn);
 
-        if(visible) setVisible(true);
+        if (visible) setVisible(true);
     }
 
     public void mergeBlocks() {
-        if(merged.isEmpty()) MergeAlgorithm.merge(this.merged, this.blocks);
+        if (merged.isEmpty()) MergeAlgorithm.merge(this.merged, this.blocks);
     }
 
     public List<BlockHierarchy> getMergedBlocks() {
@@ -257,7 +254,7 @@ public class Portal extends FeatureObject {
 
     @Override
     public boolean equals(Object o) {
-        if(!(o instanceof Portal)) return false;
+        if (!(o instanceof Portal)) return false;
         Portal portal = (Portal) o;
 
         return super.equals(o) &&
@@ -279,9 +276,9 @@ public class Portal extends FeatureObject {
     public void prepareTeleportOptions(String player, TeleportOptions options) {
         super.prepareTeleportOptions(player, options);
 
-        if(!this.animations.isEmpty()) options.setTeleportAnimation(false);
+        if (!this.animations.isEmpty()) options.setTeleportAnimation(false);
         options.setCanMove(true);
-        if(this.teleportName != null) options.setDisplayName(ChatColor.translateAlternateColorCodes('&', this.teleportName));
+        if (this.teleportName != null) options.setDisplayName(ChatColor.translateAlternateColorCodes('&', this.teleportName));
     }
 
     public int enteredPortal(LivingEntity entity, org.bukkit.Location from) {
@@ -296,78 +293,78 @@ public class Portal extends FeatureObject {
      * -1 if the portal has been left by this entity.
      */
     public int enteredPortal(LivingEntity entity, org.bukkit.Location from, org.bukkit.Location to) {
-        if(entity == null || from == null) return 0;
+        if (entity == null || from == null) return 0;
 
         Location[] edges = getCachedEdges();
         int blockResult = 0, animationResult = 0;
         boolean inBlock = false, inAnimation = false;
 
         World w;
-        if(edges != null && (w = edges[0].getWorld()) != null) {
-            if(trigger == 0 || trigger == 1 || to == null || this.animations.isEmpty()) {
+        if (edges != null && (w = edges[0].getWorld()) != null) {
+            if (trigger == 0 || trigger == 1 || to == null || this.animations.isEmpty()) {
                 boolean blockTest0 = false, blockTest1 = false;
 
-                if(Area.isInArea(entity, from, edges[0], edges[1])) {
-                    for(BlockHierarchy mergedBlock : getMergedBlocks()) {
-                        if(Area.isInArea(entity, from, mergedBlock.getMin().toLocation(w), mergedBlock.getMax().toLocation(w).add(0.999999, 0.999999, 0.999999))) {
+                if (Area.isInArea(entity, from, edges[0], edges[1])) {
+                    for (BlockHierarchy mergedBlock : getMergedBlocks()) {
+                        if (Area.isInArea(entity, from, mergedBlock.getMin().toLocation(w), mergedBlock.getMax().toLocation(w).add(0.999999, 0.999999, 0.999999))) {
                             blockTest0 = true;
                             break;
                         }
                     }
                 }
 
-                if(to == null) {
-                    if(blockTest0) return 1;
+                if (to == null) {
+                    if (blockTest0) return 1;
                 } else {
-                    if(Area.isInArea(entity, to, edges[0], edges[1])) {
-                        for(BlockHierarchy mergedBlock : getMergedBlocks()) {
-                            if(Area.isInArea(entity, to, mergedBlock.getMin().toLocation(w), mergedBlock.getMax().toLocation(w).add(0.999999, 0.999999, 0.999999))) {
+                    if (Area.isInArea(entity, to, edges[0], edges[1])) {
+                        for (BlockHierarchy mergedBlock : getMergedBlocks()) {
+                            if (Area.isInArea(entity, to, mergedBlock.getMin().toLocation(w), mergedBlock.getMax().toLocation(w).add(0.999999, 0.999999, 0.999999))) {
                                 blockTest1 = true;
                                 break;
                             }
                         }
                     }
 
-                    if(!blockTest0 && blockTest1) blockResult = 1;
-                    else if(blockTest0 && !blockTest1) blockResult = -1;
-                    else if(blockTest0 && blockTest1) inBlock = true;
+                    if (!blockTest0 && blockTest1) blockResult = 1;
+                    else if (blockTest0 && !blockTest1) blockResult = -1;
+                    else if (blockTest0 && blockTest1) inBlock = true;
                 }
             }
         }
 
-        if(trigger == 0 || trigger == 2 || this.blocks.isEmpty()) {
+        if (trigger == 0 || trigger == 2 || this.blocks.isEmpty()) {
             double height = entity instanceof LivingEntity ? entity.getEyeHeight() : 0.7;
             HitBox hFrom = new HitBox(from, 0.1, height);
 
             boolean animationTest0 = touchesAnimation(entity.getWorld(), hFrom);
 
-            if(to == null) {
-                if(animationTest0) return 1;
+            if (to == null) {
+                if (animationTest0) return 1;
             } else {
                 HitBox move = new HitBox(to, 0.1, height);
                 boolean animationTest1 = touchesAnimation(entity.getWorld(), move);
 
-                if(!animationTest0 && animationTest1) animationResult = 1;
-                else if(animationTest0 && !animationTest1) animationResult = -1;
-                else if(animationTest0 && animationTest1) inAnimation = true;
-                else if(!animationTest0 && !animationTest1) {
+                if (!animationTest0 && animationTest1) animationResult = 1;
+                else if (animationTest0 && !animationTest1) animationResult = -1;
+                else if (animationTest0 && animationTest1) inAnimation = true;
+                else if (!animationTest0 && !animationTest1) {
                     move = new HitBox(to, 0.1, height);
                     move.addProperty(new HitBox(from, 0.1, height));
-                    if(touchesAnimation(entity.getWorld(), move)) return 2;
+                    if (touchesAnimation(entity.getWorld(), move)) return 2;
                 }
             }
         }
 
-        if(inBlock || inAnimation) return 0;
+        if (inBlock || inAnimation) return 0;
         return Math.max(Math.min(blockResult + animationResult, 1), -1);
     }
 
     public boolean isAround(org.bukkit.Location location, double distance) {
-        if(getCachedEdges() == null) return false;
+        if (getCachedEdges() == null) return false;
         Location l = new Location(location);
-        if(Area.isInArea(location, getCachedEdges()[0].clone().subtract(distance, distance, distance), getCachedEdges()[1].clone().add(distance, distance, distance), true, distance)) {
-            for(BlockHierarchy mergedBlock : getMergedBlocks()) {
-                if(Area.isInArea(l, mergedBlock.getMin().toLocation(location.getWorld()), mergedBlock.getMax().toLocation(location.getWorld()).add(0.999999, 0.999999, 0.999999), true, distance)) {
+        if (Area.isInArea(location, getCachedEdges()[0].clone().subtract(distance, distance, distance), getCachedEdges()[1].clone().add(distance, distance, distance), true, distance)) {
+            for (BlockHierarchy mergedBlock : getMergedBlocks()) {
+                if (Area.isInArea(l, mergedBlock.getMin().toLocation(location.getWorld()), mergedBlock.getMax().toLocation(location.getWorld()).add(0.999999, 0.999999, 0.999999), true, distance)) {
                     return true;
                 }
             }
@@ -377,20 +374,20 @@ public class Portal extends FeatureObject {
     }
 
     private boolean touchesAnimation(World world, HitBox entity) {
-        for(Animation animation : this.animations) {
-            if(!world.equals(animation.getLocation().getWorld())) continue;
+        for (Animation animation : this.animations) {
+            if (!world.equals(animation.getLocation().getWorld())) continue;
 
             HitBox box = animation.getHitBox();
-            if(box == null) return false;
+            if (box == null) return false;
 
-            if(box.collides(entity)) return true;
+            if (box.collides(entity)) return true;
         }
 
         return false;
     }
 
     public Axis getCachedAxis() {
-        if(cachedAxis == null) {
+        if (cachedAxis == null) {
             int x, z;
 
             Location[] edges = getCachedEdges();
@@ -405,14 +402,14 @@ public class Portal extends FeatureObject {
     }
 
     public Location[] getCachedEdges() {
-        if(cachedEdges != null) return cachedEdges;
-        if(blocks.isEmpty()) return null;
+        if (cachedEdges != null) return cachedEdges;
+        if (blocks.isEmpty()) return null;
         mergeBlocks();
 
         World world = blocks.get(0).getLocation().getWorld();
         BlockHierarchy.Bounds bounds = merged.get(0).getBounds().clone();
 
-        for(int i = 1; i < merged.size(); i++) {
+        for (int i = 1; i < merged.size(); i++) {
             BlockHierarchy b = merged.get(i);
             bounds.merge(b.getBounds());
         }
@@ -426,27 +423,27 @@ public class Portal extends FeatureObject {
     }
 
     public void update() {
-        if(waitingForWorld) return;
+        if (waitingForWorld) return;
         String waitForWorld = null;
 
-        for(PortalBlock block : this.blocks) {
-            if(block.getLocation().getWorld() == null) {
+        for (PortalBlock block : this.blocks) {
+            if (block.getLocation().getWorld() == null) {
                 waitForWorld = block.getLocation().getWorldName();
                 break;
             }
             block.updateBlock(this);
         }
 
-        if(waitForWorld == null)
-            for(Animation animation : this.animations) {
-                if(animation.getLocation().getWorld() == null) {
+        if (waitForWorld == null)
+            for (Animation animation : this.animations) {
+                if (animation.getLocation().getWorld() == null) {
                     waitForWorld = animation.getLocation().getWorldName();
                     break;
                 }
                 animation.setVisible(this.visible);
             }
 
-        if(waitForWorld != null) {
+        if (waitForWorld != null) {
             waitingForWorld = true;
             PostWorldManager.callback(waitForWorld, new Callback<World>() {
                 @Override
@@ -458,7 +455,7 @@ public class Portal extends FeatureObject {
             return;
         }
 
-        if(visible) this.hologram.update();
+        if (visible) this.hologram.update();
         else this.hologram.hide();
     }
 
@@ -472,7 +469,7 @@ public class Portal extends FeatureObject {
     }
 
     public void setVisible(boolean visible, boolean force) {
-        if(visible != this.visible || force) {
+        if (visible != this.visible || force) {
             this.visible = visible;
             update();
         }
@@ -495,7 +492,7 @@ public class Portal extends FeatureObject {
     public void removePortalBlock(org.bukkit.Location l) {
         PortalBlock block = getBlock(l);
 
-        if(block != null) {
+        if (block != null) {
             this.blocks.remove(block);
             this.merged.clear();
         }
@@ -504,8 +501,8 @@ public class Portal extends FeatureObject {
     public PortalBlock getBlock(org.bukkit.Location l) {
         l = l.getBlock().getLocation();
 
-        for(PortalBlock block : this.blocks) {
-            if(block.getLocation().getBlock().getLocation().equals(l)) return block;
+        for (PortalBlock block : this.blocks) {
+            if (block.getLocation().getBlock().getLocation().equals(l)) return block;
         }
 
         return null;
@@ -537,7 +534,7 @@ public class Portal extends FeatureObject {
 
     public Portal setEditMode(boolean editMode) {
         this.editMode = editMode;
-        if(!editMode) this.editing = null;
+        if (!editMode) this.editing = null;
         update();
         return this;
     }
@@ -556,7 +553,7 @@ public class Portal extends FeatureObject {
 
     public void setTrigger(int trigger) {
         this.trigger = (byte) trigger;
-        if(this.trigger < 0 || this.trigger > 2) this.trigger = 0;
+        if (this.trigger < 0 || this.trigger > 2) this.trigger = 0;
     }
 
     public Location getSpawn() {
@@ -564,9 +561,9 @@ public class Portal extends FeatureObject {
     }
 
     public void setSpawn(Location spawn) {
-        if(this.spawn != null && spawn != null) this.spawn.apply(spawn);
-        else if(this.spawn == null && spawn != null) this.spawn = spawn.clone();
-        else if(this.spawn != null && spawn == null) {
+        if (this.spawn != null && spawn != null) this.spawn.apply(spawn);
+        else if (this.spawn == null && spawn != null) this.spawn = spawn.clone();
+        else if (this.spawn != null && spawn == null) {
             this.spawn.destroy();
             this.spawn = null;
         }
@@ -586,7 +583,7 @@ public class Portal extends FeatureObject {
 
     public void setTeleportName(String teleportName) {
         this.teleportName = teleportName;
-        if(this.displayName.equals(this.teleportName)) {
+        if (this.displayName.equals(this.teleportName)) {
             this.teleportName = null;
         }
     }

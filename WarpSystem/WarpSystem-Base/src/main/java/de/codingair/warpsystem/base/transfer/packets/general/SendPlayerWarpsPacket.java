@@ -25,15 +25,15 @@ public class SendPlayerWarpsPacket implements Packet {
     public void write(DataOutputStream o) throws IOException {
         o.writeByte(l.size()); //max 100
 
-        if(clearable) {
-            for(PlayerWarpData s : l) {
+        if (clearable) {
+            for (PlayerWarpData s : l) {
                 s.write(o);
                 s.destroy();
             }
 
             l.clear();
         } else {
-            for(PlayerWarpData s : l) {
+            for (PlayerWarpData s : l) {
                 s.write(o);
             }
         }
@@ -43,7 +43,7 @@ public class SendPlayerWarpsPacket implements Packet {
     public void read(DataInputStream i) throws IOException {
         int size = i.readUnsignedByte();
 
-        for(int i1 = 0; i1 < size; i1++) {
+        for (int i1 = 0; i1 < size; i1++) {
             PlayerWarpData w = new PlayerWarpData();
             w.read(i);
             l.add(w);

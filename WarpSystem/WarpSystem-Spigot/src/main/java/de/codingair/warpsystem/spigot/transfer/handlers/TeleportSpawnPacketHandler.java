@@ -14,13 +14,13 @@ import org.jetbrains.annotations.Nullable;
 public class TeleportSpawnPacketHandler implements PacketHandler<TeleportSpawnPacket> {
     @Override
     public void process(@NotNull TeleportSpawnPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
-        if(SpawnManager.getInstance() == null) return;
+        if (SpawnManager.getInstance() == null) return;
         Spawn spawn = SpawnManager.getInstance().getSpawn();
 
-        if(spawn != null) {
+        if (spawn != null) {
             TeleportOptions options = new TeleportOptions();
             spawn.prepareTeleportOptions(packet.getPlayer(), options);
-            if(packet.isRespawn()) options.setMessage(null);
+            if (packet.isRespawn()) options.setMessage(null);
 
             TeleportListener.setSpawnPositionOrTeleport(packet.getPlayer(), options);
         }

@@ -24,23 +24,23 @@ public class SimpleWarpManager implements Manager {
     private boolean overwritePermissions = false;
 
     public static SimpleWarpManager getInstance() {
-        if(instance == null) instance = WarpSystem.getInstance().getDataManager().getManager(FeatureType.SIMPLE_WARPS);
-        if(instance == null) instance = new SimpleWarpManager();
+        if (instance == null) instance = WarpSystem.getInstance().getDataManager().getManager(FeatureType.SIMPLE_WARPS);
+        if (instance == null) instance = new SimpleWarpManager();
         return instance;
     }
 
     @Override
     public boolean load(boolean loader) {
-        if(WarpSystem.getInstance().getFileManager().getFile("SimpleWarps") == null) WarpSystem.getInstance().getFileManager().loadFile("SimpleWarps", "/Memory/");
+        if (WarpSystem.getInstance().getFileManager().getFile("SimpleWarps") == null) WarpSystem.getInstance().getFileManager().loadFile("SimpleWarps", "/Memory/");
         this.file = WarpSystem.getInstance().getFileManager().getFile("SimpleWarps");
         boolean errors = false;
 
         WarpSystem.log("  > Loading SimpleWarps");
 
         List<?> l = file.getConfig().getList("Warps");
-        if(l != null)
-            for(Object w : l) {
-                if(w instanceof Map) {
+        if (l != null)
+            for (Object w : l) {
+                if (w instanceof Map) {
                     try {
                         JSON json = new JSON((Map<?, ?>) w);
                         SimpleWarp warp = new SimpleWarp();
@@ -48,15 +48,15 @@ public class SimpleWarpManager implements Manager {
                         warp.read(json);
 
                         warps.put(warp.getName(true).toLowerCase(), warp);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         errors = true;
                     }
-                } else if(w instanceof String) {
+                } else if (w instanceof String) {
                     try {
                         SimpleWarp warp = new SimpleWarp((String) w);
                         warps.put(warp.getName(true).toLowerCase(), warp);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         errors = true;
                     }
@@ -79,10 +79,10 @@ public class SimpleWarpManager implements Manager {
 
     @Override
     public void save(boolean saver) {
-        if(!saver) WarpSystem.log("  > Saving SimpleWarps");
+        if (!saver) WarpSystem.log("  > Saving SimpleWarps");
         List<JSON> finalData = new ArrayList<>();
 
-        for(SimpleWarp warp : this.warps.values()) {
+        for (SimpleWarp warp : this.warps.values()) {
             JSON json = new JSON();
             warp.write(json);
             finalData.add(json);
@@ -91,7 +91,7 @@ public class SimpleWarpManager implements Manager {
         file.getConfig().set("Warps", finalData);
         file.saveConfig();
 
-        if(!saver) WarpSystem.log("    ...saved " + finalData.size() + " SimpleWarp(s)");
+        if (!saver) WarpSystem.log("    ...saved " + finalData.size() + " SimpleWarp(s)");
     }
 
     @Override
@@ -100,8 +100,8 @@ public class SimpleWarpManager implements Manager {
     }
 
     public void addWarp(SimpleWarp warp) {
-        if(existsWarp(warp.getName())) return;
-        if(WarpSystem.getInstance().getFileManager().getFile("Config").getConfig().getBoolean("WarpSystem.SimpleWarps.Add_Permission_On_Creation", true) && warp.getPermission() == null)
+        if (existsWarp(warp.getName())) return;
+        if (WarpSystem.getInstance().getFileManager().getFile("Config").getConfig().getBoolean("WarpSystem.SimpleWarps.Add_Permission_On_Creation", true) && warp.getPermission() == null)
             warp.setPermission(PERMISSION.replace("%WARP%", ChatColor.stripColor(warp.getName()).replace(" ", "_")));
         this.warps.put(warp.getName(true).toLowerCase(), warp);
     }
@@ -111,7 +111,7 @@ public class SimpleWarpManager implements Manager {
     }
 
     public SimpleWarp getWarp(String warp) {
-        if(warp == null) return null;
+        if (warp == null) return null;
         warp = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', warp));
         return this.warps.get(warp.toLowerCase());
     }
@@ -128,16 +128,16 @@ public class SimpleWarpManager implements Manager {
     public boolean isReserved(String name) {
         name = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', name));
 
-        if(existsWarp(name)) return true;
-        for(String n : this.reservedNames) {
-            if(n.equalsIgnoreCase(name)) return true;
+        if (existsWarp(name)) return true;
+        for (String n : this.reservedNames) {
+            if (n.equalsIgnoreCase(name)) return true;
         }
 
         return false;
     }
 
     public boolean reserveName(String name) {
-        if(isReserved(name)) return false;
+        if (isReserved(name)) return false;
         this.reservedNames.add(name);
         return true;
     }
@@ -145,10 +145,10 @@ public class SimpleWarpManager implements Manager {
     public boolean commitNewName(SimpleWarp warp, String name) {
         this.reservedNames.remove(name);
 
-        if(warp.getName().equalsIgnoreCase(name) && !warp.getName().equals(name)) {
+        if (warp.getName().equalsIgnoreCase(name) && !warp.getName().equals(name)) {
             warp.setName(name);
         } else {
-            if(existsWarp(name) || warp.getName().equals(name)) return false;
+            if (existsWarp(name) || warp.getName().equals(name)) return false;
             this.warps.remove(warp.getName().toLowerCase());
             warp.setName(name);
             this.warps.put(warp.getName().toLowerCase(), warp);

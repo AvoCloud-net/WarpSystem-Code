@@ -15,7 +15,7 @@ public class PostWorldManager {
     private final HashMap<String, List<Callback<World>>> callbacks = new HashMap<>();
 
     public PostWorldManager() {
-        if(instance == null) instance = this;
+        if (instance == null) instance = this;
         Bukkit.getPluginManager().registerEvents(new PostWorldListener(), WarpSystem.getInstance());
     }
 
@@ -24,17 +24,17 @@ public class PostWorldManager {
         l.add(callback);
     }
 
+    public static PostWorldManager getInstance() {
+        return instance;
+    }
+
     public void onLoad(World world) {
         List<Callback<World>> l = callbacks.remove(world.getName().toLowerCase());
-        if(l == null) return;
+        if (l == null) return;
 
-        for(Callback<World> c : l) {
+        for (Callback<World> c : l) {
             c.accept(world);
         }
         l.clear();
-    }
-
-    public static PostWorldManager getInstance() {
-        return instance;
     }
 }

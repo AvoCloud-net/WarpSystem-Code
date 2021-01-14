@@ -49,12 +49,12 @@ public class GlobalWarpTeleportPacket implements RequestPacket<IntegerPacket> {
         out.writeUTF(this.player);
         out.writeUTF(this.id);
 
-        if(displayName != null && !displayName.equals(id)) out.writeUTF(this.displayName);
-        if(costs > 0) out.writeDouble(this.costs);
-        if(randomOffsetX > 0) out.writeDouble(this.randomOffsetX);
-        if(randomOffsetY > 0) out.writeDouble(this.randomOffsetY);
-        if(randomOffsetZ > 0) out.writeDouble(this.randomOffsetZ);
-        if(message != null) out.writeUTF(this.message);
+        if (displayName != null && !displayName.equals(id)) out.writeUTF(this.displayName);
+        if (costs > 0) out.writeDouble(this.costs);
+        if (randomOffsetX > 0) out.writeDouble(this.randomOffsetX);
+        if (randomOffsetY > 0) out.writeDouble(this.randomOffsetY);
+        if (randomOffsetZ > 0) out.writeDouble(this.randomOffsetZ);
+        if (message != null) out.writeUTF(this.message);
     }
 
     @Override
@@ -64,12 +64,12 @@ public class GlobalWarpTeleportPacket implements RequestPacket<IntegerPacket> {
         this.player = in.readUTF();
         this.id = in.readUTF();
 
-        if((options & 1) != 0) this.displayName = in.readUTF();
-        if((options & (1 << 1)) != 0) this.costs = in.readDouble();
-        if((options & (1 << 2)) != 0) this.randomOffsetX = in.readDouble();
-        if((options & (1 << 3)) != 0) this.randomOffsetY = in.readDouble();
-        if((options & (1 << 4)) != 0) this.randomOffsetZ = in.readDouble();
-        if((options & (1 << 5)) != 0) this.message = in.readUTF();
+        if ((options & 1) != 0) this.displayName = in.readUTF();
+        if ((options & (1 << 1)) != 0) this.costs = in.readDouble();
+        if ((options & (1 << 2)) != 0) this.randomOffsetX = in.readDouble();
+        if ((options & (1 << 3)) != 0) this.randomOffsetY = in.readDouble();
+        if ((options & (1 << 4)) != 0) this.randomOffsetZ = in.readDouble();
+        if ((options & (1 << 5)) != 0) this.message = in.readUTF();
         this.keepRotation = (options & (1 << 6)) != 0;
         this.ignoreLimit = (options & (1 << 7)) != 0;
     }
@@ -130,8 +130,8 @@ public class GlobalWarpTeleportPacket implements RequestPacket<IntegerPacket> {
         }
 
         public static Result getById(int id) {
-            for(Result value : values()) {
-                if(value.getId() == id) return value;
+            for (Result value : values()) {
+                if (value.getId() == id) return value;
             }
 
             return null;

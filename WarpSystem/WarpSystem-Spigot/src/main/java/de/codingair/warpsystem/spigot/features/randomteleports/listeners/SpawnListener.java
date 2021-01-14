@@ -43,19 +43,19 @@ public class SpawnListener implements Listener {
     public SpawnListener() {
         try {
             Class<?> o = IReflection.getSaveClass(IReflection.ServerPacket.MINECRAFT_PACKAGE, "PacketPlayOutChat");
-            if(o != null) forwarding.add(o);
-        } catch(ClassNotFoundException ignored) {
+            if (o != null) forwarding.add(o);
+        } catch (ClassNotFoundException ignored) {
         }
 
         try {
             Class<?> o = IReflection.getSaveClass(IReflection.ServerPacket.MINECRAFT_PACKAGE, "PacketPlayOutCustomPayload");
-            if(o != null) forwarding.add(o);
-        } catch(ClassNotFoundException ignored) {
+            if (o != null) forwarding.add(o);
+        } catch (ClassNotFoundException ignored) {
         }
 
         try {
             chunkPacket = IReflection.getSaveClass(IReflection.ServerPacket.MINECRAFT_PACKAGE, "PacketPlayOutMapChunk");
-        } catch(ClassNotFoundException ignored) {
+        } catch (ClassNotFoundException ignored) {
         }
 
         WarpSystem.getDataHandler().registerHandler(RandomTPPacket.class, (packet, proxy, connection, direction) -> {
@@ -64,7 +64,7 @@ public class SpawnListener implements Listener {
             Player player = Bukkit.getPlayer(packet.getPlayer());
             TeleportInfo teleportInfo = new TeleportInfo(w, packet.getServer(), packet.isByOther());
 
-            if(player == null) teleporting.put(packet.getPlayer(), teleportInfo);
+            if (player == null) teleporting.put(packet.getPlayer(), teleportInfo);
             else triggerRTP(player, teleportInfo);
         });
     }
@@ -72,12 +72,12 @@ public class SpawnListener implements Listener {
     @EventHandler
     public void onJoin(PlayerFinalJoinEvent e) {
         TeleportInfo teleportInfo = teleporting.get(e.getPlayer().getName());
-        if(teleportInfo != null) triggerRTP(e.getPlayer(), teleportInfo);
+        if (teleportInfo != null) triggerRTP(e.getPlayer(), teleportInfo);
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler (priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent e) {
-        if(teleporting.containsKey(e.getPlayer().getName())) {
+        if (teleporting.containsKey(e.getPlayer().getName())) {
             //packet injection is buggy sometimes -> inject only if rtp is confirmed
             hidePlayer(e.getPlayer());
             inject(e.getPlayer());
@@ -85,13 +85,13 @@ public class SpawnListener implements Listener {
     }
 
     private void triggerRTP(Player player, TeleportInfo teleportInfo) {
-        if(teleportInfo.getWorld() != null) {
+        if (teleportInfo.getWorld() != null) {
             WorldOption option = RandomTeleportManager.getInstance().getOption(teleportInfo.getWorld(), RandomTeleportManager.getInstance().getDefValues());
 
             RandomTeleportManager.getInstance().search(player, teleportInfo.getWorld(), option, new Callback<Location>() {
                 @Override
                 public void accept(Location loc) {
-                    if(loc == null) {
+                    if (loc == null) {
                         uninject(player);
                         showPlayer(player);
                         teleporting.remove(player.getName());
@@ -99,7 +99,7 @@ public class SpawnListener implements Listener {
                         player.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_No_Location_Found"));
                     } else {
                         WarpSystem.getDataHandler().send(new QueueRTPUsagePacket(WarpSystem.getInstance().getPlayerDataManager().get(player), teleportInfo.getServer()), player);
-                        if(!teleportInfo.isByOther()) WarpSystem.cooldown().register(player, Origin.RandomTP);
+                        if (!teleportInfo.isByOther()) WarpSystem.cooldown().register(player, Origin.RandomTP);
 
                         org.bukkit.Location l = player.getLocation();
                         boolean discardOldChunk = !l.getWorld().equals(loc.getWorld()) || l.distance(loc) > 250;
@@ -133,7 +133,7 @@ public class SpawnListener implements Listener {
     private void clearCache(Player player, boolean oldChunk) {
         List<Object> l = packetCache.remove(player.getName());
 
-        if(l != null) {
+        if (l != null) {
             int size = l.size();
             BukkitRunnable r = new BukkitRunnable() {
                 int i = 0;
@@ -141,13 +141,13 @@ public class SpawnListener implements Listener {
                 @Override
                 public void run() {
                     int max = Math.min(i + 100, size);
-                    for(int j = i; j < max; j++) {
+                    for (int j = i; j < max; j++) {
                         Object o = l.get(j);
-                        if(oldChunk || !o.getClass().equals(chunkPacket)) PacketUtils.sendPacket(player, o);
+                        if (oldChunk || !o.getClass().equals(chunkPacket)) PacketUtils.sendPacket(player, o);
                     }
                     i = max;
 
-                    if(i == size) {
+                    if (i == size) {
                         this.cancel();
                         l.clear();
                     }
@@ -161,10 +161,10 @@ public class SpawnListener implements Listener {
         List<Player> toShowAfterwards = new ArrayList<>();
         showAfterwards.put(player, toShowAfterwards);
 
-        for(Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            if(onlinePlayer.equals(player)) continue;
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if (onlinePlayer.equals(player)) continue;
             onlinePlayer.hidePlayer(player);
-            if(player.canSee(onlinePlayer)) {
+            if (player.canSee(onlinePlayer)) {
                 player.hidePlayer(onlinePlayer);
                 toShowAfterwards.add(onlinePlayer);
             }
@@ -172,14 +172,14 @@ public class SpawnListener implements Listener {
     }
 
     private void showPlayer(Player player) {
-        for(Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            if(onlinePlayer.equals(player)) continue;
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if (onlinePlayer.equals(player)) continue;
             onlinePlayer.showPlayer(player);
         }
 
         List<Player> toShowAfterwards = showAfterwards.remove(player);
-        if(toShowAfterwards != null) {
-            for(Player p : toShowAfterwards) {
+        if (toShowAfterwards != null) {
+            for (Player p : toShowAfterwards) {
                 player.showPlayer(p);
             }
             toShowAfterwards.clear();
@@ -197,7 +197,7 @@ public class SpawnListener implements Listener {
 
             @Override
             public boolean writePacket(Object packet) {
-                if(forwarding.contains(packet.getClass())) return false;
+                if (forwarding.contains(packet.getClass())) return false;
                 l.add(packet);
                 return true;
             }
@@ -206,15 +206,15 @@ public class SpawnListener implements Listener {
 
     private void uninject(Player player) {
         PacketReader r = getReader(player);
-        if(r != null) r.unInject();
+        if (r != null) r.unInject();
     }
 
     private PacketReader getReader(Player player) {
         List<PacketReader> l = API.getRemovables(player, PacketReader.class);
 
         PacketReader found = null;
-        for(PacketReader r : l) {
-            if(r.getName().equals(PACKET_READER_NAME)) {
+        for (PacketReader r : l) {
+            if (r.getName().equals(PACKET_READER_NAME)) {
                 found = r;
                 break;
             }
@@ -235,11 +235,11 @@ public class SpawnListener implements Listener {
             this.byOther = byOther;
         }
 
-        public World getWorld(){
+        public World getWorld() {
             return world;
         }
 
-        public String getServer(){
+        public String getServer() {
             return server;
         }
 

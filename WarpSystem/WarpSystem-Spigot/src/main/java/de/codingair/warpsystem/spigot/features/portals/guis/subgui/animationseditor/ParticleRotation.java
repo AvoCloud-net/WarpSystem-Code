@@ -55,18 +55,18 @@ public class ParticleRotation extends HotbarGUI {
         setItem(2, new ItemComponent(new ItemBuilder(XMaterial.BLAZE_ROD).setName("§7" + Lang.get("Rotation") + " (X): '§e" + getXRotation() + "§7'").getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType == ClickType.LEFT_CLICK) {
+                if (clickType == ClickType.LEFT_CLICK) {
                     getPart().setxRotation(getPart().getxRotation() - 5);
-                } else if(clickType == ClickType.SHIFT_LEFT_CLICK) {
+                } else if (clickType == ClickType.SHIFT_LEFT_CLICK) {
                     getPart().setxRotation(getPart().getxRotation() - 45);
-                } else if(clickType == ClickType.RIGHT_CLICK) {
+                } else if (clickType == ClickType.RIGHT_CLICK) {
                     getPart().setxRotation(getPart().getxRotation() + 5);
-                } else if(clickType == ClickType.SHIFT_RIGHT_CLICK) {
+                } else if (clickType == ClickType.SHIFT_RIGHT_CLICK) {
                     getPart().setxRotation(getPart().getxRotation() + 45);
                 }
 
-                if(getPart().getxRotation() >= 360) getPart().setxRotation(getPart().getxRotation() - 360);
-                else if(getPart().getxRotation() < 0) getPart().setxRotation(getPart().getxRotation() + 360);
+                if (getPart().getxRotation() >= 360) getPart().setxRotation(getPart().getxRotation() - 360);
+                else if (getPart().getxRotation() < 0) getPart().setxRotation(getPart().getxRotation() + 360);
 
                 main.getAnimation().update();
                 updateDisplayName(ic, "§7" + Lang.get("Rotation") + " (X): '§e" + getXRotation() + "§7'");
@@ -86,18 +86,18 @@ public class ParticleRotation extends HotbarGUI {
         setItem(3, new ItemComponent(new ItemBuilder(XMaterial.BLAZE_ROD).setName("§7" + Lang.get("Rotation") + " (Y): '§e" + getYRotation() + "§7'").getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType == ClickType.LEFT_CLICK) {
+                if (clickType == ClickType.LEFT_CLICK) {
                     getPart().setyRotation(getPart().getyRotation() - 5);
-                } else if(clickType == ClickType.SHIFT_LEFT_CLICK) {
+                } else if (clickType == ClickType.SHIFT_LEFT_CLICK) {
                     getPart().setyRotation(getPart().getyRotation() - 45);
-                } else if(clickType == ClickType.RIGHT_CLICK) {
+                } else if (clickType == ClickType.RIGHT_CLICK) {
                     getPart().setyRotation(getPart().getyRotation() + 5);
-                } else if(clickType == ClickType.SHIFT_RIGHT_CLICK) {
+                } else if (clickType == ClickType.SHIFT_RIGHT_CLICK) {
                     getPart().setyRotation(getPart().getyRotation() + 45);
                 }
 
-                if(getPart().getyRotation() >= 360) getPart().setyRotation(getPart().getyRotation() - 360);
-                else if(getPart().getyRotation() < 0) getPart().setyRotation(getPart().getyRotation() + 360);
+                if (getPart().getyRotation() >= 360) getPart().setyRotation(getPart().getyRotation() - 360);
+                else if (getPart().getyRotation() < 0) getPart().setyRotation(getPart().getyRotation() + 360);
 
                 main.getAnimation().update();
                 updateDisplayName(ic, "§7" + Lang.get("Rotation") + " (Y): '§e" + getYRotation() + "§7'");
@@ -117,18 +117,18 @@ public class ParticleRotation extends HotbarGUI {
         setItem(4, new ItemComponent(new ItemBuilder(XMaterial.BLAZE_ROD).setName("§7" + Lang.get("Rotation") + " (Z): '§e" + getZRotation() + "§7'").getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType == ClickType.LEFT_CLICK) {
+                if (clickType == ClickType.LEFT_CLICK) {
                     getPart().setzRotation(getPart().getzRotation() - 5);
-                } else if(clickType == ClickType.SHIFT_LEFT_CLICK) {
+                } else if (clickType == ClickType.SHIFT_LEFT_CLICK) {
                     getPart().setzRotation(getPart().getzRotation() - 45);
-                } else if(clickType == ClickType.RIGHT_CLICK) {
+                } else if (clickType == ClickType.RIGHT_CLICK) {
                     getPart().setzRotation(getPart().getzRotation() + 5);
-                } else if(clickType == ClickType.SHIFT_RIGHT_CLICK) {
+                } else if (clickType == ClickType.SHIFT_RIGHT_CLICK) {
                     getPart().setzRotation(getPart().getzRotation() + 45);
                 }
 
-                if(getPart().getzRotation() >= 360) getPart().setzRotation(getPart().getzRotation() - 360);
-                else if(getPart().getzRotation() < 0) getPart().setzRotation(getPart().getzRotation() + 360);
+                if (getPart().getzRotation() >= 360) getPart().setzRotation(getPart().getzRotation() - 360);
+                else if (getPart().getzRotation() < 0) getPart().setzRotation(getPart().getzRotation() + 360);
 
                 main.getAnimation().update();
                 updateDisplayName(ic, "§7" + Lang.get("Rotation") + " (Z): '§e" + getZRotation() + "§7'");
@@ -148,7 +148,7 @@ public class ParticleRotation extends HotbarGUI {
         setItem(6, new ItemComponent(new ItemBuilder(XMaterial.BARRIER).setName("§7" + Lang.get("Leftclick") + ": §c" + Lang.get("Reset")).getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType == ClickType.LEFT_CLICK) {
+                if (clickType == ClickType.LEFT_CLICK) {
                     getPart().setxRotation(0);
                     getPart().setyRotation(0);
                     getPart().setzRotation(0);

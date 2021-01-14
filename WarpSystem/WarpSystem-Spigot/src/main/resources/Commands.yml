@@ -37,56 +37,56 @@ DeleteWarp:
     - deletewarps
 EditWarp:
   Name: editwarp
-  Aliases: []
+  Aliases: [ ]
 ModifyWarp:
   Name: modifywarp
-  Aliases: []
+  Aliases: [ ]
 SetWarp:
   Name: setwarp
-  Aliases: []
+  Aliases: [ ]
 Warps:
   Name: warps
-  Aliases: []
+  Aliases: [ ]
 Warp:
   Name: warp
-  Aliases: []
+  Aliases: [ ]
 SetSpawn:
   Name: setspawn
-  Aliases: []
+  Aliases: [ ]
 Spawn:
   Name: spawn
-  Aliases: []
+  Aliases: [ ]
 Back:
   Name: back
-  Aliases: []
+  Aliases: [ ]
 Teleport:
   Name: tp
   Aliases:
     - teleport
 Tpa:
   Name: tpa
-  Aliases: []
+  Aliases: [ ]
 TpaAll:
   Name: tpaall
-  Aliases: []
+  Aliases: [ ]
 TpAccept:
   Name: tpaccept
-  Aliases: []
+  Aliases: [ ]
 TpaHere:
   Name: tpahere
-  Aliases: []
+  Aliases: [ ]
 TpAll:
   Name: tpall
-  Aliases: []
+  Aliases: [ ]
 TpaToggle:
   Name: tpatoggle
-  Aliases: []
+  Aliases: [ ]
 TpDeny:
   Name: tpdeny
-  Aliases: []
+  Aliases: [ ]
 TpHere:
   Name: tphere
-  Aliases: []
+  Aliases: [ ]
 TpToggle:
   Name: tptoggle
-  Aliases: []
+  Aliases: [ ]

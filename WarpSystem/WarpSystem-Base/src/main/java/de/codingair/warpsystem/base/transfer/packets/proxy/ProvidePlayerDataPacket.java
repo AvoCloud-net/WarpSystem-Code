@@ -16,7 +16,7 @@ public class ProvidePlayerDataPacket implements Packet {
     }
 
     public ProvidePlayerDataPacket(Collection<PlayerData> data) {
-        if(data.size() > 256) throw new IllegalArgumentException("Too many names: " + data.size());
+        if (data.size() > 256) throw new IllegalArgumentException("Too many names: " + data.size());
         this.data = data;
     }
 
@@ -24,7 +24,7 @@ public class ProvidePlayerDataPacket implements Packet {
     public void write(DataOutputStream out) throws IOException {
         out.writeByte(this.data.size());
 
-        for(PlayerData player : this.data) {
+        for (PlayerData player : this.data) {
             player.write(out);
         }
     }
@@ -34,7 +34,7 @@ public class ProvidePlayerDataPacket implements Packet {
         int size = in.readUnsignedByte();
         this.data = new ArrayList<>(size);
 
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             PlayerData data = new PlayerData();
             data.read(in);
             this.data.add(data);

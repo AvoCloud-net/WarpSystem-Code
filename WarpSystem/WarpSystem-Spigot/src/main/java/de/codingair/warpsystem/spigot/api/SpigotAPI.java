@@ -13,14 +13,14 @@ public class SpigotAPI {
     private GlobalPacketReaderManager globalPacketReaderManager = new GlobalPacketReaderManager();
 
     public static SpigotAPI getInstance() {
-        if(instance == null) instance = new SpigotAPI();
+        if (instance == null) instance = new SpigotAPI();
         return instance;
     }
 
     public void onEnable(JavaPlugin plugin) {
         try {
             this.globalPacketReaderManager.register(new TeleportReader(), false);
-        } catch(ClassNotFoundException ignored) {
+        } catch (ClassNotFoundException ignored) {
         }
 
         Bukkit.getPluginManager().registerEvents(new RuleListener(), plugin);

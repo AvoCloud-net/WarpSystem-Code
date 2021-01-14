@@ -20,7 +20,7 @@ public abstract class GGlobalWarpList extends GUIList<String> {
 
     @Override
     public void addListItems(List<ListItem<String>> listItems) {
-        for(String s : GlobalWarpManager.getInstance().getGlobalWarps().keySet()) {
+        for (String s : GlobalWarpManager.getInstance().getGlobalWarps().keySet()) {
             String server = GlobalWarpManager.getInstance().getGlobalWarps().get(s);
             listItems.add(new ListItem<String>(s) {
                 @Override

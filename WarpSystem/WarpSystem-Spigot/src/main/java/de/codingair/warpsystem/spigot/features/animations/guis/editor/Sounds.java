@@ -32,15 +32,15 @@ public class Sounds extends HotbarGUI {
 
     public void next(SoundData soundData) {
         int id = soundData.getSound().ordinal() + 1;
-        if(id == sounds.length) id = 0;
+        if (id == sounds.length) id = 0;
         soundData.setSound(sounds[id]);
     }
 
     public void shiftNext(SoundData soundData) {
         Sound sound = soundData.getSound();
-        for(int i = sound.ordinal(); true; i++) {
-            if(i == sounds.length) i = 0;
-            if(sound.name().charAt(0) != sounds[i].name().charAt(0)) {
+        for (int i = sound.ordinal(); true; i++) {
+            if (i == sounds.length) i = 0;
+            if (sound.name().charAt(0) != sounds[i].name().charAt(0)) {
                 soundData.setSound(sounds[i]);
                 break;
             }
@@ -49,18 +49,18 @@ public class Sounds extends HotbarGUI {
 
     public void previous(SoundData soundData) {
         int id = soundData.getSound().ordinal() - 1;
-        if(id < 0) id = sounds.length;
+        if (id < 0) id = sounds.length;
         soundData.setSound(sounds[id]);
     }
 
     public void shiftPrevious(SoundData soundData) {
         Sound sound = soundData.getSound();
-        for(int i = sound.ordinal(); true; i--) {
-            if(sound.name().charAt(0) != sounds[i].name().charAt(0)) {
+        for (int i = sound.ordinal(); true; i--) {
+            if (sound.name().charAt(0) != sounds[i].name().charAt(0)) {
                 soundData.setSound(sounds[i]);
                 break;
             }
-            if(i == 0) i = sounds.length;
+            if (i == 0) i = sounds.length;
         }
     }
 
@@ -73,15 +73,15 @@ public class Sounds extends HotbarGUI {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
                 //Sound
-                if(getTickSound() != null) getTickSound().stop(player);
+                if (getTickSound() != null) getTickSound().stop(player);
 
-                if(clickType.equals(ClickType.LEFT_CLICK)) {
+                if (clickType.equals(ClickType.LEFT_CLICK)) {
                     previous(getTickSound());
-                } else if(clickType.equals(ClickType.SHIFT_LEFT_CLICK)) {
+                } else if (clickType.equals(ClickType.SHIFT_LEFT_CLICK)) {
                     shiftPrevious(getTickSound());
-                } else if(clickType.equals(ClickType.RIGHT_CLICK)) {
+                } else if (clickType.equals(ClickType.RIGHT_CLICK)) {
                     next(getTickSound());
-                } else if(clickType.equals(ClickType.SHIFT_RIGHT_CLICK)) {
+                } else if (clickType.equals(ClickType.SHIFT_RIGHT_CLICK)) {
                     shiftNext(getTickSound());
                 }
 
@@ -105,15 +105,15 @@ public class Sounds extends HotbarGUI {
                 .getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(getTickSound() != null) getTickSound().stop(player);
+                if (getTickSound() != null) getTickSound().stop(player);
 
                 //Volume
-                if(clickType.equals(ClickType.LEFT_CLICK)) {
+                if (clickType.equals(ClickType.LEFT_CLICK)) {
                     getTickSound().setVolume(round(getTickSound().getVolume() - 0.1F));
-                    if(getTickSound().getVolume() < 0) getTickSound().setVolume(0);
-                } else if(clickType.equals(ClickType.RIGHT_CLICK)) {
+                    if (getTickSound().getVolume() < 0) getTickSound().setVolume(0);
+                } else if (clickType.equals(ClickType.RIGHT_CLICK)) {
                     getTickSound().setVolume(round(getTickSound().getVolume() + 0.1F));
-                    if(getTickSound().getVolume() > 1) getTickSound().setVolume(1);
+                    if (getTickSound().getVolume() > 1) getTickSound().setVolume(1);
                 }
 
                 menu.getAnimPlayer().update();
@@ -136,15 +136,15 @@ public class Sounds extends HotbarGUI {
                 .getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(getTickSound() != null) getTickSound().stop(player);
+                if (getTickSound() != null) getTickSound().stop(player);
 
                 //Pitch
-                if(clickType.equals(ClickType.LEFT_CLICK)) {
+                if (clickType.equals(ClickType.LEFT_CLICK)) {
                     getTickSound().setPitch(round(getTickSound().getPitch() - 0.1F));
-                    if(getTickSound().getPitch() < 0) getTickSound().setPitch(0);
-                } else if(clickType.equals(ClickType.RIGHT_CLICK)) {
+                    if (getTickSound().getPitch() < 0) getTickSound().setPitch(0);
+                } else if (clickType.equals(ClickType.RIGHT_CLICK)) {
                     getTickSound().setPitch(round(getTickSound().getPitch() + 0.1F));
-                    if(getTickSound().getPitch() > 1) getTickSound().setPitch(1);
+                    if (getTickSound().getPitch() > 1) getTickSound().setPitch(1);
                 }
 
                 menu.getAnimPlayer().update();
@@ -167,16 +167,16 @@ public class Sounds extends HotbarGUI {
                 .getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(getTeleportSound() != null) getTeleportSound().stop(player);
+                if (getTeleportSound() != null) getTeleportSound().stop(player);
 
                 //Sound
-                if(clickType.equals(ClickType.LEFT_CLICK)) {
+                if (clickType.equals(ClickType.LEFT_CLICK)) {
                     previous(getTeleportSound());
-                } else if(clickType.equals(ClickType.SHIFT_LEFT_CLICK)) {
+                } else if (clickType.equals(ClickType.SHIFT_LEFT_CLICK)) {
                     shiftPrevious(getTeleportSound());
-                } else if(clickType.equals(ClickType.RIGHT_CLICK)) {
+                } else if (clickType.equals(ClickType.RIGHT_CLICK)) {
                     next(getTeleportSound());
-                } else if(clickType.equals(ClickType.SHIFT_RIGHT_CLICK)) {
+                } else if (clickType.equals(ClickType.SHIFT_RIGHT_CLICK)) {
                     shiftNext(getTeleportSound());
                 }
 
@@ -200,15 +200,15 @@ public class Sounds extends HotbarGUI {
                 .getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(getTeleportSound() != null) getTeleportSound().stop(player);
+                if (getTeleportSound() != null) getTeleportSound().stop(player);
 
                 //Volume
-                if(clickType.equals(ClickType.LEFT_CLICK)) {
+                if (clickType.equals(ClickType.LEFT_CLICK)) {
                     getTeleportSound().setVolume(round(getTeleportSound().getVolume() - 0.1F));
-                    if(getTeleportSound().getVolume() < 0) getTeleportSound().setVolume(0);
-                } else if(clickType.equals(ClickType.RIGHT_CLICK)) {
+                    if (getTeleportSound().getVolume() < 0) getTeleportSound().setVolume(0);
+                } else if (clickType.equals(ClickType.RIGHT_CLICK)) {
                     getTeleportSound().setVolume(round(getTeleportSound().getVolume() + 0.1F));
-                    if(getTeleportSound().getVolume() > 1) getTeleportSound().setVolume(1);
+                    if (getTeleportSound().getVolume() > 1) getTeleportSound().setVolume(1);
                 }
 
                 menu.getAnimPlayer().update();
@@ -231,15 +231,15 @@ public class Sounds extends HotbarGUI {
                 .getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(getTeleportSound() != null) getTeleportSound().stop(player);
+                if (getTeleportSound() != null) getTeleportSound().stop(player);
 
                 //Pitch
-                if(clickType.equals(ClickType.LEFT_CLICK)) {
+                if (clickType.equals(ClickType.LEFT_CLICK)) {
                     getTeleportSound().setPitch(round(getTeleportSound().getPitch() - 0.1F));
-                    if(getTeleportSound().getPitch() < 0) getTeleportSound().setPitch(0);
-                } else if(clickType.equals(ClickType.RIGHT_CLICK)) {
+                    if (getTeleportSound().getPitch() < 0) getTeleportSound().setPitch(0);
+                } else if (clickType.equals(ClickType.RIGHT_CLICK)) {
                     getTeleportSound().setPitch(round(getTeleportSound().getPitch() + 0.1F));
-                    if(getTeleportSound().getPitch() > 1) getTeleportSound().setPitch(1);
+                    if (getTeleportSound().getPitch() > 1) getTeleportSound().setPitch(1);
                 }
 
                 menu.getAnimPlayer().update();

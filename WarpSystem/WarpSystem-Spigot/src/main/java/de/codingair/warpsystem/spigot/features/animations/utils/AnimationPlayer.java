@@ -23,18 +23,16 @@ public class AnimationPlayer {
     private final Player player;
     private final Animation animation;
     private final MovableMid animMid;
-
-    private boolean loop = false;
     private final int seconds;
-    private boolean running = false;
-    private BukkitRunnable runnable;
     private final List<CustomAnimation> animations = new ArrayList<>();
     private final List<PotionEffect> buffBackup = new ArrayList<>();
-    private double maxDistance = 70;
     private final boolean sounds;
-    private boolean teleportSound;
     private final Player[] viewers;
-
+    private boolean loop = false;
+    private boolean running = false;
+    private BukkitRunnable runnable;
+    private double maxDistance = 70;
+    private boolean teleportSound;
     private HitBox hitBox = null;
 
     public AnimationPlayer(Player player, Animation animation, int seconds) {
@@ -61,12 +59,12 @@ public class AnimationPlayer {
         this.sounds = sounds;
         this.teleportSound = sounds;
 
-        if(viewers && player != null && !player.hasPotionEffect(PotionEffectType.INVISIBILITY) && player.getGameMode() != GameMode.SPECTATOR) {
+        if (viewers && player != null && !player.hasPotionEffect(PotionEffectType.INVISIBILITY) && player.getGameMode() != GameMode.SPECTATOR) {
             List<Player> players = new ArrayList<>();
             players.add(player);
 
             Bukkit.getOnlinePlayers().forEach(p -> {
-                if(!p.equals(player) && p.getWorld().equals(player.getWorld()) && p.canSee(player)) players.add(p);
+                if (!p.equals(player) && p.getWorld().equals(player.getWorld()) && p.canSee(player)) players.add(p);
             });
 
             this.viewers = players.toArray(new Player[0]);
@@ -74,35 +72,35 @@ public class AnimationPlayer {
     }
 
     private void buildBuffBackup() {
-        if(player == null || animation.getBuffList().isEmpty()) return;
-        for(PotionEffect p : player.getActivePotionEffects()) {
+        if (player == null || animation.getBuffList().isEmpty()) return;
+        for (PotionEffect p : player.getActivePotionEffects()) {
             buffBackup.add(new PotionEffect(p.getType(), p.getDuration(), p.getAmplifier(), p.isAmbient(), p.hasParticles()));
         }
     }
 
     private void removeActivePotionEffects() {
-        if(player == null || animation.getBuffList().isEmpty()) return;
-        for(PotionEffect p : player.getActivePotionEffects()) {
+        if (player == null || animation.getBuffList().isEmpty()) return;
+        for (PotionEffect p : player.getActivePotionEffects()) {
             player.removePotionEffect(p.getType());
         }
     }
 
     private void restoreBuffs() {
-        if(player == null || animation.getBuffList().isEmpty()) return;
-        for(PotionEffect potionEffect : this.buffBackup) {
+        if (player == null || animation.getBuffList().isEmpty()) return;
+        for (PotionEffect potionEffect : this.buffBackup) {
             player.addPotionEffect(potionEffect);
         }
     }
 
     private void buildAnimations() {
-        for(ParticlePart particlePart : this.animation.getParticleParts()) {
+        for (ParticlePart particlePart : this.animation.getParticleParts()) {
             try {
                 CustomAnimation anim = particlePart.build(viewers, animMid);
-                if(anim != null) {
+                if (anim != null) {
                     this.animations.add(anim);
                     anim.setMaxDistance(maxDistance);
                 }
-            } catch(NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
                 e.printStackTrace();
             }
         }
@@ -110,52 +108,52 @@ public class AnimationPlayer {
 
     private void buildRunnable() {
         this.runnable = new BukkitRunnable() {
-            private int left = seconds;
             private final String msg = Lang.get("Teleporting_Info");
+            private int left = seconds;
 
             @Override
             public void run() {
-                if(seconds == -1 || left > 0) {
-                    if(player != null) {
-                        for(Buff buff : animation.getBuffList()) {
-                            if(buff.getTimeBeforeTeleport() == left || (left == seconds && buff.getTimeBeforeTeleport() > left)) {
+                if (seconds == -1 || left > 0) {
+                    if (player != null) {
+                        for (Buff buff : animation.getBuffList()) {
+                            if (buff.getTimeBeforeTeleport() == left || (left == seconds && buff.getTimeBeforeTeleport() > left)) {
                                 player.addPotionEffect(new PotionEffect(buff.getType(), 20 * left + 20 * buff.getTimeAfterTeleport() * (buff.getTimeAfterTeleport() == 0 ? 10 : 1), buff.getLevel(), false, false));
                             }
                         }
                     }
 
-                    if(sounds && animation.getTickSound() != null && player != null) animation.getTickSound().play(player);
-                    if(seconds == -1) return;
-                } else if(left == 0) {
-                    if(!loop) {
-                        for(CustomAnimation anim : animations) {
+                    if (sounds && animation.getTickSound() != null && player != null) animation.getTickSound().play(player);
+                    if (seconds == -1) return;
+                } else if (left == 0) {
+                    if (!loop) {
+                        for (CustomAnimation anim : animations) {
                             anim.setRunning(false);
                         }
                     }
 
-                    if(player != null) {
-                        for(Buff buff : animation.getBuffList()) {
-                            if(buff.getTimeAfterTeleport() == 0) {
+                    if (player != null) {
+                        for (Buff buff : animation.getBuffList()) {
+                            if (buff.getTimeAfterTeleport() == 0) {
                                 player.removePotionEffect(buff.getType());
-                            } else if(buff.getTimeBeforeTeleport() == 0) {
+                            } else if (buff.getTimeBeforeTeleport() == 0) {
                                 player.addPotionEffect(new PotionEffect(buff.getType(), 20 * buff.getTimeAfterTeleport(), buff.getLevel(), false, false));
                             }
                         }
                     }
 
-                    if(teleportSound && animation.getTeleportSound() != null && player != null) animation.getTeleportSound().play(player);
+                    if (teleportSound && animation.getTeleportSound() != null && player != null) animation.getTeleportSound().play(player);
 
-                    if(player == null || player.getActivePotionEffects().isEmpty()) setRunning(false);
+                    if (player == null || player.getActivePotionEffects().isEmpty()) setRunning(false);
                 } else {
-                    if(player != null) {
-                        for(Buff buff : animation.getBuffList()) {
-                            if(buff.getTimeAfterTeleport() == -left) {
+                    if (player != null) {
+                        for (Buff buff : animation.getBuffList()) {
+                            if (buff.getTimeAfterTeleport() == -left) {
                                 player.removePotionEffect(buff.getType());
                             }
                         }
                     }
 
-                    if(player == null || player.getActivePotionEffects().isEmpty()) setRunning(false);
+                    if (player == null || player.getActivePotionEffects().isEmpty()) setRunning(false);
                 }
 
                 left--;
@@ -164,12 +162,12 @@ public class AnimationPlayer {
     }
 
     public HitBox getHitBox() {
-        if(this.animations == null) return null;
-        if(hitBox != null) return hitBox;
+        if (this.animations == null) return null;
+        if (hitBox != null) return hitBox;
         else {
-            for(CustomAnimation a : animations) {
+            for (CustomAnimation a : animations) {
                 HitBox box = a.getHitBox();
-                if(hitBox == null) hitBox = box;
+                if (hitBox == null) hitBox = box;
                 else hitBox.addProperty(box);
             }
 
@@ -178,8 +176,8 @@ public class AnimationPlayer {
     }
 
     public void update() {
-        if(running) {
-            if(loop) {
+        if (running) {
+            if (loop) {
                 setLoop(false);
                 setRunning(false);
                 setRunning(true);
@@ -196,38 +194,38 @@ public class AnimationPlayer {
     }
 
     public void setRunning(boolean running) {
-        if(this.animation != null) {
-            if(this.running != running) {
-                if(running) {
+        if (this.animation != null) {
+            if (this.running != running) {
+                if (running) {
                     buildBuffBackup();
                     removeActivePotionEffects();
                     buildRunnable();
 
-                    if(animations.isEmpty()) {
+                    if (animations.isEmpty()) {
                         buildAnimations();
 
-                        for(CustomAnimation anim : this.animations) {
+                        for (CustomAnimation anim : this.animations) {
                             anim.setRunning(true);
                         }
                     }
 
                     this.runnable.runTaskTimer(WarpSystem.getInstance(), 0, 20);
                 } else {
-                    if(!loop) {
-                        for(CustomAnimation anim : this.animations) {
+                    if (!loop) {
+                        for (CustomAnimation anim : this.animations) {
                             anim.setRunning(false);
                         }
                     }
 
                     this.runnable.cancel();
                     removeActivePotionEffects();
-                    if(!loop) {
+                    if (!loop) {
                         restoreBuffs();
                         buffBackup.clear();
                         animations.clear();
                     }
 
-                    if(loop) {
+                    if (loop) {
                         this.running = running;
                         setRunning(true);
                         return;

@@ -57,15 +57,15 @@ public enum FeatureType {
     public static FeatureType[] values(Priority priority) {
         List<FeatureType> featureTypes = new ArrayList<>();
 
-        for(FeatureType value : values()) {
-            if(value.getPriority().equals(priority)) featureTypes.add(value);
+        for (FeatureType value : values()) {
+            if (value.getPriority().equals(priority)) featureTypes.add(value);
         }
 
         return featureTypes.toArray(new FeatureType[0]);
     }
 
     public Manager createInstance() throws IllegalAccessException, InstantiationException {
-        if(this.key == null) return managerClass.newInstance();
+        if (this.key == null) return managerClass.newInstance();
         else return VFac.build(this.key);
     }
 
@@ -78,8 +78,8 @@ public enum FeatureType {
     }
 
     public boolean isActive() {
-        if(getPriority() == Priority.ALWAYS_ON) return true;
-        if(getPriority() == Priority.DISABLED) return false;
+        if (getPriority() == Priority.ALWAYS_ON) return true;
+        if (getPriority() == Priority.DISABLED) return false;
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("Config");
         return file.getConfig().getBoolean("WarpSystem.Functions." + getName(), true);
     }

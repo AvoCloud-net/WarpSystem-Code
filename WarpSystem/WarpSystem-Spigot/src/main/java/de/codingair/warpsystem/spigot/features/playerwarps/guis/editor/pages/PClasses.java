@@ -35,7 +35,7 @@ public class PClasses extends PageItem {
     }
 
     private static String getFreeMessage(PlayerWarp warp, PlayerWarp original, PageItem page) {
-        if(warp.getTrusted().size() - original.getTrusted().size() >= 0) return null;
+        if (warp.getTrusted().size() - original.getTrusted().size() >= 0) return null;
         return PWEditor.getFreeMessage(-(warp.getTrusted().size() - original.getTrusted().size()) + " " + Lang.get("Trusted_members"), page);
     }
 
@@ -43,7 +43,7 @@ public class PClasses extends PageItem {
     public ItemStack getPageItem() {
         List<String> l = Lang.getStringList("PlayerWarp_Classes");
         List<String> modified = new ArrayList<>();
-        for(String s : l) {
+        for (String s : l) {
             modified.add(s.replace("%MIN%", PlayerWarpManager.getManager().getClassesMin() + "").replace("%MAX%", PlayerWarpManager.getManager().getClassesMax() + ""));
         }
         l.clear();
@@ -54,7 +54,7 @@ public class PClasses extends PageItem {
                 .addLore(PWEditor.getCostsMessage(Math.max(warp.getTrusted().size() - original.getTrusted().size(), 0) * PlayerWarpManager.getManager().getTrustedMemberCosts(), PClasses.this))
                 .addLore(modified);
 
-        if(!warp.getClasses().equals(original.getClasses())) {
+        if (!warp.getClasses().equals(original.getClasses())) {
             builder.addLore("", Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Shift_Rightclick") + ": §c" + Lang.get("Reset"));
         }
 
@@ -66,7 +66,7 @@ public class PClasses extends PageItem {
         return new Button(0, getPageItem()) {
             @Override
             public void onClick(InventoryClickEvent e, Player player) {
-                if(e.getClick() == ClickType.SHIFT_RIGHT) {
+                if (e.getClick() == ClickType.SHIFT_RIGHT) {
                     warp.getClasses().clear();
                     warp.getClasses().addAll(original.getClasses());
 
@@ -93,12 +93,12 @@ public class PClasses extends PageItem {
 
         int[] slots = new int[] {19, 20, 21, 22, 23, 24, 15, 14, 13, 12, 11, 10};
 
-        for(int slot : slots) {
+        for (int slot : slots) {
             removeButton(slot);
         }
 
         int i;
-        for(i = 0; i < PlayerWarpManager.getManager().getWarpClasses().size(); i++) {
+        for (i = 0; i < PlayerWarpManager.getManager().getWarpClasses().size(); i++) {
             Category c = PlayerWarpManager.getManager().getWarpClasses().get(i);
 
             addButton(new SyncButton(slots[i]) {
@@ -108,7 +108,7 @@ public class PClasses extends PageItem {
 
                     builder.addLore("");
 
-                    if(warp.hasClass(c)) {
+                    if (warp.hasClass(c)) {
                         builder.addEnchantment(Enchantment.DAMAGE_ALL, 1);
                         builder.setHideEnchantments(true);
                         builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §c" + Lang.get("Remove") + "§8 (§7" + warp.getClasses().size() + "/" + PlayerWarpManager.getManager().getClassesMax() + "§8)");
@@ -121,7 +121,7 @@ public class PClasses extends PageItem {
 
                 @Override
                 public void onClick(InventoryClickEvent e, Player player) {
-                    if(warp.hasClass(c)) warp.getClasses().remove(c);
+                    if (warp.hasClass(c)) warp.getClasses().remove(c);
                     else warp.getClasses().add(c);
 
                     getLast().updatePage();

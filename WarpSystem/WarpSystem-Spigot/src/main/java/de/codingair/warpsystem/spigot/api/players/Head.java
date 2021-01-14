@@ -36,7 +36,7 @@ public class Head {
             JSONObject SKIN = (JSONObject) textures.get("SKIN");
             String url = (String) (SKIN.get("url") == null ? SKIN.get("URL") : SKIN.get("url"));
             id = url.replace(URL, "");
-        } catch(Exception e) {
+        } catch (Exception e) {
             id = null;
         }
     }

@@ -50,15 +50,15 @@ public class POptions extends PageItem {
                 ItemBuilder b = new ItemBuilder().setName(Editor.ITEM_TITLE_COLOR + Lang.get("Teleport_Trigger"));
                 String loreStart = Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Current") + ": ";
 
-                if(!clone.getBlocks().isEmpty() && !clone.getAnimations().isEmpty() && clone.getTrigger() == 0)
+                if (!clone.getBlocks().isEmpty() && !clone.getAnimations().isEmpty() && clone.getTrigger() == 0)
                     b.setType(XMaterial.LIME_TERRACOTTA).setLore(loreStart + "§a" + Lang.get("Portal_Blocks") + " §7+ §a" + Lang.get("Particle_Effects"));
-                else if(!clone.getBlocks().isEmpty() && (clone.getAnimations().isEmpty() || clone.getTrigger() == 1))
+                else if (!clone.getBlocks().isEmpty() && (clone.getAnimations().isEmpty() || clone.getTrigger() == 1))
                     b.setType(XMaterial.YELLOW_TERRACOTTA).setLore(loreStart + "§e" + Lang.get("Portal_Blocks"));
-                else if(!clone.getAnimations().isEmpty() && (clone.getBlocks().isEmpty() || clone.getTrigger() == 2))
+                else if (!clone.getAnimations().isEmpty() && (clone.getBlocks().isEmpty() || clone.getTrigger() == 2))
                     b.setType(XMaterial.LIGHT_BLUE_TERRACOTTA).setLore(loreStart + "§b" + Lang.get("Particle_Effects"));
                 else b.setType(XMaterial.RED_TERRACOTTA).setLore(loreStart + "§c-");
 
-                if(!clone.getBlocks().isEmpty() && !clone.getAnimations().isEmpty()) {
+                if (!clone.getBlocks().isEmpty() && !clone.getAnimations().isEmpty()) {
                     b.addLore("", Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §7" + Lang.get("Toggle"));
                 }
 

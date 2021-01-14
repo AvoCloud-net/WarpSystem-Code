@@ -28,7 +28,7 @@ public class CTpaToggle extends WSCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                if(TeleportCommandManager.getInstance().toggleDenyTpaRequest((Player) sender))
+                if (TeleportCommandManager.getInstance().toggleDenyTpaRequest((Player) sender))
                     sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_toggled_disabling"));
                 else
                     sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_toggled_enabling"));

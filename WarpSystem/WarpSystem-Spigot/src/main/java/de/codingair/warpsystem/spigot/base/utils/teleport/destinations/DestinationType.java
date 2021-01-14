@@ -30,18 +30,18 @@ public enum DestinationType {
     }
 
     public static DestinationType getByAdapter(DestinationAdapter adapter) {
-        if(adapter == null) return UNKNOWN;
+        if (adapter == null) return UNKNOWN;
 
-        for(DestinationType value : values()) {
-            if(adapter.getClass().equals(value.adapter)) return value;
+        for (DestinationType value : values()) {
+            if (adapter.getClass().equals(value.adapter)) return value;
         }
 
         return UNKNOWN;
     }
 
     public static DestinationType getById(int id) {
-        for(DestinationType value : values()) {
-            if(value.getId() == id) return value;
+        for (DestinationType value : values()) {
+            if (value.getId() == id) return value;
         }
 
         return UNKNOWN;
@@ -56,11 +56,11 @@ public enum DestinationType {
     }
 
     public DestinationAdapter getInstance() {
-        if(getAdapter() == null) return null;
+        if (getAdapter() == null) return null;
 
         try {
             return getAdapter().newInstance();
-        } catch(InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
             return null;
         }

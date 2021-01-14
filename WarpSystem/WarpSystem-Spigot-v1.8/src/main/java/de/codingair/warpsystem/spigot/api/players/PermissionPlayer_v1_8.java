@@ -999,12 +999,12 @@ public class PermissionPlayer_v1_8 implements Player {
         return false;
     }
 
-    public Set<UUID> getCollidableExemptions() {
-        return null;
-    }
-
     public void setCollidable(boolean b) {
 
+    }
+
+    public Set<UUID> getCollidableExemptions() {
+        return null;
     }
 
     public void damage(double v) {

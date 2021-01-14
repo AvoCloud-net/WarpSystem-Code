@@ -28,16 +28,16 @@ public class CSpawn extends WSCommandBuilder {
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 Spawn spawn = SpawnManager.getInstance().getSpawn();
 
-                if(spawn == null || !spawn.isValid()) sender.sendMessage(Lang.getPrefix() + Lang.get("WARP_DOES_NOT_EXISTS"));
-                else if(!spawn.switchServer() && (spawn.getUsage() == Spawn.Usage.FIRST_JOIN || spawn.getUsage() == Spawn.Usage.EVERY_JOIN || spawn.getUsage() == Spawn.Usage.DISABLED)) {
-                    if(WarpSystem.hasPermission(sender, WarpSystem.PERMISSION_MODIFY_SPAWN)) {
+                if (spawn == null || !spawn.isValid()) sender.sendMessage(Lang.getPrefix() + Lang.get("WARP_DOES_NOT_EXISTS"));
+                else if (!spawn.switchServer() && (spawn.getUsage() == Spawn.Usage.FIRST_JOIN || spawn.getUsage() == Spawn.Usage.EVERY_JOIN || spawn.getUsage() == Spawn.Usage.DISABLED)) {
+                    if (WarpSystem.hasPermission(sender, WarpSystem.PERMISSION_MODIFY_SPAWN)) {
                         TextComponent tc = new TextComponent(Lang.getPrefix() + Lang.get("Hidden_command_info"));
                         tc.setColor(ChatColor.GRAY);
                         SimpleMessage message = new SimpleMessage(tc, WarpSystem.getInstance());
 
                         tc = new TextComponent(Lang.get("Advanced_Options_Info_Edit"));
                         tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/setspawn edit"));
-                        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{new TextComponent(Lang.get("Click_Hover"))}));
+                        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[] {new TextComponent(Lang.get("Click_Hover"))}));
 
                         message.replace("%HERE%", tc);
                         message.send((Player) sender);
@@ -53,7 +53,7 @@ public class CSpawn extends WSCommandBuilder {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 Spawn spawn = SpawnManager.getInstance().getSpawn();
-                if(spawn == null || spawn.getFirstJoin() == null || spawn.getFirstJoin().getWorld() == null) getBaseComponent().runCommand(sender, label, args);
+                if (spawn == null || spawn.getFirstJoin() == null || spawn.getFirstJoin().getWorld() == null) getBaseComponent().runCommand(sender, label, args);
                 else spawn.teleportToFirstJoin((Player) sender);
                 return false;
             }

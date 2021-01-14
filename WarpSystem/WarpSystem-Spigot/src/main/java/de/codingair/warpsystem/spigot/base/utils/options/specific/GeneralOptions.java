@@ -90,8 +90,8 @@ public class GeneralOptions extends Options {
         get(placeholderColorsFull);
         get(placeholderColorsNotFull);
 
-        if(fetchUpdates.getValue() < 0 || fetchUpdates.getValue() > 2) fetchUpdates.setValue(1);
-        if(System.getProperty("os.name").toLowerCase().contains("win") || System.getProperty("os.name").toLowerCase().contains("mac"))
+        if (fetchUpdates.getValue() < 0 || fetchUpdates.getValue() > 2) fetchUpdates.setValue(1);
+        if (System.getProperty("os.name").toLowerCase().contains("win") || System.getProperty("os.name").toLowerCase().contains("mac"))
             fetchUpdates.setValue(0);   //file-system does not allow to delete active files.
 
         IntPredicate test = new IntPredicate() {
@@ -101,8 +101,8 @@ public class GeneralOptions extends Options {
             public boolean test(int value) {
                 char c = (char) value;
 
-                if(color) color = false;
-                else if(c == '&') color = true;
+                if (color) color = false;
+                else if (c == '&') color = true;
                 else return false;
 
                 return true;
@@ -110,13 +110,13 @@ public class GeneralOptions extends Options {
         };
 
         StringBuilder sb = new StringBuilder();
-        for(int c : cmdSugColor.getValue().trim().chars().filter(test).toArray()) {
+        for (int c : cmdSugColor.getValue().trim().chars().filter(test).toArray()) {
             sb.append((char) c);
         }
         cmdSugColor.setValue(sb.toString());
 
         sb = new StringBuilder();
-        for(int c : cmdArgColor.getValue().trim().chars().filter(test).toArray()) {
+        for (int c : cmdArgColor.getValue().trim().chars().filter(test).toArray()) {
             sb.append((char) c);
         }
         cmdArgColor.setValue(sb.toString());
@@ -124,7 +124,7 @@ public class GeneralOptions extends Options {
 
     @Override
     public void apply(Options options) {
-        if(options instanceof GeneralOptions) {
+        if (options instanceof GeneralOptions) {
             GeneralOptions o = (GeneralOptions) options;
 
             this.lang = o.lang.clone();
@@ -190,7 +190,7 @@ public class GeneralOptions extends Options {
     public TeleportDelay.Display getDelayDisplay() {
         try {
             return TeleportDelay.Display.valueOf(delayDisplay.getValue());
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             return TeleportDelay.Display.ACTION_BAR;
         }
     }
@@ -208,9 +208,9 @@ public class GeneralOptions extends Options {
     }
 
     public long getCooldown(Origin origin) {
-        if(origin == Origin.TeleportRequest) return getCooldownTpa();
-        else if(origin == Origin.TeleportCommand) return getCooldownBack();
-        else if(origin == Origin.RandomTP) return getCooldownRandomTP();
+        if (origin == Origin.TeleportRequest) return getCooldownTpa();
+        else if (origin == Origin.TeleportCommand) return getCooldownBack();
+        else if (origin == Origin.RandomTP) return getCooldownRandomTP();
         return 0;
     }
 
@@ -223,7 +223,7 @@ public class GeneralOptions extends Options {
     }
 
     public String getStatus(ServerPing ping) {
-        if(ping.getStatus()) {
+        if (ping.getStatus()) {
             return getPlaceholderOnline(ping);
         } else {
             return getPlaceholderOffline();
@@ -244,9 +244,9 @@ public class GeneralOptions extends Options {
 
     public String getPlaceholderCountInfo(ServerPing ping) {
         String s = placeholderCountInfo.getValue();
-        if(s == null) return null;
+        if (s == null) return null;
 
-        if(ping != null) {
+        if (ping != null) {
             s = s.replace(".p.", ping.getPlayers() + "")
                     .replace(".mp.", ping.getMaxPlayers() + "")
                     .replace(".s.", WarpSystem.opt().getStatus(ping))
@@ -264,7 +264,7 @@ public class GeneralOptions extends Options {
     }
 
     private String prepareServerColorString(ServerPing ping, String s) {
-        if(ping != null) {
+        if (ping != null) {
             s = s.replace(".sc.", (ping.getStatus() ? placeholderColorsOnline.getValue() : placeholderColorsOffline.getValue()))
                     .replace(".cc.", (ping.getPlayers() < ping.getMaxPlayers() ? placeholderColorsNotFull.getValue() : placeholderColorsFull.getValue()));
         } else {
@@ -276,7 +276,7 @@ public class GeneralOptions extends Options {
     }
 
     public String prepareServerString(ServerPing ping, String s) {
-        if(ping != null) {
+        if (ping != null) {
             s = s.replace(".p.", ping.getPlayers() + "")
                     .replace(".mp.", ping.getMaxPlayers() + "")
                     .replace(".s.", WarpSystem.opt().getStatus(ping))

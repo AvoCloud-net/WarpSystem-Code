@@ -24,8 +24,8 @@ public abstract class DestinationAdapter {
     }
 
     public org.bukkit.Location prepare(Player player, org.bukkit.Location location) {
-        if(location == null) return null;
-        if(destination != null) destination.adjustLocation(player, location);
+        if (location == null) return null;
+        if (destination != null) destination.adjustLocation(player, location);
         return location;
     }
 }

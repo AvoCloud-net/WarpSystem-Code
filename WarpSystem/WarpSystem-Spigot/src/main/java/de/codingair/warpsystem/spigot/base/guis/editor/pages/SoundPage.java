@@ -54,7 +54,7 @@ public class SoundPage extends PageItem {
             public void onClick(AnvilClickEvent e) {
                 String input = e.getInput();
 
-                if(input == null) {
+                if (input == null) {
                     p.sendMessage(Lang.getPrefix() + Lang.get("Enter_Something"));
                     return;
                 }
@@ -64,11 +64,11 @@ public class SoundPage extends PageItem {
 
                 try {
                     id = Integer.parseInt(input);
-                } catch(NumberFormatException ignored) {
+                } catch (NumberFormatException ignored) {
                 }
 
-                if(id != null) {
-                    if(id >= 0 && id < sounds.length) soundData.setSound(sounds[id]);
+                if (id != null) {
+                    if (id >= 0 && id < sounds.length) soundData.setSound(sounds[id]);
                     else {
                         p.sendMessage(Lang.getPrefix() + Lang.get("Enter_Amount_between").replace("%X%", "0").replace("%Y%", (sounds.length - 1) + ""));
                         return;
@@ -77,11 +77,11 @@ public class SoundPage extends PageItem {
                     searchingFor = input;
                     searched.clear();
                     id = 0;
-                    for(Sound sound : sounds) {
-                        if(sound.name().contains(searchingFor)) searched.add(sound);
+                    for (Sound sound : sounds) {
+                        if (sound.name().contains(searchingFor)) searched.add(sound);
                     }
 
-                    if(!searched.isEmpty()) soundData.setSound(searched.get(0));
+                    if (!searched.isEmpty()) soundData.setSound(searched.get(0));
                 }
 
                 e.setClose(true);
@@ -89,10 +89,10 @@ public class SoundPage extends PageItem {
 
             @Override
             public boolean canTrigger(InventoryClickEvent e, ClickType trigger, Player player) {
-                if(trigger == ClickType.SHIFT_LEFT) {
+                if (trigger == ClickType.SHIFT_LEFT) {
                     option.getClickSound2().play(p);
 
-                    if(searchingFor != null) {
+                    if (searchingFor != null) {
                         searchingFor = null;
                         searched.clear();
                         id = 0;
@@ -106,7 +106,7 @@ public class SoundPage extends PageItem {
 
             @Override
             public void onClose(AnvilCloseEvent e) {
-                if(e.getSubmittedText() != null) {
+                if (e.getSubmittedText() != null) {
                     soundData.play(p);
                     update();
                 }
@@ -114,35 +114,35 @@ public class SoundPage extends PageItem {
 
             @Override
             public void onOtherClick(InventoryClickEvent e) {
-                if(e.isLeftClick()) {
-                    if(e.isShiftClick()) {
+                if (e.isLeftClick()) {
+                    if (e.isShiftClick()) {
                         searchingFor = null;
                         id = 0;
                         searched.clear();
                     } else {
                         soundData.stop(p);
 
-                        if(searchingFor == null) soundData.setSound(previous());
+                        if (searchingFor == null) soundData.setSound(previous());
                         else {
                             id--;
-                            if(id == -1) id = searched.size() - 1;
+                            if (id == -1) id = searched.size() - 1;
                             soundData.setSound(searched.get(id));
                         }
 
                         soundData.play(p);
                     }
-                } else if(e.isRightClick()) {
-                    if(e.isShiftClick()) {
+                } else if (e.isRightClick()) {
+                    if (e.isShiftClick()) {
                         soundData.stop(p);
                         soundData.play(p);
                         return;
                     } else {
                         soundData.stop(p);
 
-                        if(searchingFor == null) soundData.setSound(next());
+                        if (searchingFor == null) soundData.setSound(next());
                         else {
                             id++;
-                            if(id == searched.size()) id = 0;
+                            if (id == searched.size()) id = 0;
                             soundData.setSound(searched.get(id));
                         }
 
@@ -155,7 +155,7 @@ public class SoundPage extends PageItem {
 
             @Override
             public boolean canClick(ClickType click) {
-                if(searchingFor == null || !searched.isEmpty()) return click == ClickType.LEFT || click == ClickType.SHIFT_LEFT || click == ClickType.RIGHT || click == ClickType.SHIFT_RIGHT;
+                if (searchingFor == null || !searched.isEmpty()) return click == ClickType.LEFT || click == ClickType.SHIFT_LEFT || click == ClickType.RIGHT || click == ClickType.SHIFT_RIGHT;
                 else return click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT;
             }
 
@@ -196,7 +196,7 @@ public class SoundPage extends PageItem {
             public void onClick(InventoryClickEvent e, Player player) {
                 soundData.stop(player);
 
-                if(e.isLeftClick()) soundData.setVolume(Math.max(round(soundData.getVolume() - 0.1F), 0F));
+                if (e.isLeftClick()) soundData.setVolume(Math.max(round(soundData.getVolume() - 0.1F), 0F));
                 else soundData.setVolume(Math.min(round(soundData.getVolume() + 0.1F), 1F));
 
                 soundData.play(player);
@@ -224,7 +224,7 @@ public class SoundPage extends PageItem {
             public void onClick(InventoryClickEvent e, Player player) {
                 soundData.stop(player);
 
-                if(e.isLeftClick()) soundData.setPitch(Math.max(round(soundData.getPitch() - 0.1F), 0F));
+                if (e.isLeftClick()) soundData.setPitch(Math.max(round(soundData.getPitch() - 0.1F), 0F));
                 else soundData.setPitch(Math.min(round(soundData.getPitch() + 0.1F), 2F));
 
                 soundData.play(player);
@@ -244,13 +244,13 @@ public class SoundPage extends PageItem {
 
     public Sound next() {
         int id = soundData.getSound().ordinal() + 1;
-        if(id == sounds.length) id = 0;
+        if (id == sounds.length) id = 0;
         return sounds[id];
     }
 
     public Sound previous() {
         int id = soundData.getSound().ordinal() - 1;
-        if(id < 0) id = sounds.length - 1;
+        if (id < 0) id = sounds.length - 1;
         return sounds[id];
     }
 }

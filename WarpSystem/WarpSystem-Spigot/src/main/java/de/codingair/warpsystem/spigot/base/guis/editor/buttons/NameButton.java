@@ -41,7 +41,7 @@ public abstract class NameButton extends SyncAnvilGUIButton {
 
     @Override
     public ItemStack craftItem() {
-        if(name == null) return new ItemStack(Material.AIR);
+        if (name == null) return new ItemStack(Material.AIR);
 
         return new ItemBuilder(XMaterial.NAME_TAG)
                 .setName(Editor.ITEM_TITLE_COLOR + Lang.get("Name"))
@@ -52,20 +52,20 @@ public abstract class NameButton extends SyncAnvilGUIButton {
     }
 
     protected String prepareLine(String s) {
-        if(featureObject == null) return ChatColor.translateAll('&', s);
+        if (featureObject == null) return ChatColor.translateAll('&', s);
         else return featureObject.prepareLine(s);
     }
 
     @Override
     public ItemStack craftAnvilItem(ClickType trigger) {
-        if(name == null) return new ItemStack(Material.AIR);
+        if (name == null) return new ItemStack(Material.AIR);
 
         return new ItemBuilder(Material.PAPER).setName(name.getValue() == null ? Lang.get("Name") + "..." : name.getValue().replace("§", "&")).getItem();
     }
 
     @Override
     public void onOtherClick(InventoryClickEvent e) {
-        if(e.getClick() == ClickType.RIGHT && acceptNull) {
+        if (e.getClick() == ClickType.RIGHT && acceptNull) {
             name.setValue(onChange(name.getValue(), null));
             update();
         }
@@ -73,17 +73,17 @@ public abstract class NameButton extends SyncAnvilGUIButton {
 
     @Override
     public void onClick(AnvilClickEvent e) {
-        if(!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
+        if (!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
 
         String input = e.getInput();
 
-        if(!acceptNull && input == null) {
+        if (!acceptNull && input == null) {
             e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Enter_Name"));
             return;
         }
 
         String msg;
-        if((msg = acceptName(input)) != null) {
+        if ((msg = acceptName(input)) != null) {
             e.getPlayer().sendMessage(msg);
             return;
         }

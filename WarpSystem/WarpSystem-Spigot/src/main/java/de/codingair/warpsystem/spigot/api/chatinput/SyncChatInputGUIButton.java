@@ -29,7 +29,7 @@ public abstract class SyncChatInputGUIButton extends SyncTriggerButton {
 
     @Override
     public void onTrigger(InventoryClickEvent e, ClickType trigger, Player player) {
-        if(!canTrigger(e, trigger, player)) return;
+        if (!canTrigger(e, trigger, player)) return;
 
         getInterface().setClosingByButton(true);
         getInterface().setClosingForGUI(true);

@@ -44,9 +44,9 @@ public class Option<E> {
     }
 
     public void setValue(E value) {
-        if(state == State.UNLOADED) {
-            if(predicate != null) {
-                if(predicate.test(value)) {
+        if (state == State.UNLOADED) {
+            if (predicate != null) {
+                if (predicate.test(value)) {
                     this.value = value;
                     state = State.LOADED;
                 } else {
@@ -57,7 +57,7 @@ public class Option<E> {
                 this.value = value;
                 state = State.LOADED;
             }
-        } else if(!Objects.equals(this.value, value)) {
+        } else if (!Objects.equals(this.value, value)) {
             this.value = value;
             state = State.CHANGED;
         }
@@ -83,7 +83,7 @@ public class Option<E> {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof Option) {
+        if (obj instanceof Option) {
             Option o = (Option) obj;
             return o.getPath().equals(path) && Objects.equals(getValue(), o.getValue()) && Objects.equals(getDefault(), o.getDefault());
         } else return false;

@@ -25,11 +25,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Lang {
-    private static final Cache<String, Boolean> EXIST = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
-    private static ConfigFile config = null;
     public static final String PREMIUM_HOTBAR = "§8» §6§lPremium feature §8«";
     public static final String PREMIUM_LORE = "§r §8(§6Premium§8)";
+    private static final Cache<String, Boolean> EXIST = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
     private static final TimeList<CommandSender> premiumMessage = new TimeList<>();
+    private static ConfigFile config = null;
 
     public static void PREMIUM_CHAT(CommandSender sender) {
         TextComponent tc0 = new TextComponent("\n" + Lang.getPrefix() + "§7This is a ");
@@ -47,7 +47,7 @@ public class Lang {
     }
 
     public static void PREMIUM_TITLE(Player player, String title) {
-        if(API.getRemovable(player, GUI.class) != null) return;
+        if (API.getRemovable(player, GUI.class) != null) return;
 
         MessageAPI.sendTitle(player, title, "§7Get full access with \"§6/ws upgrade§7\"", 5, 50, 5);
     }
@@ -57,10 +57,10 @@ public class Lang {
     }
 
     public static void PREMIUM_CHAT(TextComponent base, CommandSender sender, boolean chat) {
-        if(!chat && sender instanceof Player) {
+        if (!chat && sender instanceof Player) {
             PREMIUM_TITLE((Player) sender, "§7This is a §6Premium §7feature!");
         } else {
-            if(premiumMessage.contains(sender)) return;
+            if (premiumMessage.contains(sender)) return;
 
             TextComponent tc1 = new TextComponent(" §8[");
             TextComponent upgrade = new TextComponent("§6§nUpgrade");
@@ -76,7 +76,7 @@ public class Lang {
             base.addExtra(upgrade);
             base.addExtra(tc2);
 
-            if(sender instanceof Player) {
+            if (sender instanceof Player) {
                 ((Player) sender).spigot().sendMessage(base);
             } else sender.sendMessage(base.getText());
 
@@ -85,7 +85,7 @@ public class Lang {
     }
 
     public static void PREMIUM_CHAT_UPGRADE(CommandSender sender) {
-        if(premiumMessage.contains(sender)) return;
+        if (premiumMessage.contains(sender)) return;
 
         TextComponent tc0 = new TextComponent("\n" + Lang.getPrefix() + "§7Thank you for thinking about an ");
         TextComponent upgrade = new TextComponent("§6§nupgrade");
@@ -100,7 +100,7 @@ public class Lang {
         tc0.addExtra(upgrade);
         tc0.addExtra(tc2);
 
-        if(sender instanceof Player) {
+        if (sender instanceof Player) {
             ((Player) sender).spigot().sendMessage(tc0);
         } else sender.sendMessage(tc0.getText());
 
@@ -115,13 +115,13 @@ public class Lang {
         languages.add("FRA.yml");
 
         File folder = new File(plugin.getDataFolder(), "/Languages/");
-        if(!folder.exists()) mkDir(folder);
+        if (!folder.exists()) mkDir(folder);
 
-        for(String language : languages) {
+        for (String language : languages) {
             InputStream is = plugin.getResource("languages/" + language);
 
             File file = new File(plugin.getDataFolder() + "/Languages/", language);
-            if(!file.exists() || file.length() == 0) {
+            if (!file.exists() || file.length() == 0) {
                 file.createNewFile();
                 copy(is, new FileOutputStream(file));
             }
@@ -129,26 +129,26 @@ public class Lang {
     }
 
     private static void mkDir(File file) {
-        if(!file.getParentFile().exists()) mkDir(file.getParentFile());
-        if(!file.exists()) {
+        if (!file.getParentFile().exists()) mkDir(file.getParentFile());
+        if (!file.exists()) {
             try {
                 file.mkdir();
-            } catch(SecurityException ex) {
+            } catch (SecurityException ex) {
                 throw new IllegalArgumentException("Plugin is not permitted to create a folder!");
             }
         }
     }
 
     private static long copy(InputStream from, OutputStream to) throws IOException {
-        if(from == null) return -1;
-        if(to == null) throw new NullPointerException();
+        if (from == null) return -1;
+        if (to == null) throw new NullPointerException();
 
         byte[] buf = new byte[4096];
         long total = 0L;
 
-        while(true) {
+        while (true) {
             int r = from.read(buf);
-            if(r == -1) {
+            if (r == -1) {
                 return total;
             }
 
@@ -160,7 +160,7 @@ public class Lang {
     private static boolean exist(String tag) {
         Boolean b = EXIST.getIfPresent(tag);
 
-        if(b == null) {
+        if (b == null) {
             b = new File(WarpSystem.getInstance().getDataFolder(), "/Languages/" + tag + ".yml").exists();
             EXIST.put(tag, b);
         }
@@ -170,7 +170,7 @@ public class Lang {
 
     public static String getCurrentLanguage() {
         String s = getConfig().getString("WarpSystem.Language", "ENG");
-        if(exist(s)) return s;
+        if (exist(s)) return s;
         return "ENG";
     }
 
@@ -182,8 +182,8 @@ public class Lang {
         List<String> l = getLanguageFile(getCurrentLanguage()).getStringList(key);
         List<String> prepared = new ArrayList<>();
 
-        for(String s : l) {
-            if(s == null) prepared.add(null);
+        for (String s : l) {
+            if (s == null) prepared.add(null);
             else prepared.add(prepare(s));
         }
 
@@ -193,11 +193,11 @@ public class Lang {
     public static String get(String key) {
         String text = getLanguageFile(getCurrentLanguage()).getString(key);
 
-        if(text == null) {
-            if(key.equalsIgnoreCase("Yes") && get("true") != null) {
+        if (text == null) {
+            if (key.equalsIgnoreCase("Yes") && get("true") != null) {
                 String s = get("true");
                 return s.equalsIgnoreCase("true") ? "Yes" : s;
-            } else if(key.equalsIgnoreCase("No") && get("false") != null) {
+            } else if (key.equalsIgnoreCase("No") && get("false") != null) {
                 String s = get("false");
                 return s.equalsIgnoreCase("false") ? "No" : s;
             }
@@ -216,10 +216,10 @@ public class Lang {
     }
 
     private static FileConfiguration getConfig() {
-        if(config == null) {
+        if (config == null) {
             try {
                 config = WarpSystem.getInstance().getFileManager().getFile("Config");
-            } catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
@@ -232,7 +232,7 @@ public class Lang {
         try {
             ConfigFile file = WarpSystem.getInstance().getFileManager().loadFile(langTag, "/Languages/", "languages/");
             return file.getConfig();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

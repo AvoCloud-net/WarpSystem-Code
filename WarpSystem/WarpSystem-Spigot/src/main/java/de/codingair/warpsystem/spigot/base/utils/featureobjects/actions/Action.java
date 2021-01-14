@@ -21,8 +21,8 @@ public enum Action {
     }
 
     public static Action getById(int id) {
-        for(Action value : values()) {
-            if(value.id == id) return value;
+        for (Action value : values()) {
+            if (value.id == id) return value;
         }
 
         return null;
@@ -39,7 +39,7 @@ public enum Action {
     public Serializable getNewInstance() {
         try {
             return clazz.newInstance();
-        } catch(InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
             return null;
         }

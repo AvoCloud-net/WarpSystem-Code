@@ -18,43 +18,43 @@ public class GlobalWarpAdapter extends DestinationAdapter {
         GlobalWarpManager.getInstance().teleport(player, id, randomOffset, displayName, message, costs, new Callback<GlobalWarpTeleportPacket.Result>() {
             @Override
             public void accept(GlobalWarpTeleportPacket.Result result) {
-                switch(result) {
+                switch (result) {
                     case TELEPORTED:
-                        if(callback != null) callback.accept(Result.SUCCESS);
+                        if (callback != null) callback.accept(Result.SUCCESS);
                         break;
 
                     case WARP_NOT_EXISTS:
                         player.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Not_Exists").replace("%GLOBAL_WARP%", id));
 
-                        if(Bank.adapter() != null && costs != 0) {
+                        if (Bank.adapter() != null && costs != 0) {
                             Bank.adapter().deposit(player, costs);
                         }
 
-                        if(callback != null) callback.accept(Result.DESTINATION_DOES_NOT_EXIST);
+                        if (callback != null) callback.accept(Result.DESTINATION_DOES_NOT_EXIST);
                         break;
 
                     case SERVER_NOT_AVAILABLE:
-                        if(Bank.adapter() != null && costs != 0) {
+                        if (Bank.adapter() != null && costs != 0) {
                             Bank.adapter().deposit(player, costs);
                         }
 
-                        if(callback != null) callback.accept(Result.SERVER_NOT_AVAILABLE);
+                        if (callback != null) callback.accept(Result.SERVER_NOT_AVAILABLE);
                         break;
 
                     case SERVER_IS_FULL:
-                        if(Bank.adapter() != null && costs != 0) {
+                        if (Bank.adapter() != null && costs != 0) {
                             Bank.adapter().deposit(player, costs);
                         }
 
-                        if(callback != null) callback.accept(Result.TARGET_SERVER_IS_FULL);
+                        if (callback != null) callback.accept(Result.TARGET_SERVER_IS_FULL);
                         break;
 
                     case ERROR:
-                        if(Bank.adapter() != null && costs != 0) {
+                        if (Bank.adapter() != null && costs != 0) {
                             Bank.adapter().deposit(player, costs);
                         }
 
-                        if(callback != null) callback.accept(Result.ERROR);
+                        if (callback != null) callback.accept(Result.ERROR);
                         break;
                 }
             }

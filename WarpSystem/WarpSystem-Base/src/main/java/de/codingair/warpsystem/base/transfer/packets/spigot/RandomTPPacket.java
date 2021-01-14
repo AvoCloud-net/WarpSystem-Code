@@ -28,7 +28,7 @@ public class RandomTPPacket implements RequestPacket<BooleanPacket> {
         out.writeByte(options);
         out.writeUTF(this.player);
         out.writeUTF(this.server);
-        if(world != null) out.writeUTF(this.world);
+        if (world != null) out.writeUTF(this.world);
         out.writeBoolean(byOther);
     }
 
@@ -38,7 +38,7 @@ public class RandomTPPacket implements RequestPacket<BooleanPacket> {
 
         this.player = in.readUTF();
         this.server = in.readUTF();
-        if((options & 1) != 0) this.world = in.readUTF();
+        if ((options & 1) != 0) this.world = in.readUTF();
         this.byOther = in.readBoolean();
     }
 

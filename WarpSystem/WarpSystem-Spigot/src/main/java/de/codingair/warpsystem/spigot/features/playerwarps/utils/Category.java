@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.spigot.features.playerwarps.utils;
 
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import org.bukkit.Material;
@@ -25,14 +25,14 @@ public class Category implements Serializable {
     }
 
     @Override
-    public boolean read(DataWriter d) throws Exception {
+    public boolean read(DataMask d) throws Exception {
         this.builder = new ItemBuilder();
         this.id = d.getInteger("id");
         return this.builder.read(d);
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         this.builder.setHideStandardLore(false);
         this.builder.setAmount(0);
         this.builder.write(d);
@@ -74,8 +74,8 @@ public class Category implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Category category = (Category) o;
         return id == category.id;
     }

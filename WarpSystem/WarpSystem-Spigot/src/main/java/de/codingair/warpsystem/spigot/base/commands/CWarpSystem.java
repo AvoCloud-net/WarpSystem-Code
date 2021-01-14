@@ -16,9 +16,9 @@ import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.codingapi.tools.time.TimeList;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.setupassistant.utils.NavigationCommand;
 import de.codingair.warpsystem.spigot.base.setupassistant.utils.SetupAssistant;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.animations.AnimationManager;
 import de.codingair.warpsystem.spigot.features.animations.guis.editor.*;
 import de.codingair.warpsystem.spigot.features.animations.utils.Animation;
@@ -48,7 +48,7 @@ public class CWarpSystem extends WSCommandBuilder {
 
             @Override
             public void onlyFor(boolean player, CommandSender sender, String label, CommandComponent child) {
-                if(player) {
+                if (player) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Only_For_Players"));
                 }
             }
@@ -71,7 +71,7 @@ public class CWarpSystem extends WSCommandBuilder {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 SetupAssistant a = WarpSystem.getInstance().getSetupAssistantManager().getAssistant();
-                if(a != null) {
+                if (a != null) {
                     sender.sendMessage(Lang.getPrefix() + "§7The setup assistant is §calready used §7by §e" + a.getPlayer().getName() + "§7.");
                     return false;
                 }
@@ -108,7 +108,7 @@ public class CWarpSystem extends WSCommandBuilder {
         getComponent("animations", "activate").addChild(new MultiCommandComponent() {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
-                for(Animation animation : AnimationManager.getInstance().getAnimationList()) {
+                for (Animation animation : AnimationManager.getInstance().getAnimationList()) {
                     suggestions.add(animation.getName());
                 }
             }
@@ -117,7 +117,7 @@ public class CWarpSystem extends WSCommandBuilder {
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 Animation animation = AnimationManager.getInstance().getAnimation(argument);
 
-                if(animation == null) {
+                if (animation == null) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Animation_does_not_exist"));
                     return false;
                 }
@@ -143,22 +143,22 @@ public class CWarpSystem extends WSCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
-                if(AnimationManager.getInstance().existsAnimation(argument)) {
+                if (AnimationManager.getInstance().existsAnimation(argument)) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Name_Already_Exists"));
                     return false;
                 }
 
                 HotbarGUI h = API.getRemovable((Player) sender, HotbarGUI.class);
-                if(h != null) {
+                if (h != null) {
                     h.destroy();
                     Menu m = null;
 
-                    if(h instanceof AnimationPart) m = ((AnimationPart) h).getMenuGUI();
-                    if(h instanceof BuffPart) m = ((BuffPart) h).getMenuGUI();
-                    if(h instanceof Buffs) m = ((Buffs) h).getMenuGUI();
-                    if(h instanceof Particles) m = ((Particles) h).getMenuGUI();
-                    if(h instanceof Sounds) m = ((Sounds) h).getMenuGUI();
-                    if(h instanceof Menu) m = (Menu) h;
+                    if (h instanceof AnimationPart) m = ((AnimationPart) h).getMenuGUI();
+                    if (h instanceof BuffPart) m = ((BuffPart) h).getMenuGUI();
+                    if (h instanceof Buffs) m = ((Buffs) h).getMenuGUI();
+                    if (h instanceof Particles) m = ((Particles) h).getMenuGUI();
+                    if (h instanceof Sounds) m = ((Sounds) h).getMenuGUI();
+                    if (h instanceof Menu) m = (Menu) h;
 
                     m.getAnimPlayer().setLoop(false);
                     m.getAnimPlayer().setRunning(false);
@@ -180,7 +180,7 @@ public class CWarpSystem extends WSCommandBuilder {
         getComponent("animations", "edit").addChild(new MultiCommandComponent() {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
-                for(Animation animation : AnimationManager.getInstance().getAnimationList()) {
+                for (Animation animation : AnimationManager.getInstance().getAnimationList()) {
                     suggestions.add(animation.getName());
                 }
             }
@@ -189,22 +189,22 @@ public class CWarpSystem extends WSCommandBuilder {
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 Animation animation = AnimationManager.getInstance().getAnimation(argument);
 
-                if(animation == null) {
+                if (animation == null) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Animation_does_not_exist"));
                     return false;
                 }
 
                 HotbarGUI h = API.getRemovable((Player) sender, HotbarGUI.class);
-                if(h != null) {
+                if (h != null) {
                     h.destroy();
                     Menu m = null;
 
-                    if(h instanceof AnimationPart) m = ((AnimationPart) h).getMenuGUI();
-                    if(h instanceof BuffPart) m = ((BuffPart) h).getMenuGUI();
-                    if(h instanceof Buffs) m = ((Buffs) h).getMenuGUI();
-                    if(h instanceof Particles) m = ((Particles) h).getMenuGUI();
-                    if(h instanceof Sounds) m = ((Sounds) h).getMenuGUI();
-                    if(h instanceof Menu) m = (Menu) h;
+                    if (h instanceof AnimationPart) m = ((AnimationPart) h).getMenuGUI();
+                    if (h instanceof BuffPart) m = ((BuffPart) h).getMenuGUI();
+                    if (h instanceof Buffs) m = ((Buffs) h).getMenuGUI();
+                    if (h instanceof Particles) m = ((Particles) h).getMenuGUI();
+                    if (h instanceof Sounds) m = ((Sounds) h).getMenuGUI();
+                    if (h instanceof Menu) m = (Menu) h;
 
                     m.getAnimPlayer().setLoop(false);
                     m.getAnimPlayer().setRunning(false);
@@ -226,7 +226,7 @@ public class CWarpSystem extends WSCommandBuilder {
         getComponent("animations", "remove").addChild(new MultiCommandComponent() {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
-                for(Animation animation : AnimationManager.getInstance().getAnimationList()) {
+                for (Animation animation : AnimationManager.getInstance().getAnimationList()) {
                     suggestions.add(animation.getName());
                 }
             }
@@ -235,7 +235,7 @@ public class CWarpSystem extends WSCommandBuilder {
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 Animation animation = AnimationManager.getInstance().getAnimation(argument);
 
-                if(animation == null) {
+                if (animation == null) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Animation_does_not_exist"));
                     return false;
                 }
@@ -265,7 +265,7 @@ public class CWarpSystem extends WSCommandBuilder {
         getBaseComponent().addChild(new CommandComponent("news") {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                if(WarpSystem.getInstance().getUpdateNotifier().getDownload() == null) {
+                if (WarpSystem.getInstance().getUpdateNotifier().getDownload() == null) {
                     sender.sendMessage(Lang.getPrefix() + "§cFetching data... Please try again.");
                     return false;
                 }
@@ -303,7 +303,7 @@ public class CWarpSystem extends WSCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
-                switch(argument.toLowerCase()) {
+                switch (argument.toLowerCase()) {
                     case "github":
                         TextComponent base = new TextComponent(Lang.getPrefix() + "§7Click »");
                         TextComponent link = new TextComponent("§chere");
@@ -359,13 +359,13 @@ public class CWarpSystem extends WSCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                if(confirm.contains(sender)) {
+                if (confirm.contains(sender)) {
                     try {
                         sender.sendMessage(Lang.getPrefix() + Lang.get("Plugin_Reloading"));
                         WarpSystem.getInstance().reload(false);
                         sender.sendMessage(Lang.getPrefix() + Lang.get("Success_Plugin_Reloaded"));
-                    } catch(Throwable ex) {
-                        if(ex instanceof NoClassDefFoundError) return false;
+                    } catch (Throwable ex) {
+                        if (ex instanceof NoClassDefFoundError) return false;
                         ex.printStackTrace();
                     }
                 } else {
@@ -385,7 +385,7 @@ public class CWarpSystem extends WSCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
-                if(argument == null || (!argument.equalsIgnoreCase("true") && !argument.equalsIgnoreCase("false"))) {
+                if (argument == null || (!argument.equalsIgnoreCase("true") && !argument.equalsIgnoreCase("false"))) {
                     sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " reload " + WarpSystem.opt().cmdArg() + "<true, false>");
                     return false;
                 }
@@ -393,7 +393,7 @@ public class CWarpSystem extends WSCommandBuilder {
                 boolean save = Boolean.parseBoolean(argument);
                 sender.sendMessage(Lang.getPrefix() + Lang.get("Plugin_Reloading"));
                 WarpSystem.getInstance().reload(save);
-                if(save)
+                if (save)
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Success_Plugin_Reloaded"));
                 else
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Success_Plugin_Reloaded_Without_Saving"));
@@ -420,7 +420,7 @@ public class CWarpSystem extends WSCommandBuilder {
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 ImportType type = null;
 
-                switch(argument.toLowerCase()) {
+                switch (argument.toLowerCase()) {
                     case "categorywarps": {
                         type = ImportType.CATEGORY_WARPS;
                         break;
@@ -432,14 +432,14 @@ public class CWarpSystem extends WSCommandBuilder {
                     }
                 }
 
-                if(type == null) {
+                if (type == null) {
                     sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " import " + WarpSystem.opt().cmdArg() + "<CategoryWarps, Essentials> [Warp]");
                 } else {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Import_Start"));
 
                     Result result;
                     int size = (IconManager.getInstance() == null ? 0 : IconManager.getInstance().getIcons().size()) + (SimpleWarpManager.getInstance() == null ? 0 : SimpleWarpManager.getInstance().getWarps().size());
-                    if((result = type.importData()).isFinished()) {
+                    if ((result = type.importData()).isFinished()) {
                         int amount = (IconManager.getInstance() == null ? 0 : IconManager.getInstance().getIcons().size()) + (SimpleWarpManager.getInstance() == null ? 0 : SimpleWarpManager.getInstance().getWarps().size()) - size;
                         sender.sendMessage(Lang.getPrefix() + Lang.get("Import_Finish").replace("%AMOUNT%", amount + ""));
                     } else {
@@ -453,7 +453,7 @@ public class CWarpSystem extends WSCommandBuilder {
         getComponent("import", null).addChild(new MultiCommandComponent() {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
-                switch(args[1].toLowerCase()) {
+                switch (args[1].toLowerCase()) {
                     case "essentials": {
                         List<String> l = ImportType.ESSENTIALS.loadWarpNames();
                         suggestions.addAll(l);
@@ -465,16 +465,16 @@ public class CWarpSystem extends WSCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
-                switch(args[1].toLowerCase()) {
+                switch (args[1].toLowerCase()) {
                     case "essentials": {
                         SimpleWarp warp = ImportType.ESSENTIALS.loadWarp(argument);
 
-                        if(warp == null) {
+                        if (warp == null) {
                             sender.sendMessage(Lang.getPrefix() + Lang.get("Import_Could_Not_Import_Warp"));
                             return false;
                         }
 
-                        if(IconManager.getInstance().getIcon(warp.getName()) != null || SimpleWarpManager.getInstance().existsWarp(warp.getName())) {
+                        if (IconManager.getInstance().getIcon(warp.getName()) != null || SimpleWarpManager.getInstance().existsWarp(warp.getName())) {
                             sender.sendMessage(Lang.getPrefix() + Lang.get("Name_Already_Exists"));
 
                             SimpleMessage simpleMessage = new SimpleMessage(Lang.getPrefix() + Lang.get("Import_Choose_New_Name"), WarpSystem.getInstance());
@@ -489,14 +489,14 @@ public class CWarpSystem extends WSCommandBuilder {
                                             e.setClose(false);
 
                                             String s = e.getInput();
-                                            if(s != null && (s.isEmpty() || s.equalsIgnoreCase("none") || s.equalsIgnoreCase("-") || s.equalsIgnoreCase("null"))) s = null;
+                                            if (s != null && (s.isEmpty() || s.equalsIgnoreCase("none") || s.equalsIgnoreCase("-") || s.equalsIgnoreCase("null"))) s = null;
 
-                                            if(s == null) {
+                                            if (s == null) {
                                                 sender.sendMessage(Lang.getPrefix() + Lang.get("Enter_Name"));
                                                 return;
                                             }
 
-                                            if(IconManager.getInstance().getIcon(s) != null || SimpleWarpManager.getInstance().existsWarp(s)) {
+                                            if (IconManager.getInstance().getIcon(s) != null || SimpleWarpManager.getInstance().existsWarp(s)) {
                                                 sender.sendMessage(Lang.getPrefix() + Lang.get("Name_Already_Exists"));
                                                 return;
                                             }
@@ -509,7 +509,7 @@ public class CWarpSystem extends WSCommandBuilder {
 
                                         @Override
                                         public void onClose(AnvilCloseEvent e) {
-                                            if(e.getSubmittedText() == null)
+                                            if (e.getSubmittedText() == null)
                                                 sender.sendMessage(Lang.getPrefix() + Lang.get("Import_Could_Not_Import_Warp"));
                                         }
                                     }, new ItemBuilder(XMaterial.NAME_TAG).setName(Lang.get("Name") + "...").getItem());

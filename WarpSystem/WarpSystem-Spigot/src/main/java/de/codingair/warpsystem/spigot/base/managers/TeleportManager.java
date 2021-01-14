@@ -22,11 +22,20 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class TeleportManager implements ITeleportManager {
-    private static TeleportManager instance;
     public static final String NO_PERMISSION = "%NO_PERMISSION%";
+    private static TeleportManager instance;
     private Cache<Player, Teleport> teleports;
 
     private TeleportManager() {
+    }
+
+    public static TeleportManager getInstance() {
+        if (instance == null) {
+            instance = new TeleportManager();
+            TeleportService.setInstanceIfAbsent(instance);
+        }
+
+        return instance;
     }
 
     /**
@@ -59,20 +68,20 @@ public class TeleportManager implements ITeleportManager {
     }
 
     public synchronized void teleport(Player player, TeleportOptions options) {
-        if(isTeleporting(player)) {
+        if (isTeleporting(player)) {
             Teleport teleport = getTeleport(player);
             long diff = System.currentTimeMillis() - teleport.getStartTime();
-            if(diff > 50)
+            if (diff > 50)
                 player.sendMessage(Lang.getPrefix() + Lang.get("Player_Is_Already_Teleporting"));
             return;
         }
 
-        if(options.getDestination() == null) {
+        if (options.getDestination() == null) {
             player.sendMessage(Lang.getPrefix() + Lang.get("WARP_DOES_NOT_EXISTS"));
             return;
         }
 
-        if((options.getDestination().getType() == DestinationType.GlobalWarp || options.getDestination().getType() == DestinationType.Server) && !WarpSystem.getInstance().isOnProxy()) {
+        if ((options.getDestination().getType() == DestinationType.GlobalWarp || options.getDestination().getType() == DestinationType.Server) && !WarpSystem.getInstance().isOnProxy()) {
             options.fireCallbacks(Result.NOT_ON_BUNGEE_CORD);
             player.sendMessage(Lang.getPrefix() + Lang.get("Server_Is_Not_Online"));
             return;
@@ -99,13 +108,13 @@ public class TeleportManager implements ITeleportManager {
     }
 
     public void cancelTeleport(Player player) {
-        if(!isTeleporting(player)) return;
+        if (!isTeleporting(player)) return;
         Teleport teleport = getTeleport(player);
         teleport.cancel(Result.CANCELLED_BY_SYSTEM);
         invalidate(player);
 
-        if(WarpSystem.getInstance().getFileManager().getFile("Config").getConfig().getBoolean("WarpSystem.Send.Teleport_Cancel_Message", true)) {
-            if(WarpSystem.opt().getDelayDisplay() == TeleportDelay.Display.TITLE) MessageAPI.sendTitle(player, " ", " ", 0, 1, 0);
+        if (WarpSystem.getInstance().getFileManager().getFile("Config").getConfig().getBoolean("WarpSystem.Send.Teleport_Cancel_Message", true)) {
+            if (WarpSystem.opt().getDelayDisplay() == TeleportDelay.Display.TITLE) MessageAPI.sendTitle(player, " ", " ", 0, 1, 0);
             MessageAPI.sendActionBar(player, Lang.get("Teleport_Cancelled"));
         }
     }
@@ -124,15 +133,6 @@ public class TeleportManager implements ITeleportManager {
     }
 
     public void clear() {
-        if(this.teleports != null) this.teleports.invalidateAll();
-    }
-
-    public static TeleportManager getInstance() {
-        if(instance == null) {
-            instance = new TeleportManager();
-            TeleportService.setInstanceIfAbsent(instance);
-        }
-
-        return instance;
+        if (this.teleports != null) this.teleports.invalidateAll();
     }
 }

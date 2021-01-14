@@ -12,6 +12,6 @@ public class TeleportCommandOptionsPacketHandler implements PacketHandler<Telepo
     @Override
     public void process(@NotNull TeleportCommandOptionsPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         TeleportCommandManager man = TeleportCommandManager.getInstance();
-        if(man != null) man.registerServerOptions(packet.getServer(), packet.getOptions());
+        if (man != null) man.registerServerOptions(packet.getServer(), packet.getOptions());
     }
 }

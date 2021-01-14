@@ -18,21 +18,21 @@ public class PortalBlockEditorHandler {
         Location l = b.getLocation();
         locations.add(l);
 
-        if(b.getType().name().toLowerCase().contains("door")) {
+        if (b.getType().name().toLowerCase().contains("door")) {
             Location other = l.clone().add(0, 1, 0);
-            if(!other.getBlock().getType().name().toLowerCase().contains("door")) other = null;
+            if (!other.getBlock().getType().name().toLowerCase().contains("door")) other = null;
 
-            if(other == null) {
+            if (other == null) {
                 other = l.clone().subtract(0, 1, 0);
-                if(!other.getBlock().getType().name().toLowerCase().contains("door")) other = null;
+                if (!other.getBlock().getType().name().toLowerCase().contains("door")) other = null;
             }
 
-            if(other != null) locations.add(other.getBlock().getLocation());
+            if (other != null) locations.add(other.getBlock().getLocation());
         }
 
-        for(Location location : locations) {
+        for (Location location : locations) {
             Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
-                if(!editor.getAlignTo().remove(location.getBlock())) {
+                if (!editor.getAlignTo().remove(location.getBlock())) {
                     editor.getAlignTo().add(location.getBlock());
 
                     editor.getPortal().addPortalBlock(new PortalBlock(new de.codingair.codingapi.tools.Location(location), BlockType.CUSTOM));

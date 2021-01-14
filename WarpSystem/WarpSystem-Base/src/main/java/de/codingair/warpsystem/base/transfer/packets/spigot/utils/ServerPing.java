@@ -16,7 +16,7 @@ public class ServerPing implements Serializable {
     }
 
     public ServerPing(ServerPing ping) {
-        if(ping == null) {
+        if (ping == null) {
             this.status = false;
             this.players = 0;
             this.maxPlayers = 0;
@@ -41,7 +41,7 @@ public class ServerPing implements Serializable {
         String motd = (this.status ? "1" : "0") + (this.motd == null ? "" : this.motd);
         out.writeUTF(motd);
 
-        if(this.status) {
+        if (this.status) {
             out.writeInt(this.players);
             out.writeInt(this.maxPlayers);
         }
@@ -53,7 +53,7 @@ public class ServerPing implements Serializable {
         char state = motd.charAt(0);
         this.status = state == '1';
 
-        if(this.status) {
+        if (this.status) {
             this.motd = motd.substring(1);
             this.players = in.readInt();
             this.maxPlayers = in.readInt();
@@ -64,28 +64,28 @@ public class ServerPing implements Serializable {
         return status;
     }
 
-    public int getPlayers() {
-        return players;
-    }
-
-    public int getMaxPlayers() {
-        return maxPlayers;
-    }
-
-    public String getMotd() {
-        return motd;
-    }
-
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public int getPlayers() {
+        return players;
     }
 
     public void setPlayers(int players) {
         this.players = players;
     }
 
+    public int getMaxPlayers() {
+        return maxPlayers;
+    }
+
     public void setMaxPlayers(int maxPlayers) {
         this.maxPlayers = maxPlayers;
+    }
+
+    public String getMotd() {
+        return motd;
     }
 
     public void setMotd(String motd) {

@@ -35,7 +35,7 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
         super("playerwarps", new WarpSystemBaseComponent(WarpSystem.PERMISSION_USE_PLAYER_WARPS) {
             @Override
             public void unknownSubCommand(CommandSender sender, String label, String[] args) {
-                if(WarpSystem.hasPermission(sender, WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS))
+                if (WarpSystem.hasPermission(sender, WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS))
                     sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<create, edit, delete, list, import>");
                 else
                     sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<create, edit, delete, list>");
@@ -61,7 +61,7 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
         getComponent("delete").addChild(new PWMultiCommandComponent() {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
-                if(sender.hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS)) {
+                if (sender.hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS)) {
                     PlayerWarpManager.getManager().interactWithWarps(new Callback<PlayerWarp>() {
                         @Override
                         public void accept(PlayerWarp warp) {
@@ -71,7 +71,7 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
                 } else {
                     List<PlayerWarp> l = PlayerWarpManager.getManager().getOwnWarps((Player) sender);
 
-                    for(PlayerWarp warp : l) {
+                    for (PlayerWarp warp : l) {
                         suggestions.add(warp.getName(false).replace(" ", "_"));
                     }
                 }
@@ -81,12 +81,12 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 PlayerWarp warp = PlayerWarpManager.getManager().getWarp((Player) sender, argument);
 
-                if(warp == null) {
+                if (warp == null) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("WARP_DOES_NOT_EXISTS"));
                     return false;
                 }
 
-                if(!warp.isOwner((Player) sender) && !sender.hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS)) {
+                if (!warp.isOwner((Player) sender) && !sender.hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS)) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_no_access"));
                     return false;
                 }
@@ -95,8 +95,8 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
 
                 List<String> lore = Lang.getStringList("Warp_Delete_Button_Info");
                 List<String> prepared = new ArrayList<>();
-                for(String s : lore) {
-                    if(!PlayerWarpManager.getManager().isEconomy() && s.contains("REFUND")) continue;
+                for (String s : lore) {
+                    if (!PlayerWarpManager.getManager().isEconomy() && s.contains("REFUND")) continue;
 
                     prepared.add(s
                             .replace("%REFUND%", cut(PlayerWarpManager.getManager().calculateRefund(warp)) + "")
@@ -108,9 +108,9 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
                     @Override
                     public void onClick(Player player) {
                         double refund = PlayerWarpManager.getManager().delete(warp, true);
-                        if(refund == -1) return;
+                        if (refund == -1) return;
 
-                        if(refund > 0 && PlayerWarpManager.getManager().isEconomy() && warp.isOwner(player)) {
+                        if (refund > 0 && PlayerWarpManager.getManager().isEconomy() && warp.isOwner(player)) {
                             Bank.adapter().deposit((Player) sender, refund);
                             sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_Deleted_Info").replace("%NAME%", warp.getName(true)).replace("%PRICE%", CPlayerWarps.cut(refund) + ""));
                         } else sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_was_deleted").replace("%NAME%", warp.getName(true)));
@@ -137,7 +137,7 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
         getComponent("edit").addChild(new PWMultiCommandComponent() {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
-                if(sender.hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS)) {
+                if (sender.hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS)) {
                     PlayerWarpManager.getManager().interactWithWarps(new Callback<PlayerWarp>() {
                         @Override
                         public void accept(PlayerWarp warp) {
@@ -147,7 +147,7 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
                 } else {
                     List<PlayerWarp> l = new ArrayList<>(PlayerWarpManager.getManager().getOwnWarps((Player) sender));
 
-                    for(PlayerWarp warp : l) {
+                    for (PlayerWarp warp : l) {
                         suggestions.add(warp.getName(false).replace(" ", "_"));
                     }
 
@@ -159,12 +159,12 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 PlayerWarp warp = PlayerWarpManager.getManager().getWarp((Player) sender, argument);
 
-                if(warp == null) {
+                if (warp == null) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("WARP_DOES_NOT_EXISTS"));
                     return false;
                 }
 
-                if(!warp.isOwner((Player) sender) && !sender.hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS)) {
+                if (!warp.isOwner((Player) sender) && !sender.hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS)) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_no_access"));
                     return false;
                 }
@@ -189,28 +189,28 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
-                if(!PlayerWarpManager.getManager().hasPermission((Player) sender)) {
+                if (!PlayerWarpManager.getManager().hasPermission((Player) sender)) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_Maximum_of_Warps").replace("%AMOUNT%", PlayerWarpManager.getManager().getOwnWarps((Player) sender).size() + ""));
                     return false;
                 }
 
-                if(PlayerWarpManager.isProtected((Player) sender)) {
+                if (PlayerWarpManager.isProtected((Player) sender)) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Create_Protected"));
                     return false;
                 }
 
-                if(argument.length() < PlayerWarpManager.getManager().getNameMinLength() || argument.length() > PlayerWarpManager.getManager().getNameMaxLength()) {
+                if (argument.length() < PlayerWarpManager.getManager().getNameMinLength() || argument.length() > PlayerWarpManager.getManager().getNameMaxLength()) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Name_Too_Long_Too_Short").replace("%MIN%", PlayerWarpManager.getManager().getNameMinLength() + "").replace("%MAX%", PlayerWarpManager.getManager().getNameMaxLength() + ""));
                     return false;
                 }
 
                 String forbidden = PlayerWarpManager.getManager().checkSymbols(argument, "§c", "§f");
-                if(forbidden != null) {
+                if (forbidden != null) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Forbidden_Symbols").replace("%NAME_HINT%", forbidden));
                     return false;
                 }
 
-                if(PlayerWarpManager.getManager().existsOwn((Player) sender, argument)) {
+                if (PlayerWarpManager.getManager().existsOwn((Player) sender, argument)) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Name_Already_Exists"));
                     return false;
                 }
@@ -244,15 +244,15 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
-                if(argument.equalsIgnoreCase("essentials")) {
+                if (argument.equalsIgnoreCase("essentials")) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Import_Start"));
 
                     List<PlayerWarp> data = ImportType.ESSENTIALS.getFilter().importAll();
                     int added = 0;
 
-                    if(data != null) {
-                        for(PlayerWarp datum : data) {
-                            if(!PlayerWarpManager.getManager().existsOwn((Player) sender, datum.getName())) {
+                    if (data != null) {
+                        for (PlayerWarp datum : data) {
+                            if (!PlayerWarpManager.getManager().existsOwn((Player) sender, datum.getName())) {
                                 PlayerWarpManager.getManager().add(datum);
                                 added++;
                             }
@@ -272,17 +272,17 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
     }
 
     public static Number cut(double n) {
-        if(n == (int) n) return (int) n;
+        if (n == (int) n) return (int) n;
         else return ((double) (int) (n * 100)) / 100;
     }
 
     public static void createPlayerWarp(Player p, GUI fallBack) {
-        if(!PlayerWarpManager.getManager().hasPermission(p)) {
+        if (!PlayerWarpManager.getManager().hasPermission(p)) {
             p.sendMessage(Lang.getPrefix() + Lang.get("Warp_Maximum_of_Warps").replace("%AMOUNT%", PlayerWarpManager.getManager().getOwnWarps(p).size() + ""));
             return;
         }
 
-        if(PlayerWarpManager.isProtected(p)) {
+        if (PlayerWarpManager.isProtected(p)) {
             p.sendMessage(Lang.getPrefix() + Lang.get("Create_Protected"));
             return;
         }
@@ -290,10 +290,10 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
         AnvilGUI.openAnvil(WarpSystem.getInstance(), p, new AnvilListener() {
             @Override
             public void onClick(AnvilClickEvent e) {
-                if(!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
+                if (!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
                 String input = e.getInput();
 
-                if(input == null) {
+                if (input == null) {
                     e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Enter_Name"));
                     return;
                 }
@@ -301,12 +301,12 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
                 input = input.replace(" ", "_");
 
                 String forbidden = PlayerWarpManager.getManager().checkSymbols(input, "§c", "§f");
-                if(forbidden != null) {
+                if (forbidden != null) {
                     p.sendMessage(Lang.getPrefix() + Lang.get("Forbidden_Symbols").replace("%NAME_HINT%", forbidden));
                     return;
                 }
 
-                if(PlayerWarpManager.getManager().existsOwn(p, input)) {
+                if (PlayerWarpManager.getManager().existsOwn(p, input)) {
                     e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Name_Already_Exists"));
                     return;
                 }
@@ -317,16 +317,16 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
 
             @Override
             public void onClose(AnvilCloseEvent e) {
-                if(e.isSubmitted()) {
+                if (e.isSubmitted()) {
                     e.setPost(() -> createPlayerWarp(e.getPlayer(), e.getSubmittedText(), fallBack));
-                } else if(fallBack != null) e.setPost(fallBack::open);
+                } else if (fallBack != null) e.setPost(fallBack::open);
             }
         }, new ItemBuilder(XMaterial.NAME_TAG).setName(Lang.get("Name") + "...").getItem());
     }
 
     private static void createPlayerWarp(Player player, String name, GUI fallBack) {
-        if(PlayerWarpManager.getManager().isForceCreateGUI()) {
-            if(fallBack != null) {
+        if (PlayerWarpManager.getManager().isForceCreateGUI()) {
+            if (fallBack != null) {
                 GUI g = new PWEditor(player, name);
                 g.setFallbackGUI(fallBack);
                 fallBack.changeGUI(g, true);
@@ -336,14 +336,14 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
 
             Number paid = PWEditor.calculateCosts(true, w, w);
 
-            if(!PWEditor.canPay(player, paid.doubleValue())) {
+            if (!PWEditor.canPay(player, paid.doubleValue())) {
                 player.sendMessage(Lang.getPrefix() + Lang.get("Not_enough_Money").replace("%AMOUNT%", new ImprovedDouble(paid.doubleValue()).toString()));
                 return;
             } else Bank.withdraw(player, paid.doubleValue());
 
             PlayerWarpManager.getManager().add(w);
 
-            if(PlayerWarpManager.getManager().checkBungeeCord()) {
+            if (PlayerWarpManager.getManager().checkBungeeCord()) {
                 PlayerWarpData data = w.getData();
                 SendPlayerWarpsPacket packet = new SendPlayerWarpsPacket(new ArrayList<PlayerWarpData>() {{
                     this.add(data);
@@ -354,11 +354,11 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
             }
 
             String s;
-            if(paid.doubleValue() > 0) s = Lang.getPrefix() + Lang.get("Warp_Created").replace("%NAME%", w.getName()).replace("%PRICE%", paid + "");
+            if (paid.doubleValue() > 0) s = Lang.getPrefix() + Lang.get("Warp_Created").replace("%NAME%", w.getName()).replace("%PRICE%", paid + "");
             else s = Lang.getPrefix() + Lang.get("Warp_Created_Free").replace("%NAME%", w.getName());
             player.sendMessage(s);
 
-            if(fallBack != null) {
+            if (fallBack != null) {
                 fallBack.reinitialize();
                 fallBack.open();
             }

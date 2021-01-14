@@ -5,7 +5,7 @@ import de.codingair.codingapi.files.loader.UTFConfig;
 import de.codingair.codingapi.tools.Area;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.Location;
-import de.codingair.codingapi.tools.io.ConfigWriter;
+import de.codingair.codingapi.tools.io.ConfigMask;
 import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.warpsystem.base.transfer.packets.spigot.QueueRTPUsagePacket;
@@ -32,7 +32,7 @@ public class RandomTeleportHandler extends RandomTeleportManager {
 
     @Override
     public boolean load(boolean loader) {
-        if(WarpSystem.getInstance().getFileManager().getFile("PlayData") == null) WarpSystem.getInstance().getFileManager().loadFile("PlayData", "/Memory/");
+        if (WarpSystem.getInstance().getFileManager().getFile("PlayData") == null) WarpSystem.getInstance().getFileManager().loadFile("PlayData", "/Memory/");
         ConfigFile rtpFile = WarpSystem.getInstance().getFileManager().loadFile("RTPConfig", "/");
         UTFConfig config = rtpFile.getConfig();
 
@@ -44,41 +44,41 @@ public class RandomTeleportHandler extends RandomTeleportManager {
         this.max = config.getInt("RandomTeleport.Max", 4);
         this.free = config.getInt("RandomTeleport.Free", 1);
 
-        if(this.defValues != null) this.defValues.destroy();
+        if (this.defValues != null) this.defValues.destroy();
         this.defValues = new WorldOption("§DEF§");
-        ConfigWriter w = new ConfigWriter(rtpFile, "RandomTeleport.Worlds.Default");
+        ConfigMask w = new ConfigMask(rtpFile, "RandomTeleport.Worlds.Default");
         this.defValues.read(w);
 
         this.netherHeight = config.getInt("RandomTeleport.Range.Highest_Y.Nether", 126);
         this.endHeight = config.getInt("RandomTeleport.Range.Highest_Y.End", 72);
 
         this.materialBlackList.clear();
-        if(config.getBoolean("RandomTeleport.Block_Blacklist.Enabled", false)) {
-            for(String material : config.getStringList("RandomTeleport.Block_Blacklist.List")) {
+        if (config.getBoolean("RandomTeleport.Block_Blacklist.Enabled", false)) {
+            for (String material : config.getStringList("RandomTeleport.Block_Blacklist.List")) {
                 Optional<XMaterial> parsed = XMaterial.matchXMaterial(material.toUpperCase().replace(" ", "_"));
                 parsed.ifPresent(xMaterial -> {
                     Material m = xMaterial.parseMaterial();
 
-                    if(!materialBlackList.contains(m)) materialBlackList.add(m);
+                    if (!materialBlackList.contains(m)) materialBlackList.add(m);
                 });
             }
         }
 
         this.protectedRegions = config.getBoolean("RandomTeleport.Support.ProtectedRegions", true);
         this.worldBorder = config.getBoolean("RandomTeleport.Support.WorldBorder", true);
-        if(config.getBoolean("RandomTeleport.Support.Biome.Enabled", true)) {
+        if (config.getBoolean("RandomTeleport.Support.Biome.Enabled", true)) {
             List<String> configBiomes = config.getStringList("RandomTeleport.Support.Biome.BiomeList");
             biomeList = new ArrayList<>();
 
-            if(configBiomes.isEmpty()) {
-                for(Biome value : Biome.values()) {
-                    if(value.name().equalsIgnoreCase("VOID")) continue;
+            if (configBiomes.isEmpty()) {
+                for (Biome value : Biome.values()) {
+                    if (value.name().equalsIgnoreCase("VOID")) continue;
                     this.biomeList.add(value);
                 }
             } else {
-                for(String biome : configBiomes) {
-                    for(Biome value : Biome.values()) {
-                        if(value.name().equalsIgnoreCase(biome) && !biomeList.contains(value)) {
+                for (String biome : configBiomes) {
+                    for (Biome value : Biome.values()) {
+                        if (value.name().equalsIgnoreCase(biome) && !biomeList.contains(value)) {
                             biomeList.add(value);
                             break;
                         }
@@ -94,17 +94,17 @@ public class RandomTeleportHandler extends RandomTeleportManager {
         boolean success = true;
         worldOptions.clear();
         List<?> l = config.getList("RandomTeleport.Worlds.Options");
-        if(l != null)
-            for(Object data : l) {
+        if (l != null)
+            for (Object data : l) {
                 try {
                     JSON json = new JSON((Map<?, ?>) data);
-                    for(Object o : json.keySet(false)) {
+                    for (Object o : json.keySet(false)) {
                         String key = o + "";
                         WorldOption option = new WorldOption(key);
                         json.getSerializable(key, option);
                         worldOptions.add(option);
                     }
-                } catch(Exception e) {
+                } catch (Exception e) {
                     success = false;
                     e.printStackTrace();
                 }
@@ -115,21 +115,21 @@ public class RandomTeleportHandler extends RandomTeleportManager {
         config = file.getConfig();
 
         l = config.getList("RandomTeleporter.InteractBlocks");
-        if(l != null)
-            for(Object s : l) {
-                if(s instanceof Map) {
+        if (l != null)
+            for (Object s : l) {
+                if (s instanceof Map) {
                     JSON json = new JSON((Map<?, ?>) s);
                     Location loc = new Location();
                     try {
                         loc.read(json);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         success = false;
                         e.printStackTrace();
                         continue;
                     }
 
                     this.interactBlocks.add(loc);
-                } else if(s instanceof String) {
+                } else if (s instanceof String) {
                     this.interactBlocks.add(Location.getByJSONString((String) s));
                 }
             }
@@ -158,11 +158,11 @@ public class RandomTeleportHandler extends RandomTeleportManager {
         }
 
         public boolean correct(Location location, boolean safety) throws InterruptedException {
-            if(RandomTeleportManager.getInstance().getBiomeList() != null && !RandomTeleportManager.getInstance().getBiomeList().contains(location.getWorld().getBiome(location.getBlockX(), location.getBlockZ())))
+            if (RandomTeleportManager.getInstance().getBiomeList() != null && !RandomTeleportManager.getInstance().getBiomeList().contains(location.getWorld().getBiome(location.getBlockX(), location.getBlockZ())))
                 return false;
-            if(RandomTeleportManager.getInstance().isProtectedRegions() && isProtected(location)) return false;
-            if(((RandomTeleportHandler) RandomTeleportManager.getInstance()).isWorldBorder() && !isInsideOfWorldBorder(location)) return false;
-            if(safety) {
+            if (RandomTeleportManager.getInstance().isProtectedRegions() && isProtected(location)) return false;
+            if (((RandomTeleportHandler) RandomTeleportManager.getInstance()).isWorldBorder() && !isInsideOfWorldBorder(location)) return false;
+            if (safety) {
                 Location above = location.clone();
                 above.setY(above.getY() + 1);
                 Location below = location.clone();

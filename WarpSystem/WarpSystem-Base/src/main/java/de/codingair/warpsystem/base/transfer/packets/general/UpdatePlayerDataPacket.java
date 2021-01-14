@@ -9,9 +9,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class UpdatePlayerDataPacket implements Packet {
-    private String name;
     private final ByteMask updated = new ByteMask();
     private final ByteMask values = new ByteMask();
+    private String name;
     private String server;
 
     public UpdatePlayerDataPacket() {
@@ -27,7 +27,7 @@ public class UpdatePlayerDataPacket implements Packet {
         this.updated.write(out);
         this.values.write(out);
 
-        if(this.updated.getBit(1)) out.writeUTF(this.server);
+        if (this.updated.getBit(1)) out.writeUTF(this.server);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class UpdatePlayerDataPacket implements Packet {
         this.updated.read(in);
         this.values.read(in);
 
-        if(this.updated.getBit(1)) this.server = in.readUTF();
+        if (this.updated.getBit(1)) this.server = in.readUTF();
     }
 
     public UpdatePlayerDataPacket setVanished(boolean vanished) {
@@ -52,8 +52,8 @@ public class UpdatePlayerDataPacket implements Packet {
     }
 
     public void update(PlayerData data) {
-        if(updated.getBit(0)) data.setVanished(this.values.getBit(0));
-        if(updated.getBit(1)) data.setServer(this.server);
+        if (updated.getBit(0)) data.setVanished(this.values.getBit(0));
+        if (updated.getBit(1)) data.setServer(this.server);
     }
 
     public String getName() {

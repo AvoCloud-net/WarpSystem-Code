@@ -46,7 +46,7 @@ public class CGlobalWarps extends WSCommandBuilder implements ProxyFeature {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                if(WarpSystem.getInstance().isOnProxy())
+                if (WarpSystem.getInstance().isOnProxy())
                     sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<create, delete, list>");
                 else sender.sendMessage(Lang.getPrefix() + Lang.get("Connect_BungeeCord"));
                 return false;
@@ -58,7 +58,7 @@ public class CGlobalWarps extends WSCommandBuilder implements ProxyFeature {
 
     @Override
     public void onConnect() {
-        if(getComponent("create") != null) {
+        if (getComponent("create") != null) {
             WarpSystem.getInstance().getLogger().log(Level.WARNING, "Trying to register already known command components (CGlobalWarps)! Please contact the author (PlayerCount=" + Bukkit.getOnlinePlayers().size() + ").");
             return;
         }
@@ -81,13 +81,13 @@ public class CGlobalWarps extends WSCommandBuilder implements ProxyFeature {
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 Player player = (Player) sender;
 
-                if(argument.contains(".")) {
+                if (argument.contains(".")) {
                     player.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Create_No_Dots"));
                     return false;
                 }
 
                 ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).create(player, argument, player.getLocation()).thenAccept(booleanPacket -> {
-                    if(booleanPacket.getBoolean()) {
+                    if (booleanPacket.getBoolean()) {
                         player.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Created").replace("%GLOBAL_WARP%", argument));
                     } else {
                         String name = GlobalWarpManager.getInstance().getCaseCorrectlyName(argument);
@@ -97,7 +97,7 @@ public class CGlobalWarps extends WSCommandBuilder implements ProxyFeature {
                             @Override
                             public void onClick(Player player) {
                                 ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).updatePosition(player, name, player.getLocation()).thenAccept(packet -> {
-                                    if(packet.getBoolean()) {
+                                    if (packet.getBoolean()) {
                                         sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_Overwritten"));
                                     } else {
                                         sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Not_Exists").replace("%GLOBAL_WARP%", args[1]));
@@ -128,9 +128,9 @@ public class CGlobalWarps extends WSCommandBuilder implements ProxyFeature {
                 Player player = (Player) sender;
                 String name = GlobalWarpManager.getInstance().getCaseCorrectlyName(args[1]);
 
-                if(name != null) {
+                if (name != null) {
                     ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).updatePosition(player, name, player.getLocation()).thenAccept(packet -> {
-                        if(packet.getBoolean()) {
+                        if (packet.getBoolean()) {
                             sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_Overwritten"));
                         } else {
                             sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Not_Exists").replace("%GLOBAL_WARP%", args[1]));
@@ -159,7 +159,7 @@ public class CGlobalWarps extends WSCommandBuilder implements ProxyFeature {
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 String name = GlobalWarpManager.getInstance().getCaseCorrectlyName(argument);
 
-                if(name != null) {
+                if (name != null) {
                     new ConfirmGUI((Player) sender,
                             Lang.get("Confirm"),
                             Lang.get("Apply_Delete_No"),
@@ -168,11 +168,11 @@ public class CGlobalWarps extends WSCommandBuilder implements ProxyFeature {
                             WarpSystem.getInstance(), new Callback<Boolean>() {
                         @Override
                         public void accept(Boolean keep) {
-                            if(keep) {
+                            if (keep) {
                                 sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Deleted_Cancel").replace("%GLOBAL_WARP%", name));
                             } else {
                                 ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).delete((Player) sender, name).thenAccept(deleted -> {
-                                    if(deleted.getBoolean()) {
+                                    if (deleted.getBoolean()) {
                                         sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Deleted").replace("%GLOBAL_WARP%", name));
                                     } else {
                                         sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Not_Exists").replace("%GLOBAL_WARP%", argument));
@@ -193,9 +193,9 @@ public class CGlobalWarps extends WSCommandBuilder implements ProxyFeature {
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 String name = GlobalWarpManager.getInstance().getCaseCorrectlyName(args[1]);
 
-                if(name != null) {
+                if (name != null) {
                     ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).delete(sender instanceof Player ? (Player) sender : null, name).thenAccept(deleted -> {
-                        if(deleted.getBoolean()) {
+                        if (deleted.getBoolean()) {
                             sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Deleted").replace("%GLOBAL_WARP%", name));
                         } else {
                             sender.sendMessage(Lang.getPrefix() + Lang.get("GlobalWarp_Not_Exists").replace("%GLOBAL_WARP%", argument));

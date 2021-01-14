@@ -21,14 +21,12 @@ public abstract class ChatInputGUI implements Removable {
     private final UUID id = UUID.randomUUID();
     private final JavaPlugin plugin;
     private final Player player;
-
+    private final ChatInputListener listener;
     private SoundData openSound;
     private SoundData cancelSound;
     private SoundData submitFinishSound;
     private SoundData submitMistakeSound;
-
     private BukkitRunnable runnable = null;
-    private final ChatInputListener listener;
     private String title, subTitle = null;
     private boolean actionBarSwitch = false;
 
@@ -38,9 +36,9 @@ public abstract class ChatInputGUI implements Removable {
 
         this.title = Lang.get("Enter_Something_in_Chat");
         this.title = "§7" + ChatColor.stripColor(this.title);
-        if(this.title.endsWith(".")) this.title = this.title.substring(0, this.title.length() - 1);
+        if (this.title.endsWith(".")) this.title = this.title.substring(0, this.title.length() - 1);
 
-        if(this.title.contains("\n")) {
+        if (this.title.contains("\n")) {
             String[] a = this.title.split("\\n");
             this.title = a[0];
             this.subTitle = "§7" + a[1];
@@ -52,7 +50,7 @@ public abstract class ChatInputGUI implements Removable {
     public void open() {
         API.addRemovable(this);
 
-        if(WarpSystem.getInstance().isOnProxy()) {
+        if (WarpSystem.getInstance().isOnProxy()) {
             WarpSystem.getDataHandler().send(new ChatInputGUITogglePacket(this.player.getName(), true), player);
         }
 
@@ -65,7 +63,7 @@ public abstract class ChatInputGUI implements Removable {
         };
 
         this.runnable.runTaskTimer(this.plugin, 5, 10);
-        if(this.openSound != null) this.openSound.play(player);
+        if (this.openSound != null) this.openSound.play(player);
     }
 
     private void sendTitle(int in, int stay, int out) {
@@ -75,18 +73,18 @@ public abstract class ChatInputGUI implements Removable {
     }
 
     void onInput(String message) {
-        if(message != null) message = CharMatcher.WHITESPACE.trimFrom(message);
+        if (message != null) message = CharMatcher.WHITESPACE.trimFrom(message);
 
         ChatInputEvent e = new ChatInputEvent(this, message);
         onEnter(e);
 
-        if(e.isClose()) {
-            if(this.submitFinishSound != null) this.submitFinishSound.play(player);
+        if (e.isClose()) {
+            if (this.submitFinishSound != null) this.submitFinishSound.play(player);
             close();
             return;
-        } else if(e.getNotifier() != null) setTitle(e.getNotifier());
+        } else if (e.getNotifier() != null) setTitle(e.getNotifier());
 
-        if(this.submitMistakeSound != null) this.submitMistakeSound.play(player);
+        if (this.submitMistakeSound != null) this.submitMistakeSound.play(player);
     }
 
     public abstract void onEnter(ChatInputEvent e);
@@ -99,11 +97,11 @@ public abstract class ChatInputGUI implements Removable {
 
     @Override
     public void destroy() {
-        if(this.runnable != null) {
+        if (this.runnable != null) {
             this.runnable.cancel();
             this.runnable = null;
 
-            if(WarpSystem.getInstance().isOnProxy()) {
+            if (WarpSystem.getInstance().isOnProxy()) {
                 WarpSystem.getDataHandler().send(new ChatInputGUITogglePacket(this.player.getName(), false), player);
             }
 
@@ -137,13 +135,13 @@ public abstract class ChatInputGUI implements Removable {
     }
 
     public void setTitle(String title) {
-        if(title == null) return;
-        if(title.equals(this.title + (this.subTitle == null ? "" : "\n" + subTitle))) return;
+        if (title == null) return;
+        if (title.equals(this.title + (this.subTitle == null ? "" : "\n" + subTitle))) return;
 
         this.title = title;
         this.subTitle = null;
 
-        if(this.title.contains("\n")) {
+        if (this.title.contains("\n")) {
             String[] a = this.title.split("\\n");
             this.title = a[0];
             this.subTitle = a[1];

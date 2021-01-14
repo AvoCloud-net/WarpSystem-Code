@@ -27,13 +27,11 @@ import java.util.List;
 
 public class PList<E> extends Page {
     private static final int[] slots = {0, 1, 2, 3, 4, 5, 6, 9, 10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 22, 23, 24};
-    private List<ListItem<E>> items;
-    private List<ListItem<E>> backup;
-
     private final boolean searchable;
     private final String title;
     private final Player player;
-
+    private List<ListItem<E>> items;
+    private List<ListItem<E>> backup;
     private int page = 0;
     private String searching = null;
 
@@ -60,11 +58,11 @@ public class PList<E> extends Page {
 
     public void updateListItems() {
         this.items.clear();
-        for(ListItem<E> i : this.backup) {
-            if(getSearching() == null || i.isSearched(getSearching())) this.items.add(i);
+        for (ListItem<E> i : this.backup) {
+            if (getSearching() == null || i.isSearched(getSearching())) this.items.add(i);
         }
 
-        for(int slot : slots) {
+        for (int slot : slots) {
             ((SyncButton) getButton(slot)).update();
         }
     }
@@ -77,7 +75,7 @@ public class PList<E> extends Page {
     }
 
     private int MAX_PAGE() {
-        if(items.isEmpty()) return 0;
+        if (items.isEmpty()) return 0;
 
         return (int) (Math.ceil((double) items.size() / slots.length) - 1);
     }
@@ -92,7 +90,7 @@ public class PList<E> extends Page {
         option.setClickSound(new SoundData(Sound.UI_BUTTON_CLICK, 0.7F, 1F));
         option.setOnlyLeftClick(true);
 
-        for(int i = 0; i < slots.length; i++) {
+        for (int i = 0; i < slots.length; i++) {
             int finalI = i;
             addButton(new SyncButton(slots[finalI]) {
                 @Override
@@ -104,7 +102,7 @@ public class PList<E> extends Page {
                 @Override
                 public void onClick(InventoryClickEvent e, Player player) {
                     ListItem<E> item = getListItem();
-                    if(item != null) item.onClick(item.getValue(), e.getClick());
+                    if (item != null) item.onClick(item.getValue(), e.getClick());
                 }
 
                 private ListItem<E> getListItem() {
@@ -121,20 +119,20 @@ public class PList<E> extends Page {
         addButton(new Button(8, 0, new ItemBuilder(Skull.ArrowUp).setName(ChatColor.GRAY + Lang.get("Previous_Page")).getItem()) {
             @Override
             public void onClick(InventoryClickEvent e, Player player) {
-                if(page == 0) return;
+                if (page == 0) return;
                 page--;
                 setTitle(TITLE(), true);
                 updateListItems();
             }
         }.setOption(option));
 
-        if(searchable) {
+        if (searchable) {
             addButton(new SyncButton(8, 1) {
                 @Override
                 public ItemStack craftItem() {
                     ItemBuilder search = new ItemBuilder(Material.COMPASS).setName(ChatColor.RED.toString() + (searching == null ? "" : ChatColor.UNDERLINE) + Lang.get("Search"));
 
-                    if(searching != null) {
+                    if (searching != null) {
                         search.addLore("", ChatColor.GRAY + "» " + Lang.get("Current") + ": '" + ChatColor.YELLOW + searching + ChatColor.GRAY + "'",
                                 ChatColor.GRAY + "» " + Lang.get("Rightclick_To_Reset"));
                     }
@@ -144,11 +142,11 @@ public class PList<E> extends Page {
 
                 @Override
                 public void onClick(InventoryClickEvent e, Player player) {
-                    if(e.isRightClick()) {
+                    if (e.isRightClick()) {
                         searching = null;
                         updateListItems();
                         update();
-                    } else if(e.isLeftClick()) {
+                    } else if (e.isLeftClick()) {
                         getLast().setClosingForGUI(true);
 
                         AnvilGUI.openAnvil(WarpSystem.getInstance(), p, new AnvilListener() {
@@ -161,7 +159,7 @@ public class PList<E> extends Page {
                             @Override
                             public void onClose(AnvilCloseEvent e) {
                                 e.setPost(() -> {
-                                    if(e.isSubmitted()) {
+                                    if (e.isSubmitted()) {
                                         searching = e.getSubmittedText();
                                         page = 0;
                                         updateListItems();
@@ -180,7 +178,7 @@ public class PList<E> extends Page {
         addButton(new Button(8, 2, new ItemBuilder(Skull.ArrowDown).setName(ChatColor.GRAY + Lang.get("Next_Page")).getItem()) {
             @Override
             public void onClick(InventoryClickEvent e, Player player) {
-                if(page == MAX_PAGE()) return;
+                if (page == MAX_PAGE()) return;
                 page++;
                 setTitle(TITLE(), true);
                 updateListItems();

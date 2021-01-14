@@ -26,14 +26,14 @@ public class AnimationManager implements Manager {
     private Animation active = null;
 
     public static AnimationManager getInstance() {
-        if(instance == null) instance = WarpSystem.getInstance().getDataManager().getManager(FeatureType.ANIMATION_EDITOR);
-        if(instance == null) instance = new AnimationManager();
+        if (instance == null) instance = WarpSystem.getInstance().getDataManager().getManager(FeatureType.ANIMATION_EDITOR);
+        if (instance == null) instance = new AnimationManager();
         return instance;
     }
 
     @Override
     public boolean load(boolean loader) {
-        if(WarpSystem.getInstance().getFileManager().getFile("Animations") == null) WarpSystem.getInstance().getFileManager().loadFile("Animations", "/Memory/");
+        if (WarpSystem.getInstance().getFileManager().getFile("Animations") == null) WarpSystem.getInstance().getFileManager().loadFile("Animations", "/Memory/");
         WarpSystem.log("  > Loading Animations");
 
         UTFConfig config = WarpSystem.getInstance().getFileManager().getFile("Animations").getConfig();
@@ -41,26 +41,26 @@ public class AnimationManager implements Manager {
 
         boolean success = true;
         List<?> l = config.getList("Animations");
-        if(l != null)
-            for(Object data : l) {
+        if (l != null)
+            for (Object data : l) {
 
-                if(data instanceof Map) {
+                if (data instanceof Map) {
                     try {
                         Animation a = new Animation();
                         JSON json = new JSON((Map<?, ?>) data);
                         a.read(json);
                         animationList.add(a);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         success = false;
                     }
-                } else if(data instanceof String) {
+                } else if (data instanceof String) {
                     try {
                         Animation a = new Animation();
                         JSON json = (JSON) new JSONParser().parse((String) data);
                         a.read(json);
                         animationList.add(a);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         success = false;
                     }
@@ -68,7 +68,7 @@ public class AnimationManager implements Manager {
             }
 
         active = getAnimation(config.getString("Active", null));
-        if(active == null) active = createStandard();
+        if (active == null) active = createStandard();
 
         WarpSystem.log("    ...got " + animationList.size() + " animation(s)");
 
@@ -85,11 +85,11 @@ public class AnimationManager implements Manager {
 
     @Override
     public void save(boolean saver) {
-        if(!saver) WarpSystem.log("  > Saving Animations");
+        if (!saver) WarpSystem.log("  > Saving Animations");
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("Animations");
 
         List<JSON> dataList = new ArrayList<>();
-        for(Animation animation : this.animationList) {
+        for (Animation animation : this.animationList) {
             JSON json = new JSON();
             animation.write(json);
             dataList.add(json);
@@ -99,7 +99,7 @@ public class AnimationManager implements Manager {
         file.getConfig().set("Active", active == null ? null : active.getName().equals("§Standard§") ? null : active.getName());
         file.saveConfig();
 
-        if(!saver) WarpSystem.log("    ...saved " + animationList.size() + " animation(s)");
+        if (!saver) WarpSystem.log("    ...saved " + animationList.size() + " animation(s)");
     }
 
     @Override
@@ -108,25 +108,25 @@ public class AnimationManager implements Manager {
     }
 
     public boolean addAnimation(Animation anim) {
-        if(existsAnimation(anim.getName())) return false;
+        if (existsAnimation(anim.getName())) return false;
         this.animationList.add(anim);
 
         return true;
     }
 
     public Animation getAnimation(String name) {
-        if(name == null) return null;
-        for(Animation animation : this.animationList) {
-            if(animation.getName().equalsIgnoreCase(name)) return animation;
+        if (name == null) return null;
+        for (Animation animation : this.animationList) {
+            if (animation.getName().equalsIgnoreCase(name)) return animation;
         }
 
         return null;
     }
 
     public boolean removeAnimation(Animation animation) {
-        if(!this.animationList.remove(animation)) return false;
+        if (!this.animationList.remove(animation)) return false;
 
-        if(this.active == animation) {
+        if (this.active == animation) {
             this.active = createStandard();
         }
         return true;

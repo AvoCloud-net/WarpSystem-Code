@@ -28,7 +28,7 @@ public class ShortcutExecutor extends CommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                if(shortcut.isActive()) shortcut.perform((Player) sender);
+                if (shortcut.isActive()) shortcut.perform((Player) sender);
                 return false;
             }
         }.setOnlyPlayers(true), false);

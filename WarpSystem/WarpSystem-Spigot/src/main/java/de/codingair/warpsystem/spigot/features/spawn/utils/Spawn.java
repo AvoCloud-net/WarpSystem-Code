@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.spigot.features.spawn.utils;
 
 import de.codingair.codingapi.server.Environment;
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.warpsystem.base.transfer.packets.general.TeleportSpawnPacket;
 import de.codingair.warpsystem.spigot.api.PAPI;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
@@ -54,7 +54,7 @@ public class Spawn extends FeatureObject {
     }
 
     public Location getLocation() {
-        if(!hasAction(Action.WARP)) return null;
+        if (!hasAction(Action.WARP)) return null;
 
         return getAction(WarpAction.class).getValue().buildLocation();
     }
@@ -73,7 +73,7 @@ public class Spawn extends FeatureObject {
     public void apply(FeatureObject object) {
         super.apply(object);
 
-        if(object instanceof Spawn) {
+        if (object instanceof Spawn) {
             Spawn other = (Spawn) object;
             this.usage = other.usage;
             this.broadCastMessages.clear();
@@ -87,9 +87,9 @@ public class Spawn extends FeatureObject {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
-        if(!super.equals(o)) return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         Spawn spawn = (Spawn) o;
         return usage == spawn.usage &&
                 respawnUsage == spawn.respawnUsage;
@@ -107,7 +107,7 @@ public class Spawn extends FeatureObject {
     }
 
     public FeatureObject teleportToFirstJoin(Player player) {
-        if(this.firstJoin == null || this.firstJoin.getWorld() == null) return this;
+        if (this.firstJoin == null || this.firstJoin.getWorld() == null) return this;
 
         TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(this.firstJoin)), displayName);
         options.setSkip(true);
@@ -117,14 +117,14 @@ public class Spawn extends FeatureObject {
 
     public void onJoin(PlayerSpawnLocationEvent e, boolean firstJoin) {
         Location l = getLocation();
-        if(l != null && l.getWorld() != null) {
+        if (l != null && l.getWorld() != null) {
             e.setSpawnLocation(l);
-            if(firstJoin) firstJoin(e);
+            if (firstJoin) firstJoin(e);
         }
     }
 
     private void firstJoin(PlayerSpawnLocationEvent e) {
-        if(firstJoin != null && firstJoin.getWorld() != null) e.setSpawnLocation(firstJoin);
+        if (firstJoin != null && firstJoin.getWorld() != null) e.setSpawnLocation(firstJoin);
         Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
             spawnFireWorks(e.getSpawnLocation());
             broadcast(e.getPlayer());
@@ -132,8 +132,8 @@ public class Spawn extends FeatureObject {
     }
 
     private void spawnFireWorks(Location l) {
-        if(randomFireWorks) {
-            if(l != null) {
+        if (randomFireWorks) {
+            if (l != null) {
                 Random r = new Random();
                 FireworkEffect.Type type = FireworkEffect.Type.BALL;
 
@@ -148,7 +148,7 @@ public class Spawn extends FeatureObject {
 
                 try {
                     fw = (Firework) l.getWorld().spawnEntity(l, EntityType.FIREWORK);
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     return;
                 }
 
@@ -163,8 +163,8 @@ public class Spawn extends FeatureObject {
     }
 
     private void broadcast(Player player) {
-        if(this.broadCastMessages != null && !this.broadCastMessages.isEmpty()) {
-            for(String s : this.broadCastMessages) {
+        if (this.broadCastMessages != null && !this.broadCastMessages.isEmpty()) {
+            for (String s : this.broadCastMessages) {
                 Bukkit.broadcastMessage(prepareBroadcastMessage(s, player));
             }
         }
@@ -172,7 +172,7 @@ public class Spawn extends FeatureObject {
 
     @Override
     public FeatureObject perform(Player player, TeleportOptions options) {
-        if(switchServer()) {
+        if (switchServer()) {
             //switch
             WarpSystem.getDataHandler().send(new TeleportSpawnPacket(player.getName(), false), player);
             return this;
@@ -182,7 +182,7 @@ public class Spawn extends FeatureObject {
     }
 
     @Override
-    public boolean read(DataWriter d) throws Exception {
+    public boolean read(DataMask d) throws Exception {
         boolean success = super.read(d);
 
         this.usage = Usage.getById(d.getInteger("usage", 0));
@@ -196,7 +196,7 @@ public class Spawn extends FeatureObject {
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         super.write(d);
 
         d.put("usage", this.usage.ordinal());
@@ -228,7 +228,7 @@ public class Spawn extends FeatureObject {
     }
 
     public void setBroadCastMessages(List<String> broadCastMessages) {
-        if(broadCastMessages == null) {
+        if (broadCastMessages == null) {
             this.broadCastMessages.clear();
             return;
         }
@@ -289,20 +289,20 @@ public class Spawn extends FeatureObject {
 
         public Usage next() {
             int next = ordinal() + 1;
-            if(next == values().length) next = 0;
+            if (next == values().length) next = 0;
             return values()[next];
         }
 
         public Usage getWithoutSpawnCommand() {
-            if(ordinal() == 0 || ordinal() == 3) return DISABLED;
-            if(ordinal() == 1 || ordinal() == 4) return FIRST_JOIN;
-            if(ordinal() == 2 || ordinal() == 5) return EVERY_JOIN;
+            if (ordinal() == 0 || ordinal() == 3) return DISABLED;
+            if (ordinal() == 1 || ordinal() == 4) return FIRST_JOIN;
+            if (ordinal() == 2 || ordinal() == 5) return EVERY_JOIN;
             return this;
         }
 
         public Usage previous() {
             int previous = ordinal() - 1;
-            if(previous < 0) previous = values().length - 1;
+            if (previous < 0) previous = values().length - 1;
             return values()[previous];
         }
 
@@ -342,7 +342,7 @@ public class Spawn extends FeatureObject {
 
         public RespawnUsage next() {
             int next = ordinal() + 1;
-            if(next == values().length) next = 0;
+            if (next == values().length) next = 0;
             return values()[next];
         }
 
@@ -352,7 +352,7 @@ public class Spawn extends FeatureObject {
 
         public RespawnUsage previous() {
             int previous = ordinal() - 1;
-            if(previous < 0) previous = values().length - 1;
+            if (previous < 0) previous = values().length - 1;
             return values()[previous];
         }
 

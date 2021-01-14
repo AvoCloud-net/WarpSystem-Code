@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -11,13 +11,13 @@
 
     <modules>
         <module>WarpSystem-Base</module>
-        <module>WarpSystem-BungeeCord</module>
         <module>WarpSystem-Spigot-v1.8</module>
         <module>WarpSystem-Spigot</module>
         <module>WarpSystem-Spigot-Free</module>
         <module>WarpSystem-Bundle-Free</module>
         <module>WarpSystem-Spigot-Premium</module>
         <module>WarpSystem-Bundle-Premium</module>
+        <module>WarpSystem-Proxy</module>
     </modules>
 
     <repositories>
@@ -58,7 +58,7 @@
             <dependency>
                 <groupId>com.github.CodingAir</groupId>
                 <artifactId>CodingAPI</artifactId>
-                <version>1.7</version>
+                <version>1.8</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -119,12 +119,6 @@
                 <groupId>com.mojang</groupId>
                 <artifactId>authlib</artifactId>
                 <version>1.5.21</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.papermc</groupId>
-                <artifactId>paperlib</artifactId>
-                <version>1.0.5</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>

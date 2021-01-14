@@ -33,22 +33,22 @@ public class TeleportCommandOptionsPacket implements Packet {
     @Override
     public void write(DataOutputStream out) throws IOException {
         out.writeBoolean(this.server != null);
-        if(this.server != null) out.writeUTF(this.server);
+        if (this.server != null) out.writeUTF(this.server);
         this.options.write(out);
     }
 
     @Override
     public void read(DataInputStream in) throws IOException {
-        if(in.readBoolean()) this.server = in.readUTF();
+        if (in.readBoolean()) this.server = in.readUTF();
         this.options.read(in);
-    }
-
-    public void setServer(String name) {
-        this.server = name;
     }
 
     public String getServer() {
         return server;
+    }
+
+    public void setServer(String name) {
+        this.server = name;
     }
 
     public TeleportCommandOptions getOptions() {

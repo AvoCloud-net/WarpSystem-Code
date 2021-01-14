@@ -16,19 +16,19 @@ public class RotatingParticleSpiral extends BukkitRunnable {
     private static final double HEIGHT = 2.4;
 
     private final Player[] players;
+    private final Location loc;
     private double r = 0;
     private double rMult = 1;
     private double y = 0;
-    private final Location loc;
     private double spin = 0;
 
     public RotatingParticleSpiral(Player player, Location loc, boolean forVisiblePlayers) {
         List<Player> players = new ArrayList<>();
         players.add(player);
 
-        if(forVisiblePlayers && !player.hasPotionEffect(PotionEffectType.INVISIBILITY) && player.getGameMode() != GameMode.SPECTATOR) {
+        if (forVisiblePlayers && !player.hasPotionEffect(PotionEffectType.INVISIBILITY) && player.getGameMode() != GameMode.SPECTATOR) {
             Bukkit.getOnlinePlayers().forEach(p -> {
-                if(!p.equals(player) && p.getWorld().equals(player.getWorld()) && p.canSee(player)) players.add(p);
+                if (!p.equals(player) && p.getWorld().equals(player.getWorld()) && p.canSee(player)) players.add(p);
             });
         }
 
@@ -39,18 +39,18 @@ public class RotatingParticleSpiral extends BukkitRunnable {
 
     @Override
     public void run() {
-        if(r < 0) {
+        if (r < 0) {
             this.cancel();
             return;
         }
 
         boolean edge = true;
-        for(double theta = 0; theta <= 2 * Math.PI; theta += Math.PI / 4) {
+        for (double theta = 0; theta <= 2 * Math.PI; theta += Math.PI / 4) {
             double x = r * Math.cos(theta + spin);
             double z = r * Math.sin(theta + spin);
 
             loc.add(x, y, z);
-            if(edge) Particle.FIREWORKS_SPARK.getParticlePacket(loc).send(players);
+            if (edge) Particle.FIREWORKS_SPARK.getParticlePacket(loc).send(players);
             else Particle.SPELL_WITCH.getParticlePacket(loc).send(players);
             loc.subtract(x, y, z);
 
@@ -58,7 +58,7 @@ public class RotatingParticleSpiral extends BukkitRunnable {
         }
 
         y += CHANGE;
-        if(y <= HEIGHT / 2) {
+        if (y <= HEIGHT / 2) {
             r += 1.25 * CHANGE * rMult;
             rMult -= CHANGE;
         } else {

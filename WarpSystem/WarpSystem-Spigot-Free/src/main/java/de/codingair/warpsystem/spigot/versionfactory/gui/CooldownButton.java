@@ -23,7 +23,7 @@ public class CooldownButton extends SyncButton {
 
     @Override
     public ItemStack craftItem() {
-        if(object == null) return new ItemStack(Material.AIR);
+        if (object == null) return new ItemStack(Material.AIR);
 
         return new ItemBuilder(XMaterial.CLOCK)
                 .setName("§6§n" + Lang.get("Cooldown") + Lang.PREMIUM_LORE)

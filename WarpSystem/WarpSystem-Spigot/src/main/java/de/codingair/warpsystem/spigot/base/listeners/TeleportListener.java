@@ -6,8 +6,8 @@ import de.codingair.codingapi.server.AsyncCatcher;
 import de.codingair.codingapi.server.events.PlayerWalkEvent;
 import de.codingair.codingapi.tools.Location;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.managers.TeleportManager;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.EmptyAdapter;
@@ -29,13 +29,13 @@ public class TeleportListener implements Listener {
     private static final Cache<String, TeleportOptions> teleport = CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.SECONDS).build();
 
     public static void setSpawnPositionOrTeleport(String name, TeleportOptions options) {
-        if(options == null) return;
+        if (options == null) return;
         options.setSkip(true);
         Player player = Bukkit.getPlayer(name);
 
         options.setSkip(true);
 
-        if(player != null && player.isOnline()) {
+        if (player != null && player.isOnline()) {
             //teleport
             AsyncCatcher.runSync(WarpSystem.getInstance(), () -> WarpSystem.getInstance().getTeleportManager().teleport(player, options));
         } else {
@@ -43,21 +43,21 @@ public class TeleportListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler (priority = EventPriority.MONITOR)
     public void onTeleport(PlayerTeleportEvent e) {
         org.bukkit.Location loc = TELEPORTS.remove(e.getPlayer());
 
-        if(loc != null) {
+        if (loc != null) {
             e.setCancelled(false);
             e.setTo(loc);
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler (priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onSpawn(PlayerJoinEvent e) {
         TeleportOptions options = teleport.getIfPresent(e.getPlayer().getName().toLowerCase());
 
-        if(options != null) {
+        if (options != null) {
             teleport.invalidate(e.getPlayer().getName().toLowerCase());
 
             options.setCanMove(true);
@@ -68,21 +68,21 @@ public class TeleportListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onSpawn(PlayerSpawnLocationEvent e) {
         TeleportOptions options = teleport.getIfPresent(e.getPlayer().getName().toLowerCase());
 
-        if(options != null) {
+        if (options != null) {
             teleport.invalidate(e.getPlayer().getName().toLowerCase());
             org.bukkit.Location l = options.buildLocation();
 
-            if(l == null || l.getWorld() == null) {
+            if (l == null || l.getWorld() == null) {
                 String world = l instanceof Location ? ((Location) l).getWorldName() : null;
                 Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> e.getPlayer().sendMessage(new String[] {" ", Lang.getPrefix() + "§4World " + (world == null ? "" : "'" + world + "' ") + "is missing. Please contact an admin!", " "}), 2L);
                 return;
             }
 
-            if(l.getYaw() == -420 && l.getPitch() == -420) {
+            if (l.getYaw() == -420 && l.getPitch() == -420) {
                 org.bukkit.Location p = e.getPlayer().getLocation();
                 l.setYaw(p.getYaw());
                 l.setPitch(p.getPitch());
@@ -104,11 +104,11 @@ public class TeleportListener implements Listener {
         Player p = e.getPlayer();
 
         Teleport t = TeleportManager.getInstance().getTeleport(p);
-        if(t == null || t.isCanMove()) return;
+        if (t == null || t.isCanMove()) return;
 
         double diff = Math.abs(e.getFrom().getX() - e.getTo().getX()) + Math.abs(e.getFrom().getZ() - e.getTo().getZ());
         double diffY = Math.abs(e.getFrom().getY() - e.getTo().getY());
 
-        if(diff > 0.01 || diffY >= 0.11) WarpSystem.getInstance().getTeleportManager().cancelTeleport(p);
+        if (diff > 0.01 || diffY >= 0.11) WarpSystem.getInstance().getTeleportManager().cancelTeleport(p);
     }
 }

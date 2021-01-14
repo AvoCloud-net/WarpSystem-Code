@@ -5,10 +5,10 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import org.bukkit.entity.Player;
 
 public abstract class TeleportStage {
-    private TeleportStage previous, next;
     protected Teleport teleport;
     protected TeleportOptions options;
     protected Player player;
+    private TeleportStage previous, next;
     private boolean active = false;
 
     protected TeleportStage(Teleport teleport) {
@@ -44,8 +44,8 @@ public abstract class TeleportStage {
     public boolean isBefore(Class<? extends TeleportStage> before) {
         TeleportStage stage = previous;
 
-        while(stage != null) {
-            if(before.isInstance(stage)) return true;
+        while (stage != null) {
+            if (before.isInstance(stage)) return true;
             stage = stage.previous;
         }
 
@@ -55,10 +55,10 @@ public abstract class TeleportStage {
     public boolean isFired(Class<? extends TeleportStage> active) {
         TeleportStage stage = first();
 
-        while(stage != null) {
-            if(active.isInstance(stage)) return true;
+        while (stage != null) {
+            if (active.isInstance(stage)) return true;
 
-            if(stage.active) break;
+            if (stage.active) break;
             stage = stage.next;
         }
 
@@ -70,19 +70,19 @@ public abstract class TeleportStage {
     }
 
     private TeleportStage activeOrNext() {
-        if(!active && next != null) return next.activeOrNext();
+        if (!active && next != null) return next.activeOrNext();
         else return this;
     }
 
     public TeleportStage first() {
-        if(previous == null) return this;
+        if (previous == null) return this;
         else return previous.first();
     }
 
     protected void end() {
         active = false;
         destroy();
-        if(next != null) {
+        if (next != null) {
             next.active = true;
             next.start();
         } else options.fireCallbacks(Result.SUCCESS);

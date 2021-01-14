@@ -18,33 +18,33 @@ public class EssentialsImportFilter implements ImportFilter {
             List<PlayerWarp> data = new ArrayList<>();
 
             File target = new File(WarpSystem.getInstance().getDataFolder().getParent() + "/Essentials/userdata/");
-            if(!target.exists()) return null;
+            if (!target.exists()) return null;
 
-            for(File w : target.listFiles()) {
+            for (File w : target.listFiles()) {
                 FileConfiguration config = YamlConfiguration.loadConfiguration(w);
 
                 PlayerWarpData pwd = null;
-                for(String key : config.getKeys(true)) {
-                    if(pwd == null) {
+                for (String key : config.getKeys(true)) {
+                    if (pwd == null) {
                         pwd = new PlayerWarpData();
                         pwd.getOwner().setName(config.getString("lastAccountName"));
                         pwd.getOwner().setId(UUID.fromString(w.getName().split("\\.")[0]));
                         pwd.setServer(WarpSystem.getInstance().getCurrentServer());
                     }
 
-                    if(key.startsWith("homes.")) {
+                    if (key.startsWith("homes.")) {
                         String s = key.replaceFirst("homes\\.", "");
 
-                        if(s.contains(".")) {
+                        if (s.contains(".")) {
                             String[] fileData = s.split("\\.");
-                            if(pwd.getName() == null) pwd.setName(fileData[0]);
+                            if (pwd.getName() == null) pwd.setName(fileData[0]);
 
-                            if(fileData[1].equals("world")) pwd.setWorld(config.getString(key));
-                            else if(fileData[1].equals("x")) pwd.setX(config.getDouble(key));
-                            else if(fileData[1].equals("y")) pwd.setY(config.getDouble(key));
-                            else if(fileData[1].equals("z")) pwd.setZ(config.getDouble(key));
-                            else if(fileData[1].equals("yaw")) pwd.setYaw((float) config.getDouble(key));
-                            else if(fileData[1].equals("pitch")) {
+                            if (fileData[1].equals("world")) pwd.setWorld(config.getString(key));
+                            else if (fileData[1].equals("x")) pwd.setX(config.getDouble(key));
+                            else if (fileData[1].equals("y")) pwd.setY(config.getDouble(key));
+                            else if (fileData[1].equals("z")) pwd.setZ(config.getDouble(key));
+                            else if (fileData[1].equals("yaw")) pwd.setYaw((float) config.getDouble(key));
+                            else if (fileData[1].equals("pitch")) {
                                 pwd.setPitch((float) config.getDouble(key));
                                 pwd.setBorn(System.currentTimeMillis());
 
@@ -60,7 +60,7 @@ public class EssentialsImportFilter implements ImportFilter {
             }
 
             return data;
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             return null;
         }

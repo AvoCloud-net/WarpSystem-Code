@@ -10,14 +10,12 @@ import java.util.Date;
 import java.util.UUID;
 
 public class TempWarp {
+    private final Date bornDate;
     private TempWarp backup = null;
-
     private String lastKnownName;
     private UUID owner;
     private Location location;
     private String name;
-
-    private final Date bornDate;
     private Date startDate;
     private Date endDate;
     private Date expireDate;
@@ -75,7 +73,7 @@ public class TempWarp {
             warp.setCreatorKey(creatorKey);
             warp.setNotify(notify);
             return warp;
-        } catch(ParseException e) {
+        } catch (ParseException e) {
             e.printStackTrace();
             return null;
         }
@@ -83,18 +81,18 @@ public class TempWarp {
 
     public boolean isExpired() {
         boolean expired = isExpired(new Date());
-        if(expired && expireDate == null) this.expireDate = new Date();
+        if (expired && expireDate == null) this.expireDate = new Date();
         return expired;
     }
 
     public boolean isExpired(Date date) {
         boolean expired = this.getEndDate().before(date);
-        if(expired && this.expireDate == null) this.expireDate = new Date(getEndDate().getTime());
+        if (expired && this.expireDate == null) this.expireDate = new Date(getEndDate().getTime());
         return expired;
     }
 
     public long getLeftTime() {
-        if(getExpireDate() == null) return getEndDate().getTime() - new Date().getTime();
+        if (getExpireDate() == null) return getEndDate().getTime() - new Date().getTime();
         return getExpireDate().getTime() - new Date().getTime();
     }
 
@@ -143,7 +141,7 @@ public class TempWarp {
     }
 
     public String getIdentifier() {
-        if(getName() == null) return null;
+        if (getName() == null) return null;
         return ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', isPublic ? getName() : getLastKnownName() + "." + getName())).replace(" ", "_");
     }
 
@@ -156,12 +154,12 @@ public class TempWarp {
     }
 
     public boolean isChangingName() {
-        if(backup == null) return false;
+        if (backup == null) return false;
         return backup.getName() != null && getName() != null && !backup.getName().equals(getName());
     }
 
     public boolean isChangingMessage() {
-        if(backup == null) return false;
+        if (backup == null) return false;
         return backup.getMessage() != null && getMessage() != null && !backup.getMessage().equals(getMessage());
     }
 
@@ -198,15 +196,15 @@ public class TempWarp {
     }
 
     public void apply() {
-        if(backup != null) {
-            if(!isExpired()) expireDate = null;
-            else if(backup.getDuration() != getDuration()) expireDate = new Date();
+        if (backup != null) {
+            if (!isExpired()) expireDate = null;
+            else if (backup.getDuration() != getDuration()) expireDate = new Date();
         }
         this.backup = null;
     }
 
     private void apply(TempWarp warp) {
-        if(warp != null) return;
+        if (warp != null) return;
         this.lastKnownName = warp.lastKnownName;
         this.owner = warp.owner;
         this.location = warp.location;

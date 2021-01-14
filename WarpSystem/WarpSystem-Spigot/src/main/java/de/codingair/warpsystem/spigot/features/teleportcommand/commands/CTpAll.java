@@ -37,10 +37,10 @@ public class CTpAll extends WSCommandBuilder {
                 int iHandled = 0;
                 int iSent = 0;
 
-                for(Player player : Bukkit.getOnlinePlayers()) {
-                    if(player.getName().equals(sender.getName())) continue;
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (player.getName().equals(sender.getName())) continue;
                     iHandled++;
-                    if(TeleportCommandManager.getInstance().deniesForceTps(player)) continue;
+                    if (TeleportCommandManager.getInstance().deniesForceTps(player)) continue;
 
                     TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(((Player) sender).getLocation())), sender.getName());
                     options.setOrigin(Origin.TeleportRequest);

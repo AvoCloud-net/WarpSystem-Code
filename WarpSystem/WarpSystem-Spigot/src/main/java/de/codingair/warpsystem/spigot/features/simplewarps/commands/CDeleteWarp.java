@@ -46,14 +46,14 @@ public class CDeleteWarp extends WSCommandBuilder {
         getBaseComponent().addChild(new MultiCommandComponent() {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
-                for(SimpleWarp value : m.getWarps().values()) {
+                for (SimpleWarp value : m.getWarps().values()) {
                     suggestions.add(value.getName(true));
                 }
             }
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
-                if(!m.existsWarp(argument)) {
+                if (!m.existsWarp(argument)) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("WARP_DOES_NOT_EXISTS"));
                     return false;
                 }
@@ -66,7 +66,7 @@ public class CDeleteWarp extends WSCommandBuilder {
                         WarpSystem.getInstance(), new Callback<Boolean>() {
                     @Override
                     public void accept(Boolean accepted) {
-                        if(!accepted) {
+                        if (!accepted) {
                             SimpleWarp warp = m.getWarp(argument);
                             m.removeWarp(warp);
                             sender.sendMessage(Lang.getPrefix() + Lang.get("SimpleWarp_Deleted").replace("%WARP%", warp.getName(true)));
@@ -83,7 +83,7 @@ public class CDeleteWarp extends WSCommandBuilder {
         getComponent((String) null).addChild(new CommandComponent("true") {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                if(m.existsWarp(args[0])) {
+                if (m.existsWarp(args[0])) {
                     SimpleWarp warp = m.getWarp(args[0]);
                     m.removeWarp(warp);
                     sender.sendMessage(Lang.getPrefix() + Lang.get("SimpleWarp_Deleted").replace("%WARP%", warp.getName(true)));

@@ -23,7 +23,7 @@ public abstract class EditorButton extends SyncButton {
 
     @Override
     public void update(boolean updateGUI) {
-        if(this.warp == null) return;
+        if (this.warp == null) return;
         super.update(updateGUI);
     }
 

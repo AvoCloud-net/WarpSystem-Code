@@ -90,8 +90,8 @@ public class Menu extends HotbarGUI {
         this.mid = mid;
 
         boolean sound = false;
-        for(MenuParts part : menuParts) {
-            if(part == MenuParts.SOUNDS) {
+        for (MenuParts part : menuParts) {
+            if (part == MenuParts.SOUNDS) {
                 sound = true;
                 break;
             }
@@ -141,12 +141,12 @@ public class Menu extends HotbarGUI {
                     public void onClick(AnvilClickEvent e) {
                         String input = e.getInput();
 
-                        if(input == null) {
+                        if (input == null) {
                             player.sendMessage(Lang.getPrefix() + Lang.get("Enter_Name"));
                             return;
                         }
 
-                        if(AnimationManager.getInstance().existsAnimation(input)) {
+                        if (AnimationManager.getInstance().existsAnimation(input)) {
                             player.sendMessage(Lang.getPrefix() + Lang.get("Name_Already_Exists"));
                             return;
                         }
@@ -174,11 +174,11 @@ public class Menu extends HotbarGUI {
         }));
 
         int slot = 2;
-        for(MenuParts menuPart : menuParts) {
-            if(slot == 5) break;
+        for (MenuParts menuPart : menuParts) {
+            if (slot == 5) break;
 
             ItemComponent ic = new ItemComponent(menuPart.getItem());
-            switch(menuPart) {
+            switch (menuPart) {
                 case PARTICLES:
                     ic.setLink(this.particles);
                     break;
@@ -204,7 +204,7 @@ public class Menu extends HotbarGUI {
                 animation.apply(clone);
                 clone.destroy();
 
-                if(!AnimationManager.getInstance().existsAnimation(id)) {
+                if (!AnimationManager.getInstance().existsAnimation(id)) {
                     //register
                     AnimationManager.getInstance().addAnimation(animation);
                 }
@@ -240,7 +240,7 @@ public class Menu extends HotbarGUI {
             }
         }).setLink(link).setCloseOnClick(link == null));
 
-        if(hook != null) hook.onInitialize(this, getPlayer());
+        if (hook != null) hook.onInitialize(this, getPlayer());
     }
 
     public Animation getAnimation() {

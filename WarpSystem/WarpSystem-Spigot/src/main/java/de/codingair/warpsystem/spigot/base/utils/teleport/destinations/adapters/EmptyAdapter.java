@@ -15,7 +15,7 @@ public class EmptyAdapter extends DestinationAdapter {
 
     @Override
     public boolean teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback) {
-        if(callback != null) callback.accept(Result.SUCCESS);
+        if (callback != null) callback.accept(Result.SUCCESS);
         Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> Bukkit.getPluginManager().callEvent(new PlayerTeleportAcceptEvent(player)), 1L);
         return true;
     }

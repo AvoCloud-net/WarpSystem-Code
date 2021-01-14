@@ -5,17 +5,14 @@ import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.codingapi.files.loader.UTFConfig;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.Location;
-import de.codingair.codingapi.tools.io.ConfigWriter;
 import de.codingair.codingapi.tools.io.JSON.JSON;
-import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.warpsystem.api.Result;
-import de.codingair.warpsystem.base.transfer.packets.spigot.QueueRTPUsagePacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RandomTPWorldsPacket;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableForSetupAssistant;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.ProxyFeature;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
@@ -23,14 +20,11 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.LocationAdapter;
 import de.codingair.warpsystem.spigot.features.FeatureType;
-import de.codingair.warpsystem.spigot.features.randomteleports.commands.CRandomTp;
 import de.codingair.warpsystem.spigot.features.randomteleports.listeners.InteractListener;
-import de.codingair.warpsystem.spigot.features.randomteleports.listeners.SpawnListener;
 import de.codingair.warpsystem.spigot.features.randomteleports.utils.RandomLocationCalculator;
 import de.codingair.warpsystem.spigot.features.randomteleports.utils.WorldOption;
 import de.codingair.warpsystem.spigot.features.randomteleports.utils.forwardcompatibility.RTPTagConverter_v4_2_2;
 import de.codingair.warpsystem.spigot.features.randomteleports.utils.forwardcompatibility.RTPTagConverter_v4_2_6;
-import de.codingair.warpsystem.spigot.transfer.handlers.QueueRTPUsagePacketHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -42,33 +36,30 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-@AvailableForSetupAssistant(type = "Random teleports", config = "RTPConfig")
-@Function(name = "Enabled", defaultValue = "true", config = "Config", configPath = "WarpSystem.Functions.RandomTeleports", clazz = Boolean.class)
-@Function(name = "Protected regions", defaultValue = "true", configPath = "RandomTeleport.Support.ProtectedRegions", clazz = Boolean.class)
-@Function(name = "World border", defaultValue = "true", configPath = "RandomTeleport.Support.WorldBorder", clazz = Boolean.class)
-@Function(name = "Block blacklist", defaultValue = "true", configPath = "RandomTeleport.Block_Blacklist.Enabled", description = "§eBlocks §7» §6RTPConfig.yml", clazz = Boolean.class)
-@Function(name = "Biome filter", defaultValue = "false", configPath = "RandomTeleport.Support.Biome.Enabled", description = "§eBiomes §7» §6RTPConfig.yml", clazz = Boolean.class)
-@Function(name = "Max uses", defaultValue = "4", configPath = "RandomTeleport.Max", description = "§cONLY §rif permissions in the main §eConfig.yml §rare §cdisabled", clazz = Integer.class)
-@Function(name = "Free uses", defaultValue = "1", configPath = "RandomTeleport.Free", description = "§cONLY §rif permissions in the main §eConfig.yml §rare §cdisabled", clazz = Integer.class)
+@AvailableForSetupAssistant (type = "Random teleports", config = "RTPConfig")
+@Function (name = "Enabled", defaultValue = "true", config = "Config", configPath = "WarpSystem.Functions.RandomTeleports", clazz = Boolean.class)
+@Function (name = "Protected regions", defaultValue = "true", configPath = "RandomTeleport.Support.ProtectedRegions", clazz = Boolean.class)
+@Function (name = "World border", defaultValue = "true", configPath = "RandomTeleport.Support.WorldBorder", clazz = Boolean.class)
+@Function (name = "Block blacklist", defaultValue = "true", configPath = "RandomTeleport.Block_Blacklist.Enabled", description = "§eBlocks §7» §6RTPConfig.yml", clazz = Boolean.class)
+@Function (name = "Biome filter", defaultValue = "false", configPath = "RandomTeleport.Support.Biome.Enabled", description = "§eBiomes §7» §6RTPConfig.yml", clazz = Boolean.class)
+@Function (name = "Max uses", defaultValue = "4", configPath = "RandomTeleport.Max", description = "§cONLY §rif permissions in the main §eConfig.yml §rare §cdisabled", clazz = Integer.class)
+@Function (name = "Free uses", defaultValue = "1", configPath = "RandomTeleport.Free", description = "§cONLY §rif permissions in the main §eConfig.yml §rare §cdisabled", clazz = Integer.class)
 public abstract class RandomTeleportManager implements Manager, ProxyFeature {
+    protected final List<Material> materialBlackList = new ArrayList<>();
+    protected final List<WorldOption> worldOptions = new ArrayList<>();
+    protected final HashMap<Player, RandomLocationCalculator> searching = new HashMap<>();
+    protected final HashMap<String, List<String>> worlds = new HashMap<>();
+    protected final List<Location> interactBlocks = new ArrayList<>();
+    protected final InteractListener listener = new InteractListener();
     protected boolean buyable;
     protected double costs;
     protected boolean protectedRegions;
     protected List<Biome> biomeList;
-    protected final List<Material> materialBlackList = new ArrayList<>();
-    protected final List<WorldOption> worldOptions = new ArrayList<>();
     protected WorldOption defValues;
-    protected final HashMap<Player, RandomLocationCalculator> searching = new HashMap<>();
-
-    protected final HashMap<String, List<String>> worlds = new HashMap<>();
-
     protected int netherHeight;
     protected int endHeight;
     protected int max;
     protected int free;
-
-    protected final List<Location> interactBlocks = new ArrayList<>();
-    protected final InteractListener listener = new InteractListener();
 
     public static RandomTeleportManager getInstance() {
         return WarpSystem.getInstance().getDataManager().getManager(FeatureType.RANDOM_TELEPORTS);
@@ -87,10 +78,10 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("Teleporters");
         UTFConfig config = file.getConfig();
 
-        if(!saver) WarpSystem.log("  > Saving RandomTeleporters");
+        if (!saver) WarpSystem.log("  > Saving RandomTeleporters");
 
         List<JSON> interactBlocks = new ArrayList<>();
-        for(Location l : this.interactBlocks) {
+        for (Location l : this.interactBlocks) {
             JSON json = new JSON();
             l.trim(0);
             l.write(json);
@@ -99,17 +90,17 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
 
         config.set("RandomTeleporter.InteractBlocks", interactBlocks);
         file.saveConfig();
-        if(!saver) WarpSystem.log("    ...saved " + interactBlocks.size() + " InteractBlock(s)");
+        if (!saver) WarpSystem.log("    ...saved " + interactBlocks.size() + " InteractBlock(s)");
     }
 
     @Override
     public void onConnect() {
         List<String> worlds = new ArrayList<>();
-        for(World world : Bukkit.getWorlds()) {
-            if(world == null) continue;
+        for (World world : Bukkit.getWorlds()) {
+            if (world == null) continue;
 
             WorldOption option = getOption(world, defValues);
-            if(option.isDisabled()) continue;
+            if (option.isDisabled()) continue;
 
             worlds.add(world.getName());
         }
@@ -124,13 +115,13 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     @Override
     public void destroy() {
         this.interactBlocks.clear();
-        if(this.biomeList != null) this.biomeList.clear();
+        if (this.biomeList != null) this.biomeList.clear();
         this.materialBlackList.clear();
         HandlerList.unregisterAll(this.listener);
     }
 
     public boolean canBuy(Player player) {
-        if(player.isOp()) return true;
+        if (player.isOp()) return true;
 
         int bought = getInstance().getBoughtTeleports(player);
         int free = getInstance().getFreeTeleportAmount(player);
@@ -140,7 +131,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     }
 
     public boolean canTeleport(Player player) {
-        if(player.isOp()) return true;
+        if (player.isOp()) return true;
 
         UUID u = WarpSystem.getInstance().getPlayerDataManager().get(player);
         int bought = getInstance().getBoughtTeleports(u);
@@ -151,25 +142,25 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     }
 
     public int getMaxTeleportAmount(Player player) {
-        if(player.isOp()) return -1;
+        if (player.isOp()) return -1;
 
-        if(WarpSystem.PERMISSION_USE_RANDOM_TELEPORTER != null) {
+        if (WarpSystem.PERMISSION_USE_RANDOM_TELEPORTER != null) {
             int amount = 0;
-            for(PermissionAttachmentInfo effectivePermission : player.getEffectivePermissions()) {
-                if(!effectivePermission.getValue()) continue;
+            for (PermissionAttachmentInfo effectivePermission : player.getEffectivePermissions()) {
+                if (!effectivePermission.getValue()) continue;
                 String perm = effectivePermission.getPermission();
 
-                if(perm.equals("*") || perm.toLowerCase().startsWith("warpsystem.*")
+                if (perm.equals("*") || perm.toLowerCase().startsWith("warpsystem.*")
                         || perm.toLowerCase().startsWith("warpsystem.randomteleporters.*")) return -1;
 
-                if(perm.toLowerCase().startsWith("warpsystem.randomteleporters.max.")) {
+                if (perm.toLowerCase().startsWith("warpsystem.randomteleporters.max.")) {
                     String s = perm.substring(33);
-                    if(s.equals("*") || s.equalsIgnoreCase("n")) return -1;
+                    if (s.equals("*") || s.equalsIgnoreCase("n")) return -1;
 
                     try {
                         int i = Integer.parseInt(s);
-                        if(i > amount) amount = i;
-                    } catch(Throwable ignored) {
+                        if (i > amount) amount = i;
+                    } catch (Throwable ignored) {
                     }
                 }
 
@@ -180,25 +171,25 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     }
 
     public int getFreeTeleportAmount(Player player) {
-        if(player.isOp()) return -1;
+        if (player.isOp()) return -1;
 
-        if(WarpSystem.PERMISSION_USE_RANDOM_TELEPORTER != null) {
+        if (WarpSystem.PERMISSION_USE_RANDOM_TELEPORTER != null) {
             int amount = 0;
-            for(PermissionAttachmentInfo effectivePermission : player.getEffectivePermissions()) {
-                if(!effectivePermission.getValue()) continue;
+            for (PermissionAttachmentInfo effectivePermission : player.getEffectivePermissions()) {
+                if (!effectivePermission.getValue()) continue;
                 String perm = effectivePermission.getPermission();
 
-                if(perm.equals("*") || perm.toLowerCase().startsWith("warpsystem.*")
+                if (perm.equals("*") || perm.toLowerCase().startsWith("warpsystem.*")
                         || perm.toLowerCase().startsWith("warpsystem.randomteleporters.*")) return -1;
 
-                if(perm.toLowerCase().startsWith("warpsystem.randomteleporters.free.")) {
+                if (perm.toLowerCase().startsWith("warpsystem.randomteleporters.free.")) {
                     String s = perm.substring(34);
-                    if(s.equals("*") || s.equalsIgnoreCase("n")) return -1;
+                    if (s.equals("*") || s.equalsIgnoreCase("n")) return -1;
 
                     try {
                         int i = Integer.parseInt(s);
-                        if(i > amount) amount = i;
-                    } catch(Throwable ignored) {
+                        if (i > amount) amount = i;
+                    } catch (Throwable ignored) {
                     }
                 }
             }
@@ -207,8 +198,8 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     }
 
     public WorldOption getOption(World world, WorldOption def) {
-        for(WorldOption worldOption : this.worldOptions) {
-            if(worldOption.getWorldName().equalsIgnoreCase(world.getName())) return worldOption;
+        for (WorldOption worldOption : this.worldOptions) {
+            if (worldOption.getWorldName().equalsIgnoreCase(world.getName())) return worldOption;
         }
 
         return def;
@@ -226,7 +217,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
         Preconditions.checkNotNull(target);
         Preconditions.checkNotNull(option);
 
-        if(option.isDisabled()) {
+        if (option.isDisabled()) {
             callback.accept(null);
             return;
         }
@@ -239,7 +230,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
             public void accept(Location loc) {
                 searching.remove(player);
 
-                if(loc != null) {
+                if (loc != null) {
                     loc.setYaw(player.getLocation().getYaw());
                     loc.setPitch(player.getLocation().getPitch());
                 }
@@ -254,14 +245,14 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     public void tryToTeleport(String targetPlayer, World target, boolean force, Callback<Integer> callback) {
         Player player = Bukkit.getPlayerExact(targetPlayer);
 
-        if(player == null) {
+        if (player == null) {
             callback.accept(1);
             return;
         }
 
         RandomLocationCalculator c;
-        if((c = searching.get(player)) != null) {
-            if(System.currentTimeMillis() - c.getLastReaction() > 5000) {
+        if ((c = searching.get(player)) != null) {
+            if (System.currentTimeMillis() - c.getLastReaction() > 5000) {
                 searching.remove(player);
                 player.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_No_Location_Found"));
             } else player.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Already_Searching"));
@@ -270,7 +261,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
             return;
         }
 
-        if(!canTeleport(player) && !force) {
+        if (!canTeleport(player) && !force) {
             player.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_No_Teleports_Left"));
             callback.accept(4);
             return;
@@ -278,7 +269,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
 
         WorldOption option = getOption(target, defValues);
 
-        if(option.isDisabled()) {
+        if (option.isDisabled()) {
             player.sendMessage(Lang.getPrefix() + Lang.get("RTP_Not_available_in_this_world"));
             return;
         }
@@ -286,14 +277,14 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
         search(player, target, option, new Callback<Location>() {
             @Override
             public void accept(Location loc) {
-                if(loc == null) {
+                if (loc == null) {
                     //no location found, try again
                     player.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_No_Location_Found"));
                     callback.accept(2);
                 } else {
                     //teleported
                     UUID uuid = WarpSystem.getInstance().getPlayerDataManager().get(player);
-                    if(!player.isOp()) increaseTeleports(uuid);
+                    if (!player.isOp()) increaseTeleports(uuid);
 
                     Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> {
                         TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(loc)), "");

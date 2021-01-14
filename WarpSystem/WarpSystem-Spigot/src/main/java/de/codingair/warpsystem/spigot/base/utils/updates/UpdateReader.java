@@ -6,15 +6,15 @@ import de.codingair.warpsystem.spigot.base.utils.Notifier;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
-public class UpdateReader  {
+public class UpdateReader {
     public static void start() {
         Value<BukkitTask> task = new Value<>(null);
         Runnable runnable = () -> {
             WarpSystem.updateAvailable = WarpSystem.getInstance().getUpdateNotifier().read();
 
-            if(WarpSystem.updateAvailable) {
+            if (WarpSystem.updateAvailable) {
                 String v = WarpSystem.getInstance().getUpdateNotifier().getVersion();
-                if(!v.startsWith("v")) v = "v" + v;
+                if (!v.startsWith("v")) v = "v" + v;
 
                 WarpSystem.log("-----< WarpSystem >-----");
                 WarpSystem.log("New update available [" + v + " - " + WarpSystem.getInstance().getUpdateNotifier().getUpdateInfo() + "].");

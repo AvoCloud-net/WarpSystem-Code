@@ -2,7 +2,7 @@ package de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types;
 
 import de.codingair.codingapi.server.sounds.Sound;
 import de.codingair.codingapi.server.sounds.SoundData;
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.warpsystem.spigot.base.guis.editor.pages.SoundPage;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.ActionObject;
@@ -34,13 +34,13 @@ public class SoundAction extends ActionObject<SoundData> {
     }
 
     @Override
-    public boolean read(DataWriter d) throws Exception {
+    public boolean read(DataMask d) throws Exception {
         setValue(new SoundData(Sound.valueOf(d.getString("sound", "ENDERMAN_TELEPORT")), d.getFloat("volume"), d.getFloat("pitch")));
         return true;
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         d.put("sound", getValue() == null ? null : getValue().getSound() == null ? null : getValue().getSound().name());
         d.put("volume", getValue() == null ? null : getValue().getVolume());
         d.put("pitch", getValue() == null ? null : getValue().getPitch());

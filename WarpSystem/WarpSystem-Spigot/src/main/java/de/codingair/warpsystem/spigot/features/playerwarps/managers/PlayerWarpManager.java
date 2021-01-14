@@ -38,33 +38,32 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@AvailableForSetupAssistant(type = "PlayerWarps", config = "PlayerWarpConfig")
-@Function(name = "Enabled", defaultValue = "true", config = "Config", configPath = "WarpSystem.Functions.PlayerWarps", clazz = Boolean.class)
-@Function(name = "Teleport message", defaultValue = "true", config = "Config", configPath = "WarpSystem.Send.Teleport_Message.PlayerWarps", clazz = Boolean.class)
-@Function(name = "Max warp amount", defaultValue = "5", configPath = "PlayerWarps.General.Max_Warp_Amount", description = "§7If permissions are §cdisabled", clazz = Integer.class)
-@Function(name = "Protected regions", defaultValue = "true", configPath = "PlayerWarps.General.Support.ProtectedRegions", clazz = Boolean.class)
-@Function(name = "BungeeCord", defaultValue = "true", configPath = "PlayerWarps.General.BungeeCord", clazz = Boolean.class)
-@Function(name = "Economy", description = "Disables 'Time bound' when disabled.", defaultValue = "false", configPath = "PlayerWarps.General.Economy", clazz = Boolean.class)
-@Function(name = "Time bound", description = "!! Already created player warps remain time bounded, please  clear PlayerWarp data after toggling this option !!", defaultValue = "true", configPath = "PlayerWarps.General.Time_Bound", clazz = Boolean.class, since = "v4.2.9")
-@Function(name = "Force player head", defaultValue = "false", configPath = "PlayerWarps.General.Force_Player_Head", clazz = Boolean.class)
-@Function(name = "Force create GUI", defaultValue = "false", configPath = "PlayerWarps.General.Force_Create_GUI", clazz = Boolean.class)
-@Function(name = "Public as create state", defaultValue = "false", configPath = "PlayerWarps.General.Public_as_create_state", clazz = Boolean.class)
-@Function(name = "Allow public warps", defaultValue = "true", configPath = "PlayerWarps.General.Allow_Public_Warps", clazz = Boolean.class)
-@Function(name = "Allow trusted members", defaultValue = "true", configPath = "PlayerWarps.General.Allow_Trusted_Members", clazz = Boolean.class)
-@Function(name = "Categories", defaultValue = "true", configPath = "PlayerWarps.General.Categories.Enabled", clazz = Boolean.class)
-@Function(name = "Standard time value", defaultValue = "1h", configPath = "PlayerWarps.Time.Standard_Value", clazz = String.class)
-@Function(name = "Min. time value", defaultValue = "0d, 0h, 5m", configPath = "PlayerWarps.Time.Min_Time", clazz = String.class)
-@Function(name = "Max. time value", defaultValue = "30d, 0h, 0m", configPath = "PlayerWarps.Time.Max_Time", clazz = String.class)
+@AvailableForSetupAssistant (type = "PlayerWarps", config = "PlayerWarpConfig")
+@Function (name = "Enabled", defaultValue = "true", config = "Config", configPath = "WarpSystem.Functions.PlayerWarps", clazz = Boolean.class)
+@Function (name = "Teleport message", defaultValue = "true", config = "Config", configPath = "WarpSystem.Send.Teleport_Message.PlayerWarps", clazz = Boolean.class)
+@Function (name = "Max warp amount", defaultValue = "5", configPath = "PlayerWarps.General.Max_Warp_Amount", description = "§7If permissions are §cdisabled", clazz = Integer.class)
+@Function (name = "Protected regions", defaultValue = "true", configPath = "PlayerWarps.General.Support.ProtectedRegions", clazz = Boolean.class)
+@Function (name = "BungeeCord", defaultValue = "true", configPath = "PlayerWarps.General.BungeeCord", clazz = Boolean.class)
+@Function (name = "Economy", description = "Disables 'Time bound' when disabled.", defaultValue = "false", configPath = "PlayerWarps.General.Economy", clazz = Boolean.class)
+@Function (name = "Time bound", description = "!! Already created player warps remain time bounded, please  clear PlayerWarp data after toggling this option !!", defaultValue = "true", configPath = "PlayerWarps.General.Time_Bound", clazz = Boolean.class, since = "v4.2.9")
+@Function (name = "Force player head", defaultValue = "false", configPath = "PlayerWarps.General.Force_Player_Head", clazz = Boolean.class)
+@Function (name = "Force create GUI", defaultValue = "false", configPath = "PlayerWarps.General.Force_Create_GUI", clazz = Boolean.class)
+@Function (name = "Public as create state", defaultValue = "false", configPath = "PlayerWarps.General.Public_as_create_state", clazz = Boolean.class)
+@Function (name = "Allow public warps", defaultValue = "true", configPath = "PlayerWarps.General.Allow_Public_Warps", clazz = Boolean.class)
+@Function (name = "Allow trusted members", defaultValue = "true", configPath = "PlayerWarps.General.Allow_Trusted_Members", clazz = Boolean.class)
+@Function (name = "Categories", defaultValue = "true", configPath = "PlayerWarps.General.Categories.Enabled", clazz = Boolean.class)
+@Function (name = "Standard time value", defaultValue = "1h", configPath = "PlayerWarps.Time.Standard_Value", clazz = String.class)
+@Function (name = "Min. time value", defaultValue = "0d, 0h, 5m", configPath = "PlayerWarps.Time.Min_Time", clazz = String.class)
+@Function (name = "Max. time value", defaultValue = "30d, 0h, 0m", configPath = "PlayerWarps.Time.Max_Time", clazz = String.class)
 public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature, Collectible {
-    protected int lastCountedPlayerWarpSize = 0;
-
-    protected ConfigFile playerWarpsData = null;
-    protected ConfigFile config = null;
     protected final HashMap<UUID, List<PlayerWarp>> warps = new HashMap<>();
     protected final HashMap<String, UUID> names = new HashMap<>();
     protected final List<Category> warpCategories = new ArrayList<>();
     protected final List<String> nameBlacklist = new ArrayList<>();
     protected final List<String> worldBlacklist = new ArrayList<>();
+    protected int lastCountedPlayerWarpSize = 0;
+    protected ConfigFile playerWarpsData = null;
+    protected ConfigFile config = null;
     protected boolean bungeeCord;
     protected PlayerWarpListener listener;
     protected int maxAmount = 0;
@@ -125,22 +124,18 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
         return WarpSystem.getInstance().getDataManager().getManager(FeatureType.PLAYER_WARS);
     }
 
-    public abstract boolean hasPermission(Player player);
-
-    public abstract int getMaxAmount(Player player);
-
     public static boolean isProtected(Player player) {
         String w = player.getLocation().getWorld().getName().toLowerCase();
-        for(String s : getManager().worldBlacklist) {
-            if(w.equals(s.toLowerCase())) return true;
+        for (String s : getManager().worldBlacklist) {
+            if (w.equals(s.toLowerCase())) return true;
         }
 
-        if(!getManager().isProtectedRegions()) return false;
+        if (!getManager().isProtectedRegions()) return false;
 
         PermissionPlayer_v1_9 check;
         try {
             check = PermissionPlayer_v1_9.class.getConstructor(Player.class).newInstance(player);
-        } catch(InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
             return true;
         }
@@ -149,14 +144,18 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
         return event.isCancelled();
     }
 
+    public abstract boolean hasPermission(Player player);
+
+    public abstract int getMaxAmount(Player player);
+
     @Override
     public void collectOptionStatistics(Map<String, Integer> entry) {
-        if(classes) entry.put("Classes", 1);
-        if(economy) entry.put("Economy", 1);
+        if (classes) entry.put("Classes", 1);
+        if (economy) entry.put("Economy", 1);
 
-        if(bungeeCord) {
-            if(WarpSystem.getInstance().isOnProxy()) entry.put("BungeeCord", 1);
-            else if(Bukkit.getOnlinePlayers().isEmpty()) entry.put("BungeeCord (empty server)", 1);
+        if (bungeeCord) {
+            if (WarpSystem.getInstance().isOnProxy()) entry.put("BungeeCord", 1);
+            else if (Bukkit.getOnlinePlayers().isEmpty()) entry.put("BungeeCord (empty server)", 1);
         }
 
         entry.put("Warps", 1);
@@ -165,16 +164,16 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     @Override
     public void addCustomCarts(Metrics metrics) {
         metrics.addCustomChart(new Metrics.SingleLineChart("playerwarp_usage", () -> {
-            if(!bungeeCord || WarpSystem.getInstance().isOnProxy()) {
+            if (!bungeeCord || WarpSystem.getInstance().isOnProxy()) {
                 lastCountedPlayerWarpSize = 0;
 
                 interactWithWarps(new Callback<PlayerWarp>() {
                     @Override
                     public void accept(PlayerWarp warp) {
                         WarpAction action = warp.getAction(Action.WARP);
-                        if(action != null) {
+                        if (action != null) {
                             String s = ((GlobalLocationAdapter) action.getValue().getAdapter()).getServer();
-                            if(s == null || s.equals(WarpSystem.getInstance().getCurrentServer())) {
+                            if (s == null || s.equals(WarpSystem.getInstance().getCurrentServer())) {
                                 lastCountedPlayerWarpSize++;
                             }
                         }
@@ -192,9 +191,9 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     }
 
     public void sync(PlayerWarp old, PlayerWarp warp) {
-        if(!bungeeCord || !WarpSystem.getInstance().isOnProxy()) return;
+        if (!bungeeCord || !WarpSystem.getInstance().isOnProxy()) return;
 
-        if(warp.isSource()) {
+        if (warp.isSource()) {
             warp.setSource(false);
             SendPlayerWarpsPacket packet = new SendPlayerWarpsPacket(new ArrayList<PlayerWarpData>() {{
                 add(warp.getData());
@@ -205,10 +204,10 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     }
 
     public void sync(PlayerWarpData old, PlayerWarpData warp) {
-        if(!bungeeCord || !WarpSystem.getInstance().isOnProxy()) return;
+        if (!bungeeCord || !WarpSystem.getInstance().isOnProxy()) return;
         PlayerWarpUpdate update = warp.diff(old);
 
-        if(update.isEmpty()) return;
+        if (update.isEmpty()) return;
 
         WarpSystem.getDataHandler().send(new SendPlayerWarpUpdatePacket(update));
         old.destroy();
@@ -222,39 +221,39 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     @Override
     public void onSecond() {
         List<List<PlayerWarp>> mapCopy = new ArrayList<>(warps.values());
-        for(List<PlayerWarp> value : mapCopy) {
+        for (List<PlayerWarp> value : mapCopy) {
             List<PlayerWarp> copy = new ArrayList<>(value);
 
-            for(PlayerWarp warp : copy) {
-                if(!warp.isTimeDependent() || warp.isBeingEdited()) continue;
-                if(warp.isExpired()) {
-                    if(-(warp.getExpireDate() - System.currentTimeMillis()) <= 1000) {
+            for (PlayerWarp warp : copy) {
+                if (!warp.isTimeDependent() || warp.isBeingEdited()) continue;
+                if (warp.isExpired()) {
+                    if (-(warp.getExpireDate() - System.currentTimeMillis()) <= 1000) {
                         Player p = warp.getOwner().getPlayer();
-                        if(p != null)
+                        if (p != null)
                             p.sendMessage(Lang.getPrefix() + Lang.get("Warp_expiring").replace("%NAME%", warp.getName()).replace("%TIME_LEFT%", StringFormatter.convertInTimeFormat(inactiveTime, 0, "", "")));
                         else
                             warp.setNotify(true);
                     }
 
-                    for(Long remind : this.inactiveReminds) {
-                        if(remind == inactiveTime) continue;
+                    for (Long remind : this.inactiveReminds) {
+                        if (remind == inactiveTime) continue;
 
                         long time = -1000L * (inactiveTime - remind);
-                        if(warp.getLeftTime() >= time - 1050L && warp.getLeftTime() < time) {
+                        if (warp.getLeftTime() >= time - 1050L && warp.getLeftTime() < time) {
                             Player p = warp.getOwner().getPlayer();
-                            if(p != null)
+                            if (p != null)
                                 p.sendMessage(Lang.getPrefix() + Lang.get("Warp_Deletion_In").replace("%NAME%", warp.getName()).replace("%TIME_LEFT%", StringFormatter.convertInTimeFormat(remind, 0, "", "")));
                         }
                     }
 
                     Date inactive = new Date(warp.getExpireDate() + this.inactiveTime);
 
-                    if(inactive.before(new Date())) {
+                    if (inactive.before(new Date())) {
                         //Delete
                         delete(warp, false);
                         warp.destroy();
                         Player player = warp.getOwner().getPlayer();
-                        if(player != null) player.sendMessage(Lang.getPrefix() + Lang.get("Warp_was_deleted").replace("%NAME%", warp.getName()));
+                        if (player != null) player.sendMessage(Lang.getPrefix() + Lang.get("Warp_was_deleted").replace("%NAME%", warp.getName()));
                     }
                 }
             }
@@ -274,7 +273,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     public void checkPlayerWarpOwnerNames(Player player) {
         List<PlayerWarp> warps = new ArrayList<>(getOwnWarps(player));
 
-        for(PlayerWarp warp : warps) {
+        for (PlayerWarp warp : warps) {
             warp.getOwner().setName(player.getName());
         }
 
@@ -284,23 +283,23 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     public List<PlayerWarp> filter(List<Category> classes, Player toTeleport) {
         List<PlayerWarp> warps = getWarps(toTeleport, true);
 
-        for(int i = 0; i < warps.size(); i++) {
+        for (int i = 0; i < warps.size(); i++) {
             PlayerWarp pw = warps.get(i);
-            if(pw.isExpired()) continue;
+            if (pw.isExpired()) continue;
 
             List<Category> categories = pw.getClasses();
             boolean match = false;
 
-            for(Category c : classes) {
-                for(Category cat : categories) {
-                    if(c.equals(cat)) {
+            for (Category c : classes) {
+                for (Category cat : categories) {
+                    if (c.equals(cat)) {
                         match = true;
                         break;
                     }
                 }
             }
 
-            if(!match) {
+            if (!match) {
                 warps.remove(i);
                 i--;
             }
@@ -312,15 +311,15 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     public void updateWarp(PlayerWarp warp) {
         PlayerWarp w = getWarp(warp.getOwner().getId(), warp.getName());
 
-        if(w == null) add(warp);
+        if (w == null) add(warp);
         else w.apply(warp);
     }
 
     public List<PlayerWarp> getPublicWarps() {
         List<PlayerWarp> warps = new ArrayList<>();
-        for(List<PlayerWarp> value : this.warps.values()) {
-            for(PlayerWarp warp : value) {
-                if(warp.isPublic()) warps.add(warp);
+        for (List<PlayerWarp> value : this.warps.values()) {
+            for (PlayerWarp warp : value) {
+                if (warp.isPublic()) warps.add(warp);
             }
         }
 
@@ -333,10 +332,10 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
 
     public void interactWithWarps(Callback<PlayerWarp> interact) {
         List<List<PlayerWarp>> values = new ArrayList<>(warps.values());
-        for(List<PlayerWarp> value : values) {
+        for (List<PlayerWarp> value : values) {
             List<PlayerWarp> warps = new ArrayList<>(value);
 
-            for(PlayerWarp warp : warps) {
+            for (PlayerWarp warp : warps) {
                 interact.accept(warp);
             }
 
@@ -363,19 +362,19 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
         String modifiedName = name;
         String lowerName = modifiedName.toLowerCase();
 
-        for(String s : this.nameBlacklist) {
+        for (String s : this.nameBlacklist) {
             s = s.toLowerCase();
 
             int first, last = 0, matches = 0;
-            while((first = lowerName.indexOf(s, last)) > -1) {
+            while ((first = lowerName.indexOf(s, last)) > -1) {
                 last = first + 1;
 
                 StringBuilder builder = new StringBuilder();
                 int modFirst = first + matches * (highlighter.length() + reset.length());
-                for(int i = 0; i < modifiedName.toCharArray().length; i++) {
-                    if(i == modFirst) builder.append(highlighter);
+                for (int i = 0; i < modifiedName.toCharArray().length; i++) {
+                    if (i == modFirst) builder.append(highlighter);
                     builder.append(modifiedName.charAt(i));
-                    if(i == modFirst + s.length() - 1) builder.append(reset);
+                    if (i == modFirst + s.length() - 1) builder.append(reset);
                 }
 
                 modifiedName = builder.toString();
@@ -385,9 +384,9 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
 
         Pattern p = Pattern.compile("[A-Za-z0-9\\p{Blank}_\\-'§]*");
 
-        for(char c : modifiedName.toCharArray()) {
+        for (char c : modifiedName.toCharArray()) {
             Matcher m = p.matcher(c + "");
-            if(!m.matches()) {
+            if (!m.matches()) {
                 finalName.append(highlighter).append(c).append(reset);
             } else finalName.append(c);
         }
@@ -403,9 +402,9 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     public List<PlayerWarp> getUsableWarpsOf(UUID id, Player toTeleport) {
         List<PlayerWarp> warps = new ArrayList<>();
 
-        for(PlayerWarp warp : getOwnWarps(id)) {
-            if(warp.isExpired()) continue;
-            if(warp.isOwner(toTeleport) || (allowPublicWarps && warp.isPublic()) || (allowTrustedMembers && warp.isTrusted(toTeleport))) warps.add(warp);
+        for (PlayerWarp warp : getOwnWarps(id)) {
+            if (warp.isExpired()) continue;
+            if (warp.isOwner(toTeleport) || (allowPublicWarps && warp.isPublic()) || (allowTrustedMembers && warp.isTrusted(toTeleport))) warps.add(warp);
         }
 
         return warps;
@@ -414,20 +413,20 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     public int getTrustedWarpAmountOf(UUID id, Player trustedPlayer) {
         int i = 0;
 
-        for(PlayerWarp warp : getOwnWarps(id)) {
-            if(warp.isOwner(trustedPlayer) || (allowPublicWarps && warp.isPublic()) || (allowTrustedMembers && warp.isTrusted(trustedPlayer))) i++;
+        for (PlayerWarp warp : getOwnWarps(id)) {
+            if (warp.isOwner(trustedPlayer) || (allowPublicWarps && warp.isPublic()) || (allowTrustedMembers && warp.isTrusted(trustedPlayer))) i++;
         }
 
         return i;
     }
 
     public List<PlayerWarp> getWarps(Player player, boolean trusted) {
-        if(!trusted) return getOwnWarps(player);
+        if (!trusted) return getOwnWarps(player);
         List<PlayerWarp> warps = new ArrayList<>();
 
-        for(List<PlayerWarp> ws : this.warps.values()) {
-            for(PlayerWarp warp : ws) {
-                if(warp.isOwner(player) || (allowPublicWarps && warp.isPublic()) || (allowTrustedMembers && warp.isTrusted(player))) warps.add(warp);
+        for (List<PlayerWarp> ws : this.warps.values()) {
+            for (PlayerWarp warp : ws) {
+                if (warp.isOwner(player) || (allowPublicWarps && warp.isPublic()) || (allowTrustedMembers && warp.isTrusted(player))) warps.add(warp);
             }
         }
 
@@ -437,10 +436,10 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     public List<PlayerWarp> getForeignAvailableWarps(Player player) {
         List<PlayerWarp> warps = new ArrayList<>();
 
-        for(List<PlayerWarp> ws : this.warps.values()) {
-            for(PlayerWarp warp : ws) {
-                if(warp.isExpired()) continue;
-                if(warp.isOwner(player) || (allowPublicWarps && warp.isPublic()) || (allowTrustedMembers && warp.isTrusted(player))) warps.add(warp);
+        for (List<PlayerWarp> ws : this.warps.values()) {
+            for (PlayerWarp warp : ws) {
+                if (warp.isExpired()) continue;
+                if (warp.isOwner(player) || (allowPublicWarps && warp.isPublic()) || (allowTrustedMembers && warp.isTrusted(player))) warps.add(warp);
             }
         }
 
@@ -457,7 +456,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
         name = name.replace(" ", "_");
 
         String[] a = name.split("\\.", -1);
-        if(a.length > 2) {
+        if (a.length > 2) {
             return null;
         }
 
@@ -467,32 +466,32 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
         PlayerWarp searched = null;
         PlayerWarp pWarp = null; //private warp
 
-        if(prefer == null) {
+        if (prefer == null) {
             List<PlayerWarp> warps = this.warps.get(WarpSystem.getInstance().getPlayerDataManager().get(player));
 
-            if(warps != null) {
+            if (warps != null) {
                 warps = new ArrayList<>(warps);
 
-                for(PlayerWarp warp : warps) {
-                    if(warp.equals(except)) continue;
-                    if(warp.equalsName(name)) {
+                for (PlayerWarp warp : warps) {
+                    if (warp.equals(except)) continue;
+                    if (warp.equalsName(name)) {
                         searched = warp;
                         break;
                     }
                 }
 
                 warps.clear();
-                if(searched != null) return searched;
+                if (searched != null) return searched;
             }
 
             List<List<PlayerWarp>> lists = new ArrayList<>(this.warps.values());
-            for(List<PlayerWarp> list : lists) {
+            for (List<PlayerWarp> list : lists) {
                 warps = new ArrayList<>(list);
 
-                for(PlayerWarp warp : warps) {
-                    if(warp.equals(except)) continue;
-                    if(warp.equalsName(name)) {
-                        if(warp.canTeleport(player)) {
+                for (PlayerWarp warp : warps) {
+                    if (warp.equals(except)) continue;
+                    if (warp.equalsName(name)) {
+                        if (warp.canTeleport(player)) {
                             searched = warp;
                             break;
                         } else pWarp = warp;
@@ -504,15 +503,15 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
             lists.clear();
         } else {
             UUID id = names.get(prefer);
-            if(id != null) {
+            if (id != null) {
                 List<PlayerWarp> warps = this.warps.get(id);
 
-                if(warps != null) {
+                if (warps != null) {
                     warps = new ArrayList<>(warps);
 
-                    for(PlayerWarp warp : warps) {
-                        if(warp.equals(except)) continue;
-                        if(warp.equalsName(name)) {
+                    for (PlayerWarp warp : warps) {
+                        if (warp.equals(except)) continue;
+                        if (warp.equalsName(name)) {
                             searched = warp;
                             break;
                         }
@@ -527,8 +526,8 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     }
 
     public PlayerWarp getWarp(UUID id, String name) {
-        for(PlayerWarp w : getOwnWarps(id)) {
-            if(w.equalsName(name)) return w;
+        for (PlayerWarp w : getOwnWarps(id)) {
+            if (w.equalsName(name)) return w;
         }
 
         return null;
@@ -544,12 +543,12 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
 
     public void add(PlayerWarp warp) {
         List<PlayerWarp> warps = getOwnWarps(warp.getOwner().getId());
-        if(getWarp(warp.getOwner().getId(), warp.getName()) != null) return;
+        if (getWarp(warp.getOwner().getId(), warp.getName()) != null) return;
 
         warp.setName(getCopiedName(warps, warp.getName()));
         warps.add(warp);
 
-        if(warp.getStarted() == 0) {
+        if (warp.getStarted() == 0) {
             warp.setStarted(System.currentTimeMillis());
             warp.born();
         }
@@ -566,36 +565,36 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
 
         do {
             found = false;
-            if(num == 0) num++;
+            if (num == 0) num++;
             else {
                 name = name.replaceAll("_\\([0-9]{1,5}?\\)\\z", "");
                 name += "_(" + num++ + ")";
             }
 
-            for(PlayerWarp d : list) {
+            for (PlayerWarp d : list) {
                 String nameWithoutColor = net.md_5.bungee.api.ChatColor.stripColor(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', name));
                 String dName = net.md_5.bungee.api.ChatColor.stripColor(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', d.getName())).replace(" ", "_");
-                if(dName.equalsIgnoreCase(nameWithoutColor)) {
+                if (dName.equalsIgnoreCase(nameWithoutColor)) {
                     found = true;
                     break;
                 }
             }
-        } while(found);
+        } while (found);
 
         return name;
     }
 
     public double delete(PlayerWarp warp, boolean informBungee) {
-        if(warp == null) return 0;
+        if (warp == null) return 0;
         List<PlayerWarp> warps = getOwnWarps(warp.getOwner().getId());
         double refund = warps.remove(warp) ? calculateRefund(warp) : -1;
 
-        if(warps.isEmpty()) {
+        if (warps.isEmpty()) {
             this.warps.remove(warp.getOwner().getId());
             this.names.remove(warp.getOwner().getName());
         }
 
-        if(informBungee && checkBungeeCord()) {
+        if (informBungee && checkBungeeCord()) {
             DeletePlayerWarpPacket packet = new DeletePlayerWarpPacket(warp.getName(), warp.getOwner().getId());
             WarpSystem.getDataHandler().send(packet);
         }
@@ -604,49 +603,49 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     }
 
     public void updateGUIs() {
-        for(PWList gui : API.getRemovables(PWList.class)) {
+        for (PWList gui : API.getRemovables(PWList.class)) {
             gui.updateList();
         }
     }
 
     public double calculateRefund(PlayerWarp warp) {
         double refund = 0;
-        if(warp == null) return -1;
-        if(!isEconomy()) return 0;
+        if (warp == null) return -1;
+        if (!isEconomy()) return 0;
 
         //personal item
-        if(!warp.isStandardItem()) refund += PlayerWarpManager.getManager().getItemCosts() * PlayerWarpManager.getManager().getPersonalItemRefund() * warp.getRefundFactor();
+        if (!warp.isStandardItem()) refund += PlayerWarpManager.getManager().getItemCosts() * PlayerWarpManager.getManager().getPersonalItemRefund() * warp.getRefundFactor();
 
         //description
         int length = 0;
 
-        if(warp.getItem().getLore() != null)
-            for(String s : warp.getItem().getLore()) {
+        if (warp.getItem().getLore() != null)
+            for (String s : warp.getItem().getLore()) {
                 length += s.replaceFirst("§f", "").length();
             }
 
-        if(length > 0) refund += length * PlayerWarpManager.getManager().getDescriptionCosts() * PlayerWarpManager.getManager().getDescriptionRefund() * warp.getRefundFactor();
+        if (length > 0) refund += length * PlayerWarpManager.getManager().getDescriptionCosts() * PlayerWarpManager.getManager().getDescriptionRefund() * warp.getRefundFactor();
 
         //teleport message
         length = warp.getTeleportMessage() == null ? 0 : warp.getTeleportMessage().length();
 
-        if(length > 0) refund += length * PlayerWarpManager.getManager().getMessageCosts() * PlayerWarpManager.getManager().getMessageRefund() * warp.getRefundFactor();
+        if (length > 0) refund += length * PlayerWarpManager.getManager().getMessageCosts() * PlayerWarpManager.getManager().getMessageRefund() * warp.getRefundFactor();
 
         //public state
-        if(warp.isPublic()) refund += PlayerWarpManager.getManager().getPublicCosts() * PlayerWarpManager.getManager().getPublicRefund() * warp.getRefundFactor();
+        if (warp.isPublic()) refund += PlayerWarpManager.getManager().getPublicCosts() * PlayerWarpManager.getManager().getPublicRefund() * warp.getRefundFactor();
 
         //teleport costs
         double tpCosts = warp.getTeleportCosts();
-        if(tpCosts > 0) refund += tpCosts * PlayerWarpManager.getManager().getTeleportCosts() * PlayerWarpManager.getManager().getTeleportCostsRefund() * warp.getRefundFactor();
+        if (tpCosts > 0) refund += tpCosts * PlayerWarpManager.getManager().getTeleportCosts() * PlayerWarpManager.getManager().getTeleportCostsRefund() * warp.getRefundFactor();
 
         //active time
         refund += (warp.getLeftTime() / 60000D) * PlayerWarpManager.getManager().getActiveTimeCosts() * PlayerWarpManager.getManager().getActiveTimeRefund() * warp.getRefundFactor();
 
         //trusted members
         length = warp.getTrusted().size();
-        if(length > 0) refund += length * PlayerWarpManager.getManager().getTrustedMemberCosts() * PlayerWarpManager.getManager().getTrustedMemberRefund() * warp.getRefundFactor();
+        if (length > 0) refund += length * PlayerWarpManager.getManager().getTrustedMemberCosts() * PlayerWarpManager.getManager().getTrustedMemberRefund() * warp.getRefundFactor();
 
-        if(isNaturalNumbers()) return Math.ceil(refund);
+        if (isNaturalNumbers()) return Math.ceil(refund);
         return refund;
     }
 
@@ -792,16 +791,16 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     }
 
     public Category getWarpClass(String name) {
-        for(Category c : this.warpCategories) {
-            if(ChatColor.stripColor(c.getName()).equals(ChatColor.stripColor(name))) return c;
+        for (Category c : this.warpCategories) {
+            if (ChatColor.stripColor(c.getName()).equals(ChatColor.stripColor(name))) return c;
         }
 
         return null;
     }
 
     public Category getWarpClass(int id) {
-        for(Category c : this.warpCategories) {
-            if(c.getId() == id) return c;
+        for (Category c : this.warpCategories) {
+            if (c.getId() == id) return c;
         }
 
         return null;

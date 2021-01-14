@@ -14,26 +14,6 @@ public class WaitForTeleport extends TeleportStage {
     protected WaitForTeleport() {
     }
 
-    @Override
-    public void destroy() {
-    }
-
-    @Override
-    public void start() {
-        if((options.isCanMove() || options.isSkip() || options.getDelay(player) == 0) && options.getCosts(player) == 0) {
-            end();
-            return;
-        }
-
-        wait(player, new Callback<Result>() {
-            @Override
-            public void accept(Result result) {
-                if(result == Result.SUCCESS) end();
-                else cancel(result);
-            }
-        });
-    }
-
     public static BukkitRunnable wait(Player player, Callback<Result> callback) {
         BukkitRunnable r = new BukkitRunnable() {
             int notMoving = 0;
@@ -43,7 +23,7 @@ public class WaitForTeleport extends TeleportStage {
 
             @Override
             public void run() {
-                if(!player.isOnline() || location.getWorld() != player.getWorld()) {
+                if (!player.isOnline() || location.getWorld() != player.getWorld()) {
                     this.cancel();
                     callback.accept(Result.CANCELLED);
                     return;
@@ -52,20 +32,20 @@ public class WaitForTeleport extends TeleportStage {
                 double diff = Math.abs(location.getX() - player.getLocation().getX()) + Math.abs(location.getZ() - player.getLocation().getZ());
                 double diffY = Math.abs(location.getY() - player.getLocation().getY());
 
-                if(diff <= 0.01 && diffY < 0.11) notMoving++;
+                if (diff <= 0.01 && diffY < 0.11) notMoving++;
                 else {
                     notMoving = 0;
                     location = player.getLocation();
 
                     MessageAPI.sendActionBar(player, "§7» " + (shake ? " " : "") + Lang.get("Teleport_Stop_Moving") + (shake ? " " : "") + " §7«");
 
-                    if(shakeTicks == 3) {
+                    if (shakeTicks == 3) {
                         shakeTicks = 0;
                         shake = !shake;
                     } else shakeTicks++;
                 }
 
-                if(notMoving == 2) {
+                if (notMoving == 2) {
                     MessageAPI.stopSendingActionBar(player);
                     this.cancel();
                     callback.accept(Result.SUCCESS);
@@ -75,5 +55,25 @@ public class WaitForTeleport extends TeleportStage {
 
         r.runTaskTimer(WarpSystem.getInstance(), 2, 2);
         return r;
+    }
+
+    @Override
+    public void destroy() {
+    }
+
+    @Override
+    public void start() {
+        if ((options.isCanMove() || options.isSkip() || options.getDelay(player) == 0) && options.getCosts(player) == 0) {
+            end();
+            return;
+        }
+
+        wait(player, new Callback<Result>() {
+            @Override
+            public void accept(Result result) {
+                if (result == Result.SUCCESS) end();
+                else cancel(result);
+            }
+        });
     }
 }

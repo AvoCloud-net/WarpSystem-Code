@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 public class SendGlobalSpawnOptionsPacketHandler implements PacketHandler<SendGlobalSpawnOptionsPacket> {
     @Override
     public void process(@NotNull SendGlobalSpawnOptionsPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
-        if(SpawnManager.getInstance() == null) return;
+        if (SpawnManager.getInstance() == null) return;
         SpawnManager.getInstance().applyGlobalOptions(packet.getSpawn(), packet.getRespawn());
     }
 }

@@ -30,27 +30,27 @@ public class POptions extends PageItem {
         initialize(p);
     }
 
+    public static int count(PlayerWarp warp) {
+        return (PlayerWarpManager.getManager().isAllowPublicWarps() ? 1 : 0)
+                + (PlayerWarpManager.getManager().isEconomy() && PlayerWarpManager.getManager().isCustomTeleportCosts() && PlayerWarpManager.getManager().isAllowPublicWarps() ? 1 : 0)
+                + 1
+                + (PlayerWarpManager.getManager().isTime() && warp.isTimeDependent() ? 1 : 0);
+    }
+
     @Override
     public void initialize(Player p) {
         ItemButtonOption option = new ItemButtonOption();
         option.setClickSound(new SoundData(Sound.UI_BUTTON_CLICK, 0.7F, 1F));
         int slot = 1;
 
-        if(PlayerWarpManager.getManager().isAllowPublicWarps()) addButton(new StatusButton(slot++, warp, original, isEditing, this, p).setOption(option));
+        if (PlayerWarpManager.getManager().isAllowPublicWarps()) addButton(new StatusButton(slot++, warp, original, isEditing, this, p).setOption(option));
 
-        if(PlayerWarpManager.getManager().isEconomy() && PlayerWarpManager.getManager().isCustomTeleportCosts() && PlayerWarpManager.getManager().isAllowPublicWarps())
+        if (PlayerWarpManager.getManager().isEconomy() && PlayerWarpManager.getManager().isCustomTeleportCosts() && PlayerWarpManager.getManager().isAllowPublicWarps())
             addButton(new TeleportCostsButton(slot++, warp, original, isEditing, this, p).setOption(option));
 
         addButton(new TargetPositionButton(slot++, warp, original, isEditing, this, p).setOption(option));
 
-        if(PlayerWarpManager.getManager().isTime() && warp.isTimeDependent())
+        if (PlayerWarpManager.getManager().isTime() && warp.isTimeDependent())
             addButton(new ActiveTimeButton(slot++, warp, original, isEditing, this, p).setOption(option));
-    }
-
-    public static int count(PlayerWarp warp) {
-        return (PlayerWarpManager.getManager().isAllowPublicWarps() ? 1 : 0)
-                + (PlayerWarpManager.getManager().isEconomy() && PlayerWarpManager.getManager().isCustomTeleportCosts() && PlayerWarpManager.getManager().isAllowPublicWarps() ? 1 : 0)
-                + 1
-                + (PlayerWarpManager.getManager().isTime() && warp.isTimeDependent() ? 1 : 0);
     }
 }

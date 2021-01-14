@@ -32,7 +32,7 @@ public abstract class GUIList<E> extends SimpleGUI {
 
             @Override
             public void onInvCloseEvent(InventoryCloseEvent e) {
-                if(isClosingForGUI() || isClosingByButton() || isClosingByOperation()) return;
+                if (isClosingForGUI() || isClosingByButton() || isClosingByOperation()) return;
                 onClose();
             }
 

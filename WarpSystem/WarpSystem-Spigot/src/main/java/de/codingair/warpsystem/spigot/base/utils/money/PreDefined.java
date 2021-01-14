@@ -17,16 +17,16 @@ public enum PreDefined {
         this.adapter = adapter;
     }
 
-    public Adapter getAdapter() {
-        return adapter;
-    }
-
     public static PreDefined getByName(String name) {
         name = name.toUpperCase();
-        for(PreDefined value : values()) {
-            if(value.name().equals(name)) return value;
+        for (PreDefined value : values()) {
+            if (value.name().equals(name)) return value;
         }
 
         return null;
+    }
+
+    public Adapter getAdapter() {
+        return adapter;
     }
 }

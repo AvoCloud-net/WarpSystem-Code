@@ -21,7 +21,7 @@ public abstract class AnimationList extends GUIList<Animation> {
 
     @Override
     public void addListItems(List<ListItem<Animation>> listItems) {
-        for(Animation animation : AnimationManager.getInstance().getAnimationList()) {
+        for (Animation animation : AnimationManager.getInstance().getAnimationList()) {
             listItems.add(new ListItem<Animation>(animation) {
                 @Override
                 public ItemStack buildItem() {

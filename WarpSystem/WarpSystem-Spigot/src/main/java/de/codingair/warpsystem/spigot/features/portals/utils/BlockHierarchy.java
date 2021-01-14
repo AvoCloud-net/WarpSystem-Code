@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.spigot.features.portals.utils;
 
 import de.codingair.codingapi.tools.Location;
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
 import org.bukkit.World;
 
@@ -12,9 +12,9 @@ import java.util.Objects;
 public class BlockHierarchy implements Serializable {
     private final List<PortalBlock> blocks = new ArrayList<>();
     private final Bounds bounds;
+    private final String world;
     //width=x-length; height=z-length
     private int width = 1;
-    private final String world;
 
     public BlockHierarchy(PortalBlock init) {
         this.blocks.add(init);
@@ -28,13 +28,13 @@ public class BlockHierarchy implements Serializable {
     }
 
     @Override
-    public boolean read(DataWriter d) throws Exception {
+    public boolean read(DataMask d) throws Exception {
         this.bounds.read(d);
         this.blocks.clear();
 
-        for(int x = bounds.getMin().getX(); x <= bounds.getMax().getX(); x++) {
-            for(int y = bounds.getMin().getY(); y <= bounds.getMax().getY(); y++) {
-                for(int z = bounds.getMin().getZ(); z <= bounds.getMax().getZ(); z++) {
+        for (int x = bounds.getMin().getX(); x <= bounds.getMax().getX(); x++) {
+            for (int y = bounds.getMin().getY(); y <= bounds.getMax().getY(); y++) {
+                for (int z = bounds.getMin().getZ(); z <= bounds.getMax().getZ(); z++) {
                     this.blocks.add(new PortalBlock(new Location(world, x, y, z), bounds.type));
                 }
             }
@@ -44,7 +44,7 @@ public class BlockHierarchy implements Serializable {
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         this.bounds.write(d);
     }
 
@@ -88,7 +88,7 @@ public class BlockHierarchy implements Serializable {
         bounds.max.apply(hierarchy.getMax());
         blocks.addAll(hierarchy.blocks);
 
-        if(bounds.min.getY() == hierarchy.getMin().getY() && bounds.min.getZ() == hierarchy.getMin().getZ()) width += hierarchy.width;
+        if (bounds.min.getY() == hierarchy.getMin().getY() && bounds.min.getZ() == hierarchy.getMin().getZ()) width += hierarchy.width;
 
         hierarchy.blocks.clear();
         return this;
@@ -133,7 +133,7 @@ public class BlockHierarchy implements Serializable {
         }
 
         @Override
-        public boolean read(DataWriter d) throws Exception {
+        public boolean read(DataMask d) throws Exception {
             this.min = d.getSerializable("min", new Position());
             this.max = d.getSerializable("max", new Position());
             this.type = BlockType.values()[d.getInteger("type")];
@@ -141,7 +141,7 @@ public class BlockHierarchy implements Serializable {
         }
 
         @Override
-        public void write(DataWriter d) {
+        public void write(DataMask d) {
             d.put("min", min);
             d.put("max", max);
             d.put("type", this.type == null ? null : this.type.ordinal());
@@ -158,8 +158,8 @@ public class BlockHierarchy implements Serializable {
 
         @Override
         public boolean equals(Object o) {
-            if(this == o) return true;
-            if(o == null || getClass() != o.getClass()) return false;
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
             Bounds bounds = (Bounds) o;
             return min.equals(bounds.min) &&
                     max.equals(bounds.max) &&
@@ -217,7 +217,7 @@ public class BlockHierarchy implements Serializable {
         }
 
         @Override
-        public boolean read(DataWriter d) throws Exception {
+        public boolean read(DataMask d) throws Exception {
             this.x = d.getInteger("x");
             this.y = d.getInteger("y");
             this.z = d.getInteger("z");
@@ -225,7 +225,7 @@ public class BlockHierarchy implements Serializable {
         }
 
         @Override
-        public void write(DataWriter d) {
+        public void write(DataMask d) {
             d.put("x", x);
             d.put("y", y);
             d.put("z", z);
@@ -278,8 +278,8 @@ public class BlockHierarchy implements Serializable {
 
         @Override
         public boolean equals(Object o) {
-            if(this == o) return true;
-            if(o == null || getClass() != o.getClass()) return false;
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
             Position position = (Position) o;
             return x == position.x &&
                     y == position.y &&

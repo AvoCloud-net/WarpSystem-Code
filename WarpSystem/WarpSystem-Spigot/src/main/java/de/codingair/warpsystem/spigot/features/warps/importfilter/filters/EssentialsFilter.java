@@ -19,25 +19,25 @@ public class EssentialsFilter implements Filter {
     public Result importData() {
         try {
             File target = new File(WarpSystem.getInstance().getDataFolder().getParent() + "/Essentials/warps/");
-            if(!target.exists()) return Result.MISSING_FILE;
+            if (!target.exists()) return Result.MISSING_FILE;
 
             Result result = Result.DONE;
 
-            for(File w : target.listFiles()) {
+            for (File w : target.listFiles()) {
                 FileConfiguration config = YamlConfiguration.loadConfiguration(w);
                 WarpData warpData = getData(config);
-                if(warpData.getName() == null) continue;
+                if (warpData.getName() == null) continue;
 
                 SimpleWarp warp = new SimpleWarp(warpData);
-                if(SimpleWarpManager.getInstance().existsWarp(warpData.getName())) {
-                    if(result != Result.ERROR) result = Result.UNAVAILABLE_NAME;
+                if (SimpleWarpManager.getInstance().existsWarp(warpData.getName())) {
+                    if (result != Result.ERROR) result = Result.UNAVAILABLE_NAME;
                 } else {
                     SimpleWarpManager.getInstance().addWarp(warp);
                 }
             }
 
             return result;
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             return Result.ERROR;
         }
@@ -60,9 +60,9 @@ public class EssentialsFilter implements Filter {
         List<String> names = new ArrayList<>();
 
         File target = new File(WarpSystem.getInstance().getDataFolder().getParent() + "/Essentials/warps/");
-        if(!target.exists()) return names;
+        if (!target.exists()) return names;
 
-        for(File w : target.listFiles()) {
+        for (File w : target.listFiles()) {
             FileConfiguration config = YamlConfiguration.loadConfiguration(w);
 
             String name = config.getString("name");
@@ -75,7 +75,7 @@ public class EssentialsFilter implements Filter {
     @Override
     public SimpleWarp loadWarp(String link) {
         File target = new File(WarpSystem.getInstance().getDataFolder().getParent() + "/Essentials/warps/" + link.toLowerCase() + ".yml");
-        if(!target.exists()) return null;
+        if (!target.exists()) return null;
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(target);
         WarpData warpData = getData(config);

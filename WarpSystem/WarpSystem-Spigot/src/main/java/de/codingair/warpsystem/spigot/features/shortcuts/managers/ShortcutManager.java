@@ -26,9 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@AvailableForSetupAssistant(type = "Shortcuts", config = "Config")
-@Function(name = "Enabled", defaultValue = "true", configPath = "WarpSystem.Functions.Shortcuts", clazz = Boolean.class)
-@Function(name = "Teleport message", defaultValue = "true", configPath = "WarpSystem.Send.Teleport_Message.Shortcuts", clazz = Boolean.class)
+@AvailableForSetupAssistant (type = "Shortcuts", config = "Config")
+@Function (name = "Enabled", defaultValue = "true", configPath = "WarpSystem.Functions.Shortcuts", clazz = Boolean.class)
+@Function (name = "Teleport message", defaultValue = "true", configPath = "WarpSystem.Send.Teleport_Message.Shortcuts", clazz = Boolean.class)
 public class ShortcutManager implements Manager, ProxyFeature {
     private final List<Shortcut> shortcuts = new ArrayList<>();
     private final HashMap<Shortcut, ShortcutExecutor> executors = new HashMap<>();
@@ -41,7 +41,7 @@ public class ShortcutManager implements Manager, ProxyFeature {
     public boolean load(boolean loader) {
         WarpSystem.getInstance().getBungeeFeatureList().add(this);
 
-        if(WarpSystem.getInstance().getFileManager().getFile("Shortcuts") == null) WarpSystem.getInstance().getFileManager().loadFile("Shortcuts", "/Memory/");
+        if (WarpSystem.getInstance().getFileManager().getFile("Shortcuts") == null) WarpSystem.getInstance().getFileManager().loadFile("Shortcuts", "/Memory/");
 
         this.shortcuts.clear();
 
@@ -50,8 +50,8 @@ public class ShortcutManager implements Manager, ProxyFeature {
 
         WarpSystem.log("  > Loading Shortcuts");
 
-        for(String key : config.getKeys(false)) {
-            if(key.equals("Shortcuts")) continue;
+        for (String key : config.getKeys(false)) {
+            if (key.equals("Shortcuts")) continue;
             String dest = config.getString(key + ".Destination");
 
             //Old
@@ -59,11 +59,11 @@ public class ShortcutManager implements Manager, ProxyFeature {
             String globalWarp = config.getString(key + ".GlobalWarp", null);
 
             Destination destination;
-            if(dest != null) {
+            if (dest != null) {
                 destination = new Destination(dest);
-            } else if(warpId != null) {
+            } else if (warpId != null) {
                 destination = new Destination(warpId, DestinationType.SimpleWarp);
-            } else if(globalWarp != null) {
+            } else if (globalWarp != null) {
                 destination = new Destination(globalWarp, DestinationType.GlobalWarp);
             } else continue;
 
@@ -71,26 +71,26 @@ public class ShortcutManager implements Manager, ProxyFeature {
         }
 
         List<?> l = file.getConfig().getList("Shortcuts");
-        if(l != null)
-            for(Object datum : l) {
-                if(datum instanceof Map) {
+        if (l != null)
+            for (Object datum : l) {
+                if (datum instanceof Map) {
                     try {
                         Shortcut s = ShortcutFactory.build();
                         JSON json = new JSON((Map<?, ?>) datum);
                         s.read(json);
                         s.setDisplayName(s.getDisplayName().replace(" ", "_"));
                         this.shortcuts.add(s);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else if(datum instanceof String) {
+                } else if (datum instanceof String) {
                     try {
                         Shortcut s = ShortcutFactory.build();
                         JSON json = (JSON) new JSONParser().parse((String) datum);
                         s.read(json);
                         s.setDisplayName(s.getDisplayName().replace(" ", "_"));
                         this.shortcuts.add(s);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -98,7 +98,7 @@ public class ShortcutManager implements Manager, ProxyFeature {
 
         new CShortcuts().register();
 
-        for(Shortcut s : this.shortcuts) {
+        for (Shortcut s : this.shortcuts) {
             //create Command
             reloadCommand(s);
         }
@@ -113,12 +113,12 @@ public class ShortcutManager implements Manager, ProxyFeature {
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("Shortcuts");
         FileConfiguration config = file.getConfig();
 
-        if(!saver) WarpSystem.log("  > Saving Shortcuts");
+        if (!saver) WarpSystem.log("  > Saving Shortcuts");
 
-        for(String key : config.getKeys(false)) config.set(key, null);
+        for (String key : config.getKeys(false)) config.set(key, null);
 
         List<JSON> data = new ArrayList<>();
-        for(Shortcut sc : this.shortcuts) {
+        for (Shortcut sc : this.shortcuts) {
             JSON json = new JSON();
             sc.write(json);
             data.add(json);
@@ -126,13 +126,13 @@ public class ShortcutManager implements Manager, ProxyFeature {
 
         config.set("Shortcuts", data);
 
-        if(!saver) WarpSystem.log("    ...saved " + data.size() + " Shortcut(s)");
+        if (!saver) WarpSystem.log("    ...saved " + data.size() + " Shortcut(s)");
 
         file.saveConfig();
     }
 
     public boolean hasCommandLoop(Shortcut s, String newCommand) {
-        if(s.getDisplayName().equalsIgnoreCase(newCommand.substring(1))) return true;
+        if (s.getDisplayName().equalsIgnoreCase(newCommand.substring(1))) return true;
 
         return hasCommandLoop(s, s.hasAction(Action.COMMAND) ? new ArrayList<String>(s.getAction(CommandAction.class).getValue()) {{
             add(newCommand);
@@ -144,17 +144,17 @@ public class ShortcutManager implements Manager, ProxyFeature {
     public boolean hasCommandLoop(Shortcut s, List<String> newCommands, Shortcut last) {
         List<String> commands;
 
-        if(last == null) commands = newCommands;
-        else if(last.getDisplayName().equals(s.getDisplayName())) return true;
+        if (last == null) commands = newCommands;
+        else if (last.getDisplayName().equals(s.getDisplayName())) return true;
         else commands = last.hasAction(Action.COMMAND) ? last.getAction(CommandAction.class).getValue() : null;
 
-        if(commands == null) return false;
+        if (commands == null) return false;
 
-        for(String command : commands) {
+        for (String command : commands) {
             Shortcut next = getShortcut(command.substring(1));
-            if(next == null) continue;
+            if (next == null) continue;
 
-            if(hasCommandLoop(s, newCommands, next)) return true;
+            if (hasCommandLoop(s, newCommands, next)) return true;
         }
 
         return false;
@@ -167,20 +167,20 @@ public class ShortcutManager implements Manager, ProxyFeature {
     public void reloadCommand(Shortcut s, boolean force) {
         ShortcutExecutor executor = executors.remove(s);
         boolean reload;
-        if(reload = (executor != null)) executor.unregister();
+        if (reload = (executor != null)) executor.unregister();
 
         executor = new ShortcutExecutor(s);
         executors.put(s, executor);
         executor.register();
 
-        if(reload || force) WarpSystem.updateCommandList();
+        if (reload || force) WarpSystem.updateCommandList();
     }
 
     @Override
     public void destroy() {
         List<Shortcut> l = new ArrayList<>(this.shortcuts);
 
-        for(Shortcut shortcut : l) {
+        for (Shortcut shortcut : l) {
             remove(shortcut, false);
         }
 
@@ -190,9 +190,9 @@ public class ShortcutManager implements Manager, ProxyFeature {
     public void remove(Shortcut s, boolean forceUpdate) {
         this.shortcuts.remove(s);
         ShortcutExecutor executor = executors.remove(s);
-        if(executor != null) executor.unregister();
+        if (executor != null) executor.unregister();
 
-        if(forceUpdate) WarpSystem.updateCommandList();
+        if (forceUpdate) WarpSystem.updateCommandList();
     }
 
     @Override
@@ -204,10 +204,10 @@ public class ShortcutManager implements Manager, ProxyFeature {
     }
 
     public Shortcut getShortcut(String displayName) {
-        if(displayName == null) return null;
+        if (displayName == null) return null;
 
-        for(Shortcut shortcut : this.shortcuts) {
-            if(displayName.equalsIgnoreCase(shortcut.getDisplayName())) return shortcut;
+        for (Shortcut shortcut : this.shortcuts) {
+            if (displayName.equalsIgnoreCase(shortcut.getDisplayName())) return shortcut;
         }
 
         return null;

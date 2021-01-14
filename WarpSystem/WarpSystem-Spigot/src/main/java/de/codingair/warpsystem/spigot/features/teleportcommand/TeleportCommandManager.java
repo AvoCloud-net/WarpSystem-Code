@@ -9,9 +9,9 @@ import de.codingair.warpsystem.base.transfer.packets.spigot.ToggleForceTeleports
 import de.codingair.warpsystem.base.transfer.utils.TeleportCommandOptions;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableForSetupAssistant;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.ProxyFeature;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
@@ -29,19 +29,19 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
-@AvailableForSetupAssistant(type = "TeleportCommands", config = "Config")
-@Function(name = "Enabled", defaultValue = "true", configPath = "WarpSystem.Functions.TeleportCommand", clazz = Boolean.class)
-@Function(name = "BungeeCord", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.BungeeCord", clazz = Boolean.class)
-@Function(name = "Teleport requests costs", defaultValue = "0", configPath = "WarpSystem.TeleportCommands.TeleportRequests.Teleport_Costs", clazz = Double.class)
-@Function(name = "Teleport requests expire delay (seconds)", defaultValue = "30", configPath = "WarpSystem.TeleportCommands.TeleportRequests.ExpireDelay", clazz = Integer.class)
-@Function(name = "Back", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.Back.Enabled", clazz = Boolean.class)
-@Function(name = "Tp", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.Tp", clazz = Boolean.class)
-@Function(name = "TpAll", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.TpAll", clazz = Boolean.class)
-@Function(name = "TpToggle", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.TpToggle", clazz = Boolean.class)
-@Function(name = "Tpa", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.Tpa", clazz = Boolean.class)
-@Function(name = "TpaHere", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.TpaHere", clazz = Boolean.class)
-@Function(name = "TpaAll", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.TpaAll", clazz = Boolean.class)
-@Function(name = "TpaToggle", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.TpaToggle", clazz = Boolean.class)
+@AvailableForSetupAssistant (type = "TeleportCommands", config = "Config")
+@Function (name = "Enabled", defaultValue = "true", configPath = "WarpSystem.Functions.TeleportCommand", clazz = Boolean.class)
+@Function (name = "BungeeCord", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.BungeeCord", clazz = Boolean.class)
+@Function (name = "Teleport requests costs", defaultValue = "0", configPath = "WarpSystem.TeleportCommands.TeleportRequests.Teleport_Costs", clazz = Double.class)
+@Function (name = "Teleport requests expire delay (seconds)", defaultValue = "30", configPath = "WarpSystem.TeleportCommands.TeleportRequests.ExpireDelay", clazz = Integer.class)
+@Function (name = "Back", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.Back.Enabled", clazz = Boolean.class)
+@Function (name = "Tp", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.Tp", clazz = Boolean.class)
+@Function (name = "TpAll", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.TpAll", clazz = Boolean.class)
+@Function (name = "TpToggle", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.TpToggle", clazz = Boolean.class)
+@Function (name = "Tpa", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.Tpa", clazz = Boolean.class)
+@Function (name = "TpaHere", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.TpaHere", clazz = Boolean.class)
+@Function (name = "TpaAll", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.TpaAll", clazz = Boolean.class)
+@Function (name = "TpaToggle", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.TpaToggle", clazz = Boolean.class)
 public class TeleportCommandManager implements Manager, ProxyFeature, Collectible {
     private final HashMap<String, List<Invitation>> invites = new HashMap<>();
 
@@ -50,13 +50,11 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
 
     private final HashMap<String, List<Location>> backHistory = new HashMap<>();
     private final Set<String> usingBackCommand = new HashSet<>();
-
+    private final Map<String, TeleportCommandOptions> serverOptions = new HashMap<>();
     private int expireDelay = 30;
     private int backHistorySize = 1;
     private int tpaCosts = 0;
     private boolean proxy = false;
-
-    private final Map<String, TeleportCommandOptions> serverOptions = new HashMap<>();
     private ITeleportCommandHandler handler;
 
     private CTeleport tp;
@@ -75,17 +73,21 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
         return WarpSystem.getInstance().getDataManager().getManager(FeatureType.TELEPORT_COMMAND);
     }
 
+    public static ITeleportCommandHandler handler() {
+        return getInstance().handler;
+    }
+
     @Override
     public void collectOptionStatistics(Map<String, Integer> entry) {
-        if(tp != null) entry.put("Tp", 1);
-        if(tpHere != null) entry.put("TpHere", 1);
-        if(tpToggle != null) entry.put("TpToggle", 1);
-        if(tpa != null) entry.put("Tpa", 1);
-        if(tpaHere != null) entry.put("TpaHere", 1);
-        if(tpaToggle != null) entry.put("TpaToggle", 1);
-        if(tpaAll != null) entry.put("TpaAll", 1);
-        if(tpAll != null) entry.put("TpAll", 1);
-        if(back != null) entry.put("Back", 1);
+        if (tp != null) entry.put("Tp", 1);
+        if (tpHere != null) entry.put("TpHere", 1);
+        if (tpToggle != null) entry.put("TpToggle", 1);
+        if (tpa != null) entry.put("Tpa", 1);
+        if (tpaHere != null) entry.put("TpaHere", 1);
+        if (tpaToggle != null) entry.put("TpaToggle", 1);
+        if (tpaAll != null) entry.put("TpaAll", 1);
+        if (tpAll != null) entry.put("TpAll", 1);
+        if (back != null) entry.put("Back", 1);
     }
 
     @Override
@@ -96,34 +98,34 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
 
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("Config");
 
-        if(file.getConfig().getBoolean("WarpSystem.Functions.TeleportCommand", true)) {
+        if (file.getConfig().getBoolean("WarpSystem.Functions.TeleportCommand", true)) {
             expireDelay = file.getConfig().getInt("WarpSystem.TeleportCommands.TeleportRequests.ExpireDelay", 30);
             tpaCosts = file.getConfig().getInt("WarpSystem.TeleportCommands.TeleportRequests.Teleport_Costs", 0);
             proxy = file.getConfig().getBoolean("WarpSystem.TeleportCommands.BungeeCord", true);
 
-            if(file.getConfig().getBoolean("WarpSystem.TeleportCommands.Tp", true)) {
+            if (file.getConfig().getBoolean("WarpSystem.TeleportCommands.Tp", true)) {
                 (tp = new CTeleport()).register();
                 (tpHere = new CTpHere(tp)).register();
             }
 
-            if(file.getConfig().getBoolean("WarpSystem.TeleportCommands.TpToggle", true)) (tpToggle = new CTpToggle()).register();
-            if(file.getConfig().getBoolean("WarpSystem.TeleportCommands.Tpa", true)) {
+            if (file.getConfig().getBoolean("WarpSystem.TeleportCommands.TpToggle", true)) (tpToggle = new CTpToggle()).register();
+            if (file.getConfig().getBoolean("WarpSystem.TeleportCommands.Tpa", true)) {
                 (tpa = new CTpa()).register();
                 (tpAccept = new CTpAccept()).register();
                 (tpDeny = new CTpDeny()).register();
             }
-            if(file.getConfig().getBoolean("WarpSystem.TeleportCommands.TpaHere", true)) {
+            if (file.getConfig().getBoolean("WarpSystem.TeleportCommands.TpaHere", true)) {
                 (tpaHere = new CTpaHere()).register();
-                if(tpAccept == null) (tpAccept = new CTpAccept()).register();
-                if(tpDeny == null) (tpDeny = new CTpDeny()).register();
+                if (tpAccept == null) (tpAccept = new CTpAccept()).register();
+                if (tpDeny == null) (tpDeny = new CTpDeny()).register();
             }
-            if(file.getConfig().getBoolean("WarpSystem.TeleportCommands.TpaToggle", true)) (tpaToggle = new CTpaToggle()).register();
-            if(file.getConfig().getBoolean("WarpSystem.TeleportCommands.TpaAll", true)) (tpaAll = new CTpaAll()).register();
-            if(file.getConfig().getBoolean("WarpSystem.TeleportCommands.TpAll", true)) (tpAll = new CTpAll()).register();
-            if(file.getConfig().getBoolean("WarpSystem.TeleportCommands.Back.Enabled", true)) {
+            if (file.getConfig().getBoolean("WarpSystem.TeleportCommands.TpaToggle", true)) (tpaToggle = new CTpaToggle()).register();
+            if (file.getConfig().getBoolean("WarpSystem.TeleportCommands.TpaAll", true)) (tpaAll = new CTpaAll()).register();
+            if (file.getConfig().getBoolean("WarpSystem.TeleportCommands.TpAll", true)) (tpAll = new CTpAll()).register();
+            if (file.getConfig().getBoolean("WarpSystem.TeleportCommands.Back.Enabled", true)) {
                 (back = new CBack()).register();
                 this.backHistorySize = file.getConfig().getInt("WarpSystem.TeleportCommands.Back.History_Size", 3);
-                if(backHistorySize < 1) {
+                if (backHistorySize < 1) {
                     backHistorySize = 1;
                     file.getConfig().set("WarpSystem.TeleportCommands.Back.History_Size", 1);
                     file.saveConfig();
@@ -132,7 +134,7 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
         }
 
         ChatButtonManager.getInstance().addListener((player, id, type) -> {
-            if(type != null && type.equalsIgnoreCase("TP")) {
+            if (type != null && type.equalsIgnoreCase("TP")) {
                 player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_not_valid_general"));
             }
         });
@@ -163,7 +165,7 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
     @Override
     public void onConnect() {
         TeleportCommandOptionsPacket packet = new TeleportCommandOptionsPacket(back != null, tp != null, tpAll != null, tpToggle != null, tpa != null, tpaHere != null, tpaAll != null, tpaToggle != null);
-        if(proxy) WarpSystem.getDataHandler().send(packet);
+        if (proxy) WarpSystem.getDataHandler().send(packet);
         else this.serverOptions.put(WarpSystem.getInstance().getCurrentServer().toLowerCase(), packet.getOptions());
     }
 
@@ -182,14 +184,14 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
     public void addToBackHistory(Player player, Location location) {
         List<Location> locations = this.backHistory.computeIfAbsent(player.getName(), k -> new ArrayList<>());
         locations.add(0, location);
-        if(locations.size() > backHistorySize) locations.remove(locations.size() - 1);
+        if (locations.size() > backHistorySize) locations.remove(locations.size() - 1);
     }
 
     public boolean teleportToLastBackLocation(Player player) {
         List<Location> locations = this.backHistory.get(player.getName());
-        if(locations == null) return false;
+        if (locations == null) return false;
 
-        if(locations.isEmpty()) {
+        if (locations.isEmpty()) {
             this.backHistory.remove(player.getName());
             return false;
         }
@@ -200,9 +202,9 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
         options.addCallback(new Callback<Result>() {
             @Override
             public void accept(Result result) {
-                if(result != Result.SUCCESS) {
+                if (result != Result.SUCCESS) {
                     locations.add(0, l);
-                } else if(locations.isEmpty()) backHistory.remove(player.getName());
+                } else if (locations.isEmpty()) backHistory.remove(player.getName());
 
                 usingBackCommand.remove(player.getName());
             }
@@ -218,12 +220,12 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
     }
 
     public boolean toggleDenyTpaRequest(Player player) {
-        if(this.denyTpa.contains(player.getName())) {
-            if(WarpSystem.getInstance().isOnProxy()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), deniesForceTps(player), false), player);
+        if (this.denyTpa.contains(player.getName())) {
+            if (WarpSystem.getInstance().isOnProxy()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), deniesForceTps(player), false), player);
             this.denyTpa.remove(player.getName());
             return false;
         } else {
-            if(WarpSystem.getInstance().isOnProxy()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), deniesForceTps(player), true), player);
+            if (WarpSystem.getInstance().isOnProxy()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), deniesForceTps(player), true), player);
             this.denyTpa.add(player.getName());
             return true;
         }
@@ -234,19 +236,19 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
     }
 
     public boolean toggleDenyForceTps(Player player) {
-        if(this.denyForceTps.contains(player.getName())) {
-            if(WarpSystem.getInstance().isOnProxy()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), false, deniesTpaRequests(player.getName())), player);
+        if (this.denyForceTps.contains(player.getName())) {
+            if (WarpSystem.getInstance().isOnProxy()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), false, deniesTpaRequests(player.getName())), player);
             this.denyForceTps.remove(player.getName());
             return false;
         } else {
-            if(WarpSystem.getInstance().isOnProxy()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), true, deniesTpaRequests(player.getName())), player);
+            if (WarpSystem.getInstance().isOnProxy()) WarpSystem.getDataHandler().send(new ToggleForceTeleportsPacket(player.getName(), true, deniesTpaRequests(player.getName())), player);
             this.denyForceTps.add(player.getName());
             return true;
         }
     }
 
     public void setDenyForceTps(Player player, boolean deny) {
-        if(deny) {
+        if (deny) {
             this.denyForceTps.add(player.getName());
         } else this.denyForceTps.remove(player.getName());
     }
@@ -259,9 +261,9 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
         List<Invitation> invites = new ArrayList<>();
 
         List<List<Invitation>> data = new ArrayList<>(this.invites.values());
-        for(List<Invitation> value : data) {
-            for(Invitation i : value) {
-                if(i.isRecipient(player)) invites.add(i);
+        for (List<Invitation> value : data) {
+            for (Invitation i : value) {
+                if (i.isRecipient(player)) invites.add(i);
             }
         }
         data.clear();
@@ -270,22 +272,22 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
     }
 
     public void checkDestructionOf(Invitation inv) {
-        if(inv.canBeDestroyed()) {
+        if (inv.canBeDestroyed()) {
             List<Invitation> l = this.invites.get(inv.getSender());
 
-            if(l != null) l.remove(inv);
+            if (l != null) l.remove(inv);
             inv.destroy();
         }
     }
 
     public Invitation getInvitation(String sender, String recipient) {
-        if(sender.equalsIgnoreCase(recipient)) return null;
+        if (sender.equalsIgnoreCase(recipient)) return null;
 
         List<Invitation> l = this.invites.get(sender);
-        if(l == null) return null;
+        if (l == null) return null;
 
-        for(Invitation invitation : l) {
-            if(invitation.isRecipient(recipient)) return invitation;
+        for (Invitation invitation : l) {
+            if (invitation.isRecipient(recipient)) return invitation;
         }
 
         return null;
@@ -296,17 +298,17 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
     }
 
     public void invite(String sender, boolean tpToSender, Callback<Long> callback, String recipient, boolean bukkitOnly) {
-        if(recipient != null) {
+        if (recipient != null) {
             List<Invitation> l = this.invites.get(sender);
 
-            if(l == null) {
+            if (l == null) {
                 l = new ArrayList<>();
                 this.invites.put(sender, l);
-            } else if(isInvitedBy(sender, recipient)) {
-                if(callback != null) callback.accept(1L << 32);
+            } else if (isInvitedBy(sender, recipient)) {
+                if (callback != null) callback.accept(1L << 32);
                 return;
-            } else if(deniesTpaRequests(recipient)) {
-                if(callback != null) callback.accept(-1L << 32);
+            } else if (deniesTpaRequests(recipient)) {
+                if (callback != null) callback.accept(-1L << 32);
                 return;
             }
 
@@ -316,15 +318,15 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
                 @Override
                 public void accept(Long result) {
                     callback.accept(result);
-                    if(result.intValue() == 0) checkDestructionOf(inv);
+                    if (result.intValue() == 0) checkDestructionOf(inv);
                 }
             });
         } else {
             List<Invitation> l = this.invites.computeIfAbsent(sender, k -> new ArrayList<>());
 
             Invitation old = null;
-            for(Invitation i : l) {
-                if(i.getRecipient() == null) {
+            for (Invitation i : l) {
+                if (i.getRecipient() == null) {
                     old = i;
                     break;
                 }
@@ -338,7 +340,7 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
                 @Override
                 public void accept(Long result) {
                     callback.accept(result);
-                    if(result.intValue() == 0) checkDestructionOf(inv);
+                    if (result.intValue() == 0) checkDestructionOf(inv);
                 }
             });
         }
@@ -347,8 +349,8 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
     public void clear(Player player) {
         //clear own/foreign invitations
         List<Invitation> invites = this.invites.remove(player.getName());
-        if(invites != null) {
-            for(Invitation invite : invites) {
+        if (invites != null) {
+            for (Invitation invite : invites) {
                 invite.destroy();
             }
 
@@ -357,7 +359,7 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
 
         invites = getReceivedInvites(player.getName());
 
-        for(Invitation invite : invites) {
+        for (Invitation invite : invites) {
             invite.timeOut(player.getName());
         }
 
@@ -382,16 +384,12 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
         return backHistorySize;
     }
 
-    public static ITeleportCommandHandler handler() {
-        return getInstance().handler;
-    }
-
     public void registerServerOptions(String server, TeleportCommandOptions options) {
         this.serverOptions.put(server.toLowerCase(), options);
     }
 
     public TeleportCommandOptions getServerOptions(String server) {
-        if(server == null) return null;
+        if (server == null) return null;
         return this.serverOptions.get(server.toLowerCase());
     }
 

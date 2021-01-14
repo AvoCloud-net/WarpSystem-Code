@@ -25,16 +25,16 @@ public class AllPlayers implements Filter {
     @Override
     public Node<List<Button>, Integer> getListItems(int maxSize, int page, Player player, String search, Object... extra) {
         UUID special = null;
-        if(extra != null && extra.length == 1 && extra[0] instanceof UUID) special = (UUID) extra[0];
+        if (extra != null && extra.length == 1 && extra[0] instanceof UUID) special = (UUID) extra[0];
 
         HashMap<UUID, List<PlayerWarp>> data = null;
         List<UUID> uuids = null;
-        if(special == null) {
+        if (special == null) {
             data = new HashMap<>(PlayerWarpManager.getManager().getWarps());
 
             data.values().removeIf(l -> {
-                for(PlayerWarp warp : l) {
-                    if(!warp.isExpired()) return false;
+                for (PlayerWarp warp : l) {
+                    if (!warp.isExpired()) return false;
                 }
 
                 return true;
@@ -45,9 +45,9 @@ public class AllPlayers implements Filter {
 
         List<PlayerWarp> publicWarps = special != null ? PlayerWarpManager.getManager().getUsableWarpsOf(special, player) : null;
 
-        if(uuids != null) {
+        if (uuids != null) {
             uuids.sort(Comparator.comparing(o -> PlayerWarpManager.getManager().getOwnWarps(o).get(0).getOwner().getName().toLowerCase()));
-        } else if(publicWarps != null) {
+        } else if (publicWarps != null) {
             publicWarps.sort(Comparator.comparing(o -> o.getName(false).toLowerCase()));
         }
 
@@ -57,23 +57,23 @@ public class AllPlayers implements Filter {
         int i;
         int noMatch = 0, amount = 0;
 
-        if(uuids != null) {
+        if (uuids != null) {
             amount = uuids.size();
 
-            for(i = page * maxSize; i < max + noMatch; i++) {
-                if(uuids.size() <= i) break;
+            for (i = page * maxSize; i < max + noMatch; i++) {
+                if (uuids.size() <= i) break;
 
                 UUID id = uuids.get(i);
                 int warps = PlayerWarpManager.getManager().getTrustedWarpAmountOf(id, player);
 
-                if(warps == 0) {
+                if (warps == 0) {
                     noMatch++;
                     continue;
                 }
 
                 PlayerWarp.User user = PlayerWarpManager.getManager().getOwnWarps(id).get(0).getOwner();
 
-                if(search != null && !user.getName().toLowerCase().contains(search)) {
+                if (search != null && !user.getName().toLowerCase().contains(search)) {
                     noMatch++;
                     continue;
                 }
@@ -102,14 +102,14 @@ public class AllPlayers implements Filter {
 
                 buttons.add(b);
             }
-        } else if(publicWarps != null) {
+        } else if (publicWarps != null) {
             amount = publicWarps.size();
 
-            for(i = page * maxSize; i < max + noMatch; i++) {
-                if(publicWarps.size() <= i) break;
+            for (i = page * maxSize; i < max + noMatch; i++) {
+                if (publicWarps.size() <= i) break;
                 PlayerWarp w = publicWarps.get(i);
 
-                if(search != null && !w.getName(false).toLowerCase().contains(search)) {
+                if (search != null && !w.getName(false).toLowerCase().contains(search)) {
                     noMatch++;
                     continue;
                 }
@@ -126,7 +126,7 @@ public class AllPlayers implements Filter {
                     public void onClick(InventoryClickEvent e, Player player) {
                         ((PWList) getInterface()).getMain().setExtra(true, (Object[]) null);
 
-                        if(e.isLeftClick()) w.perform(player);
+                        if (e.isLeftClick()) w.perform(player);
                     }
 
                     @Override
@@ -139,7 +139,7 @@ public class AllPlayers implements Filter {
             }
         }
 
-        if(uuids != null) uuids.clear();
+        if (uuids != null) uuids.clear();
         return new Node<>(buttons, amount - noMatch);
     }
 
@@ -160,7 +160,7 @@ public class AllPlayers implements Filter {
 
     @Override
     public PWPage.FilterButton getControllButton(PWPage page, int warps) {
-        if(page.getExtra() == null) return null;
+        if (page.getExtra() == null) return null;
         return new ExtendedFilterButton(page);
     }
 
@@ -176,7 +176,7 @@ public class AllPlayers implements Filter {
 
         @Override
         public ItemStack craftItem() {
-            if(page == null) return null;
+            if (page == null) return null;
 
             return Head.RED_PLUS.getItemBuilder()
                     .setName(Editor.ITEM_TITLE_COLOR + Lang.get("Filter") + ":§7 " + FilterType.ALL_PLAYERS.getFilterName())
@@ -188,7 +188,7 @@ public class AllPlayers implements Filter {
 
         @Override
         public void onOtherClick(InventoryClickEvent e) {
-            if(e.isShiftClick() && e.isRightClick()) page.setSearch(null);
+            if (e.isShiftClick() && e.isRightClick()) page.setSearch(null);
             else page.setExtra(true, (Object[]) null);
             page.resetPage();
         }

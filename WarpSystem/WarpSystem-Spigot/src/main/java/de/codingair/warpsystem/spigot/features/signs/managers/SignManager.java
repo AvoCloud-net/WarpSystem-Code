@@ -19,9 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@AvailableForSetupAssistant(type = "WarpSigns", config = "Config")
-@Function(name = "Enabled", defaultValue = "true", config = "Config", configPath = "WarpSystem.Functions.WarpSigns", clazz = Boolean.class)
-@Function(name = "Teleport message", defaultValue = "true", config = "Config", configPath = "WarpSystem.Send.Teleport_Message.WarpSigns", clazz = Boolean.class)
+@AvailableForSetupAssistant (type = "WarpSigns", config = "Config")
+@Function (name = "Enabled", defaultValue = "true", config = "Config", configPath = "WarpSystem.Functions.WarpSigns", clazz = Boolean.class)
+@Function (name = "Teleport message", defaultValue = "true", config = "Config", configPath = "WarpSystem.Send.Teleport_Message.WarpSigns", clazz = Boolean.class)
 public class SignManager implements Manager {
     private final HashMap<Location, WarpSign> warpSigns = new HashMap<>();
 
@@ -32,30 +32,30 @@ public class SignManager implements Manager {
     @Override
     public boolean load(boolean loader) {
         boolean success = true;
-        if(WarpSystem.getInstance().getFileManager().getFile("Teleporters") == null) WarpSystem.getInstance().getFileManager().loadFile("Teleporters", "/Memory/");
+        if (WarpSystem.getInstance().getFileManager().getFile("Teleporters") == null) WarpSystem.getInstance().getFileManager().loadFile("Teleporters", "/Memory/");
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("Teleporters");
 
         this.warpSigns.clear();
 
         WarpSystem.log("  > Loading WarpSigns");
         List<?> data = file.getConfig().getList("WarpSigns");
-        if(data != null) {
-            for(Object s : data) {
+        if (data != null) {
+            for (Object s : data) {
                 WarpSign warpSign = WarpSignFactory.build();
 
-                if(s instanceof Map) {
+                if (s instanceof Map) {
                     try {
                         JSON json = new JSON((Map<?, ?>) s);
                         warpSign.read(json);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         success = false;
                         continue;
                     }
-                } else if(s instanceof String) {
+                } else if (s instanceof String) {
                     try {
                         warpSign.read((JSON) new JSONParser().parse((String) s));
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         continue;
                     }
@@ -77,10 +77,10 @@ public class SignManager implements Manager {
     @Override
     public void save(boolean saver) {
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("Teleporters");
-        if(!saver) WarpSystem.log("  > Saving WarpSigns");
+        if (!saver) WarpSystem.log("  > Saving WarpSigns");
 
         List<JSON> data = new ArrayList<>();
-        for(WarpSign s : this.warpSigns.values()) {
+        for (WarpSign s : this.warpSigns.values()) {
             JSON json = new JSON();
             s.write(json);
             data.add(json);
@@ -89,7 +89,7 @@ public class SignManager implements Manager {
         file.getConfig().set("WarpSigns", data);
         file.saveConfig();
 
-        if(!saver) WarpSystem.log("    ...saved " + data.size() + " WarpSign(s)");
+        if (!saver) WarpSystem.log("    ...saved " + data.size() + " WarpSign(s)");
     }
 
     @Override
@@ -102,7 +102,7 @@ public class SignManager implements Manager {
     }
 
     private Location trimLocation(Location location) {
-        if(location instanceof de.codingair.codingapi.tools.Location) return new Location(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        if (location instanceof de.codingair.codingapi.tools.Location) return new Location(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 
         location.setX(location.getBlockX());
         location.setY(location.getBlockY());
@@ -118,7 +118,7 @@ public class SignManager implements Manager {
 
     public void removeWarpSign(WarpSign sign) {
         sign = this.warpSigns.remove(sign.getLocation());
-        if(sign != null) sign.destroy();
+        if (sign != null) sign.destroy();
     }
 
     public void addWarpSign(WarpSign sign) {

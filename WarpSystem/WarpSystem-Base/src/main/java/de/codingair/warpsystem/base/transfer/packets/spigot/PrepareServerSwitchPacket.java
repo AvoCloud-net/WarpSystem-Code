@@ -34,10 +34,10 @@ public class PrepareServerSwitchPacket implements RequestPacket<IntegerPacket> {
         out.writeUTF(server);
 
         byte options = (byte) (message != null ? 1 : 0);
-        if(ignoreLimit) options |= 1 << 1;
+        if (ignoreLimit) options |= 1 << 1;
         out.writeByte(options);
 
-        if(message != null) out.writeUTF(message);
+        if (message != null) out.writeUTF(message);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class PrepareServerSwitchPacket implements RequestPacket<IntegerPacket> {
         server = in.readUTF();
 
         byte options = in.readByte();
-        if((options & 1) != 0) message = in.readUTF();
+        if ((options & 1) != 0) message = in.readUTF();
         this.ignoreLimit = (options & (1 << 1)) != 0;
     }
 

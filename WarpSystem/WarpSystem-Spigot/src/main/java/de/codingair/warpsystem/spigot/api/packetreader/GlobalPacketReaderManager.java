@@ -14,14 +14,14 @@ public class GlobalPacketReaderManager {
 
     public void onEnable() {
         Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> {
-            for(Player player : Bukkit.getOnlinePlayers()) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
                 injectAll(player);
             }
         });
     }
 
     public void onDisable() {
-        for(Player player : Bukkit.getOnlinePlayers()) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
             uninjectAll(player);
         }
 
@@ -29,23 +29,23 @@ public class GlobalPacketReaderManager {
     }
 
     public void register(GlobalPacketReader reader, boolean update) {
-        if(update) injectAll(reader);
+        if (update) injectAll(reader);
         this.globalPacketReaderList.add(reader);
     }
 
     public void unregister(GlobalPacketReader reader, boolean update) {
-        if(update) uninjectAll(reader);
+        if (update) uninjectAll(reader);
         this.globalPacketReaderList.remove(reader);
     }
 
     public void injectAll(GlobalPacketReader reader) {
-        for(Player player : Bukkit.getOnlinePlayers()) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
             inject(player, reader);
         }
     }
 
     public void uninjectAll(GlobalPacketReader reader) {
-        for(Player player : Bukkit.getOnlinePlayers()) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
             uninject(player, reader);
         }
     }
@@ -74,8 +74,8 @@ public class GlobalPacketReaderManager {
 
     public void uninject(Player player, GlobalPacketReader reader) {
         List<PacketReader> l = API.getRemovables(player, PacketReader.class);
-        for(PacketReader r : l) {
-            if(r.getName() != null && r.getName().equals(reader.getName())) r.unInject();
+        for (PacketReader r : l) {
+            if (r.getName() != null && r.getName().equals(reader.getName())) r.unInject();
         }
         l.clear();
     }

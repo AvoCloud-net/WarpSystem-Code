@@ -10,9 +10,9 @@ import de.codingair.codingapi.tools.time.TimeList;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.api.StringFormatter;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableForSetupAssistant;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.v2.Teleport;
 import de.codingair.warpsystem.spigot.features.FeatureType;
@@ -34,11 +34,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@AvailableForSetupAssistant(type = "Portals", config = "Config")
-@Function(name = "Enabled", defaultValue = "true", configPath = "WarpSystem.Functions.Portals", clazz = Boolean.class)
-@Function(name = "Teleport message", defaultValue = "true", configPath = "WarpSystem.Send.Teleport_Message.Portals", clazz = Boolean.class)
-@Function(name = "Particle distance", defaultValue = "64", configPath = "WarpSystem.Portals.ParticleDistance", clazz = Integer.class)
-@Function(name = "Hologram update interval", defaultValue = "1m", configPath = "WarpSystem.Portals.HologramUpdateInterval", clazz = String.class)
+@AvailableForSetupAssistant (type = "Portals", config = "Config")
+@Function (name = "Enabled", defaultValue = "true", configPath = "WarpSystem.Functions.Portals", clazz = Boolean.class)
+@Function (name = "Teleport message", defaultValue = "true", configPath = "WarpSystem.Send.Teleport_Message.Portals", clazz = Boolean.class)
+@Function (name = "Particle distance", defaultValue = "64", configPath = "WarpSystem.Portals.ParticleDistance", clazz = Integer.class)
+@Function (name = "Hologram update interval", defaultValue = "1m", configPath = "WarpSystem.Portals.HologramUpdateInterval", clazz = String.class)
 public class PortalManager implements Manager {
     private final List<Portal> portals = new ArrayList<>();
     private final List<Player> noTeleport = new ArrayList<>();
@@ -76,16 +76,16 @@ public class PortalManager implements Manager {
 
         int fails = 0;
         List<?> l = file.getConfig().getList("PortalsV2");
-        if(l != null)
-            for(Object s : l) {
+        if (l != null)
+            for (Object s : l) {
                 Portal p = PortalFactory.build();
 
-                if(s instanceof Map) {
+                if (s instanceof Map) {
                     try {
                         JSON json = new JSON((Map<?, ?>) s);
                         p.read(json);
                         addPortal(p);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         fails++;
                         success = false;
@@ -93,7 +93,7 @@ public class PortalManager implements Manager {
                 }
             }
 
-        if(fails > 0) WarpSystem.log("    > " + fails + " Error(s)");
+        if (fails > 0) WarpSystem.log("    > " + fails + " Error(s)");
         WarpSystem.log("    ...got " + portals.size() + " Portal(s)");
 
         showAll();
@@ -103,43 +103,43 @@ public class PortalManager implements Manager {
 
     @Override
     public void save(boolean saver) {
-        if(!saver) WarpSystem.log("  > Saving Portals");
+        if (!saver) WarpSystem.log("  > Saving Portals");
 
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("Teleporters");
 
         List<JSON> data = new ArrayList<>();
 
-        for(Portal portal : this.portals) {
+        for (Portal portal : this.portals) {
             JSON json = new JSON();
             portal.write(json);
             data.add(json);
         }
 
-        if(!saver) hideAll();
+        if (!saver) hideAll();
 
         file.getConfig().set("PortalsV2", data);
         file.saveConfig();
 
-        if(!saver) WarpSystem.log("    ...saved " + data.size() + " Portal(s)");
+        if (!saver) WarpSystem.log("    ...saved " + data.size() + " Portal(s)");
     }
 
     @Override
     public void destroy() {
-        for(Portal portal : this.portals) {
+        for (Portal portal : this.portals) {
             portal.destroy();
         }
         this.portals.clear();
     }
 
     public String checkName(String name) {
-        if(!existsPortal(name)) return name;
+        if (!existsPortal(name)) return name;
 
         int num = 1;
 
         name = name.replaceAll("\\p{Blank}\\([0-9]{1,5}?\\)\\z", "");
         name += " (" + num++ + ")";
 
-        while(existsPortal(name)) {
+        while (existsPortal(name)) {
             name = name.replaceAll("\\p{Blank}\\([0-9]{1,5}?\\)\\z", "");
             name += " (" + num++ + ")";
         }
@@ -148,13 +148,13 @@ public class PortalManager implements Manager {
     }
 
     public void hideAll() {
-        for(Portal portal : this.portals) {
+        for (Portal portal : this.portals) {
             portal.setVisible(false);
         }
     }
 
     public void showAll() {
-        for(Portal portal : this.portals) {
+        for (Portal portal : this.portals) {
             portal.setVisible(true);
         }
     }
@@ -164,14 +164,14 @@ public class PortalManager implements Manager {
         portal.getListeners().add(new de.codingair.warpsystem.spigot.features.portals.utils.PortalListener() {
             @Override
             public void onEnter(Player player) {
-                if(WarpSystem.hasPermission(player, WarpSystem.PERMISSION_MODIFY_PORTALS)) {
-                    if(PortalManager.getInstance().isEditing(player) || API.getRemovable(player, PortalEditor.class) != null) {
+                if (WarpSystem.hasPermission(player, WarpSystem.PERMISSION_MODIFY_PORTALS)) {
+                    if (PortalManager.getInstance().isEditing(player) || API.getRemovable(player, PortalEditor.class) != null) {
                         player.setVelocity(player.getLocation().getDirection().normalize().multiply(-0.8));
                         return;
-                    } else if(API.getRemovable(player, GUI.class) != null) return;
-                    else if(WarpSystem.getInstance().getTeleportManager().isTeleporting(player)) return;
+                    } else if (API.getRemovable(player, GUI.class) != null) return;
+                    else if (WarpSystem.getInstance().getTeleportManager().isTeleporting(player)) return;
 
-                    if(goingToDelete.contains(player.getName())) {
+                    if (goingToDelete.contains(player.getName())) {
                         setGoingToDelete(player, 0);
                         noTeleport.add(player);
 
@@ -183,7 +183,7 @@ public class PortalManager implements Manager {
                             new DeleteGUI(player, new Callback<Boolean>() {
                                 @Override
                                 public void accept(Boolean delete) {
-                                    if(delete) {
+                                    if (delete) {
                                         portal.destroy();
                                         PortalManager.getInstance().getPortals().remove(portal);
                                         player.sendMessage(Lang.getPrefix() + Lang.get("Portal_Deleted"));
@@ -196,7 +196,7 @@ public class PortalManager implements Manager {
                             noTeleport.remove(player);
                         }, 4L);
                         return;
-                    } else if(goingToEdit.contains(player.getName())) {
+                    } else if (goingToEdit.contains(player.getName())) {
                         setGoingToEdit(player, 0);
                         noTeleport.add(player);
 
@@ -210,12 +210,12 @@ public class PortalManager implements Manager {
                     }
                 }
 
-                if(!WarpSystem.hasPermission(player, WarpSystem.PERMISSION_USE_PORTALS)) {
+                if (!WarpSystem.hasPermission(player, WarpSystem.PERMISSION_USE_PORTALS)) {
                     player.sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));
                     return;
                 }
 
-                if(!noTeleport.contains(player)) {
+                if (!noTeleport.contains(player)) {
                     portal.perform(player);
                 }
             }
@@ -223,7 +223,7 @@ public class PortalManager implements Manager {
             @Override
             public void onLeave(Player player) {
                 Teleport t = WarpSystem.getInstance().getTeleportManager().getTeleport(player);
-                if(t != null && t.getOptions().getOrigin() == Origin.Portal) {
+                if (t != null && t.getOptions().getOrigin() == Origin.Portal) {
                     WarpSystem.getInstance().getTeleportManager().cancelTeleport(player);
                 }
             }
@@ -236,19 +236,19 @@ public class PortalManager implements Manager {
     }
 
     public void setGoingToDelete(Player player, int time) {
-        if(time == 0) {
+        if (time == 0) {
             this.goingToDelete.remove(player.getName());
         } else {
-            if(this.goingToDelete.contains(player.getName())) this.goingToDelete.setExpire(player.getName(), time);
+            if (this.goingToDelete.contains(player.getName())) this.goingToDelete.setExpire(player.getName(), time);
             else this.goingToDelete.add(player.getName(), time);
         }
     }
 
     public void setGoingToEdit(Player player, int time) {
-        if(time == 0) {
+        if (time == 0) {
             this.goingToEdit.remove(player.getName());
         } else {
-            if(this.goingToEdit.contains(player.getName())) this.goingToEdit.setExpire(player.getName(), time);
+            if (this.goingToEdit.contains(player.getName())) this.goingToEdit.setExpire(player.getName(), time);
             else this.goingToEdit.add(player.getName(), time);
         }
     }
@@ -262,11 +262,11 @@ public class PortalManager implements Manager {
     }
 
     public Portal getPortal(String name) {
-        if(name == null) return null;
+        if (name == null) return null;
         name = ChatColor.stripColor(name).toLowerCase();
 
-        for(Portal portal : this.portals) {
-            if(ChatColor.stripColor(portal.getDisplayName()).toLowerCase().equals(name)) return portal;
+        for (Portal portal : this.portals) {
+            if (ChatColor.stripColor(portal.getDisplayName()).toLowerCase().equals(name)) return portal;
         }
 
         return null;
@@ -291,63 +291,63 @@ public class PortalManager implements Manager {
         boolean success = true;
 
         List<?> l = file.getConfig().getList("Portals");
-        if(l != null)
-            for(Object s : l) {
+        if (l != null)
+            for (Object s : l) {
                 EffectPortal effectPortal = new EffectPortal();
                 EffectPortal link = new EffectPortal();
 
-                if(s instanceof Map) {
+                if (s instanceof Map) {
                     try {
                         JSON json = new JSON((Map<?, ?>) s);
                         effectPortal.read(json, link);
                         effectPortals.add(effectPortal);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         success = false;
                     }
-                } else if(s instanceof String) {
+                } else if (s instanceof String) {
                     try {
                         effectPortal.read((JSON) new JSONParser().parse((String) s), link);
                         effectPortals.add(effectPortal);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         success = false;
                     }
                 }
 
-                if(link.name != null) effectPortals.add(link);
+                if (link.name != null) effectPortals.add(link);
             }
 
         List<EffectPortal> temp = new ArrayList<>(effectPortals);
-        for(EffectPortal p : temp) {
-            if(p.linkHelper == null) continue;
+        for (EffectPortal p : temp) {
+            if (p.linkHelper == null) continue;
 
-            for(EffectPortal ep : effectPortals) {
-                if(p.linkHelper.equals(ep.location)) {
+            for (EffectPortal ep : effectPortals) {
+                if (p.linkHelper.equals(ep.location)) {
                     ep.link = p;
                     p.link = ep;
 
                     ep.linkHelper = null;
                     p.linkHelper = null;
 
-                    if(!p.useLink && !ep.useLink) p.useLink = true;
+                    if (!p.useLink && !ep.useLink) p.useLink = true;
                     break;
                 }
             }
         }
         temp.clear();
 
-        for(EffectPortal effectPortal : effectPortals) {
+        for (EffectPortal effectPortal : effectPortals) {
             Portal portal = effectPortal.convert();
 
             String name = checkName(portal.getDisplayName());
-            if(!name.equals(portal.getDisplayName())) {
+            if (!name.equals(portal.getDisplayName())) {
                 portal.setDisplayName(name);
 
-                if(effectPortal.link != null) {
+                if (effectPortal.link != null) {
                     Portal other = getPortal(effectPortal.link.name);
 
-                    if(other != null) other.getDestination().setId(name);
+                    if (other != null) other.getDestination().setId(name);
                     else effectPortal.link.getDestination().setId(name);
                 }
             }
@@ -356,7 +356,7 @@ public class PortalManager implements Manager {
             effectPortal.destroy();
         }
 
-        if(!effectPortals.isEmpty()) WarpSystem.log("    ...imported " + effectPortals.size() + " EffectPortal(s)");
+        if (!effectPortals.isEmpty()) WarpSystem.log("    ...imported " + effectPortals.size() + " EffectPortal(s)");
         effectPortals.clear();
         file.getConfig().set("Portals", null);
         file.saveConfig();
@@ -371,38 +371,38 @@ public class PortalManager implements Manager {
         boolean success = true;
 
         List<?> l = file.getConfig().getList("NativePortals");
-        if(l != null)
-            for(Object s : l) {
+        if (l != null)
+            for (Object s : l) {
                 NativePortal p = new NativePortal();
 
-                if(s instanceof Map) {
+                if (s instanceof Map) {
                     try {
                         JSON json = new JSON((Map<?, ?>) s);
                         p.read(json);
                         portals.add(p);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         success = false;
                     }
-                } else if(s instanceof String) {
+                } else if (s instanceof String) {
                     try {
                         p.read((JSON) new JSONParser().parse((String) s));
                         portals.add(p);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         success = false;
                     }
                 }
             }
 
-        for(NativePortal portal : portals) {
+        for (NativePortal portal : portals) {
             Portal p = portal.convert();
             p.setDisplayName(checkName(p.getDisplayName()));
             addPortal(p);
             portal.destroy();
         }
 
-        if(!portals.isEmpty()) WarpSystem.log("    ...imported " + portals.size() + " NativePortals(s)");
+        if (!portals.isEmpty()) WarpSystem.log("    ...imported " + portals.size() + " NativePortals(s)");
         portals.clear();
         file.getConfig().set("NativePortals", null);
         file.saveConfig();

@@ -26,7 +26,7 @@ public class ServerManager {
 
     public void onUpdate() {
         Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> {
-            if(FeatureType.SIGNS.isActive()) SignManager.getInstance().updateAll();
+            if (FeatureType.SIGNS.isActive()) SignManager.getInstance().updateAll();
         });
     }
 }

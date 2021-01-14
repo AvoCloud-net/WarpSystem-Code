@@ -11,7 +11,7 @@ public class VaultCurrency implements Adapter {
 
     public VaultCurrency() {
         RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
-        if(economyProvider != null) {
+        if (economyProvider != null) {
             economy = economyProvider.getProvider();
         }
     }

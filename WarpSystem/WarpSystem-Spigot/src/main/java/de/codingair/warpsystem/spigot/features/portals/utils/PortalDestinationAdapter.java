@@ -2,8 +2,8 @@ package de.codingair.warpsystem.spigot.features.portals.utils;
 
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.warpsystem.api.Result;
-import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.listeners.TeleportListener;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.SimulatedTeleportResult;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.DestinationAdapter;
 import de.codingair.warpsystem.spigot.features.portals.managers.PortalManager;
@@ -20,25 +20,26 @@ public class PortalDestinationAdapter extends DestinationAdapter {
     public boolean teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback) {
         Location location = buildLocation(id);
 
-        if(location == null) {
+        if (location == null) {
             player.sendMessage(Lang.getPrefix() + Lang.get("WARP_DOES_NOT_EXISTS"));
-            if(callback != null) callback.accept(Result.DESTINATION_DOES_NOT_EXIST);
+            if (callback != null) callback.accept(Result.DESTINATION_DOES_NOT_EXIST);
             return false;
         }
 
-        if(location.getWorld() == null) {
+        if (location.getWorld() == null) {
             player.sendMessage(Lang.getPrefix() + Lang.get("World_Not_Exists"));
-            if(callback != null) callback.accept(Result.WORLD_DOES_NOT_EXIST);
+            if (callback != null) callback.accept(Result.WORLD_DOES_NOT_EXIST);
             return false;
         } else {
             Location finalLoc = prepare(player, location);
-            if(silent) TeleportListener.TELEPORTS.put(player, finalLoc);
+            if (silent) TeleportListener.TELEPORTS.put(player, finalLoc);
 
             CompletableFuture<Boolean> f = PaperLib.teleportAsync(player, finalLoc, PlayerTeleportEvent.TeleportCause.PLUGIN);
-            if(callback != null) f.thenAccept(b -> {
-                if(b) callback.accept(Result.SUCCESS);
+            if (callback != null) f.thenAccept(b -> {
+                if (b) callback.accept(Result.SUCCESS);
                 else callback.accept(Result.ERROR);
-            });callback.accept(Result.SUCCESS);
+            });
+            callback.accept(Result.SUCCESS);
             return true;
         }
     }
@@ -56,7 +57,7 @@ public class PortalDestinationAdapter extends DestinationAdapter {
     @Override
     public de.codingair.codingapi.tools.Location buildLocation(String id) {
         Portal p = PortalManager.getInstance().getPortal(id);
-        if(p == null) return null;
+        if (p == null) return null;
 
         return p.getSpawn();
     }

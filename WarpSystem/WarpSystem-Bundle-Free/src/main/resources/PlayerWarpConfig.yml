@@ -26,22 +26,22 @@ PlayerWarps:
     Allow_Teleport_Messages: true
     Allow_Description: true
     PlayerWarps_Command_Aliases:
-    - pwarps
+      - pwarps
     PlayerWarp_Command_Aliases:
-    - pwarp
+      - pwarp
     Command_References:
-    - tempwarps
-    - twarps
-    - tempwarp
-    - twarp
+      - tempwarps
+      - twarps
+      - tempwarp
+      - twarp
     #Listed names will be blocked
-    Name_Blacklist: []
+    Name_Blacklist: [ ]
     #Listed worlds will be blocked
-    World_Blacklist: []
+    World_Blacklist: [ ]
     #PREMIUM
     Categories:
       Enabled: false
-      Classes: []
+      Classes: [ ]
   #Time format: "0d, 0h, 0m, 0s" - Unnecessary values can be removed (examples: "1d, 5m", "10s", "5h")!
   Time:
     Standard_Value: 1h

@@ -46,7 +46,7 @@ public class GChooseIconType extends GUI {
 
             @Override
             public void onInvCloseEvent(InventoryCloseEvent e) {
-                if(!set) {
+                if (!set) {
                     Sound.ENTITY_ITEM_BREAK.playSound(p);
                     callback.accept(null);
                 }

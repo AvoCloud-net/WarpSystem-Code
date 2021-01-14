@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.spigot.features.randomteleports.utils;
 
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
 import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
 import org.bukkit.Bukkit;
@@ -24,8 +24,8 @@ public class WorldOption implements Serializable {
     }
 
     @Override
-    public boolean read(DataWriter d) {
-        if(target != null) target.clear();
+    public boolean read(DataMask d) {
+        if (target != null) target.clear();
 
         this.startX = d.getDouble("startX", world == null ? 0 : world.getSpawnLocation().getX());
         this.startY = d.getDouble("startY", world == null ? 0 : world.getSpawnLocation().getY());
@@ -53,19 +53,19 @@ public class WorldOption implements Serializable {
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         throw new IllegalStateException("WorldOption data will not be saved.");
     }
 
     @Override
     public void destroy() {
-        if(this.target != null) this.target.clear();
+        if (this.target != null) this.target.clear();
     }
 
     public void prepareStart(Location l, World execution) {
         l.setWorld(getRandomWorld(execution));
 
-        if(usesWorldSpawn()) {
+        if (usesWorldSpawn()) {
             Location spawn = execution.getSpawnLocation();
             l.setX(spawn.getX());
             l.setY(spawn.getY());
@@ -111,16 +111,16 @@ public class WorldOption implements Serializable {
 
     private List<World> prepare() {
         List<World> l = new ArrayList<>();
-        for(String s : this.target) {
+        for (String s : this.target) {
             World w = Bukkit.getWorld(s);
-            if(w != null) l.add(w);
+            if (w != null) l.add(w);
         }
         return l;
     }
 
     public World getRandomWorld(World execution) {
         List<World> l = prepare();
-        if(l.isEmpty()) return execution;
+        if (l.isEmpty()) return execution;
 
         execution = l.get((int) (Math.random() * l.size()));
         l.clear();

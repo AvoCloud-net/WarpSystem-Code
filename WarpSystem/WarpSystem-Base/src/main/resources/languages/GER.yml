@@ -457,10 +457,10 @@ Enter_Something_between: '&7Bitte gib etwas zwischen &c%X%&7 und &c%Y%&7 ein.'
 Free: 'Frei'
 Characters: 'Buchstabe(n)'
 PlayerWarp_Trusted_Benefits:
-- ''
-- '&7Vorteile:'
-- '&7- Keine Teleportkosten'
-- '&7- Privaten PlayerWarp Zugang'
+  - ''
+  - '&7Vorteile:'
+  - '&7- Keine Teleportkosten'
+  - '&7- Privaten PlayerWarp Zugang'
 Yourself_Trusted_Info: '&7Du kannst &cdich &7selber &cnicht &7zum &cTrusted Mitglied &7machen.'
 Already_Trusted: '&7Dieser Spieler ist &cbereits&7 ein &cTrusted Mitglied&7.'
 Refund: 'Erstattung'
@@ -468,9 +468,9 @@ Construction_Costs: 'Erstellungskosten'
 Processing_Costs: 'Bearbeitungskosten'
 Classes: Klassen
 PlayerWarp_Classes:
-- ''
-- '&7Wähle %MIN% bis %MAX% Klassen, um deinen Warp'
-- '&7näher zu beschreiben.'
+  - ''
+  - '&7Wähle %MIN% bis %MAX% Klassen, um deinen Warp'
+  - '&7näher zu beschreiben.'
 Filter: 'Filter'
 Filter_Own_Warps: "eigene Warps"
 Filter_All_Warps: "alle Warps"

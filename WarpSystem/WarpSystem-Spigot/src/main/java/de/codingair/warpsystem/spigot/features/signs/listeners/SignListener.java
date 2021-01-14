@@ -29,28 +29,28 @@ import org.bukkit.inventory.ItemStack;
 
 public class SignListener implements Listener {
     private final SignManager manager;
-    
+
     public SignListener() {
         manager = WarpSystem.getInstance().getDataManager().getManager(FeatureType.SIGNS);
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    @EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onInteract(PlayerInteractEvent e) {
-        if(!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
+        if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
 
-        if(e.getClickedBlock() == null || e.getClickedBlock().getState() instanceof Sign) {
+        if (e.getClickedBlock() == null || e.getClickedBlock().getState() instanceof Sign) {
             Sign s = e.getClickedBlock() == null ? null : (Sign) e.getClickedBlock().getState();
 
             WarpSign sign = manager.getByLocation(s.getLocation());
-            if(sign != null) {
-                if(!e.getPlayer().isSneaking() && e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_WARP_SIGNS) && e.getPlayer().getItemInHand().getType().name().toLowerCase().contains("sign")) {
+            if (sign != null) {
+                if (!e.getPlayer().isSneaking() && e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_WARP_SIGNS) && e.getPlayer().getInventory().getItem(e.getPlayer().getInventory().getHeldItemSlot()).getType().name().toLowerCase().contains("sign")) {
                     sign.editMode();
                     sign.setEditing(true);
                     Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> new WarpSignGUI(e.getPlayer(), sign).open(), 1L);
                     return;
                 }
 
-                if(!WarpSystem.hasPermission(e.getPlayer(), WarpSystem.PERMISSION_USE_WARP_SIGNS)) {
+                if (!WarpSystem.hasPermission(e.getPlayer(), WarpSystem.PERMISSION_USE_WARP_SIGNS)) {
                     e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));
                     return;
                 }
@@ -60,22 +60,22 @@ public class SignListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    @EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onBreak(BlockBreakEvent e) {
         try {
             Sign s = e.getBlock() == null ? null : (Sign) e.getBlock().getState();
-            if(s == null) return;
+            if (s == null) return;
             WarpSign sign = manager.getByLocation(s.getLocation());
-            if(sign == null) return;
+            if (sign == null) return;
 
-            if(!e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_WARP_SIGNS)) {
+            if (!e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_WARP_SIGNS)) {
                 e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));
                 e.setCancelled(true);
-            } else if(!e.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+            } else if (!e.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
                 e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Creative_Mode_Needed"));
                 e.setCancelled(true);
             } else {
-                for(WarpSignGUI gui : API.getRemovables(WarpSignGUI.class)) {
+                for (WarpSignGUI gui : API.getRemovables(WarpSignGUI.class)) {
                     gui.close();
                     gui.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("WarpSign_Removed"));
                 }
@@ -83,7 +83,7 @@ public class SignListener implements Listener {
                 manager.removeWarpSign(sign);
                 e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("WarpSign_Removed"));
             }
-        } catch(Exception ignored) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -91,16 +91,16 @@ public class SignListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent e) {
         Block b = e.getBlock();
 
-        if(b.getState() instanceof Sign) {
-            if(Version.get().isBiggerThan(13)) {
+        if (b.getState() instanceof Sign) {
+            if (Version.get().isBiggerThan(13)) {
                 ItemStack item = e.getItemInHand();
 
                 org.bukkit.Location location = NBTHelper.fromSign(item);
-                
-                if(location != null) {
+
+                if (location != null) {
                     WarpSign original = manager.getByLocation(location);
 
-                    if(original != null) {
+                    if (original != null) {
                         //clone
                         WarpSign clone = original.cloneAt(new Location(b.getLocation()));
                         manager.addWarpSign(clone);
@@ -115,21 +115,21 @@ public class SignListener implements Listener {
     public void onPick(PlayerPickItemEvent e) {
         Block b = e.getFrom();
 
-        if(b.getState() instanceof Sign && e.isNBTCopy()) {
+        if (b.getState() instanceof Sign && e.isNBTCopy()) {
             WarpSign sign = manager.getByLocation(b.getLocation());
 
-            if(sign != null) {
+            if (sign != null) {
                 //apply nbt
                 NBTHelper.applyNBT(e.getItemStack(), sign);
             }
         }
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    @EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onPlace(SignChangeEvent e) {
-        if(!e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_WARP_SIGNS)) return;
+        if (!e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_WARP_SIGNS)) return;
 
-        if("[warps]".equalsIgnoreCase(e.getLine(0))) {
+        if ("[warps]".equalsIgnoreCase(e.getLine(0))) {
             WarpSign sign = WarpSignFactory.build(Location.getByLocation(e.getBlock().getLocation()), new Destination());
             Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> new WarpSignGUI(e.getPlayer(), sign).open(), 1L);
         }

@@ -50,7 +50,7 @@ public class PAppearance extends PageItem {
             public ItemStack craftItem() {
                 ItemStack item = p.getInventory().getItem(p.getInventory().getHeldItemSlot());
                 ItemBuilder inHand = null;
-                if(item != null) inHand = new ItemBuilder(p.getInventory().getItem(p.getInventory().getHeldItemSlot()));
+                if (item != null) inHand = new ItemBuilder(p.getInventory().getItem(p.getInventory().getHeldItemSlot()));
 
                 String info = item == null || item.getType() == Material.AIR ?
                         "§c" + Lang.get("No_Item_In_Hand") :
@@ -67,12 +67,12 @@ public class PAppearance extends PageItem {
 
             @Override
             public void onClick(InventoryClickEvent e, Player player) {
-                if(e.isLeftClick()) {
+                if (e.isLeftClick()) {
                     ItemStack item = p.getInventory().getItem(p.getInventory().getHeldItemSlot());
                     ItemBuilder inHand = null;
-                    if(item != null) inHand = new ItemBuilder(p.getInventory().getItem(p.getInventory().getHeldItemSlot()));
+                    if (item != null) inHand = new ItemBuilder(p.getInventory().getItem(p.getInventory().getHeldItemSlot()));
 
-                    if(icon.getItemBuilder().equals(inHand)) return;
+                    if (icon.getItemBuilder().equals(inHand)) return;
 
                     icon.changeItem(player.getInventory().getItem(player.getInventory().getHeldItemSlot()));
                     getLast().updateShowIcon();
@@ -107,7 +107,7 @@ public class PAppearance extends PageItem {
             @Override
             public ItemStack craftItem() {
                 ItemStack sparkle;
-                if(icon.getItemBuilder().getEnchantments() == null || icon.getItemBuilder().getEnchantments().size() == 0) {
+                if (icon.getItemBuilder().getEnchantments() == null || icon.getItemBuilder().getEnchantments().size() == 0) {
                     sparkle = new ItemBuilder(Material.BLAZE_POWDER).setName("§6§n" + Lang.get("Sparkle"))
                             .setLore("", "§3" + Lang.get("Leftclick") + ": §a" + Lang.get("Enable"))
                             .getItem();
@@ -122,7 +122,7 @@ public class PAppearance extends PageItem {
 
             @Override
             public void onClick(InventoryClickEvent e, Player player) {
-                if(icon.getItemBuilder().getEnchantments() == null || icon.getItemBuilder().getEnchantments().size() == 0) {
+                if (icon.getItemBuilder().getEnchantments() == null || icon.getItemBuilder().getEnchantments().size() == 0) {
                     icon.setItem(icon.getItemBuilder().setHideStandardLore(true).addEnchantment(Enchantment.DAMAGE_ALL, 1).setHideEnchantments(true).getItem());
                 } else {
                     icon.setItem(icon.getItemBuilder().setHideStandardLore(true).removeEnchantments().getItem());

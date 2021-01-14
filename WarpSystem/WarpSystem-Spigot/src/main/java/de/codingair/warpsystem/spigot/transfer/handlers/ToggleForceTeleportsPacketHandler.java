@@ -14,6 +14,6 @@ public class ToggleForceTeleportsPacketHandler implements PacketHandler<ToggleFo
     @Override
     public void process(@NotNull ToggleForceTeleportsPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         Player player = Bukkit.getPlayer(packet.getPlayer());
-        if(player != null) TeleportCommandManager.getInstance().setDenyForceTps(player, packet.isAutoDenyTp());
+        if (player != null) TeleportCommandManager.getInstance().setDenyForceTps(player, packet.isAutoDenyTp());
     }
 }

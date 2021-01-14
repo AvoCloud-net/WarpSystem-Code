@@ -28,7 +28,7 @@ public class StartTeleportToPlayerPacketHandler implements ResponsiblePacketHand
     public @NotNull CompletableFuture<IntegerPacket> response(@NotNull StartTeleportToPlayerPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         Player player = Bukkit.getPlayerExact(packet.getPlayer());
 
-        if(player == null) {
+        if (player == null) {
             return CompletableFuture.completedFuture(new IntegerPacket(1));
         }
 
@@ -42,9 +42,9 @@ public class StartTeleportToPlayerPacketHandler implements ResponsiblePacketHand
             @Override
             public void accept(Result result) {
                 //move
-                if(result == Result.SUCCESS) {
+                if (result == Result.SUCCESS) {
                     WarpSystem.getDataHandler().send(new PrepareTeleportPlayerToPlayerPacket(player.getName(), packet.getTo()).setCosts(TeleportCommandManager.getInstance().getTpaCosts()), player).thenAccept(integerPacket -> {
-                        if(integerPacket.a() != 0) {
+                        if (integerPacket.a() != 0) {
                             player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_not_valid").replace("%PLAYER%", ChatColor.stripColor(packet.getToDisplayName())));
                         }
                     });

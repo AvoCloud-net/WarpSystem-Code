@@ -30,15 +30,15 @@ public class CostsButton extends SyncAnvilGUIButton {
 
     @Override
     public ItemStack craftItem() {
-        if(object == null) return new ItemStack(Material.AIR);
+        if (object == null) return new ItemStack(Material.AIR);
 
         CostsAction action = object.getAction(Action.COSTS);
         double costs = action == null ? 0 : action.getValue();
         String costsPrint = costs + "";
-        if(costsPrint.endsWith(".0")) costsPrint = costsPrint.substring(0, costsPrint.length() - 2);
+        if (costsPrint.endsWith(".0")) costsPrint = costsPrint.substring(0, costsPrint.length() - 2);
 
         List<String> lore = new ArrayList<>();
-        if(costs != 0) lore.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
+        if (costs != 0) lore.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
 
         return new ItemBuilder(XMaterial.GOLD_NUGGET)
                 .setName("§6§n" + Lang.get("Costs"))
@@ -50,11 +50,11 @@ public class CostsButton extends SyncAnvilGUIButton {
 
     @Override
     public void onClick(AnvilClickEvent e) {
-        if(!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
+        if (!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
 
         String input = e.getInput(false);
 
-        if(input == null) {
+        if (input == null) {
             e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Enter_A_Positive_Number"));
             return;
         }
@@ -62,19 +62,19 @@ public class CostsButton extends SyncAnvilGUIButton {
         double costs;
         try {
             costs = Double.parseDouble(input);
-        } catch(NumberFormatException ex) {
+        } catch (NumberFormatException ex) {
             e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Enter_A_Positive_Number"));
             return;
         }
 
-        if(costs < 0) {
+        if (costs < 0) {
             e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Enter_A_Positive_Number"));
             return;
         }
 
         e.setClose(true);
 
-        if(costs == 0) {
+        if (costs == 0) {
             object.removeAction(Action.COSTS);
         } else {
             object.addAction(new CostsAction(costs));
@@ -90,7 +90,7 @@ public class CostsButton extends SyncAnvilGUIButton {
 
     @Override
     public ItemStack craftAnvilItem(ClickType trigger) {
-        if(object == null) return new ItemStack(Material.AIR);
+        if (object == null) return new ItemStack(Material.AIR);
 
         CostsAction action = object.getAction(Action.COSTS);
         double costs = action == null ? 0 : action.getValue();
@@ -100,7 +100,7 @@ public class CostsButton extends SyncAnvilGUIButton {
 
     @Override
     public void onOtherClick(InventoryClickEvent e) {
-        if(e.getClick() == ClickType.RIGHT) {
+        if (e.getClick() == ClickType.RIGHT) {
             object.removeAction(Action.COSTS);
             update();
         }

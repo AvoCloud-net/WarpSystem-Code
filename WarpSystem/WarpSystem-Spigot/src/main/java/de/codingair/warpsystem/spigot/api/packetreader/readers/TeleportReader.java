@@ -21,7 +21,7 @@ public class TeleportReader implements GlobalPacketReader {
 
     @Override
     public boolean readPacket(Player player, Object packet) {
-        if(packet.getClass().equals(clazz)) {
+        if (packet.getClass().equals(clazz)) {
             Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> Bukkit.getPluginManager().callEvent(new PlayerTeleportAcceptEvent(player)));
         }
         return false;

@@ -2,7 +2,7 @@ package de.codingair.warpsystem.base.transfer.packets.spigot.utils;
 
 import de.codingair.codingapi.tools.io.JSON.BungeeJSON;
 import de.codingair.codingapi.tools.io.lib.JSONArray;
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.warpsystem.base.transfer.utils.serializeable.Serializable;
 
 import java.io.DataInputStream;
@@ -45,86 +45,86 @@ public class PlayerWarpData implements Serializable, de.codingair.codingapi.tool
     }
 
     public void apply(PlayerWarpData w) {
-        if(w.trusted != null) {
-            if(this.trusted == null) this.trusted = new ArrayList<>(w.trusted);
+        if (w.trusted != null) {
+            if (this.trusted == null) this.trusted = new ArrayList<>(w.trusted);
             else {
                 this.trusted.clear();
                 this.trusted.addAll(w.trusted);
             }
         }
 
-        if(w.description != null) {
-            if(this.description == null) this.description = new ArrayList<>(w.description);
+        if (w.description != null) {
+            if (this.description == null) this.description = new ArrayList<>(w.description);
             else {
                 this.description.clear();
                 this.description.addAll(w.description);
             }
         }
 
-        if(w.classes != null) {
-            if(this.classes == null) this.classes = new ArrayList<>(w.classes);
+        if (w.classes != null) {
+            if (this.classes == null) this.classes = new ArrayList<>(w.classes);
             else {
                 this.classes.clear();
                 this.classes.addAll(w.classes);
             }
         }
 
-        if(w.owner != null) this.owner = w.owner;
-        if(w.name != null) this.name = w.name;
-        if(w.teleportMessage != null) this.teleportMessage = w.teleportMessage;
+        if (w.owner != null) this.owner = w.owner;
+        if (w.name != null) this.name = w.name;
+        if (w.teleportMessage != null) this.teleportMessage = w.teleportMessage;
 
-        if(w.type != null) this.type = w.type;
-        if(w.skullId != null) this.skullId = w.skullId;
-        if(w.rgb != null) this.rgb = w.rgb;
-        if(w.data != null) this.data = w.data;
+        if (w.type != null) this.type = w.type;
+        if (w.skullId != null) this.skullId = w.skullId;
+        if (w.rgb != null) this.rgb = w.rgb;
+        if (w.data != null) this.data = w.data;
 
-        if(w.isPublic != null) this.isPublic = w.isPublic;
-        if(w.teleportCosts != null) this.teleportCosts = w.teleportCosts;
-        if(w.inactiveSales != null) this.inactiveSales = w.inactiveSales;
-        if(w.born != null) this.born = w.born;
-        if(w.started != null) this.started = w.started;
-        if(w.time != null) this.time = w.time;
-        if(w.creatorKey != null) this.creatorKey = w.creatorKey;
-        if(w.notify != null) this.notify = w.notify;
+        if (w.isPublic != null) this.isPublic = w.isPublic;
+        if (w.teleportCosts != null) this.teleportCosts = w.teleportCosts;
+        if (w.inactiveSales != null) this.inactiveSales = w.inactiveSales;
+        if (w.born != null) this.born = w.born;
+        if (w.started != null) this.started = w.started;
+        if (w.time != null) this.time = w.time;
+        if (w.creatorKey != null) this.creatorKey = w.creatorKey;
+        if (w.notify != null) this.notify = w.notify;
 
-        if(w.performed != null) this.performed = w.performed;
-        if(w.server != null) this.server = w.server;
-        if(w.world != null) this.world = w.world;
-        if(w.x != null) this.x = w.x;
-        if(w.y != null) this.y = w.y;
-        if(w.z != null) this.z = w.z;
-        if(w.yaw != null) this.yaw = w.yaw;
-        if(w.pitch != null) this.pitch = w.pitch;
+        if (w.performed != null) this.performed = w.performed;
+        if (w.server != null) this.server = w.server;
+        if (w.world != null) this.world = w.world;
+        if (w.x != null) this.x = w.x;
+        if (w.y != null) this.y = w.y;
+        if (w.z != null) this.z = w.z;
+        if (w.yaw != null) this.yaw = w.yaw;
+        if (w.pitch != null) this.pitch = w.pitch;
     }
 
     public PlayerWarpUpdate diff(PlayerWarpData oldData) {
         PlayerWarpUpdate u = new PlayerWarpUpdate(oldData.getName(), oldData.getOwner().getId());
         u.apply(this);
 
-        if(Objects.equals(owner, oldData.owner)) u.owner = null;
-        if(Objects.equals(name, oldData.name)) u.name = null;
-        if(Objects.equals(teleportMessage, oldData.teleportMessage)) u.teleportMessage = null;
-        if(Objects.equals(type, oldData.type)) u.type = null;
-        if(Objects.equals(skullId, oldData.skullId)) u.skullId = null;
-        if(Objects.equals(rgb, oldData.rgb)) u.rgb = null;
-        if(Objects.equals(data, oldData.data)) u.data = null;
-        if(Objects.equals(teleportCosts, oldData.teleportCosts)) u.teleportCosts = null;
-        if(Objects.equals(inactiveSales, oldData.inactiveSales)) u.inactiveSales = null;
-        if(Objects.equals(born, oldData.born)) u.born = null;
-        if(Objects.equals(started, oldData.started)) u.started = null;
-        if(Objects.equals(time, oldData.time)) u.time = null;
-        if(Objects.equals(creatorKey, oldData.creatorKey)) u.creatorKey = null;
-        if(Objects.equals(performed, oldData.performed)) u.performed = null;
-        if(Objects.equals(server, oldData.server)) u.server = null;
-        if(Objects.equals(world, oldData.world)) u.world = null;
-        if(Objects.equals(x, oldData.x)) u.x = null;
-        if(Objects.equals(y, oldData.y)) u.y = null;
-        if(Objects.equals(z, oldData.z)) u.z = null;
-        if(Objects.equals(yaw, oldData.yaw)) u.yaw = null;
-        if(Objects.equals(pitch, oldData.pitch)) u.pitch = null;
-        if(Objects.equals(classes, oldData.classes)) u.classes = null;
-        if(Objects.equals(trusted, oldData.trusted)) u.trusted = null;
-        if(Objects.equals(description, oldData.description)) u.description = null;
+        if (Objects.equals(owner, oldData.owner)) u.owner = null;
+        if (Objects.equals(name, oldData.name)) u.name = null;
+        if (Objects.equals(teleportMessage, oldData.teleportMessage)) u.teleportMessage = null;
+        if (Objects.equals(type, oldData.type)) u.type = null;
+        if (Objects.equals(skullId, oldData.skullId)) u.skullId = null;
+        if (Objects.equals(rgb, oldData.rgb)) u.rgb = null;
+        if (Objects.equals(data, oldData.data)) u.data = null;
+        if (Objects.equals(teleportCosts, oldData.teleportCosts)) u.teleportCosts = null;
+        if (Objects.equals(inactiveSales, oldData.inactiveSales)) u.inactiveSales = null;
+        if (Objects.equals(born, oldData.born)) u.born = null;
+        if (Objects.equals(started, oldData.started)) u.started = null;
+        if (Objects.equals(time, oldData.time)) u.time = null;
+        if (Objects.equals(creatorKey, oldData.creatorKey)) u.creatorKey = null;
+        if (Objects.equals(performed, oldData.performed)) u.performed = null;
+        if (Objects.equals(server, oldData.server)) u.server = null;
+        if (Objects.equals(world, oldData.world)) u.world = null;
+        if (Objects.equals(x, oldData.x)) u.x = null;
+        if (Objects.equals(y, oldData.y)) u.y = null;
+        if (Objects.equals(z, oldData.z)) u.z = null;
+        if (Objects.equals(yaw, oldData.yaw)) u.yaw = null;
+        if (Objects.equals(pitch, oldData.pitch)) u.pitch = null;
+        if (Objects.equals(classes, oldData.classes)) u.classes = null;
+        if (Objects.equals(trusted, oldData.trusted)) u.trusted = null;
+        if (Objects.equals(description, oldData.description)) u.description = null;
 
         return u;
     }
@@ -148,31 +148,31 @@ public class PlayerWarpData implements Serializable, de.codingair.codingapi.tool
         this.owner.write(o);                                            //owner
         o.writeUTF(this.name);                                          //name
         o.writeByte(description.size());                                //description
-        for(String s : description) {
+        for (String s : description) {
             o.writeUTF(s);
         }
-        if(teleportMessage != null) o.writeUTF(teleportMessage);        //teleportMessage
+        if (teleportMessage != null) o.writeUTF(teleportMessage);        //teleportMessage
 
         o.writeUTF(type);                                               //item
-        if(data != null) o.writeByte(data);
-        if(rgb != null) o.writeInt(rgb);
-        if(skullId != null) o.writeUTF(skullId);
+        if (data != null) o.writeByte(data);
+        if (rgb != null) o.writeInt(rgb);
+        if (skullId != null) o.writeUTF(skullId);
 
-        if(teleportCosts != null) o.writeDouble(teleportCosts);         //teleport costs
+        if (teleportCosts != null) o.writeDouble(teleportCosts);         //teleport costs
         o.writeByte(inactiveSales == null ? 0 : inactiveSales);         //inactive sales
         o.writeBoolean(notify);                                         //notify
         o.writeLong(born);                                              //born
-        if(!born.equals(started)) o.writeLong(started);                 //started
-        if(isTimeDependent()) o.writeLong(time);                       //time
-        if(creatorKey != null) o.writeUTF(creatorKey);                  //creator key
+        if (!born.equals(started)) o.writeLong(started);                 //started
+        if (isTimeDependent()) o.writeLong(time);                       //time
+        if (creatorKey != null) o.writeUTF(creatorKey);                  //creator key
 
         o.writeByte(trusted.size());                                    //trusted members
-        for(User user : trusted) {
+        for (User user : trusted) {
             user.write(o);
         }
 
         o.writeByte(classes.size());                                    //classes
-        for(byte c : classes) {
+        for (byte c : classes) {
             o.writeByte(c);
         }
 
@@ -188,13 +188,13 @@ public class PlayerWarpData implements Serializable, de.codingair.codingapi.tool
 
     @Override
     public void read(DataInputStream i) throws IOException {
-        if(this.trusted == null) this.trusted = new ArrayList<>();
+        if (this.trusted == null) this.trusted = new ArrayList<>();
         else this.trusted.clear();
 
-        if(this.classes == null) this.classes = new ArrayList<>();
+        if (this.classes == null) this.classes = new ArrayList<>();
         else this.classes.clear();
 
-        if(this.description == null) this.description = new ArrayList<>();
+        if (this.description == null) this.description = new ArrayList<>();
         else this.description.clear();
 
         byte options = i.readByte();                                    //options
@@ -212,34 +212,34 @@ public class PlayerWarpData implements Serializable, de.codingair.codingapi.tool
         this.name = i.readUTF();                                        //name MAX = 16
 
         int size = i.readByte();                                        //description
-        for(int i1 = 0; i1 < size; i1++) {
+        for (int i1 = 0; i1 < size; i1++) {
             description.add(i.readUTF());
         }
 
-        if(teleportMessage) this.teleportMessage = i.readUTF();         //teleport message
+        if (teleportMessage) this.teleportMessage = i.readUTF();         //teleport message
 
         this.type = i.readUTF();                                        //item
-        if(data) this.data = i.readByte();
-        if(color) this.rgb = i.readInt();
-        if(skull) this.skullId = i.readUTF();
+        if (data) this.data = i.readByte();
+        if (color) this.rgb = i.readInt();
+        if (skull) this.skullId = i.readUTF();
 
-        if(teleportCosts) this.teleportCosts = i.readDouble();          //teleport costs
+        if (teleportCosts) this.teleportCosts = i.readDouble();          //teleport costs
         this.inactiveSales = i.readByte();                              //inactive sales
         this.notify = i.readBoolean();                                  //notify
         this.born = i.readLong();                                       //born
-        if(differentStart) this.started = i.readLong();                 //start
-        if((options1 & 1) != 0) this.time = i.readLong();               //time
-        if(hasKey) this.creatorKey = i.readUTF();                       //creator key
+        if (differentStart) this.started = i.readLong();                 //start
+        if ((options1 & 1) != 0) this.time = i.readLong();               //time
+        if (hasKey) this.creatorKey = i.readUTF();                       //creator key
 
         size = i.readByte();                                            //trusted members
-        for(int i1 = 0; i1 < size; i1++) {
+        for (int i1 = 0; i1 < size; i1++) {
             User user = new User();
             user.read(i);
             trusted.add(user);
         }
 
         size = i.readByte();                                            //classes
-        for(int i1 = 0; i1 < size; i1++) {
+        for (int i1 = 0; i1 < size; i1++) {
             classes.add(i.readByte());
         }
 
@@ -254,9 +254,9 @@ public class PlayerWarpData implements Serializable, de.codingair.codingapi.tool
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         JSONArray trustedMembers = new JSONArray();
-        for(PlayerWarpData.User user : this.trusted) {
+        for (PlayerWarpData.User user : this.trusted) {
             BungeeJSON userJson = new BungeeJSON();
             user.write(userJson);
             trustedMembers.add(userJson);
@@ -297,11 +297,11 @@ public class PlayerWarpData implements Serializable, de.codingair.codingapi.tool
     }
 
     @Override
-    public boolean read(DataWriter d) throws Exception {
-        if(this.trusted == null) this.trusted = new ArrayList<>();
+    public boolean read(DataMask d) throws Exception {
+        if (this.trusted == null) this.trusted = new ArrayList<>();
         else this.trusted.clear();
 
-        if(this.classes == null) this.classes = new ArrayList<>();
+        if (this.classes == null) this.classes = new ArrayList<>();
         else this.classes.clear();
 
         this.owner.read(d);
@@ -323,11 +323,11 @@ public class PlayerWarpData implements Serializable, de.codingair.codingapi.tool
         this.creatorKey = d.getString("key");
         this.notify = d.getBoolean("notify");
 
-        if(born > 0 && started == 0) started = born;
+        if (born > 0 && started == 0) started = born;
 
         JSONArray array = d.getList("trusted");
-        if(array != null)
-            for(Object o : array) {
+        if (array != null)
+            for (Object o : array) {
                 BungeeJSON data = new BungeeJSON((Map<?, ?>) o);
                 PlayerWarpData.User user = new PlayerWarpData.User();
                 user.read(data);
@@ -335,8 +335,8 @@ public class PlayerWarpData implements Serializable, de.codingair.codingapi.tool
             }
 
         array = d.getList("classes");
-        if(array != null)
-            for(Object o : array) {
+        if (array != null)
+            for (Object o : array) {
                 Number n = (Number) o;
                 this.classes.add(n.byteValue());
             }
@@ -354,9 +354,9 @@ public class PlayerWarpData implements Serializable, de.codingair.codingapi.tool
 
     @Override
     public void destroy() {
-        if(this.classes != null) this.classes.clear();
-        if(this.trusted != null) this.trusted.clear();
-        if(this.description != null) this.description.clear();
+        if (this.classes != null) this.classes.clear();
+        if (this.trusted != null) this.trusted.clear();
+        if (this.description != null) this.description.clear();
 
         name = null;
         owner = null;
@@ -387,7 +387,7 @@ public class PlayerWarpData implements Serializable, de.codingair.codingapi.tool
     }
 
     public long getExpireDate() {
-        if(this.started == 0) return 0;
+        if (this.started == 0) return 0;
         return this.started + this.time;
     }
 
@@ -472,7 +472,7 @@ public class PlayerWarpData implements Serializable, de.codingair.codingapi.tool
     }
 
     public Integer getInactiveSales() {
-        if(inactiveSales == null) return null;
+        if (inactiveSales == null) return null;
         return ((int) inactiveSales) & 0xFF;
     }
 
@@ -520,12 +520,12 @@ public class PlayerWarpData implements Serializable, de.codingair.codingapi.tool
         return time;
     }
 
-    public boolean isTimeDependent() {
-        return this.time != null && this.time > 0;
-    }
-
     public void setTime(Long time) {
         this.time = time;
+    }
+
+    public boolean isTimeDependent() {
+        return this.time != null && this.time > 0;
     }
 
     public String getCreatorKey() {
@@ -613,7 +613,7 @@ public class PlayerWarpData implements Serializable, de.codingair.codingapi.tool
     }
 
     public boolean born() {
-        if(this.born > 0) return false;
+        if (this.born > 0) return false;
         this.born = System.currentTimeMillis();
         return true;
     }
@@ -650,7 +650,7 @@ public class PlayerWarpData implements Serializable, de.codingair.codingapi.tool
         }
 
         @Override
-        public boolean read(DataWriter d) {
+        public boolean read(DataMask d) {
             this.name = d.get(p() + "name");
             this.id = UUID.fromString(d.get(p() + "id"));
 
@@ -658,15 +658,15 @@ public class PlayerWarpData implements Serializable, de.codingair.codingapi.tool
         }
 
         @Override
-        public void write(DataWriter d) {
+        public void write(DataMask d) {
             d.put(p() + "name", name);
             d.put(p() + "id", id.toString());
         }
 
         @Override
         public boolean equals(Object o) {
-            if(this == o) return true;
-            if(o == null || getClass() != o.getClass()) return false;
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
             User user = (User) o;
             return Objects.equals(jsonPrefix, user.jsonPrefix) &&
                     Objects.equals(name, user.name) &&

@@ -20,7 +20,7 @@ public class WarpGUIChoosePage extends ItemButton {
         instance.getPlayer().closeInventory();
         instance.getCallback().accept(true);
 
-        if(instance.getPage() == null) {
+        if (instance.getPage() == null) {
             instance.setSet(true);
             instance.getPlayer().closeInventory();
             instance.getCallback().accept(true);

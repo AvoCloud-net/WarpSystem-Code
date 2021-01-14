@@ -8,7 +8,7 @@ import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.io.JSON.JSONParser;
 import de.codingair.codingapi.tools.io.lib.JSONArray;
 import de.codingair.codingapi.tools.io.lib.ParseException;
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
 import de.codingair.codingapi.utils.ImprovedDouble;
 import de.codingair.codingapi.utils.Value;
@@ -17,8 +17,8 @@ import de.codingair.warpsystem.base.transfer.packets.spigot.utils.ServerPing;
 import de.codingair.warpsystem.spigot.api.PAPI;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.guis.editor.pages.SoundPage;
-import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.managers.TeleportManager;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.ActionObject;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.ActionObjectReadException;
@@ -43,12 +43,12 @@ import java.util.*;
 
 public abstract class FeatureObject implements Serializable {
     protected int performed = 0;
-    private List<ActionObject<?>> actions;
     protected String permission = null;
     protected long cooldown = 0;
     protected boolean disabled = false;
     protected boolean skip = false;
     protected Origin origin = null;
+    private List<ActionObject<?>> actions;
 
     protected FeatureObject() {
         this.actions = new ArrayList<>();
@@ -78,7 +78,7 @@ public abstract class FeatureObject implements Serializable {
 
     public FeatureObject perform(Player player) {
         WarpAction warp = getAction(WarpAction.class);
-        if(warp != null) return perform(player, warp.getValue().getId(), warp.getValue(), SoundPage.createStandard(), skip, true);
+        if (warp != null) return perform(player, warp.getValue().getId(), warp.getValue(), SoundPage.createStandard(), skip, true);
         else return perform(player, null, null, SoundPage.createStandard(), skip, true);
     }
 
@@ -93,33 +93,33 @@ public abstract class FeatureObject implements Serializable {
     }
 
     public Origin getOrigin() {
-        if(origin == null) origin = Origin.getByClass(this);
+        if (origin == null) origin = Origin.getByClass(this);
         return origin;
     }
 
     public void prepareTeleportOptions(String player, TeleportOptions options) {
-        if(options.getDestination() == null) options.setDestination(hasAction(Action.WARP) ? getAction(WarpAction.class).getValue() : null);
-        if(options.getDisplayName() == null) options.setDisplayName(hasAction(Action.WARP) ? getAction(WarpAction.class).getValue().getId() : null);
-        if(hasAction(Action.SOUND)) options.setTeleportSound(getAction(SoundAction.class).getValue());
+        if (options.getDestination() == null) options.setDestination(hasAction(Action.WARP) ? getAction(WarpAction.class).getValue() : null);
+        if (options.getDisplayName() == null) options.setDisplayName(hasAction(Action.WARP) ? getAction(WarpAction.class).getValue().getId() : null);
+        if (hasAction(Action.SOUND)) options.setTeleportSound(getAction(SoundAction.class).getValue());
 
-        if(options.getSkip() == null) options.setSkip(isSkip());
+        if (options.getSkip() == null) options.setSkip(isSkip());
 
         options.setOrigin(getOrigin());
-        if(getAction(CostsAction.class) != null) options.setCosts(getAction(CostsAction.class).getValue());
+        if (getAction(CostsAction.class) != null) options.setCosts(getAction(CostsAction.class).getValue());
 
-        if(hasAction(Action.WARP)) {
+        if (hasAction(Action.WARP)) {
             options.setPermission(this.permission == null ? TeleportManager.NO_PERMISSION : permission);
-            if(!getOrigin().sendTeleportMessage()) options.setMessage(null);
+            if (!getOrigin().sendTeleportMessage()) options.setMessage(null);
 
             options.addCallback(new Callback<Result>() {
                 @Override
                 public void accept(Result result) {
-                    if(result == Result.SUCCESS) {
+                    if (result == Result.SUCCESS) {
                         Player p = Bukkit.getPlayer(player);
-                        if(p == null) return;
+                        if (p == null) return;
 
-                        for(ActionObject<?> action : actions) {
-                            if(action.getType() == Action.WARP || action.getType() == Action.COSTS || action.getType() == Action.SOUND || !action.usable()) continue;
+                        for (ActionObject<?> action : actions) {
+                            if (action.getType() == Action.WARP || action.getType() == Action.COSTS || action.getType() == Action.SOUND || !action.usable()) continue;
                             action.perform(p);
                         }
                     }
@@ -133,9 +133,9 @@ public abstract class FeatureObject implements Serializable {
     }
 
     public FeatureObject perform(Player player, TeleportOptions options) {
-        if(this.actions == null) return this;
+        if (this.actions == null) return this;
 
-        if(WarpSystem.cooldown().checkPlayer(player, buildHashCode())) {
+        if (WarpSystem.cooldown().checkPlayer(player, buildHashCode())) {
             options.fireCallbacks(Result.REMAINING_COOLDOWN);
             return this;
         }
@@ -146,16 +146,16 @@ public abstract class FeatureObject implements Serializable {
         options.addCallback(new Callback<Result>() {
             @Override
             public void accept(Result result) {
-                if(result == Result.SUCCESS) {
+                if (result == Result.SUCCESS) {
                     performed++;
 
                     //check cooldown
-                    if(FeatureObject.this.cooldown > 0) WarpSystem.cooldown().register(player, FeatureObject.this.cooldown, buildHashCode());
+                    if (FeatureObject.this.cooldown > 0) WarpSystem.cooldown().register(player, FeatureObject.this.cooldown, buildHashCode());
                 }
             }
         });
 
-        if(hasAction(Action.WARP)) {
+        if (hasAction(Action.WARP)) {
             WarpSystem.getInstance().getTeleportManager().teleport(player, options);
             return this;
         }
@@ -163,10 +163,10 @@ public abstract class FeatureObject implements Serializable {
         Value<BukkitRunnable> waiting = new Value<>(null);
         Value<Call> payment = new Value<>(null);
 
-        if(TeleportManager.getInstance().isTeleporting(player)) {
+        if (TeleportManager.getInstance().isTeleporting(player)) {
             Teleport teleport = TeleportManager.getInstance().getTeleport(player);
             long diff = System.currentTimeMillis() - teleport.getStartTime();
-            if(diff > 50)
+            if (diff > 50)
                 player.sendMessage(Lang.getPrefix() + Lang.get("Player_Is_Already_Teleporting"));
             return this;
         }
@@ -175,8 +175,8 @@ public abstract class FeatureObject implements Serializable {
         TeleportManager.getInstance().registerTeleport(player, new TeleportDummy(player, getOrigin(), new Callback<Result>() {
             @Override
             public void accept(Result result) {
-                if(waiting.getValue() != null) waiting.getValue().cancel();
-                else if(payment.getValue() != null) payment.getValue().proceed();
+                if (waiting.getValue() != null) waiting.getValue().cancel();
+                else if (payment.getValue() != null) payment.getValue().proceed();
             }
         }));
 
@@ -188,8 +188,8 @@ public abstract class FeatureObject implements Serializable {
             }
         });
 
-        if(costs > 0) {
-            if(!Bank.isReady() || Bank.adapter().getMoney(player) < costs) {
+        if (costs > 0) {
+            if (!Bank.isReady() || Bank.adapter().getMoney(player) < costs) {
                 player.sendMessage(Lang.getPrefix() + Lang.get("Not_Enough_Money").replace("%AMOUNT%", options.getFinalCosts(player).toString()));
                 return this;
             }
@@ -197,7 +197,7 @@ public abstract class FeatureObject implements Serializable {
             waiting.setValue(WaitForTeleport.wait(player, new Callback<Result>() {
                 @Override
                 public void accept(Result result) {
-                    if(result != Result.SUCCESS) {
+                    if (result != Result.SUCCESS) {
                         options.fireCallbacks(result);
                         return;
                     }
@@ -209,17 +209,17 @@ public abstract class FeatureObject implements Serializable {
                         public void accept(Result result) {
                             payment.setValue(null);
 
-                            if(result == Result.SUCCESS) {
-                                for(ActionObject<?> action : actions) {
-                                    if(action.getType() == Action.WARP || action.getType() == Action.COSTS) continue;
+                            if (result == Result.SUCCESS) {
+                                for (ActionObject<?> action : actions) {
+                                    if (action.getType() == Action.WARP || action.getType() == Action.COSTS) continue;
                                     action.perform(player);
                                 }
 
                                 player.sendMessage(Lang.getPrefix() + Lang.get("Money_Paid_Use").replace("%AMOUNT%", new ImprovedDouble(getAction(CostsAction.class).getValue()).toString()));
-                            } else if(result == Result.NOT_ENOUGH_MONEY) {
+                            } else if (result == Result.NOT_ENOUGH_MONEY) {
                                 player.sendMessage(Lang.getPrefix() + Lang.get("Not_Enough_Money").replace("%AMOUNT%", options.getFinalCosts(player).toString()));
-                            } else if(result == Result.DENIED_PAYMENT) {
-                                if(options.getPaymentDeniedMessage(player) != null) player.sendMessage(options.getPaymentDeniedMessage(player));
+                            } else if (result == Result.DENIED_PAYMENT) {
+                                if (options.getPaymentDeniedMessage(player) != null) player.sendMessage(options.getPaymentDeniedMessage(player));
                             }
 
                             options.fireCallbacks(result);
@@ -228,8 +228,8 @@ public abstract class FeatureObject implements Serializable {
                 }
             }));
         } else {
-            for(ActionObject<?> action : this.actions) {
-                if(action.getType() == Action.WARP || action.getType() == Action.COSTS) continue;
+            for (ActionObject<?> action : this.actions) {
+                if (action.getType() == Action.WARP || action.getType() == Action.COSTS) continue;
                 action.perform(player);
             }
 
@@ -239,30 +239,30 @@ public abstract class FeatureObject implements Serializable {
     }
 
     @Override
-    public boolean read(DataWriter d) throws Exception {
+    public boolean read(DataMask d) throws Exception {
         destroy();
 
         this.disabled = d.getBoolean("disabled");
         this.permission = d.getString("permission");
         this.cooldown = d.getLong("cooldown");
-        if(this.permission != null) this.permission = ChatColor.stripColor(CharMatcher.whitespace().trimFrom(this.permission));
+        if (this.permission != null) this.permission = ChatColor.stripColor(CharMatcher.whitespace().trimFrom(this.permission));
 
         this.skip = d.getBoolean("skip");
         this.performed = d.getInteger("performed");
 
-        if(this.actions == null) this.actions = new ArrayList<>();
+        if (this.actions == null) this.actions = new ArrayList<>();
 
-        if(d.get("actions") != null) {
+        if (d.get("actions") != null) {
             JSONArray actionList = d.getList("actions");
 
-            for(Object o : actionList) {
+            for (Object o : actionList) {
                 JSON j;
 
-                if(o instanceof String) {
+                if (o instanceof String) {
                     String data = (String) o;
                     try {
                         j = (JSON) new JSONParser().parse(data);
-                    } catch(ParseException e) {
+                    } catch (ParseException e) {
                         throw new IconReadException("Could not parse action object.", e);
                     }
                 } else j = new JSON((Map<?, ?>) o);
@@ -272,18 +272,18 @@ public abstract class FeatureObject implements Serializable {
                 Object validData = j.getRaw("value");
 
                 Action a = Action.getById(id);
-                if(a != null) {
+                if (a != null) {
                     ActionObject<?> ao;
                     try {
                         ao = a.getClazz().newInstance();
-                    } catch(InstantiationException | IllegalAccessException e) {
+                    } catch (InstantiationException | IllegalAccessException e) {
                         throw new IconReadException("Could not initialize action object instance.", e);
                     }
 
-                    if(validData instanceof String) {
+                    if (validData instanceof String) {
                         try {
                             ao.read((String) validData);
-                        } catch(Exception e) {
+                        } catch (Exception e) {
                             throw new ActionObjectReadException("Could not read ActionObject properly.", e);
                         }
                     } else {
@@ -299,7 +299,7 @@ public abstract class FeatureObject implements Serializable {
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         d.put("disabled", this.disabled);
         d.put("permission", this.permission);
         d.put("cooldown", this.cooldown);
@@ -307,8 +307,8 @@ public abstract class FeatureObject implements Serializable {
         d.put("performed", this.performed);
 
         JSONArray actionList = new JSONArray();
-        if(this.actions != null) {
-            for(ActionObject<?> action : this.actions) {
+        if (this.actions != null) {
+            for (ActionObject<?> action : this.actions) {
                 JSON jo = new JSON();
                 jo.put("id", action.getType().getId());
                 jo.put("value", action);
@@ -325,7 +325,7 @@ public abstract class FeatureObject implements Serializable {
         this.permission = null;
         this.cooldown = 0;
 
-        if(this.actions != null) {
+        if (this.actions != null) {
             this.actions.forEach(ActionObject::destroy);
             this.actions.clear();
         }
@@ -346,8 +346,8 @@ public abstract class FeatureObject implements Serializable {
     public void checkActionList() {
         List<ActionObject<?>> l = new ArrayList<>(this.actions);
 
-        for(ActionObject<?> object : l) {
-            if(!object.usable()) {
+        for (ActionObject<?> object : l) {
+            if (!object.usable()) {
                 this.actions.remove(object);
             }
         }
@@ -357,8 +357,8 @@ public abstract class FeatureObject implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         FeatureObject object = (FeatureObject) o;
         return disabled == object.disabled &&
                 Objects.equals(permission, object.permission) &&
@@ -380,19 +380,19 @@ public abstract class FeatureObject implements Serializable {
     }
 
     public String prepareLine(String s, Player player) {
-        if(s == null) return null;
+        if (s == null) return null;
 
         s = de.codingair.codingapi.utils.ChatColor.translateAll('&', s);
 
-        if(getDestination() != null) {
+        if (getDestination() != null) {
             String server = getDestination().getTargetServer();
-            if(server != null) {
+            if (server != null) {
                 ServerPing ping = WarpSystem.getInstance().getServerManager().getProperties(server);
                 s = WarpSystem.opt().prepareServerString(ping, s);
             }
         }
 
-        if(player != null) {
+        if (player != null) {
             s = PAPI.convert(s, player);
         }
 
@@ -404,32 +404,32 @@ public abstract class FeatureObject implements Serializable {
     }
 
     public <T extends FeatureObject> T setDestination(Destination destination) {
-        if(destination == null) removeAction(Action.WARP);
+        if (destination == null) removeAction(Action.WARP);
         else addAction(new WarpAction(destination));
         return (T) this;
     }
 
     public <T extends FeatureObject> T createDestinationIfAbsent() {
-        if(getDestination() == null) setDestination(new Destination());
+        if (getDestination() == null) setDestination(new Destination());
         return (T) this;
     }
 
     public <T extends FeatureObject> T createTeleportSoundIfAbsent() {
-        if(!hasAction(Action.SOUND)) addAction(new SoundAction(SoundPage.createStandard()));
+        if (!hasAction(Action.SOUND)) addAction(new SoundAction(SoundPage.createStandard()));
         return (T) this;
     }
 
     public <T extends ActionObject<?>> T getAction(Action action) {
-        for(ActionObject<?> ao : this.actions) {
-            if(ao.getType() == action) return (T) ao;
+        for (ActionObject<?> ao : this.actions) {
+            if (ao.getType() == action) return (T) ao;
         }
 
         return null;
     }
 
     public <T extends ActionObject<?>> T getAction(Class<T> clazz) {
-        for(ActionObject<?> ao : this.actions) {
-            if(ao.getClass() == clazz) return (T) ao;
+        for (ActionObject<?> ao : this.actions) {
+            if (ao.getClass() == clazz) return (T) ao;
         }
 
         return null;
@@ -441,7 +441,7 @@ public abstract class FeatureObject implements Serializable {
 
     public void removeAction(Action action) {
         ActionObject<?> ao = getAction(action);
-        if(ao == null) return;
+        if (ao == null) return;
         this.actions.remove(ao);
     }
 
@@ -451,8 +451,8 @@ public abstract class FeatureObject implements Serializable {
 
     public FeatureObject addAction(ActionObject<?> action, boolean overwrite) {
         ActionObject<?> ao = getAction(action.getType());
-        if(ao != null) {
-            if(overwrite) this.actions.remove(ao);
+        if (ao != null) {
+            if (overwrite) this.actions.remove(ao);
             else return this;
         }
 
@@ -466,9 +466,9 @@ public abstract class FeatureObject implements Serializable {
 
     public List<ActionObject<?>> getCopyOfActions() {
         List<ActionObject<?>> l = new ArrayList<>();
-        if(actions == null) return l;
+        if (actions == null) return l;
 
-        for(ActionObject<?> a : actions) {
+        for (ActionObject<?> a : actions) {
             l.add(a.clone());
         }
 

@@ -32,7 +32,7 @@ public class PlayerWarpListener implements Listener {
         WarpSystem.getDataHandler().registerHandler(SendPlayerWarpsPacket.class, (packet, proxy, connection, direction) -> {
             List<PlayerWarpData> l = packet.getData();
 
-            for(PlayerWarpData s : l) {
+            for (PlayerWarpData s : l) {
                 PlayerWarp w = new PlayerWarp();
                 w.setData(s);
                 PlayerWarpManager.getManager().updateWarp(w);
@@ -57,16 +57,16 @@ public class PlayerWarpListener implements Listener {
         WarpSystem.getDataHandler().registerHandler(DeletePlayerWarpPacket.class, (packet, proxy, connection, direction) -> {
             PlayerWarp warp = PlayerWarpManager.getManager().getWarp(packet.getId(), packet.getName());
             PlayerWarpManager.getManager().delete(warp, false);
-            if(warp != null) warp.setSource(true);
+            if (warp != null) warp.setSource(true);
             PlayerWarpManager.getManager().updateGUIs();
         });
 
         WarpSystem.getDataHandler().registerHandler(PlayerWarpTeleportProcessPacket.class, (packet, proxy, connection, direction) -> {
             PlayerWarp warp = PlayerWarpManager.getManager().getWarp(packet.getId(), packet.getName());
-            if(warp != null) {
-                if(packet.increaseSales()) warp.increaseInactiveSales();
-                if(packet.resetSales()) warp.resetInactiveSales();
-                if(packet.increasePerformed()) warp.increasePerformed();
+            if (warp != null) {
+                if (packet.increaseSales()) warp.increaseInactiveSales();
+                if (packet.resetSales()) warp.resetInactiveSales();
+                if (packet.increasePerformed()) warp.increasePerformed();
 
                 PlayerWarpManager.getManager().updateGUIs();
             }
@@ -81,25 +81,25 @@ public class PlayerWarpListener implements Listener {
         boolean timeDependent = PlayerWarpManager.getManager().isEconomy();
         double money = 0;
         List<PlayerWarp> warps = PlayerWarpManager.getManager().getOwnWarps(e.getPlayer());
-        for(PlayerWarp warp : warps) {
-            if(timeDependent && warp.isExpired()) {
+        for (PlayerWarp warp : warps) {
+            if (timeDependent && warp.isExpired()) {
                 notify.add(warp);
             }
 
             money += warp.getInactiveSales() * warp.getTeleportCosts();
         }
 
-        if(money > 0 || !notify.isEmpty()) {
+        if (money > 0 || !notify.isEmpty()) {
             double finalMoney = money;
             Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
-                if(!notify.isEmpty()) {
-                    for(PlayerWarp warp : notify) {
+                if (!notify.isEmpty()) {
+                    for (PlayerWarp warp : notify) {
                         e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Warp_expiring").replace("%NAME%", warp.getName()).replace("%TIME_LEFT%", StringFormatter.convertInTimeFormat(PlayerWarpManager.getManager().getInactiveTime() - (System.currentTimeMillis() - warp.getExpireDate()), 0, "", "")));
                     }
                     notify.clear();
                 }
 
-                if(finalMoney > 0) {
+                if (finalMoney > 0) {
                     SimpleMessage message = new SimpleMessage(Lang.getPrefix() + Lang.get("Warp_Money_Available").replace("%AMOUNT%", new ImprovedDouble(finalMoney).toString()), WarpSystem.getInstance());
                     message.replace("%BUTTON%", new ChatButton(Lang.get("Warp_Money_Available_Button")) {
                         @Override

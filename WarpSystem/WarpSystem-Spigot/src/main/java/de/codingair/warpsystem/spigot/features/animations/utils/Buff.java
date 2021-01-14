@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.spigot.features.animations.utils;
 
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
 import org.bukkit.potion.PotionEffectType;
 
@@ -23,7 +23,7 @@ public class Buff implements Serializable {
     }
 
     @Override
-    public boolean read(DataWriter d) {
+    public boolean read(DataMask d) {
         this.type = PotionEffectType.getByName(d.get("type"));
         this.level = d.getInteger("level");
         this.timeBeforeTeleport = d.getInteger("timebeforeteleport");
@@ -32,7 +32,7 @@ public class Buff implements Serializable {
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         d.put("type", this.type.getName());
         d.put("level", this.level);
         d.put("timebeforeteleport", this.timeBeforeTeleport);
@@ -57,8 +57,8 @@ public class Buff implements Serializable {
 
     public void setLevel(int level) {
         this.level = level;
-        if(this.level < 1) this.level = 1;
-        if(this.level > 3) this.level = 3;
+        if (this.level < 1) this.level = 1;
+        if (this.level > 3) this.level = 3;
     }
 
     public int getTimeBeforeTeleport() {
@@ -67,8 +67,8 @@ public class Buff implements Serializable {
 
     public void setTimeBeforeTeleport(int timeBeforeTeleport) {
         this.timeBeforeTeleport = timeBeforeTeleport;
-        if(this.timeBeforeTeleport < 0) this.timeBeforeTeleport = 0;
-        if(this.timeBeforeTeleport > 20) this.timeBeforeTeleport = 20;
+        if (this.timeBeforeTeleport < 0) this.timeBeforeTeleport = 0;
+        if (this.timeBeforeTeleport > 20) this.timeBeforeTeleport = 20;
     }
 
     public int getTimeAfterTeleport() {
@@ -77,7 +77,7 @@ public class Buff implements Serializable {
 
     public void setTimeAfterTeleport(int timeAfterTeleport) {
         this.timeAfterTeleport = timeAfterTeleport;
-        if(this.timeAfterTeleport < 0) this.timeAfterTeleport = 0;
-        if(this.timeAfterTeleport > 60) this.timeAfterTeleport = 60;
+        if (this.timeAfterTeleport < 0) this.timeAfterTeleport = 0;
+        if (this.timeAfterTeleport > 60) this.timeAfterTeleport = 60;
     }
 }

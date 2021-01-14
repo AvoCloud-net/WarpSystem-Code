@@ -19,8 +19,8 @@ public class PlayerDataListener implements Listener {
 
     @EventHandler
     public void onPotionEffect(EntityPotionEffectEvent e) {
-        if(e.getEntity() instanceof PlayerEvent && e.getModifiedType() == PotionEffectType.INVISIBILITY) {
-                WarpSystem.getInstance().getPlayerDataManager().updateVisibility((Player) e.getEntity(), e.getAction() == EntityPotionEffectEvent.Action.ADDED);
+        if (e.getEntity() instanceof PlayerEvent && e.getModifiedType() == PotionEffectType.INVISIBILITY) {
+            WarpSystem.getInstance().getPlayerDataManager().updateVisibility((Player) e.getEntity(), e.getAction() == EntityPotionEffectEvent.Action.ADDED);
         }
     }
 }

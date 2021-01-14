@@ -33,11 +33,11 @@ public class RandomTPWorldsPacket implements Packet {
     public void write(DataOutputStream out) throws IOException {
         out.writeByte(this.worlds.size());
 
-        for(Map.Entry<String, List<String>> e : this.worlds.entrySet()) {
+        for (Map.Entry<String, List<String>> e : this.worlds.entrySet()) {
             out.writeUTF(e.getKey());
 
             out.writeByte(e.getValue().size());
-            for(String world : e.getValue()) {
+            for (String world : e.getValue()) {
                 out.writeUTF(world);
             }
         }
@@ -48,12 +48,12 @@ public class RandomTPWorldsPacket implements Packet {
         int size = in.readUnsignedByte();
         this.worlds = new HashMap<>(size, 1);
 
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             String server = in.readUTF();
 
             int count = in.readUnsignedByte();
             List<String> worlds = new ArrayList<>();
-            for(int j = 0; j < count; j++) {
+            for (int j = 0; j < count; j++) {
                 worlds.add(in.readUTF());
             }
 
@@ -62,23 +62,23 @@ public class RandomTPWorldsPacket implements Packet {
     }
 
     public String getServer() {
-        if(this.worlds.size() != 1) throw new IllegalStateException("There are less or more entries than 1: " + this.worlds.size());
+        if (this.worlds.size() != 1) throw new IllegalStateException("There are less or more entries than 1: " + this.worlds.size());
         return this.worlds.keySet().stream().findAny().get();
     }
 
     public void setServer(String server) {
-        if(this.worlds.size() != 1) throw new IllegalStateException("There are less or more entries than 1: " + this.worlds.size());
+        if (this.worlds.size() != 1) throw new IllegalStateException("There are less or more entries than 1: " + this.worlds.size());
         this.worlds.put(server, this.worlds.remove(getServer()));
     }
 
-    public void setWorlds(HashMap<String, List<String>> worlds) {
-        if(this.worlds.size() != 1) throw new IllegalStateException("There are less or more entries than 1: " + this.worlds.size());
-        this.worlds = worlds;
+    public List<String> getWorlds() {
+        if (this.worlds.size() != 1) throw new IllegalStateException("There are less or more entries than 1: " + this.worlds.size());
+        return worlds.get("");
     }
 
-    public List<String> getWorlds() {
-        if(this.worlds.size() != 1) throw new IllegalStateException("There are less or more entries than 1: " + this.worlds.size());
-        return worlds.get("");
+    public void setWorlds(HashMap<String, List<String>> worlds) {
+        if (this.worlds.size() != 1) throw new IllegalStateException("There are less or more entries than 1: " + this.worlds.size());
+        this.worlds = worlds;
     }
 
     public HashMap<String, List<String>> getData() {

@@ -5,8 +5,8 @@ import de.codingair.warpsystem.spigot.base.utils.options.Options;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 
 public class FeatureOptions extends Options {
-    private Option<Boolean> sendTeleportMessage;
     protected Option<Boolean> enabled;
+    private Option<Boolean> sendTeleportMessage;
     private Origin origin;
 
     public FeatureOptions(Origin origin) {
@@ -39,7 +39,7 @@ public class FeatureOptions extends Options {
 
     @Override
     public void apply(Options options) {
-        if(options instanceof FeatureOptions) {
+        if (options instanceof FeatureOptions) {
             FeatureOptions o = (FeatureOptions) options;
             this.sendTeleportMessage = o.sendTeleportMessage.clone();
             this.enabled = o.enabled.clone();

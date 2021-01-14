@@ -61,9 +61,9 @@ public class ParticleOptions extends HotbarGUI {
         setItem(2, new ItemComponent(new ItemBuilder(XMaterial.BEACON).setName("§7" + Lang.get("Animation_Type") + ": '§e" + getAnimationName() + "§7'").getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType == ClickType.LEFT_CLICK) {
+                if (clickType == ClickType.LEFT_CLICK) {
                     getPart().setAnimation(getPart().getAnimation().previous());
-                } else if(clickType == ClickType.RIGHT_CLICK) {
+                } else if (clickType == ClickType.RIGHT_CLICK) {
                     getPart().setAnimation(getPart().getAnimation().next());
                 } else return;
 
@@ -85,9 +85,9 @@ public class ParticleOptions extends HotbarGUI {
         setItem(3, new ItemComponent(new ItemBuilder(XMaterial.STICK).setName("§7" + Lang.get("Animation_Height") + ": §e" + getHeight()).getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType == ClickType.LEFT_CLICK) {
+                if (clickType == ClickType.LEFT_CLICK) {
                     getPart().setHeight(getPart().getHeight() - 0.1);
-                } else if(clickType == ClickType.RIGHT_CLICK) {
+                } else if (clickType == ClickType.RIGHT_CLICK) {
                     getPart().setHeight(getPart().getHeight() + 0.1);
                 } else return;
 
@@ -109,9 +109,9 @@ public class ParticleOptions extends HotbarGUI {
         setItem(4, new ItemComponent(new ItemBuilder(XMaterial.STRING).setName("§7" + Lang.get("Animation_Radius") + ": §e" + getRadius()).getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                if(clickType == ClickType.LEFT_CLICK) {
+                if (clickType == ClickType.LEFT_CLICK) {
                     getPart().setRadius(getPart().getRadius() - 0.1);
-                } else if(clickType == ClickType.RIGHT_CLICK) {
+                } else if (clickType == ClickType.RIGHT_CLICK) {
                     getPart().setRadius(getPart().getRadius() + 0.1);
                 } else return;
 

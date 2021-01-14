@@ -29,16 +29,16 @@ public class SetupAssistantListener implements PacketHandler<SetupAssistantStore
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         SetupAssistant a = SetupAssistantManager.getInstance().getAssistant();
-        if(a != null && a.getPlayer().equals(e.getPlayer())) {
+        if (a != null && a.getPlayer().equals(e.getPlayer())) {
             a.onQuit();
         }
     }
 
     private Object buildComponent(String message) {
-        if(chatPacket == null) {
+        if (chatPacket == null) {
             Class<?> packet = IReflection.getClass(IReflection.ServerPacket.MINECRAFT_PACKAGE, "PacketPlayOutChat");
 
-            if(Version.get().isBiggerThan(15)) {
+            if (Version.get().isBiggerThan(15)) {
                 Class<?> type = IReflection.getClass(IReflection.ServerPacket.MINECRAFT_PACKAGE, "ChatMessageType");
                 this.type = type.getEnumConstants()[0];
                 chatPacket = IReflection.getConstructor(packet, PacketUtils.IChatBaseComponentClass, type, UUID.class);
@@ -46,8 +46,8 @@ public class SetupAssistantListener implements PacketHandler<SetupAssistantStore
                 chatPacket = IReflection.getConstructor(packet, PacketUtils.IChatBaseComponentClass);
             }
         }
-        
-        if(Version.get().isBiggerThan(15)) {
+
+        if (Version.get().isBiggerThan(15)) {
             return chatPacket.newInstance(PacketUtils.getRawIChatBaseComponent(message), type, UUID.randomUUID());
         } else return chatPacket.newInstance(PacketUtils.getRawIChatBaseComponent(message));
     }
@@ -56,6 +56,6 @@ public class SetupAssistantListener implements PacketHandler<SetupAssistantStore
     public void process(@NotNull SetupAssistantStorePacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         String message = packet.getMessage();
         SetupAssistant assistant = SetupAssistantManager.getInstance().getAssistant();
-        if(assistant != null) assistant.queue(buildComponent(message));
+        if (assistant != null) assistant.queue(buildComponent(message));
     }
 }

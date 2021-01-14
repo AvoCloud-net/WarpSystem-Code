@@ -47,7 +47,7 @@ public class WarpGUIOptions extends FeatureOptions {
 
     @Override
     public void apply(Options options) {
-        if(options instanceof WarpGUIOptions) {
+        if (options instanceof WarpGUIOptions) {
             WarpGUIOptions o = (WarpGUIOptions) options;
 
             this.userSize = o.userSize.clone();

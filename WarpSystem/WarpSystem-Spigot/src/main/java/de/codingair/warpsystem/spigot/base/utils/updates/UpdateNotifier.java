@@ -13,11 +13,11 @@ import java.util.regex.Pattern;
 public class UpdateNotifier {
     private final static String premium = "https://github.com/CodingAir/WarpSystem-IssueTracker/releases/latest";
     private final static String free = "https://www.spigotmc.org/resources/warps-portals-and-more-warp-teleport-system-1-8-1-13.29595/updates";
+    private final UpdateCheckerAdapter adapter;
     private String version = null;
     private String download = null;
     private String updateInfo = null;
     private boolean needsUpdate = false;
-    private final UpdateCheckerAdapter adapter;
 
     public UpdateNotifier() {
         this.adapter = VFac.isAvailable("Indicator") ? new FreeUpdateChecker() : new PremiumUpdateChecker();
@@ -43,7 +43,7 @@ public class UpdateNotifier {
         StringBuffer sb = new StringBuffer();
         Matcher m = Pattern.compile("\\&#(\\d+);").matcher(s);
 
-        while(m.find()) {
+        while (m.find()) {
             int uc = Integer.parseInt(m.group(1));
             m.appendReplacement(sb, "");
             sb.appendCodePoint(uc);
@@ -73,32 +73,32 @@ public class UpdateNotifier {
                 BufferedReader input = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
                 String line;
-                while((line = input.readLine()) != null) {
+                while ((line = input.readLine()) != null) {
                     line = decodeNumericEntities(line);
 
-                    if(version == null) {
-                        if(line.contains("<a href=\"/CodingAir/WarpSystem-IssueTracker/tree/") && version == null) {
+                    if (version == null) {
+                        if (line.contains("<a href=\"/CodingAir/WarpSystem-IssueTracker/tree/") && version == null) {
                             version = line.split("/tree/")[1].split("\"")[0];
                         }
-                    } else if(updateInfo == null) {
-                        if(line.contains("<a href=\"/CodingAir/WarpSystem-IssueTracker/releases/tag/" + version + "\">")) {
+                    } else if (updateInfo == null) {
+                        if (line.contains("<a href=\"/CodingAir/WarpSystem-IssueTracker/releases/tag/" + version + "\">")) {
                             updateInfo = line.split(">")[1].split("<")[0];
                         }
                     } else {
-                        if(line.contains("Download id: ")) {
+                        if (line.contains("Download id: ")) {
                             download = "https://www.spigotmc.org/resources/premium-warps-portals-and-more-warp-teleport-system-1-8-1-13.66035/update?update=" + line.split(": ")[1].split("<")[0];
                             break;
                         }
                     }
                 }
 
-                if(version == null) return false;
-            } catch(Exception ex) {
+                if (version == null) return false;
+            } catch (Exception ex) {
                 return false;
             }
 
             String current = WarpSystem.getInstance().getDescription().getVersion().replaceAll("_Hotfix.*", "");
-            if(current.startsWith("v")) current = current.replaceFirst("v", "");
+            if (current.startsWith("v")) current = current.replaceFirst("v", "");
             String newV = version.startsWith("v") ? version.replaceFirst("v", "") : version;
 
             needsUpdate = !current.equals(newV);
@@ -106,7 +106,7 @@ public class UpdateNotifier {
         }
 
         boolean notStable() {
-            if(version == null) {
+            if (version == null) {
                 read();
                 return notStable();
             } else return updateInfo.toLowerCase().startsWith("not stable");
@@ -129,37 +129,37 @@ public class UpdateNotifier {
                 BufferedReader input = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
                 String line;
-                while((line = input.readLine()) != null) {
+                while ((line = input.readLine()) != null) {
                     line = decodeNumericEntities(line);
 
-                    if(version != null && download != null) break;
+                    if (version != null && download != null) break;
 
-                    if(line.contains("<td class=\"version\">") && version == null) {
+                    if (line.contains("<td class=\"version\">") && version == null) {
                         version = line.split(">")[1].split("<")[0];
                     }
                 }
 
-                if(version == null) return false;
-            } catch(Exception ex) {
+                if (version == null) return false;
+            } catch (Exception ex) {
                 return false;
             }
 
             String current = WarpSystem.getInstance().getDescription().getVersion().replaceAll("_Hotfix.*", "");
             needsUpdate = !current.equals(version);
-            if(needsUpdate) checkUpdateInfo();
+            if (needsUpdate) checkUpdateInfo();
             return needsUpdate && !notStable();
         }
 
         public boolean notStable() {
-            if(updateInfo == null) {
+            if (updateInfo == null) {
                 checkUpdateInfo();
                 return notStable();
             } else return updateInfo.toLowerCase().startsWith("not stable");
         }
 
         public String checkUpdateInfo() {
-            if(!needsUpdate) return null;
-            if(updateInfo != null) return updateInfo.toLowerCase().startsWith("not stable") ? null : updateInfo;
+            if (!needsUpdate) return null;
+            if (updateInfo != null) return updateInfo.toLowerCase().startsWith("not stable") ? null : updateInfo;
 
             try {
                 URLConnection con = new URL(free).openConnection();
@@ -174,11 +174,11 @@ public class UpdateNotifier {
                 boolean atInfo = false;
 
                 String line;
-                while((line = input.readLine()) != null) {
+                while ((line = input.readLine()) != null) {
                     line = decodeNumericEntities(line);
 
-                    if(atUpdates) {
-                        if(atInfo) {
+                    if (atUpdates) {
+                        if (atInfo) {
                             download = "https://www.spigotmc.org/" + line.substring(9, line.indexOf('>') - 1);
 
                             line = line.replace("</a>", "");
@@ -187,15 +187,15 @@ public class UpdateNotifier {
                             break;
                         }
 
-                        if(line.contains("textHeading")) atInfo = true;
+                        if (line.contains("textHeading")) atInfo = true;
                     }
 
-                    if(line.contains("updateContainer")) atUpdates = true;
+                    if (line.contains("updateContainer")) atUpdates = true;
                 }
 
-                if(updateInfo.toLowerCase().startsWith("not stable")) return null;
+                if (updateInfo.toLowerCase().startsWith("not stable")) return null;
                 return updateInfo;
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 return null;
             }
         }

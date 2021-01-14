@@ -25,7 +25,7 @@ public class CooldownButton extends SyncAnvilGUIButton {
 
     @Override
     public ItemStack craftItem() {
-        if(object == null) return new ItemStack(Material.AIR);
+        if (object == null) return new ItemStack(Material.AIR);
 
         long cooldown = object.getCooldown();
         return new ItemBuilder(XMaterial.CLOCK)
@@ -39,7 +39,7 @@ public class CooldownButton extends SyncAnvilGUIButton {
     @Override
     public void onClick(AnvilClickEvent e) {
         String in = e.getInput(false);
-        if(in == null || in.isEmpty()) {
+        if (in == null || in.isEmpty()) {
             e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Syntax_info").replace("%SYNTAX%", "0s, 5m, 0h, 0d"));
             return;
         }
@@ -47,13 +47,13 @@ public class CooldownButton extends SyncAnvilGUIButton {
         long time;
         try {
             time = StringFormatter.convertFromTimeFormat(in);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             time = -1;
         }
 
         playSound(e.getClickType(), e.getPlayer());
 
-        if(time < 0) {
+        if (time < 0) {
             e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Syntax_info").replace("%SYNTAX%", "0s, 5m, 0h, 0d"));
             return;
         }
@@ -70,7 +70,7 @@ public class CooldownButton extends SyncAnvilGUIButton {
 
     @Override
     public ItemStack craftAnvilItem(ClickType trigger) {
-        if(object == null) return new ItemStack(Material.AIR);
+        if (object == null) return new ItemStack(Material.AIR);
 
         long cooldown = object.getCooldown();
         return new ItemBuilder(XMaterial.PAPER).setName(cooldown == 0 ? "0s, 5m, 0h, 0d" : StringFormatter.convertInTimeFormat(cooldown)).getItem();
@@ -78,7 +78,7 @@ public class CooldownButton extends SyncAnvilGUIButton {
 
     @Override
     public void onOtherClick(InventoryClickEvent e) {
-        if(e.getClick() == ClickType.RIGHT) {
+        if (e.getClick() == ClickType.RIGHT) {
             object.setCooldown(0);
             update();
         }

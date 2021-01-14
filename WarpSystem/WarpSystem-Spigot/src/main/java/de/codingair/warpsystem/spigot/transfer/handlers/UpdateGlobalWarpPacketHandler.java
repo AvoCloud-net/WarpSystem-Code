@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 public class UpdateGlobalWarpPacketHandler implements PacketHandler<UpdateGlobalWarpPacket> {
     @Override
     public void process(@NotNull UpdateGlobalWarpPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
-        switch(packet.getAction()) {
+        switch (packet.getAction()) {
             case ADD:
                 ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).getGlobalWarps().put(packet.getName(), packet.getServer());
                 break;
@@ -29,9 +29,9 @@ public class UpdateGlobalWarpPacketHandler implements PacketHandler<UpdateGlobal
 
             case DELETE:
                 ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).getGlobalWarps().remove(packet.getName());
-                for(Icon warpIcon : IconManager.getInstance().getIcons()) {
-                    if(warpIcon.getAction(Action.WARP) != null) {
-                        if(warpIcon.getAction(WarpAction.class).getValue().getType() == DestinationType.GlobalWarp &&
+                for (Icon warpIcon : IconManager.getInstance().getIcons()) {
+                    if (warpIcon.getAction(Action.WARP) != null) {
+                        if (warpIcon.getAction(WarpAction.class).getValue().getType() == DestinationType.GlobalWarp &&
                                 warpIcon.getAction(WarpAction.class).getValue().getId().equalsIgnoreCase(packet.getName()))
                             warpIcon.getAction(WarpAction.class).setValue(null);
                     }

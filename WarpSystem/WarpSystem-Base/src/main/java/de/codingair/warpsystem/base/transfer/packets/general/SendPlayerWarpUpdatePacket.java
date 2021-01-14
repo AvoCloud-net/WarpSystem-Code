@@ -20,7 +20,7 @@ public class SendPlayerWarpUpdatePacket implements Packet {
 
     @Override
     public void write(DataOutputStream o) throws IOException {
-        if(clearable) {
+        if (clearable) {
             update.write(o);
             update.destroy();
         } else {

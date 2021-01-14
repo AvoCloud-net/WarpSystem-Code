@@ -26,7 +26,7 @@ public class Particles extends HotbarGUI {
         this.menu = menu;
         this.parts = menu.getClone().getParticleParts();
 
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             this.animations[i] = new AnimationPart(player, i, menu);
         }
 

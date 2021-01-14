@@ -12,16 +12,16 @@ public class BackListener implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
-        if(WarpSystem.hasPermission(e.getEntity(), WarpSystem.PERMISSION_USE_TELEPORT_COMMAND_BACK_DETECT_DEATHS))
+        if (WarpSystem.hasPermission(e.getEntity(), WarpSystem.PERMISSION_USE_TELEPORT_COMMAND_BACK_DETECT_DEATHS))
             TeleportCommandManager.getInstance().addToBackHistory(e.getEntity(), e.getEntity().getLocation());
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void onTeleport(PlayerTeleportEvent e) {
-        if(e.isCancelled() || !WarpSystem.hasPermission(e.getPlayer(), WarpSystem.PERMISSION_USE_TELEPORT_COMMAND_BACK)) return;
+        if (e.isCancelled() || !WarpSystem.hasPermission(e.getPlayer(), WarpSystem.PERMISSION_USE_TELEPORT_COMMAND_BACK)) return;
 
-        if(e.getCause() != PlayerTeleportEvent.TeleportCause.PLUGIN && e.getCause() != PlayerTeleportEvent.TeleportCause.COMMAND) return;
-        if(TeleportCommandManager.getInstance().getBackHistorySize() > 1 && TeleportCommandManager.getInstance().usingBackCommand(e.getPlayer())) return;
+        if (e.getCause() != PlayerTeleportEvent.TeleportCause.PLUGIN && e.getCause() != PlayerTeleportEvent.TeleportCause.COMMAND) return;
+        if (TeleportCommandManager.getInstance().getBackHistorySize() > 1 && TeleportCommandManager.getInstance().usingBackCommand(e.getPlayer())) return;
         TeleportCommandManager.getInstance().addToBackHistory(e.getPlayer(), e.getFrom());
     }
 

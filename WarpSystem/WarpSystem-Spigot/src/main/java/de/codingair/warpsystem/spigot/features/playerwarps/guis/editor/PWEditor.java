@@ -57,15 +57,15 @@ public class PWEditor extends Editor<PlayerWarp> implements Ticker {
                         boolean isOwner = warp.isOwner(p);
                         boolean creating = isOwner && !PlayerWarpManager.getManager().existsOwn(p, warp.getName());
                         Number costs = calculateCosts(creating, warp, isOwner ? clone : null);
-                        if(Bank.isReady() && PlayerWarpManager.getManager().isEconomy() && costs.doubleValue() > 0) Bank.adapter().withdraw(p, costs.doubleValue());
+                        if (Bank.isReady() && PlayerWarpManager.getManager().isEconomy() && costs.doubleValue() > 0) Bank.adapter().withdraw(p, costs.doubleValue());
 
                         clone.setStarted(System.currentTimeMillis());
 
-                        if(creating || warp.isSource()) {
+                        if (creating || warp.isSource()) {
                             warp.apply(clone);
-                            if(creating) PlayerWarpManager.getManager().add(warp);
+                            if (creating) PlayerWarpManager.getManager().add(warp);
 
-                            if(PlayerWarpManager.getManager().checkBungeeCord()) {
+                            if (PlayerWarpManager.getManager().checkBungeeCord()) {
                                 PlayerWarpData data = warp.getData();
                                 SendPlayerWarpsPacket packet = new SendPlayerWarpsPacket(new ArrayList<PlayerWarpData>() {{
                                     this.add(data);
@@ -96,9 +96,9 @@ public class PWEditor extends Editor<PlayerWarp> implements Ticker {
         this.original = warp;
         this.warp = clone;
 
-        if(clone.isTimeDependent()) {
-            if(clone.getTime() == 1) clone.setTime(PlayerWarpManager.getManager().getTimeStandardValue());
-            else if(clone.getLeftTime() < PlayerWarpManager.getManager().getMinTime()) clone.setTime(PlayerWarpManager.getManager().getMinTime());
+        if (clone.isTimeDependent()) {
+            if (clone.getTime() == 1) clone.setTime(PlayerWarpManager.getManager().getTimeStandardValue());
+            else if (clone.getLeftTime() < PlayerWarpManager.getManager().getMinTime()) clone.setTime(PlayerWarpManager.getManager().getMinTime());
         }
 
         this.creating = warp.isOwner(getPlayer()) && !PlayerWarpManager.getManager().existsOwn(p, warp.getName());
@@ -107,44 +107,29 @@ public class PWEditor extends Editor<PlayerWarp> implements Ticker {
         API.addTicker(this);
     }
 
-    @Override
-    public void destroy() {
-        API.removeTicker(this);
-        super.destroy();
-    }
-
-    @Override
-    public void onTick() {
-    }
-
-    @Override
-    public void onSecond() {
-        updateTime();
-    }
-
     public static String getCostsMessage(double costs, PageItem page) {
-        if(costs == 0 || !PlayerWarpManager.getManager().isEconomy() || (page.getLast() != null && !((PWEditor) page.getLast()).getClone().isOwner(page.getLast().getPlayer()))) return null;
+        if (costs == 0 || !PlayerWarpManager.getManager().isEconomy() || (page.getLast() != null && !((PWEditor) page.getLast()).getClone().isOwner(page.getLast().getPlayer()))) return null;
         Number n = cut(costs);
         return Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Costs") + ": §7" + (n instanceof Integer ? n.intValue() : n) + " " + Lang.get("Coins");
     }
 
     public static String getFreeMessage(String free, PageItem page) {
-        if(free == null || !PlayerWarpManager.getManager().isEconomy() || (page.getLast() != null && !((PWEditor) page.getLast()).getClone().isOwner(page.getLast().getPlayer()))) return null;
+        if (free == null || !PlayerWarpManager.getManager().isEconomy() || (page.getLast() != null && !((PWEditor) page.getLast()).getClone().isOwner(page.getLast().getPlayer()))) return null;
         return Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Free") + ": §7" + free;
     }
 
     public static Number cut(double n) {
         double d = Double.parseDouble(new DecimalFormat("#.##").format(n).replace(",", "."));
-        if(d == (int) d) return (int) d;
+        if (d == (int) d) return (int) d;
         else return d;
     }
 
     public static Number calculateCosts(boolean creating, PlayerWarp original, PlayerWarp warp) {
-        if(warp == null) return 0;
+        if (warp == null) return 0;
         double[] costs = calculate(creating, original, warp);
         double c = 0;
 
-        for(double cost : costs) {
+        for (double cost : costs) {
             c += cost;
         }
 
@@ -153,78 +138,78 @@ public class PWEditor extends Editor<PlayerWarp> implements Ticker {
 
     private static double[] calculate(boolean creating, PlayerWarp original, PlayerWarp warp) {
         double[] costs = new double[10];
-        if(!PlayerWarpManager.getManager().isEconomy() || warp == null) return costs;
+        if (!PlayerWarpManager.getManager().isEconomy() || warp == null) return costs;
 
         //personal item
-        if(!warp.isStandardItem()) {
-            if(original.isStandardItem()) costs[0] = PlayerWarpManager.getManager().getItemCosts();
-            else if(!warp.isSameItem(original.getItem())) costs[0] = PlayerWarpManager.getManager().getItemChangeCosts();
-        } else if(!warp.isSameItem(original.getItem()))
+        if (!warp.isStandardItem()) {
+            if (original.isStandardItem()) costs[0] = PlayerWarpManager.getManager().getItemCosts();
+            else if (!warp.isSameItem(original.getItem())) costs[0] = PlayerWarpManager.getManager().getItemChangeCosts();
+        } else if (!warp.isSameItem(original.getItem()))
             costs[0] = PlayerWarpManager.getManager().getItemChangeCosts() * PlayerWarpManager.getManager().getPersonalItemRefund() * original.getRefundFactor();
 
         //name
-        if(!creating && !original.getName().equals(warp.getName())) costs[1] = PlayerWarpManager.getManager().getNameChangeCosts();
+        if (!creating && !original.getName().equals(warp.getName())) costs[1] = PlayerWarpManager.getManager().getNameChangeCosts();
 
         //description
         int length = 0;
-        if(original.getItem().getLore() != null)
-            for(String s : original.getItem().getLore()) {
+        if (original.getItem().getLore() != null)
+            for (String s : original.getItem().getLore()) {
                 length += s.replaceFirst("§f", "").length();
             }
 
         length = -length;
-        if(warp.getItem().getLore() != null)
-            for(String s : warp.getItem().getLore()) {
+        if (warp.getItem().getLore() != null)
+            for (String s : warp.getItem().getLore()) {
                 length += s.replaceFirst("§f", "").length();
             }
 
-        if(length > 0) {
+        if (length > 0) {
             costs[2] = length * PlayerWarpManager.getManager().getDescriptionCosts();
-        } else if(length < 0) {
+        } else if (length < 0) {
             costs[2] = length * PlayerWarpManager.getManager().getDescriptionCosts() * PlayerWarpManager.getManager().getDescriptionRefund() * original.getRefundFactor();
         }
 
         //teleport message
         length = (warp.getTeleportMessage() == null ? 0 : warp.getTeleportMessage().length()) - (original.getTeleportMessage() == null ? 0 : original.getTeleportMessage().length());
 
-        if(length > 0) {
+        if (length > 0) {
             costs[3] = length * PlayerWarpManager.getManager().getMessageCosts();
-        } else if(length < 0) {
+        } else if (length < 0) {
             costs[3] = length * PlayerWarpManager.getManager().getMessageCosts() * PlayerWarpManager.getManager().getMessageRefund() * original.getRefundFactor();
         }
 
         //public state
-        if(!original.isPublic() && warp.isPublic()) costs[4] = PlayerWarpManager.getManager().getPublicCosts();
-        else if(original.isPublic() && !warp.isPublic()) costs[4] = -PlayerWarpManager.getManager().getPublicCosts() * PlayerWarpManager.getManager().getPublicRefund() * original.getRefundFactor();
+        if (!original.isPublic() && warp.isPublic()) costs[4] = PlayerWarpManager.getManager().getPublicCosts();
+        else if (original.isPublic() && !warp.isPublic()) costs[4] = -PlayerWarpManager.getManager().getPublicCosts() * PlayerWarpManager.getManager().getPublicRefund() * original.getRefundFactor();
 
         //teleport costs
         double tpCosts = warp.getTeleportCosts() - original.getTeleportCosts();
-        if(tpCosts > 0) costs[5] = tpCosts * PlayerWarpManager.getManager().getTeleportCosts();
-        else if(tpCosts < 0) costs[5] = tpCosts * PlayerWarpManager.getManager().getTeleportCosts() * PlayerWarpManager.getManager().getTeleportCostsRefund() * original.getRefundFactor();
+        if (tpCosts > 0) costs[5] = tpCosts * PlayerWarpManager.getManager().getTeleportCosts();
+        else if (tpCosts < 0) costs[5] = tpCosts * PlayerWarpManager.getManager().getTeleportCosts() * PlayerWarpManager.getManager().getTeleportCostsRefund() * original.getRefundFactor();
 
         //target position
-        if(!original.getAction(WarpAction.class).getValue().equals(warp.getAction(WarpAction.class).getValue())) costs[6] = PlayerWarpManager.getManager().getPositionChangeCosts();
+        if (!original.getAction(WarpAction.class).getValue().equals(warp.getAction(WarpAction.class).getValue())) costs[6] = PlayerWarpManager.getManager().getPositionChangeCosts();
 
         //active time
-        if(warp.isTimeDependent()) {
-            if(creating || original.getLeftTime() <= 500) costs[7] = warp.getTime() / 60000D * PlayerWarpManager.getManager().getActiveTimeCosts();
+        if (warp.isTimeDependent()) {
+            if (creating || original.getLeftTime() <= 500) costs[7] = warp.getTime() / 60000D * PlayerWarpManager.getManager().getActiveTimeCosts();
             else {
                 long diff;
-                if(warp.getLeftTime() <= 0) diff = -original.getLeftTime();
+                if (warp.getLeftTime() <= 0) diff = -original.getLeftTime();
                 else diff = warp.getTime() - original.getLeftTime();
 
-                if(diff > 0) costs[7] = (diff / 60000D) * PlayerWarpManager.getManager().getActiveTimeCosts();
-                else if(diff < 0) costs[7] = (diff / 60000D) * PlayerWarpManager.getManager().getActiveTimeCosts() * PlayerWarpManager.getManager().getActiveTimeRefund() * original.getRefundFactor();
+                if (diff > 0) costs[7] = (diff / 60000D) * PlayerWarpManager.getManager().getActiveTimeCosts();
+                else if (diff < 0) costs[7] = (diff / 60000D) * PlayerWarpManager.getManager().getActiveTimeCosts() * PlayerWarpManager.getManager().getActiveTimeRefund() * original.getRefundFactor();
             }
         }
 
         //trusted members
         length = warp.getTrusted().size() - original.getTrusted().size();
-        if(length > 0) costs[8] = length * PlayerWarpManager.getManager().getTrustedMemberCosts();
-        else if(length < 0) costs[8] = length * PlayerWarpManager.getManager().getTrustedMemberCosts() * PlayerWarpManager.getManager().getTrustedMemberRefund() * original.getRefundFactor();
+        if (length > 0) costs[8] = length * PlayerWarpManager.getManager().getTrustedMemberCosts();
+        else if (length < 0) costs[8] = length * PlayerWarpManager.getManager().getTrustedMemberCosts() * PlayerWarpManager.getManager().getTrustedMemberRefund() * original.getRefundFactor();
 
         //create or edit
-        if(creating) {
+        if (creating) {
             costs[9] = PlayerWarpManager.getManager().getCreateCosts();
         } else {
             costs[9] = PlayerWarpManager.getManager().getEditCosts();
@@ -242,10 +227,25 @@ public class PWEditor extends Editor<PlayerWarp> implements Ticker {
     }
 
     @Override
+    public void destroy() {
+        API.removeTicker(this);
+        super.destroy();
+    }
+
+    @Override
+    public void onTick() {
+    }
+
+    @Override
+    public void onSecond() {
+        updateTime();
+    }
+
+    @Override
     public void initControllButtons() {
         super.initControllButtons();
 
-        if(warp != null && !warp.isOwner(getPlayer())) {
+        if (warp != null && !warp.isOwner(getPlayer())) {
             ItemButtonOption option = new ItemButtonOption();
             option.setOnlyLeftClick(true);
 
@@ -260,16 +260,16 @@ public class PWEditor extends Editor<PlayerWarp> implements Ticker {
 
                 @Override
                 public void onClick(InventoryClickEvent e, Player player) {
-                    if(runnable != null) {
+                    if (runnable != null) {
                         //save
                         close();
                         getBackup().applyTo(getClone());
 
                         SoundData sound = getSuccessSound();
-                        if(sound != null) sound.play(player);
+                        if (sound != null) sound.play(player);
 
                         String msg = getSuccessMessage();
-                        if(msg != null) getPlayer().sendMessage(msg);
+                        if (msg != null) getPlayer().sendMessage(msg);
                     } else {
                         runnable = new BukkitRunnable() {
                             @Override
@@ -293,8 +293,8 @@ public class PWEditor extends Editor<PlayerWarp> implements Ticker {
     }
 
     public void updateTime() {
-        for(Button button : getCurrent().getButtons()) {
-            if(button instanceof ActiveTimeButton) {
+        for (Button button : getCurrent().getButtons()) {
+            if (button instanceof ActiveTimeButton) {
                 ((SyncButton) button).update();
             }
         }
@@ -318,8 +318,8 @@ public class PWEditor extends Editor<PlayerWarp> implements Ticker {
 
     @Override
     public boolean canFinish() {
-        if(this.warp == null || (PlayerWarpManager.getManager().isClasses() && warp.getClasses().size() < PlayerWarpManager.getManager().getClassesMin())) return false;
-        if(!warp.isOwner(getPlayer())) return true;
+        if (this.warp == null || (PlayerWarpManager.getManager().isClasses() && warp.getClasses().size() < PlayerWarpManager.getManager().getClassesMin())) return false;
+        if (!warp.isOwner(getPlayer())) return true;
         return canPay(getPlayer(), calculateCosts().doubleValue());
     }
 
@@ -334,11 +334,11 @@ public class PWEditor extends Editor<PlayerWarp> implements Ticker {
     public List<String> finishButtonLoreAddition() {
         List<String> lore = new ArrayList<>();
 
-        if(warp != null && PlayerWarpManager.getManager().isClasses() && warp.getClasses().size() < PlayerWarpManager.getManager().getClassesMin()) {
+        if (warp != null && PlayerWarpManager.getManager().isClasses() && warp.getClasses().size() < PlayerWarpManager.getManager().getClassesMin()) {
             List<String> l = Lang.getStringList("PlayerWarp_Classes");
             List<String> modified = new ArrayList<>();
-            for(String s : l) {
-                if(s.trim().isEmpty()) continue;
+            for (String s : l) {
+                if (s.trim().isEmpty()) continue;
                 modified.add(s.replace("%MIN%", PlayerWarpManager.getManager().getClassesMin() + "").replace("%MAX%", PlayerWarpManager.getManager().getClassesMax() + ""));
             }
             l.clear();
@@ -354,83 +354,83 @@ public class PWEditor extends Editor<PlayerWarp> implements Ticker {
 
         List<Integer> skip = new ArrayList<>();
 
-        for(double cost : costs) {
-            if(cost != 0) {
+        for (double cost : costs) {
+            if (cost != 0) {
                 lore.add("");
                 break;
             }
         }
 
-        for(int j = copy.length - 1; j >= 0; j--) {
+        for (int j = copy.length - 1; j >= 0; j--) {
             double d = copy[j];
             int i = 0;
 
             //personal item
-            if(!skip.contains(i) && d == costs[i] && costs[i] != 0) {
+            if (!skip.contains(i) && d == costs[i] && costs[i] != 0) {
                 lore.add("§7" + Lang.get("Item") + ": " + cut(costs[i]) + " " + Lang.get("Coins"));
                 skip.add(i);
             }
             i++;
 
             //name
-            if(!skip.contains(i) && d == costs[i] && costs[i] != 0) {
+            if (!skip.contains(i) && d == costs[i] && costs[i] != 0) {
                 lore.add("§7" + Lang.get("Name") + ": " + cut(costs[i]) + " " + Lang.get("Coins"));
                 skip.add(i);
             }
             i++;
 
             //description
-            if(!skip.contains(i) && d == costs[i] && costs[i] != 0) {
+            if (!skip.contains(i) && d == costs[i] && costs[i] != 0) {
                 lore.add("§7" + Lang.get("Description") + ": " + cut(costs[i]) + " " + Lang.get("Coins"));
                 skip.add(i);
             }
             i++;
 
             //teleport message
-            if(!skip.contains(i) && d == costs[i] && costs[i] != 0) {
+            if (!skip.contains(i) && d == costs[i] && costs[i] != 0) {
                 lore.add("§7" + Lang.get("Teleport_Message") + ": " + cut(costs[i]) + " " + Lang.get("Coins"));
                 skip.add(i);
             }
             i++;
 
             //public state
-            if(!skip.contains(i) && d == costs[i] && costs[i] != 0) {
+            if (!skip.contains(i) && d == costs[i] && costs[i] != 0) {
                 lore.add("§7" + Lang.get("Status") + ": " + cut(costs[i]) + " " + Lang.get("Coins"));
                 skip.add(i);
             }
             i++;
 
             //teleport co sts
-            if(!skip.contains(i) && d == costs[i] && costs[i] != 0) {
+            if (!skip.contains(i) && d == costs[i] && costs[i] != 0) {
                 lore.add("§7" + Lang.get("Teleport_Costs") + ": " + cut(costs[i]) + " " + Lang.get("Coins"));
                 skip.add(i);
             }
             i++;
 
             //target position
-            if(!skip.contains(i) && d == costs[i] && costs[i] != 0) {
+            if (!skip.contains(i) && d == costs[i] && costs[i] != 0) {
                 lore.add("§7" + Lang.get("Target_Position") + ": " + cut(costs[i]) + " " + Lang.get("Coins"));
                 skip.add(i);
             }
             i++;
 
             //active time
-            if(!skip.contains(i) && d == costs[i] && costs[i] != 0) {
+            if (!skip.contains(i) && d == costs[i] && costs[i] != 0) {
                 lore.add("§7" + Lang.get("Active_Time") + ": " + cut(costs[i]) + " " + Lang.get("Coins"));
                 skip.add(i);
             }
             i++;
 
             //trusted members
-            if(!skip.contains(i) && d == costs[i] && costs[i] != 0) {
+            if (!skip.contains(i) && d == costs[i] && costs[i] != 0) {
                 lore.add("§7" + Lang.get("Trusted_members") + ": " + cut(costs[i]) + " " + Lang.get("Coins"));
                 skip.add(i);
             }
             i++;
 
             //create or edit
-            if(!skip.contains(i) && d == costs[i] && costs[i] != 0) {
-                if(creating) {
+            if (!skip.contains(i) && d == costs[i] && costs[i] != 0) {
+                if (creating) {
                     lore.add("§7" + Lang.get("Construction_Costs") + ": " + cut(costs[i]) + " " + Lang.get("Coins"));
                 } else {
                     lore.add("§7" + Lang.get("Processing_Costs") + ": " + cut(costs[i]) + " " + Lang.get("Coins"));
@@ -445,11 +445,11 @@ public class PWEditor extends Editor<PlayerWarp> implements Ticker {
 
     @Override
     public String getSuccessMessage() {
-        if(creating) {
-            if(paid.doubleValue() > 0) return Lang.getPrefix() + Lang.get("Warp_Created").replace("%NAME%", warp.getName()).replace("%PRICE%", paid + "");
+        if (creating) {
+            if (paid.doubleValue() > 0) return Lang.getPrefix() + Lang.get("Warp_Created").replace("%NAME%", warp.getName()).replace("%PRICE%", paid + "");
             else return Lang.getPrefix() + Lang.get("Warp_Created_Free").replace("%NAME%", warp.getName());
-        } else if(paid.doubleValue() == 0) return Lang.getPrefix() + Lang.get("Warp_Edited").replace("%NAME%", warp.getName());
-        else if(paid.doubleValue() > 0) return Lang.getPrefix() + Lang.get("Warp_Edited_Pay").replace("%NAME%", warp.getName()).replace("%PRICE%", paid + "");
+        } else if (paid.doubleValue() == 0) return Lang.getPrefix() + Lang.get("Warp_Edited").replace("%NAME%", warp.getName());
+        else if (paid.doubleValue() > 0) return Lang.getPrefix() + Lang.get("Warp_Edited_Pay").replace("%NAME%", warp.getName()).replace("%PRICE%", paid + "");
         else return Lang.getPrefix() + Lang.get("Warp_Edited_Refund").replace("%NAME%", warp.getName()).replace("%PRICE%", cut(-paid.doubleValue()) + "");
     }
 

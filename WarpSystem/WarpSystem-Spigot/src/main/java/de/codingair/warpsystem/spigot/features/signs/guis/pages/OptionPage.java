@@ -62,7 +62,7 @@ public class OptionPage extends PageItem {
 
                 builder.setLore("§3" + Lang.get("Current") + ":");
 
-                for(String line : lines == null ? s.getLines() : lines) {
+                for (String line : lines == null ? s.getLines() : lines) {
                     builder.addLore("§7- '§f" + (line == null ? "" : sign.prepareLine(line)) + "§7'");
                 }
 

@@ -2,7 +2,7 @@ package de.codingair.warpsystem.spigot.features.warps.nextlevel.utils;
 
 import de.codingair.codingapi.tools.Call;
 import de.codingair.codingapi.tools.Callback;
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.time.TimeMap;
 import de.codingair.codingapi.utils.ChatColor;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Icon extends FeatureObject {
-    private final TimeMap<Player, PaymentConfirmation> confirm = new TimeMap<Player, PaymentConfirmation>(){
+    private final TimeMap<Player, PaymentConfirmation> confirm = new TimeMap<Player, PaymentConfirmation>() {
         @Override
         public void timeout(Player key, PaymentConfirmation pc) {
             pc.getCallback().accept(Result.ERROR);
@@ -69,15 +69,15 @@ public class Icon extends FeatureObject {
     public FeatureObject perform(Player player) {
         PaymentConfirmation pc = confirm.remove(player);
 
-        if(pc != null) {
+        if (pc != null) {
             //confirm
-            if(Bank.adapter().getMoney(player) < pc.getCosts()) {
+            if (Bank.adapter().getMoney(player) < pc.getCosts()) {
                 pc.getCallback().accept(Result.NOT_ENOUGH_MONEY);
             } else {
                 Bank.adapter().withdraw(player, pc.getCosts());
                 pc.getCallback().accept(Result.SUCCESS);
 
-                if(hasAction(Action.COMMAND)) {
+                if (hasAction(Action.COMMAND)) {
                     player.closeInventory();
                 }
             }
@@ -85,7 +85,7 @@ public class Icon extends FeatureObject {
             return this;
         }
 
-        if(hasAction(Action.WARP)) {
+        if (hasAction(Action.WARP)) {
             player.closeInventory();
         }
 
@@ -94,7 +94,7 @@ public class Icon extends FeatureObject {
 
     @Override
     protected Call confirmPayment(Player player, double costs, Callback<Result> callback) {
-        if(Bank.adapter().getMoney(player) < costs) {
+        if (Bank.adapter().getMoney(player) < costs) {
             callback.accept(Result.NOT_ENOUGH_MONEY);
             return null;
         }
@@ -103,7 +103,7 @@ public class Icon extends FeatureObject {
         player.sendMessage(Lang.getPrefix() + Lang.get("Icon_Costs_Confirm").replace("%AMOUNT%", new ImprovedDouble(costs).toString()));
         return () -> {
             PaymentConfirmation pc = confirm.remove(player);
-            if(pc != null) {
+            if (pc != null) {
                 //confirm
                 pc.getCallback().accept(Result.CANCELLED);
             }
@@ -115,7 +115,7 @@ public class Icon extends FeatureObject {
     }
 
     public int getDepth() {
-        if(page == null) return 0;
+        if (page == null) return 0;
         else return 1 + page.getDepth();
     }
 
@@ -143,7 +143,7 @@ public class Icon extends FeatureObject {
     }
 
     @Override
-    public boolean read(DataWriter d) throws Exception {
+    public boolean read(DataMask d) throws Exception {
         super.read(d);
 
         this.hideName = d.getBoolean("hide", false);
@@ -152,24 +152,24 @@ public class Icon extends FeatureObject {
 
         this.slot = d.getInteger("slot");
 
-        if(d.get("isCategory") != null) {
+        if (d.get("isCategory") != null) {
             this.isPage = Boolean.parseBoolean(d.get("isCategory") + "");
         } else {
             this.isPage = d.getBoolean("isPage");
         }
 
-        if(d.get("category") != null) {
+        if (d.get("category") != null) {
             this.page = d.get("category") == null ? null : IconManager.getInstance().getPage(d.get("category"));
         } else {
             this.page = d.get("page") == null ? null : IconManager.getInstance().getPage(d.get("page"));
         }
 
-        if(isPage()) removeAction(Action.COSTS);
+        if (isPage()) removeAction(Action.COSTS);
         return true;
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         super.write(d);
 
         d.put("hide", this.hideName);
@@ -182,7 +182,7 @@ public class Icon extends FeatureObject {
 
     @Override
     public boolean equals(Object o) {
-        if(!(o instanceof Icon)) return false;
+        if (!(o instanceof Icon)) return false;
         Icon icon = (Icon) o;
         return super.equals(o) &&
                 slot == icon.slot &&
@@ -229,12 +229,12 @@ public class Icon extends FeatureObject {
 
     public ItemBuilder getItemBuilderWithPlaceholders(Player player) {
         ItemBuilder builder = getItemBuilder().checkFirstLine();
-        if(hideName) builder.setHideName(true);
+        if (hideName) builder.setHideName(true);
 
-        if(builder.getName() != null) builder.setName(prepareLine(builder.getName(), player));
+        if (builder.getName() != null) builder.setName(prepareLine(builder.getName(), player));
 
-        if(builder.getLore() != null) {
-            for(int i = 0; i < builder.getLore().size(); i++) {
+        if (builder.getLore() != null) {
+            for (int i = 0; i < builder.getLore().size(); i++) {
                 builder.getLore().add(i, prepareLine(builder.getLore().remove(i), player));
             }
         }

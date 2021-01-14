@@ -16,9 +16,9 @@ public class OptionBundle {
     }
 
     public void apply(OptionBundle bundle) {
-        for(Options option : bundle.options) {
+        for (Options option : bundle.options) {
             Options o = getOptions(option.getClass());
-            if(o != null) {
+            if (o != null) {
                 o.apply(option);
             }
         }
@@ -27,7 +27,7 @@ public class OptionBundle {
     public OptionBundle clone() {
         List<Options> options = new ArrayList<>();
 
-        for(Options option : this.options) {
+        for (Options option : this.options) {
             options.add(option.clone());
         }
 
@@ -35,21 +35,21 @@ public class OptionBundle {
     }
 
     public void write() {
-        for(Options option : this.options) {
+        for (Options option : this.options) {
             option.reloadFile(false);
             option.write();
         }
     }
 
     public void read() {
-        for(Options option : this.options) {
+        for (Options option : this.options) {
             option.read();
         }
     }
 
     public <E extends Options> E getOptions(Class<? extends E> clazz) {
-        for(Options option : this.options) {
-            if(option.getClass().equals(clazz)) return (E) option;
+        for (Options option : this.options) {
+            if (option.getClass().equals(clazz)) return (E) option;
         }
 
         return null;

@@ -34,19 +34,19 @@ public abstract class LoreButton extends SyncAnvilGUIButton {
 
     @Override
     public ItemStack craftItem() {
-        if(toChange == null) return new ItemStack(Material.AIR);
+        if (toChange == null) return new ItemStack(Material.AIR);
 
         List<String> loreOfItem = toChange.getLore();
         List<String> lore = new ArrayList<>();
-        if(loreOfItem == null) lore = null;
+        if (loreOfItem == null) lore = null;
         else {
-            for(String s : loreOfItem) {
+            for (String s : loreOfItem) {
                 lore.add("§7- '§f" + prepareLine(s) + "§7'");
             }
         }
 
         List<String> lore2 = new ArrayList<>();
-        if(lore != null && !lore.isEmpty()) lore2.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove") + " §8(§e" + Lang.get("Edit") + "§8)");
+        if (lore != null && !lore.isEmpty()) lore2.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove") + " §8(§e" + Lang.get("Edit") + "§8)");
 
         return new ItemBuilder(XMaterial.PAPER)
                 .setName("§6§n" + Lang.get("Description"))
@@ -59,26 +59,26 @@ public abstract class LoreButton extends SyncAnvilGUIButton {
 
     @Override
     public boolean canClick(ClickType click) {
-        if(click == ClickType.SHIFT_RIGHT && toChange.getLore().isEmpty()) return false;
+        if (click == ClickType.SHIFT_RIGHT && toChange.getLore().isEmpty()) return false;
         return super.canClick(click);
     }
 
     protected String prepareLine(String s) {
-        if(featureObject == null) return ChatColor.translateAll('&', s);
+        if (featureObject == null) return ChatColor.translateAll('&', s);
         else return featureObject.prepareLine(s);
     }
 
     @Override
     public ItemStack craftAnvilItem(ClickType trigger) {
-        if(trigger == ClickType.SHIFT_RIGHT) {
+        if (trigger == ClickType.SHIFT_RIGHT) {
             return new ItemBuilder(Material.PAPER).setName(editing = toChange.getLore().remove(toChange.getLore().size() - 1).replace("§", "&")).getItem();
         } else return new ItemBuilder(Material.PAPER).setName(Lang.get("Line") + "...").getItem();
     }
 
     @Override
     public void onOtherClick(InventoryClickEvent e) {
-        if(e.getClick() == ClickType.RIGHT) {
-            if(toChange.getLore() != null && !toChange.getLore().isEmpty()) toChange.getLore().remove(toChange.getLore().size() - 1);
+        if (e.getClick() == ClickType.RIGHT) {
+            if (toChange.getLore() != null && !toChange.getLore().isEmpty()) toChange.getLore().remove(toChange.getLore().size() - 1);
             updatingLore(toChange);
             update();
         }
@@ -86,11 +86,11 @@ public abstract class LoreButton extends SyncAnvilGUIButton {
 
     @Override
     public void onClick(AnvilClickEvent e) {
-        if(!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
+        if (!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
 
         String input = e.getInput();
 
-        if(input == null) {
+        if (input == null) {
             e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Enter_Lore"));
             return;
         }
@@ -106,7 +106,7 @@ public abstract class LoreButton extends SyncAnvilGUIButton {
     @Override
     public void onClose(AnvilCloseEvent e) {
         System.out.println("onClose: " + editing);
-        if(editing != null) {
+        if (editing != null) {
             toChange.addLore(editing);
             updatingLore(toChange);
             update();

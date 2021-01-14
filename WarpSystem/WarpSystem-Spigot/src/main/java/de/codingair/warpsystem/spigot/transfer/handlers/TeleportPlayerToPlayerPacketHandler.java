@@ -4,8 +4,8 @@ import de.codingair.packetmanagement.handlers.PacketHandler;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.base.transfer.packets.proxy.TeleportPlayerToPlayerPacket;
-import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.listeners.TeleportListener;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
@@ -22,7 +22,7 @@ public class TeleportPlayerToPlayerPacketHandler implements PacketHandler<Telepo
         Player player = Bukkit.getPlayer(packet.getPlayer());
         Player other = Bukkit.getPlayer(packet.getTarget());
 
-        if(other == null) return;
+        if (other == null) return;
 
         TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(other.getLocation())), other.getName());
         options.setCosts(Math.max(packet.getCosts(), 0));
@@ -31,7 +31,7 @@ public class TeleportPlayerToPlayerPacketHandler implements PacketHandler<Telepo
         options.setOrigin(Origin.TeleportCommand);
         options.setMessage(Lang.getPrefix() + (gate == player ? Lang.get("Teleported_To") : Lang.get("Teleported_To_By").replace("%gate%", gate.getName())));
 
-        if(gate != null && gate != player && packet.isMessageToGate())
+        if (gate != null && gate != player && packet.isMessageToGate())
             gate.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", packet.getPlayer()).replace("%warp%", other.getName()));
 
         TeleportListener.setSpawnPositionOrTeleport(packet.getPlayer(), options);

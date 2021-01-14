@@ -36,8 +36,8 @@ public class StatusButton extends EditorButton {
 
         builder.setName(Editor.ITEM_TITLE_COLOR + Lang.get("Status"));
 
-        if(original.isPublic() && !warp.isPublic()) builder.addLore(PWEditor.getFreeMessage(Lang.get("Public"), page));
-        else if(!original.isPublic() && warp.isPublic()) builder.addLore(PWEditor.getCostsMessage(PlayerWarpManager.getManager().getPublicCosts(), page));
+        if (original.isPublic() && !warp.isPublic()) builder.addLore(PWEditor.getFreeMessage(Lang.get("Public"), page));
+        else if (!original.isPublic() && warp.isPublic()) builder.addLore(PWEditor.getCostsMessage(PlayerWarpManager.getManager().getPublicCosts(), page));
 
         builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Current") + ": " +
                 (warp.isPublic() ?

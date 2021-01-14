@@ -49,7 +49,7 @@ public class POptions extends PageItem {
         }.setOption(option));
 
         addButton(VFac.build(Button.class, VKey.CommandButton, 2, 2, shortcut, (Function<String, Boolean>) command -> {
-            if(ShortcutManager.getInstance().hasCommandLoop(shortcut, command)) {
+            if (ShortcutManager.getInstance().hasCommandLoop(shortcut, command)) {
                 p.sendMessage(Lang.getPrefix() + Lang.get("Shortcut_Editor_Loop"));
                 return false;
             }

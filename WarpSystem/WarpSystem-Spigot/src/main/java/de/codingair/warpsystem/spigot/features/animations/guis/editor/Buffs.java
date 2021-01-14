@@ -35,7 +35,7 @@ public class Buffs extends HotbarGUI {
         this.menu = menu;
         this.parts = menu.getClone().getBuffList();
 
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             this.buffs[i] = new BuffPart(player, i, menu);
         }
 
@@ -46,20 +46,20 @@ public class Buffs extends HotbarGUI {
         setItem(0, new ItemComponent(new ItemBuilder(Skull.ArrowLeft).setName("§7» §c" + Lang.get("Back") + "§7 «").getItem()).setLink(menu), false);
         setItem(1, new ItemComponent(new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE).setHideName(true).getItem()));
 
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             int id = i;
 
-            if(i < parts.size() + 1) {
+            if (i < parts.size() + 1) {
                 setItem(id + 2, new ItemComponent(new ItemBuilder(parts.size() >= id + 1 ? XMaterial.SPLASH_POTION : XMaterial.BARRIER)
                         .setName("§c" + Lang.get("Potion_Effect") + " #" + (id + 1))
                         .setData((byte) id)
                         .getItem(), new ItemListener() {
                     @Override
                     public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                        if(clickType == ClickType.LEFT_CLICK) {
+                        if (clickType == ClickType.LEFT_CLICK) {
                             ic.setLink(buffs[id]);
 
-                            if(menu.getClone().getBuffList().size() == id) {
+                            if (menu.getClone().getBuffList().size() == id) {
                                 menu.getClone().getBuffList().add(new Buff(PotionEffectType.ABSORPTION, 1, 0, 0));
                                 buffs[id].initialize();
                                 menu.getAnimPlayer().update();
@@ -73,7 +73,7 @@ public class Buffs extends HotbarGUI {
                             } else buffs[id].initialize();
                         } else {
                             ic.setLink(null);
-                            if(clickType == ClickType.RIGHT_CLICK && parts.size() >= id + 1) {
+                            if (clickType == ClickType.RIGHT_CLICK && parts.size() >= id + 1) {
                                 parts.remove(id);
                                 menu.getAnimPlayer().update();
                                 onHover(gui, ic, ic, player);
@@ -84,7 +84,7 @@ public class Buffs extends HotbarGUI {
 
                     @Override
                     public void onHover(HotbarGUI gui, ItemComponent old, ItemComponent current, Player player) {
-                        if(parts.size() >= id + 1) {
+                        if (parts.size() >= id + 1) {
                             MessageAPI.sendActionBar(getPlayer(), Menu.ACTION_BAR(Lang.get("Potion_Effect") + " #" + (id + 1), "§e" + Lang.get("Edit"), "§c" + Lang.get("Delete")), WarpSystem.getInstance(), Integer.MAX_VALUE);
                         } else MessageAPI.sendActionBar(getPlayer(), "§3" + Lang.get("Leftclick") + ": §a" + Lang.get("Add"), WarpSystem.getInstance(), Integer.MAX_VALUE);
                     }

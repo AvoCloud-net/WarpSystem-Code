@@ -19,9 +19,9 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public class CooldownManager implements ICooldownManager {
+    private static final TimeMap<Player, Integer> COOLDOWN_MESSAGE_BUFFER = new TimeMap<>();
     //expired cooldown will be removed on access (get, save)
     private final HashMap<UUID, HashMap<Integer, Long>> cache = new HashMap<>();
-    private static final TimeMap<Player, Integer> COOLDOWN_MESSAGE_BUFFER = new TimeMap<>();
     private ConfigFile file;
 
     public void load() {
@@ -29,28 +29,28 @@ public class CooldownManager implements ICooldownManager {
         FileConfiguration config = file.getConfig();
 
         long time = config.getLong("Date", -1);
-        if(time == -1) return; //date does not exist -> stop here
+        if (time == -1) return; //date does not exist -> stop here
 
-        for(String key : config.getKeys(false)) {
+        for (String key : config.getKeys(false)) {
             try {
                 UUID id = UUID.fromString(key);
 
                 List<?> data = file.getConfig().getList(key);
-                if(data != null) {
-                    for(Object s : data) {
-                        if(s instanceof Map) {
+                if (data != null) {
+                    for (Object s : data) {
+                        if (s instanceof Map) {
                             try {
                                 Cooldown cooldown = new Cooldown(id);
                                 JSON json = new JSON((Map<?, ?>) s);
                                 cooldown.read(json, time);
                                 addCooldown(cooldown);
-                            } catch(Exception e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
                     }
                 }
-            } catch(IllegalArgumentException ignored) {
+            } catch (IllegalArgumentException ignored) {
                 //might be the date tag
             }
         }
@@ -66,7 +66,7 @@ public class CooldownManager implements ICooldownManager {
         long time = System.currentTimeMillis();
 
         List<Integer> originList = new ArrayList<>();
-        if(WarpSystem.getInstance().isOnProxy()) {
+        if (WarpSystem.getInstance().isOnProxy()) {
             //add to avoid saving them here
             originList.add(Origin.TeleportRequest.ordinal());
             originList.add(Origin.TeleportCommand.ordinal());
@@ -74,10 +74,10 @@ public class CooldownManager implements ICooldownManager {
         }
 
         cache.entrySet().removeIf(entry -> {
-            if(entry == null) return true;
+            if (entry == null) return true;
 
             UUID id = entry.getKey();
-            if(id == null || entry.getValue() == null) return true;
+            if (id == null || entry.getValue() == null) return true;
 
             List<JSON> configData = new ArrayList<>();
             HashMap<Integer, Long> data = entry.getValue();
@@ -85,8 +85,8 @@ public class CooldownManager implements ICooldownManager {
             data.entrySet().removeIf(sub -> {
                 long cooldown = sub.getValue();
 
-                if(cooldown < System.currentTimeMillis()) return true;
-                if(originList.contains(sub.getKey())) return false;
+                if (cooldown < System.currentTimeMillis()) return true;
+                if (originList.contains(sub.getKey())) return false;
 
                 JSON json = new JSON();
                 json.put("end", cooldown - time);
@@ -95,22 +95,22 @@ public class CooldownManager implements ICooldownManager {
                 return false;
             });
 
-            if(!configData.isEmpty()) config.set(id.toString(), configData);
+            if (!configData.isEmpty()) config.set(id.toString(), configData);
             return data.isEmpty();
         });
 
-        if(!cache.isEmpty()) config.set("Date", time);
+        if (!cache.isEmpty()) config.set("Date", time);
         file.saveConfig();
     }
 
     public long getCooldown(UUID uuid, int hashCode) {
         HashMap<Integer, Long> data = cache.get(uuid);
-        if(data == null) return 0;
+        if (data == null) return 0;
 
         Long cooldown = data.get(hashCode);
-        if(cooldown != null && cooldown < System.currentTimeMillis()) {
+        if (cooldown != null && cooldown < System.currentTimeMillis()) {
             data.remove(cooldown);
-            if(data.isEmpty()) cache.remove(uuid);
+            if (data.isEmpty()) cache.remove(uuid);
             cooldown = null;
         }
 
@@ -119,27 +119,27 @@ public class CooldownManager implements ICooldownManager {
 
     public void register(Player player, Origin origin) {
         long time = origin.getCooldown();
-        if(time == 0 || player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Cooldown)) return;
+        if (time == 0 || player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Cooldown)) return;
         Cooldown cooldown = new Cooldown(WarpSystem.getInstance().getPlayerDataManager().get(player), System.currentTimeMillis() + time, origin.ordinal());
 
         addCooldown(cooldown);
-        if(WarpSystem.getInstance().isOnProxy()) {
+        if (WarpSystem.getInstance().isOnProxy()) {
             //upload to bungee
             WarpSystem.getInstance().getDataHandler().send(new CooldownPacket(cooldown), player);
         }
     }
 
     public void register(Player player, long time, int hash) {
-        if(player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Cooldown) || time == 0) return;
+        if (player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Cooldown) || time == 0) return;
         addCooldown(new Cooldown(WarpSystem.getInstance().getPlayerDataManager().get(player), System.currentTimeMillis() + time, hash));
     }
 
     public void addCooldown(Cooldown cooldown) {
-        if(cooldown.getRemainingTime() != 0) cache.computeIfAbsent(cooldown.getPlayer(), k -> new HashMap<>()).put(cooldown.getHashId(), cooldown.getEnd());
+        if (cooldown.getRemainingTime() != 0) cache.computeIfAbsent(cooldown.getPlayer(), k -> new HashMap<>()).put(cooldown.getHashId(), cooldown.getEnd());
     }
 
     public long getRemainingCooldown(Player player, int hashCode) {
-        if(player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Cooldown)) {
+        if (player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Cooldown)) {
             cache.remove(WarpSystem.getInstance().getPlayerDataManager().get(player));
             return 0;
         }
@@ -157,9 +157,9 @@ public class CooldownManager implements ICooldownManager {
 
     public boolean checkPlayer(Player player, int hash) {
         long cooldown = getRemainingCooldown(player, hash);
-        if(cooldown > 0) {
+        if (cooldown > 0) {
             Integer time = COOLDOWN_MESSAGE_BUFFER.get(player);
-            if(time != null && time == (int) (cooldown / 1000)) return true;
+            if (time != null && time == (int) (cooldown / 1000)) return true;
             COOLDOWN_MESSAGE_BUFFER.put(player, (int) (cooldown / 1000), 1000);
 
             player.sendMessage(Lang.getPrefix() + Lang.get("Cooldown_Info").replace("%TIME%", StringFormatter.convertInTimeFormat(cooldown + 1000)));

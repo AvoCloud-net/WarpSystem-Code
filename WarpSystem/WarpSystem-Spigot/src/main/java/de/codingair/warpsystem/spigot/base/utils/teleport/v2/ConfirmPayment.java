@@ -23,29 +23,13 @@ public class ConfirmPayment extends TeleportStage {
     protected ConfirmPayment() {
     }
 
-    @Override
-    public void destroy() {
-    }
-
-    @Override
-    public void start() {
-        double costs = options.getCosts(player);
-        confirm(player, costs, new Callback<Result>() {
-            @Override
-            public void accept(Result result) {
-                if(result == Result.SUCCESS) end();
-                else cancel(result);
-            }
-        });
-    }
-
     public static Call confirm(Player player, double costs, Callback<Result> callback) {
-        if(costs <= 0) {
+        if (costs <= 0) {
             callback.accept(Result.SUCCESS);
             return null;
         }
 
-        if(!Bank.isReady() || Bank.adapter().getMoney(player) < costs) {
+        if (!Bank.isReady() || Bank.adapter().getMoney(player) < costs) {
             callback.accept(Result.NOT_ENOUGH_MONEY);
             return null;
         }
@@ -58,9 +42,9 @@ public class ConfirmPayment extends TeleportStage {
                 MessageAPI.sendTitle(player, "§e" + Lang.get("Sneak_to_confirm"), "§6" + Lang.get("Costs") + ": §7" + new ImprovedDouble(costs) + " " + Lang.get("Coins"), 0, 0, 5);
                 HandlerList.unregisterAll(listenerValue.getValue());
 
-                if(Bank.adapter().getMoney(player) < costs) result = Result.NOT_ENOUGH_MONEY;
+                if (Bank.adapter().getMoney(player) < costs) result = Result.NOT_ENOUGH_MONEY;
 
-                if(result == Result.SUCCESS) {
+                if (result == Result.SUCCESS) {
                     //pay
                     Bank.adapter().withdraw(player, costs);
                 } else {
@@ -68,7 +52,7 @@ public class ConfirmPayment extends TeleportStage {
                     Sound.ENTITY_ITEM_BREAK.playSound(player, 0.7F, 0.9F);
                 }
 
-                if(callback != null) callback.accept(result);
+                if (callback != null) callback.accept(result);
             }
         };
 
@@ -83,11 +67,11 @@ public class ConfirmPayment extends TeleportStage {
         listenerValue.setValue(new Listener() {
             @EventHandler
             public void onWalk(PlayerWalkEvent e) {
-                if(e.getPlayer().equals(player)) {
+                if (e.getPlayer().equals(player)) {
                     double diff = Math.abs(e.getFrom().getX() - e.getTo().getX()) + Math.abs(e.getFrom().getZ() - e.getTo().getZ());
                     double diffY = Math.abs(e.getFrom().getY() - e.getTo().getY());
 
-                    if(diff > 0.01 || diffY >= 0.11) {
+                    if (diff > 0.01 || diffY >= 0.11) {
                         //deny!
                         runnable.cancel();
                         confirmation.accept(Result.DENIED_PAYMENT);
@@ -98,7 +82,7 @@ public class ConfirmPayment extends TeleportStage {
 
             @EventHandler
             public void onToggleSneak(PlayerToggleSneakEvent e) {
-                if(e.getPlayer().equals(player) && e.isSneaking()) {
+                if (e.getPlayer().equals(player) && e.isSneaking()) {
                     //confirm!
                     runnable.cancel();
                     confirmation.accept(Result.SUCCESS);
@@ -115,8 +99,24 @@ public class ConfirmPayment extends TeleportStage {
             try {
                 runnable.cancel();
                 confirmation.accept(Result.DENIED_PAYMENT);
-            } catch(IllegalStateException ignored) {
+            } catch (IllegalStateException ignored) {
             }
         };
+    }
+
+    @Override
+    public void destroy() {
+    }
+
+    @Override
+    public void start() {
+        double costs = options.getCosts(player);
+        confirm(player, costs, new Callback<Result>() {
+            @Override
+            public void accept(Result result) {
+                if (result == Result.SUCCESS) end();
+                else cancel(result);
+            }
+        });
     }
 }

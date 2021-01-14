@@ -18,8 +18,8 @@ public class MetricsManager implements Manager {
         metrics.addCustomChart(new Metrics.AdvancedPie("features", () -> {
             Map<String, Integer> map = new HashMap<>();
 
-            for(FeatureType type : FeatureType.values()) {
-                if(type.getPriority() == FeatureType.Priority.ALWAYS_ON
+            for (FeatureType type : FeatureType.values()) {
+                if (type.getPriority() == FeatureType.Priority.ALWAYS_ON
                         || type.getPriority() == FeatureType.Priority.DISABLED
                         || type == FeatureType.METRICS
                         || type == FeatureType.SIMPLE_WARPS
@@ -32,11 +32,11 @@ public class MetricsManager implements Manager {
             return map;
         }));
 
-        for(FeatureType type : FeatureType.values()) {
+        for (FeatureType type : FeatureType.values()) {
             Manager m = WarpSystem.getInstance().getDataManager().getManager(type);
-            if(m == null) continue;
+            if (m == null) continue;
 
-            if(m instanceof Collectible) {
+            if (m instanceof Collectible) {
                 ((Collectible) m).addCustomCarts(metrics);
 
                 metrics.addCustomChart(new Metrics.AdvancedPie(type.getName().toLowerCase(), () -> {
@@ -49,7 +49,7 @@ public class MetricsManager implements Manager {
 
         metrics.addCustomChart(new Metrics.SimplePie("type", () -> "Premium"));
         metrics.addCustomChart(new Metrics.SimplePie("bungeecord", () -> {
-            if(Bukkit.getServer().getOnlinePlayers().isEmpty()) return "Is empty";
+            if (Bukkit.getServer().getOnlinePlayers().isEmpty()) return "Is empty";
             return WarpSystem.getInstance().isOnProxy() ? "Yes" : "No";
         }));
         return true;

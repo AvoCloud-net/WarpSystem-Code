@@ -5,7 +5,7 @@ import de.codingair.codingapi.particles.animations.customanimations.AnimationTyp
 import de.codingair.codingapi.particles.animations.customanimations.CustomAnimation;
 import de.codingair.codingapi.particles.animations.movables.MovableMid;
 import de.codingair.codingapi.particles.utils.Color;
-import de.codingair.codingapi.tools.io.utils.DataWriter;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
 import org.bukkit.entity.Player;
 
@@ -39,7 +39,7 @@ public class ParticlePart implements Serializable {
     }
 
     @Override
-    public boolean read(DataWriter d) {
+    public boolean read(DataMask d) {
         animation = AnimationType.getById(d.getInteger("animation"));
         particle = Particle.getById(d.getInteger("particle", 26));
         height = d.getDouble("height");
@@ -50,13 +50,13 @@ public class ParticlePart implements Serializable {
         yRotation = d.getInteger("yrot");
         zRotation = d.getInteger("zrot");
 
-        if(color == null) color = Color.RED;
-        if(speed < CustomAnimation.MIN_SPEED) speed = CustomAnimation.MAX_SPEED;
+        if (color == null) color = Color.RED;
+        if (speed < CustomAnimation.MIN_SPEED) speed = CustomAnimation.MAX_SPEED;
         return true;
     }
 
     @Override
-    public void write(DataWriter d) {
+    public void write(DataMask d) {
         d.put("animation", animation.getId());
         d.put("particle", particle.getId());
         d.put("height", height);
@@ -98,8 +98,8 @@ public class ParticlePart implements Serializable {
 
     public void setRadius(double radius) {
         this.radius = round(radius);
-        if(this.radius < 0.1) this.radius = 0.1;
-        if(this.radius > 3) this.radius = 3;
+        if (this.radius < 0.1) this.radius = 0.1;
+        if (this.radius > 3) this.radius = 3;
     }
 
     public double getHeight() {
@@ -108,8 +108,8 @@ public class ParticlePart implements Serializable {
 
     public void setHeight(double height) {
         this.height = round(height);
-        if(this.height < -5) this.height = -5;
-        if(this.height > 10) this.height = 10;
+        if (this.height < -5) this.height = -5;
+        if (this.height > 10) this.height = 10;
     }
 
     private double round(double d) {
@@ -122,8 +122,8 @@ public class ParticlePart implements Serializable {
 
     public void setSpeed(int speed) {
         this.speed = speed;
-        if(this.speed < CustomAnimation.MIN_SPEED) this.speed = CustomAnimation.MIN_SPEED;
-        if(this.speed > CustomAnimation.MAX_SPEED) this.speed = CustomAnimation.MAX_SPEED;
+        if (this.speed < CustomAnimation.MIN_SPEED) this.speed = CustomAnimation.MIN_SPEED;
+        if (this.speed > CustomAnimation.MAX_SPEED) this.speed = CustomAnimation.MAX_SPEED;
     }
 
     public int getxRotation() {

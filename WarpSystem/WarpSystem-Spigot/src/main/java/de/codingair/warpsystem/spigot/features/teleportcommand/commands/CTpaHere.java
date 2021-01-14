@@ -55,18 +55,18 @@ public class CTpaHere extends WSCommandBuilder {
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 Player p = (Player) sender;
                 Player other = Bukkit.getPlayer(argument);
-                if(other != null && !p.canSee(other)) {
+                if (other != null && !p.canSee(other)) {
                     p.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
                     return true;
                 }
 
                 PlayerData data = WarpSystem.getInstance().getPlayerDataManager().getCache(argument);
-                if(data != null && data.getName().equalsIgnoreCase(sender.getName())) {
+                if (data != null && data.getName().equalsIgnoreCase(sender.getName())) {
                     p.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_Cant_Teleport_Yourself"));
                     return true;
                 }
 
-                if(WarpSystem.cooldown().checkPlayer(p, Origin.TeleportRequest)) return true;
+                if (WarpSystem.cooldown().checkPlayer(p, Origin.TeleportRequest)) return true;
                 TeleportCommandManager.handler().tpa(p, argument, other, true);
                 return true;
             }

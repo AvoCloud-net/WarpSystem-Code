@@ -49,7 +49,7 @@ public class PAnimations extends PageItem {
         StandardButtonOption option = new StandardButtonOption();
         int slot = 1;
 
-        for(Animation animation : clone.getAnimations()) {
+        for (Animation animation : clone.getAnimations()) {
             addButton(new SyncButton(slot++, 2) {
                 private BukkitRunnable runnable = null;
 
@@ -65,15 +65,15 @@ public class PAnimations extends PageItem {
 
                 @Override
                 public void onClick(InventoryClickEvent e, Player player) {
-                    if(e.isLeftClick()) {
+                    if (e.isLeftClick()) {
                         //edit
                         getLast().setClosingForGUI(true);
                         getLast().close();
 
                         new AnimationHotBarEditor(player, (PortalEditor) getLast(), animation).open(false);
-                    } else if(e.isRightClick()) {
+                    } else if (e.isRightClick()) {
                         //delete
-                        if(runnable != null) {
+                        if (runnable != null) {
                             //delete
                             animation.setVisible(false);
                             clone.getAnimations().remove(animation);
@@ -104,14 +104,14 @@ public class PAnimations extends PageItem {
             }.setOption(option));
         }
 
-        if(slot < 7) {
+        if (slot < 7) {
             addButton(new SyncButton(slot, 2) {
                 @Override
                 public ItemStack craftItem() {
                     ItemBuilder b = new ItemBuilder(XMaterial.BARRIER)
                             .setName(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §a" + Lang.get("Add"));
 
-                    if(!canFinish()) {
+                    if (!canFinish()) {
                         b.addEnchantment(Enchantment.DAMAGE_ALL, 1);
                         b.setHideEnchantments(true);
                     }
