@@ -9,6 +9,7 @@ import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.guis.editor.pages.SoundPage;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.LocationAdapter;
@@ -138,7 +139,7 @@ public class TeleportOptions {
     }
 
     public double getCosts(Player player) {
-        if (player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Costs)) return 0;
+        if (player.hasPermission(Permissions.PERMISSION_ByPass_Teleport_Costs)) return 0;
         return costs;
     }
 
@@ -147,7 +148,7 @@ public class TeleportOptions {
     }
 
     public Number getFinalCosts(Player player) {
-        return new ImprovedDouble(costs > 0 && Bank.adapter() != null && !player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Costs) ? costs : 0).get();
+        return new ImprovedDouble(costs > 0 && Bank.adapter() != null && !player.hasPermission(Permissions.PERMISSION_ByPass_Teleport_Costs) ? costs : 0).get();
     }
 
     public boolean isSkip() {
@@ -293,7 +294,7 @@ public class TeleportOptions {
     }
 
     public int getDelay(Player player) {
-        if (player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Delay) || (skip != null && skip)) return 0;
+        if (player.hasPermission(Permissions.PERMISSION_ByPass_Teleport_Delay) || (skip != null && skip)) return 0;
         if (destination != null) return destination.getCustomOptions().getDelay(delay);
         return delay;
     }

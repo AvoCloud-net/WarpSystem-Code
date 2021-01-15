@@ -12,6 +12,7 @@ import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.guis.editor.StandardButtonOption;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types.BoundAction;
 import de.codingair.warpsystem.spigot.base.utils.options.specific.WarpGUIOptions;
@@ -186,7 +187,7 @@ public class GWarps extends GUI {
 
     public static String getTitle(Icon page, Player player) {
         FileConfiguration config = WarpSystem.getInstance().getFileManager().getFile("Config").getConfig();
-        String key = player.hasPermission(WarpSystem.PERMISSION_ADMIN) ? "Admin" : "User";
+        String key = player.hasPermission(Permissions.PERMISSION_ADMIN) ? "Admin" : "User";
 
         return ChatColor.translateAlternateColorCodes('&', (page == null || page.getName() == null ?
                 config.getString("WarpSystem.GUI." + key + ".Title.Standard", "&c&nWarps&r") :
@@ -194,7 +195,7 @@ public class GWarps extends GUI {
     }
 
     private static int getSize(Player player) {
-        return player.hasPermission(WarpSystem.PERMISSION_ADMIN) ? WarpSystem.getOptions(WarpGUIOptions.class).getAdminSize().getValue() : WarpSystem.getOptions(WarpGUIOptions.class).getUserSize().getValue();
+        return player.hasPermission(Permissions.PERMISSION_ADMIN) ? WarpSystem.getOptions(WarpGUIOptions.class).getAdminSize().getValue() : WarpSystem.getOptions(WarpGUIOptions.class).getUserSize().getValue();
     }
 
     public void initialize(Player p) {
@@ -214,7 +215,7 @@ public class GWarps extends GUI {
 
         ItemStack none = noneBuilder.getItem();
 
-        if (p.hasPermission(WarpSystem.PERMISSION_MODIFY_WARP_GUI) && showMenu && canEdit) {
+        if (p.hasPermission(Permissions.PERMISSION_MODIFY_WARP_GUI) && showMenu && canEdit) {
             ItemBuilder builder = new ItemBuilder(Material.NETHER_STAR).setName(Lang.get("Menu_Help"));
 
             if (editing) {
@@ -381,7 +382,7 @@ public class GWarps extends GUI {
     private boolean hideAll(Player player) {
         for (PermissionAttachmentInfo effectivePermission : player.getEffectivePermissions()) {
             String perm = effectivePermission.getPermission();
-            if (perm.equalsIgnoreCase(WarpSystem.PERMISSION_HIDE_ALL_ICONS)) return true;
+            if (perm.equalsIgnoreCase(Permissions.PERMISSION_HIDE_ALL_ICONS)) return true;
         }
         return false;
     }
@@ -389,7 +390,7 @@ public class GWarps extends GUI {
     private boolean hideAll(Player player, String type) {
         for (PermissionAttachmentInfo effectivePermission : player.getEffectivePermissions()) {
             String perm = effectivePermission.getPermission();
-            if (perm.equalsIgnoreCase(WarpSystem.PERMISSION_HIDE_ALL_ICONS + "." + type)) return true;
+            if (perm.equalsIgnoreCase(Permissions.PERMISSION_HIDE_ALL_ICONS + "." + type)) return true;
         }
         return false;
     }

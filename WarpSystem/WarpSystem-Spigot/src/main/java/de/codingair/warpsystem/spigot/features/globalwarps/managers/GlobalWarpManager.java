@@ -11,6 +11,7 @@ import de.codingair.warpsystem.base.transfer.utils.serializeable.SLocation;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.managers.TeleportManager;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.ProxyFeature;
 import de.codingair.warpsystem.spigot.base.utils.teleport.v2.Teleport;
 import de.codingair.warpsystem.spigot.features.FeatureType;
@@ -87,7 +88,7 @@ public class GlobalWarpManager implements Manager, ProxyFeature {
         boolean keepRotation = false;
         if (t != null) keepRotation = !t.getDestination().getCustomOptions().isRotation();
 
-        WarpSystem.getDataHandler().send(new GlobalWarpTeleportPacket(player.getName(), id, x, y, z, displayName, message, costs, keepRotation, player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Max_Players)), player).thenAccept(packet -> {
+        WarpSystem.getDataHandler().send(new GlobalWarpTeleportPacket(player.getName(), id, x, y, z, displayName, message, costs, keepRotation, player.hasPermission(Permissions.PERMISSION_ByPass_Teleport_Max_Players)), player).thenAccept(packet -> {
             callback.accept(GlobalWarpTeleportPacket.Result.getById(packet.a()));
         });
     }

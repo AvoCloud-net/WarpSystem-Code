@@ -7,6 +7,7 @@ import de.codingair.warpsystem.base.transfer.utils.PlayerData;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.features.teleportcommand.TeleportCommandManager;
 import org.bukkit.Bukkit;
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class CTpa extends WSCommandBuilder {
     public CTpa() {
-        super("Tpa", new BaseComponent(WarpSystem.PERMISSION_USE_TELEPORT_COMMAND_TPA) {
+        super("Tpa", new BaseComponent(Permissions.PERMISSION_USE_TELEPORT_COMMAND_TPA) {
             @Override
             public void noPermission(CommandSender sender, String label, CommandComponent child) {
                 sender.sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));

@@ -2,8 +2,8 @@ package de.codingair.warpsystem.spigot.features.randomteleports.listeners;
 
 import de.codingair.codingapi.tools.Location;
 import de.codingair.codingapi.tools.time.TimeSet;
-import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -56,7 +56,7 @@ public class InteractListener implements Listener {
         }
 
         if (remove != null) {
-            if (e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_RANDOM_TELEPORTER)) {
+            if (e.getPlayer().hasPermission(Permissions.PERMISSION_MODIFY_RANDOM_TELEPORTER)) {
                 RandomTeleportManager.getInstance().getInteractBlocks().remove(remove);
                 e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Block_Removed"));
             } else {

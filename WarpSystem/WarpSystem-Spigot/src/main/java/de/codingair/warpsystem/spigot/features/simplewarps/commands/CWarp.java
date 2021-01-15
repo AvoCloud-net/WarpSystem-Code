@@ -7,6 +7,7 @@ import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.managers.TeleportManager;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
@@ -39,11 +40,11 @@ public class CWarp extends WSCommandBuilder {
             @Override
             public void unknownSubCommand(CommandSender sender, String label, String[] args) {
                 if (FeatureType.WARP_GUI.isActive() && WarpSystem.getInstance().getFileManager().getFile("Config").getConfig().getBoolean("WarpSystem.Commands.Warp.GUI", false)) {
-                    if (WarpSystem.hasPermission(sender, WarpSystem.PERMISSION_USE_WARP_GUI)) {
+                    if (Permissions.hasPermission(sender, Permissions.PERMISSION_USE_WARP_GUI)) {
                         CWarps.run(sender, null);
                     } else noPermission(sender, label, this);
                 } else {
-                    if (WarpSystem.hasPermission(sender, WarpSystem.PERMISSION_USE_SIMPLE_WARPS)) {
+                    if (Permissions.hasPermission(sender, Permissions.PERMISSION_USE_SIMPLE_WARPS)) {
                         sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<warp>");
                     } else noPermission(sender, label, this);
                 }
@@ -52,11 +53,11 @@ public class CWarp extends WSCommandBuilder {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 if (FeatureType.WARP_GUI.isActive() && WarpSystem.getInstance().getFileManager().getFile("Config").getConfig().getBoolean("WarpSystem.Commands.Warp.GUI", false)) {
-                    if (WarpSystem.hasPermission(sender, WarpSystem.PERMISSION_USE_WARP_GUI)) {
+                    if (Permissions.hasPermission(sender, Permissions.PERMISSION_USE_WARP_GUI)) {
                         CWarps.run(sender, null);
                     } else noPermission(sender, label, this);
                 } else {
-                    if (WarpSystem.hasPermission(sender, WarpSystem.PERMISSION_USE_SIMPLE_WARPS)) {
+                    if (Permissions.hasPermission(sender, Permissions.PERMISSION_USE_SIMPLE_WARPS)) {
                         sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<warp>");
                     } else noPermission(sender, label, this);
                 }
@@ -72,13 +73,13 @@ public class CWarp extends WSCommandBuilder {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
                 if (FeatureType.WARP_GUI.isActive() && WarpSystem.getInstance().getFileManager().getFile("Config").getConfig().getBoolean("WarpSystem.Commands.Warp.GUI", false)) {
-                    if (WarpSystem.hasPermission(sender, WarpSystem.PERMISSION_USE_WARP_GUI)) {
+                    if (Permissions.hasPermission(sender, Permissions.PERMISSION_USE_WARP_GUI)) {
                         for (Icon c : manager.getPages()) {
                             if (!c.hasPermission() || sender.hasPermission(c.getPermission())) suggestions.add(c.getNameWithoutColor());
                         }
                     }
                 } else {
-                    if (WarpSystem.hasPermission(sender, WarpSystem.PERMISSION_USE_SIMPLE_WARPS) || sender.hasPermission(WarpSystem.PERMISSION_SIMPLE_WARPS_DIRECT_TELEPORT)) {
+                    if (Permissions.hasPermission(sender, Permissions.PERMISSION_USE_SIMPLE_WARPS) || sender.hasPermission(Permissions.PERMISSION_SIMPLE_WARPS_DIRECT_TELEPORT)) {
                         hook.addArguments(sender, suggestions);
                     }
                 }
@@ -87,7 +88,7 @@ public class CWarp extends WSCommandBuilder {
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 if (FeatureType.WARP_GUI.isActive() && WarpSystem.getInstance().getFileManager().getFile("Config").getConfig().getBoolean("WarpSystem.Commands.Warp.GUI", false)) {
-                    if (WarpSystem.hasPermission(sender, WarpSystem.PERMISSION_USE_WARP_GUI)) {
+                    if (Permissions.hasPermission(sender, Permissions.PERMISSION_USE_WARP_GUI)) {
                         Icon category = manager.getPage(argument);
 
                         if (category != null && category.hasPermission() && !sender.hasPermission(category.getPermission())) {
@@ -98,7 +99,7 @@ public class CWarp extends WSCommandBuilder {
                         CWarps.run(sender, category);
                     } else getBaseComponent().noPermission(sender, label, this);
                 } else {
-                    if (WarpSystem.hasPermission(sender, WarpSystem.PERMISSION_USE_SIMPLE_WARPS)) {
+                    if (Permissions.hasPermission(sender, Permissions.PERMISSION_USE_SIMPLE_WARPS)) {
                         if (args.length == 0 || argument == null || argument.isEmpty()) {
                             sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<warp>");
                             return false;
@@ -106,7 +107,7 @@ public class CWarp extends WSCommandBuilder {
 
                         if (hook.runCommand(sender, label, argument, args)) return false;
                         sender.sendMessage(Lang.getPrefix() + Lang.get("WARP_DOES_NOT_EXISTS"));
-                    } else if (sender.hasPermission(WarpSystem.PERMISSION_SIMPLE_WARPS_DIRECT_TELEPORT)) {
+                    } else if (sender.hasPermission(Permissions.PERMISSION_SIMPLE_WARPS_DIRECT_TELEPORT)) {
                         sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " <warp> " + WarpSystem.opt().cmdArg() + "<player>");
                     } else getBaseComponent().noPermission(sender, label, this);
                 }
@@ -114,7 +115,7 @@ public class CWarp extends WSCommandBuilder {
             }
         });
 
-        getBaseComponent().getChild(null).addChild(new MultiCommandComponent(WarpSystem.PERMISSION_SIMPLE_WARPS_DIRECT_TELEPORT) {
+        getBaseComponent().getChild(null).addChild(new MultiCommandComponent(Permissions.PERMISSION_SIMPLE_WARPS_DIRECT_TELEPORT) {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
                 if (!WarpSystem.getInstance().getFileManager().getFile("Config").getConfig().getBoolean("WarpSystem.Commands.Warp.GUI", false)) {

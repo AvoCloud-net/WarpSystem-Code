@@ -3,9 +3,9 @@ package de.codingair.warpsystem.spigot.features.playerwarps.guis.list.filters;
 import de.codingair.codingapi.player.gui.inventory.gui.simple.Button;
 import de.codingair.codingapi.player.gui.inventory.gui.simple.SyncButton;
 import de.codingair.codingapi.utils.Node;
-import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.guis.editor.Editor;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.features.playerwarps.guis.list.PWList;
 import de.codingair.warpsystem.spigot.features.playerwarps.guis.list.PWPage;
 import de.codingair.warpsystem.spigot.features.playerwarps.managers.PlayerWarpManager;
@@ -35,7 +35,7 @@ public class AllWarps implements Filter {
             PlayerWarp w = warps.get(i);
 
             SyncButton b;
-            if (w.isOwner(player) || player.hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS)) b = OwnWarpFilter.getOwnWarpIcon(w, search);
+            if (w.isOwner(player) || player.hasPermission(Permissions.PERMISSION_MODIFY_PLAYER_WARPS)) b = OwnWarpFilter.getOwnWarpIcon(w, search);
             else b = new SyncButton(0) {
                 @Override
                 public ItemStack craftItem() {

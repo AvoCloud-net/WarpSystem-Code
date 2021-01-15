@@ -6,6 +6,7 @@ import de.codingair.codingapi.server.commands.builder.CommandBuilder;
 import de.codingair.codingapi.server.commands.builder.CommandComponent;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -14,7 +15,7 @@ import org.bukkit.entity.Player;
 
 public class CPlayerWarpReference extends CommandBuilder {
     public CPlayerWarpReference(String main, String[] aliases) {
-        super(WarpSystem.getInstance(), main, "A WarpSystem-Command", new BaseComponent(WarpSystem.PERMISSION_USE_PLAYER_WARPS) {
+        super(WarpSystem.getInstance(), main, "A WarpSystem-Command", new BaseComponent(Permissions.PERMISSION_USE_PLAYER_WARPS) {
             @Override
             public void noPermission(CommandSender sender, String label, CommandComponent child) {
                 sender.sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));

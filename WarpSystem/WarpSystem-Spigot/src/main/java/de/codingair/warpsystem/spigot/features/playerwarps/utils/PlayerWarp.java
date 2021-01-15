@@ -17,6 +17,7 @@ import de.codingair.warpsystem.base.transfer.packets.spigot.utils.PlayerWarpData
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.guis.editor.Editor;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.FeatureObject;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types.WarpAction;
@@ -491,7 +492,7 @@ public class PlayerWarp extends FeatureObject {
     }
 
     public boolean canTeleport(Player player) {
-        return isPublic || isOwner(player) || isTrusted(player) || player.hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS);
+        return isPublic || isOwner(player) || isTrusted(player) || player.hasPermission(Permissions.PERMISSION_MODIFY_PLAYER_WARPS);
     }
 
     public String getName() {

@@ -12,6 +12,7 @@ import de.codingair.warpsystem.base.transfer.packets.spigot.CooldownPacket;
 import de.codingair.warpsystem.spigot.api.StringFormatter;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -95,7 +96,7 @@ public class CooldownManager implements ICooldownManager {
                 return false;
             });
 
-            if (!configData.isEmpty()) config.set(id.toString(), configData);
+            config.set(id.toString(), configData);
             return data.isEmpty();
         });
 
@@ -109,7 +110,7 @@ public class CooldownManager implements ICooldownManager {
 
         Long cooldown = data.get(hashCode);
         if (cooldown != null && cooldown < System.currentTimeMillis()) {
-            data.remove(cooldown);
+            data.remove(hashCode);
             if (data.isEmpty()) cache.remove(uuid);
             cooldown = null;
         }
@@ -119,18 +120,18 @@ public class CooldownManager implements ICooldownManager {
 
     public void register(Player player, Origin origin) {
         long time = origin.getCooldown();
-        if (time == 0 || player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Cooldown)) return;
+        if (time == 0 || player.hasPermission(Permissions.PERMISSION_ByPass_Teleport_Cooldown)) return;
         Cooldown cooldown = new Cooldown(WarpSystem.getInstance().getPlayerDataManager().get(player), System.currentTimeMillis() + time, origin.ordinal());
 
         addCooldown(cooldown);
         if (WarpSystem.getInstance().isOnProxy()) {
             //upload to bungee
-            WarpSystem.getInstance().getDataHandler().send(new CooldownPacket(cooldown), player);
+            WarpSystem.getDataHandler().send(new CooldownPacket(cooldown), player);
         }
     }
 
     public void register(Player player, long time, int hash) {
-        if (player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Cooldown) || time == 0) return;
+        if (player.hasPermission(Permissions.PERMISSION_ByPass_Teleport_Cooldown) || time == 0) return;
         addCooldown(new Cooldown(WarpSystem.getInstance().getPlayerDataManager().get(player), System.currentTimeMillis() + time, hash));
     }
 
@@ -139,7 +140,7 @@ public class CooldownManager implements ICooldownManager {
     }
 
     public long getRemainingCooldown(Player player, int hashCode) {
-        if (player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Cooldown)) {
+        if (player.hasPermission(Permissions.PERMISSION_ByPass_Teleport_Cooldown)) {
             cache.remove(WarpSystem.getInstance().getPlayerDataManager().get(player));
             return 0;
         }

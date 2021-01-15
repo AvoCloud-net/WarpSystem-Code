@@ -6,6 +6,7 @@ import de.codingair.codingapi.server.commands.builder.special.MultiCommandCompon
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.features.shortcuts.guis.GEditor;
 import de.codingair.warpsystem.spigot.features.shortcuts.managers.ShortcutManager;
 import de.codingair.warpsystem.spigot.features.shortcuts.utils.Shortcut;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class CShortcuts extends WSCommandBuilder {
     public CShortcuts() {
-        super("Shortcuts", new BaseComponent(WarpSystem.PERMISSION_MODIFY_SHORTCUTS) {
+        super("Shortcuts", new BaseComponent(Permissions.PERMISSION_MODIFY_SHORTCUTS) {
             @Override
             public void noPermission(CommandSender sender, String label, CommandComponent child) {
                 sender.sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));

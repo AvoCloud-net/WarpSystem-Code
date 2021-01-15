@@ -6,6 +6,7 @@ import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.features.teleportcommand.TeleportCommandManager;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 
 public class CTeleport extends WSCommandBuilder {
     public CTeleport() {
-        super("Teleport", new BaseComponent(WarpSystem.PERMISSION_USE_TELEPORT_COMMAND_TP) {
+        super("Teleport", new BaseComponent(Permissions.PERMISSION_USE_TELEPORT_COMMAND_TP) {
             @Override
             public void noPermission(CommandSender sender, String label, CommandComponent child) {
                 sender.sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));
@@ -124,7 +125,7 @@ public class CTeleport extends WSCommandBuilder {
         }.setOnlyPlayers(true), true);
 
         setOwnTabCompleter((commandSender, command, s, args) -> {
-            if (!WarpSystem.hasPermission(commandSender, WarpSystem.PERMISSION_USE_TELEPORT_COMMAND_TP)) {
+            if (!Permissions.hasPermission(commandSender, Permissions.PERMISSION_USE_TELEPORT_COMMAND_TP)) {
                 return new ArrayList<>();
             }
 

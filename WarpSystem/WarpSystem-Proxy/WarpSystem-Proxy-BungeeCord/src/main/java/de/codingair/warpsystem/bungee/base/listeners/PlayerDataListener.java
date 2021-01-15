@@ -6,7 +6,6 @@ import de.codingair.warpsystem.bungee.utils.BungeePlayer;
 import de.codingair.warpsystem.bungee.utils.BungeeServer;
 import de.codingair.warpsystem.proxy.core.base.handlers.PlayerDataHandler;
 import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.event.ServerSwitchEvent;

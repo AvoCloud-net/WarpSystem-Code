@@ -10,6 +10,7 @@ import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
 import de.codingair.warpsystem.spigot.base.setupassistant.utils.SetupAssistant;
 import de.codingair.warpsystem.spigot.base.setupassistant.utils.Value;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.PluginVersion;
 import de.codingair.warpsystem.spigot.features.FeatureType;
 import org.bukkit.entity.Player;
@@ -83,7 +84,7 @@ public class SetupAssistantManager {
     }
 
     public void onJoin(Player player) {
-        if (WarpSystem.hasPermission(player, WarpSystem.PERMISSION_MODIFY)) {
+        if (Permissions.hasPermission(player, Permissions.PERMISSION_MODIFY)) {
             if (cachedNews().isEmpty()) return;
 
             SimpleMessage m = new SimpleMessage(Lang.getPrefix() + "§eNew features §7can be configured! §8[", WarpSystem.getInstance());

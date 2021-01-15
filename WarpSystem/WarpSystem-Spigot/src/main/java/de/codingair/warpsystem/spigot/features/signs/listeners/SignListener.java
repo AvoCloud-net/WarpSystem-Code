@@ -6,6 +6,7 @@ import de.codingair.codingapi.server.specification.Version;
 import de.codingair.codingapi.tools.Location;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.features.FeatureType;
 import de.codingair.warpsystem.spigot.features.signs.guis.WarpSignGUI;
@@ -45,7 +46,7 @@ public class SignListener implements Listener {
             if (sign != null) {
                 ItemStack held = e.getPlayer().getInventory().getItem(e.getPlayer().getInventory().getHeldItemSlot());
 
-                if (!e.getPlayer().isSneaking() && e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_WARP_SIGNS) &&
+                if (!e.getPlayer().isSneaking() && e.getPlayer().hasPermission(Permissions.PERMISSION_MODIFY_WARP_SIGNS) &&
                         held != null && held.getType().name().toLowerCase().contains("sign")) {
                     sign.editMode();
                     sign.setEditing(true);
@@ -53,7 +54,7 @@ public class SignListener implements Listener {
                     return;
                 }
 
-                if (!WarpSystem.hasPermission(e.getPlayer(), WarpSystem.PERMISSION_USE_WARP_SIGNS)) {
+                if (!Permissions.hasPermission(e.getPlayer(), Permissions.PERMISSION_USE_WARP_SIGNS)) {
                     e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));
                     return;
                 }
@@ -69,7 +70,7 @@ public class SignListener implements Listener {
         WarpSign sign = manager.getByLocation(s.getLocation());
         if (sign == null) return;
 
-        if (!e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_WARP_SIGNS)) {
+        if (!e.getPlayer().hasPermission(Permissions.PERMISSION_MODIFY_WARP_SIGNS)) {
             e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));
             e.setCancelled(true);
         } else if (!e.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
@@ -126,7 +127,7 @@ public class SignListener implements Listener {
 
     @EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onPlace(SignChangeEvent e) {
-        if (!e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_WARP_SIGNS)) return;
+        if (!e.getPlayer().hasPermission(Permissions.PERMISSION_MODIFY_WARP_SIGNS)) return;
 
         if ("[warps]".equalsIgnoreCase(e.getLine(0))) {
             WarpSign sign = WarpSignFactory.build(Location.getByLocation(e.getBlock().getLocation()), new Destination());

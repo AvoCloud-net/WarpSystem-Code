@@ -19,6 +19,7 @@ import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.setupassistant.utils.NavigationCommand;
 import de.codingair.warpsystem.spigot.base.setupassistant.utils.SetupAssistant;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.features.animations.AnimationManager;
 import de.codingair.warpsystem.spigot.features.animations.guis.editor.*;
 import de.codingair.warpsystem.spigot.features.animations.utils.Animation;
@@ -39,7 +40,7 @@ import java.util.List;
 
 public class CWarpSystem extends WSCommandBuilder {
     public CWarpSystem() {
-        super("WarpSystem", new BaseComponent(WarpSystem.PERMISSION_MODIFY) {
+        super("WarpSystem", new BaseComponent(Permissions.PERMISSION_MODIFY) {
             @Override
             public void noPermission(CommandSender sender, String label, CommandComponent child) {
                 Player p = (Player) sender;

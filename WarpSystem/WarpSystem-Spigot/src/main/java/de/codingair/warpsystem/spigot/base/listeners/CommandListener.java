@@ -3,6 +3,7 @@ package de.codingair.warpsystem.spigot.base.listeners;
 import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.features.FeatureType;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -30,7 +31,7 @@ public class CommandListener implements Listener {
             } else if (feature.isActive()) return;
 
             e.setCancelled(true);
-            if (e.getPlayer().hasPermission(WarpSystem.PERMISSION_NOTIFY) && feature != null) {
+            if (e.getPlayer().hasPermission(Permissions.PERMISSION_NOTIFY)) {
                 if (feature == FeatureType.GLOBAL_WARPS) {
                     e.getPlayer().sendMessage(new String[] {Lang.getPrefix() + "§7You have to §cinstall§7 this plugin §con your BungeeCord", "§7and enable '§4§l" + feature.getName() + "§7' in the Config.yml to use this command!"});
                 } else {

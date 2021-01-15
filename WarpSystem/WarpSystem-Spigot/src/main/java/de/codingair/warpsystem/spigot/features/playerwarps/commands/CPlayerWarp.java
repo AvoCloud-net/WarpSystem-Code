@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.spigot.features.playerwarps.commands;
 
-import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.commands.WarpSystemBaseComponent;
 import de.codingair.warpsystem.spigot.base.utils.commands.WarpSystemCommandBuilder;
 import de.codingair.warpsystem.spigot.features.playerwarps.guis.list.PWList;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class CPlayerWarp extends WarpSystemCommandBuilder {
     public CPlayerWarp(List<String> aliases) {
-        super("playerwarp", new WarpSystemBaseComponent(WarpSystem.PERMISSION_USE_PLAYER_WARPS) {
+        super("playerwarp", new WarpSystemBaseComponent(Permissions.PERMISSION_USE_PLAYER_WARPS) {
             @Override
             public void unknownSubCommand(CommandSender sender, String label, String[] args) {
             }
@@ -46,7 +46,7 @@ public class CPlayerWarp extends WarpSystemCommandBuilder {
         getBaseComponent().addChild(new PWMultiCommandComponent() {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
-                if (sender.hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS)) {
+                if (sender.hasPermission(Permissions.PERMISSION_MODIFY_PLAYER_WARPS)) {
                     PlayerWarpManager.getManager().getWarps().values().forEach(warps -> warps.forEach(w -> {
                         if (w.isExpired()) return;
 

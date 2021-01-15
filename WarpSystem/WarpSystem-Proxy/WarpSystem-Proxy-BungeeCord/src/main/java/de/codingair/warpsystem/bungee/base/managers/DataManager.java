@@ -2,8 +2,6 @@ package de.codingair.warpsystem.bungee.base.managers;
 
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.bungee.features.FeatureType;
-import de.codingair.warpsystem.bungee.features.playerwarps.PlayerWarpManager;
-import de.codingair.warpsystem.proxy.core.features.PlayerWarpHandler;
 
 import java.util.ArrayList;
 import java.util.List;

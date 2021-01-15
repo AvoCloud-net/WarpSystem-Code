@@ -8,6 +8,7 @@ import de.codingair.codingapi.tools.Callback;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
@@ -19,7 +20,7 @@ import java.util.UUID;
 
 public class CRandomTp extends WSCommandBuilder {
     public CRandomTp() {
-        super("RandomTp", new BaseComponent(WarpSystem.PERMISSION_USE_RANDOM_TELEPORTER) {
+        super("RandomTp", new BaseComponent(Permissions.PERMISSION_USE_RANDOM_TELEPORTER) {
             @Override
             public void noPermission(CommandSender sender, String label, CommandComponent child) {
                 sender.sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));
@@ -37,16 +38,19 @@ public class CRandomTp extends WSCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                if (sender.hasPermission(WarpSystem.PERMISSION_MODIFY_RANDOM_TELEPORTER)) {
+                String goInfo = "";
+                if (Permissions.hasPermission(sender, Permissions.PERMISSION_USE_RANDOM_TELEPORTER_GO)) goInfo = ", go";
+
+                if (sender.hasPermission(Permissions.PERMISSION_MODIFY_RANDOM_TELEPORTER)) {
                     if (RandomTeleportManager.getInstance().isBuyable())
-                        sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<buy, blocks, info, go>");
+                        sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<buy, blocks, info" + goInfo + ">");
                     else
-                        sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<blocks, info, go>");
+                        sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<blocks, info" + goInfo + ">");
                 } else {
                     if (RandomTeleportManager.getInstance().isBuyable())
-                        sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<buy, info, go>");
+                        sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<buy, info" + goInfo + ">");
                     else {
-                        sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<info, go>");
+                        sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<info" + goInfo + ">");
                     }
                 }
                 return false;
@@ -108,7 +112,7 @@ public class CRandomTp extends WSCommandBuilder {
             });
         }
 
-        getBaseComponent().addChild(new CommandComponent("blocks", WarpSystem.PERMISSION_MODIFY_RANDOM_TELEPORTER) {
+        getBaseComponent().addChild(new CommandComponent("blocks", Permissions.PERMISSION_MODIFY_RANDOM_TELEPORTER) {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " blocks " + WarpSystem.opt().cmdArg() + "<add>");
@@ -162,7 +166,7 @@ public class CRandomTp extends WSCommandBuilder {
             }
         });
 
-        getBaseComponent().addChild(new CommandComponent("go") {
+        getBaseComponent().addChild(new CommandComponent("go", Permissions.PERMISSION_USE_RANDOM_TELEPORTER_GO) {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 if (!(sender instanceof Player)) {
@@ -183,7 +187,7 @@ public class CRandomTp extends WSCommandBuilder {
                 });
                 return false;
             }
-        }.setOnlyPlayers(false).addChild(new RTP_Go_Command(WarpSystem.PERMISSION_RANDOM_TELEPORT_SELECTION_SELF)));
+        }.setOnlyPlayers(false).addChild(new RTP_Go_Command(Permissions.PERMISSION_RANDOM_TELEPORT_SELECTION_SELF)));
     }
 
     @NotNull

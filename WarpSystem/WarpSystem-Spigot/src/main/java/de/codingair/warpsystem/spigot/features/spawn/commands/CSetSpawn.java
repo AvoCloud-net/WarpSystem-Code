@@ -5,6 +5,7 @@ import de.codingair.codingapi.server.commands.builder.CommandComponent;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.commands.WarpSystemBaseComponent;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types.WarpAction;
@@ -21,7 +22,7 @@ import org.bukkit.entity.Player;
 
 public class CSetSpawn extends WSCommandBuilder {
     public CSetSpawn() {
-        super("SetSpawn", new WarpSystemBaseComponent(WarpSystem.PERMISSION_MODIFY_SPAWN) {
+        super("SetSpawn", new WarpSystemBaseComponent(Permissions.PERMISSION_MODIFY_SPAWN) {
 
             @Override
             public void unknownSubCommand(CommandSender sender, String label, String[] args) {
