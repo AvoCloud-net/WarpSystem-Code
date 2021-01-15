@@ -18,7 +18,5 @@ public interface Server {
 
     CompletableFuture<ServerPing> ping();
 
-    String getMotd();
-
     void sendData(String channel, byte[] data);
 }

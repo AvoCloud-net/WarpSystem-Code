@@ -3,11 +3,11 @@ package de.codingair.warpsystem.bungee.utils;
 import de.codingair.warpsystem.base.transfer.packets.spigot.utils.ServerPing;
 import de.codingair.warpsystem.proxy.core.utils.Player;
 import de.codingair.warpsystem.proxy.core.utils.Server;
-import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
@@ -43,11 +43,6 @@ public class BungeeServer implements Server {
         return future;
     }
 
-    @Override
-    public String getMotd() {
-        return server.getMotd();
-    }
-
     public ServerInfo getServer() {
         return server;
     }
@@ -55,5 +50,18 @@ public class BungeeServer implements Server {
     @Override
     public void sendData(String channel, byte[] data) {
         this.server.sendData(channel, data);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BungeeServer that = (BungeeServer) o;
+        return server.equals(that.server);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(server);
     }
 }

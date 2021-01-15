@@ -1,4 +1,4 @@
-package de.codingair.warpsystem.spigot.versionfactory.objects;
+package de.codingair.warpsystem.spigot.versionfactory.handlers;
 
 import de.codingair.codingapi.player.gui.inventory.gui.itembutton.ItemButtonOption;
 import de.codingair.codingapi.player.gui.inventory.gui.simple.Button;

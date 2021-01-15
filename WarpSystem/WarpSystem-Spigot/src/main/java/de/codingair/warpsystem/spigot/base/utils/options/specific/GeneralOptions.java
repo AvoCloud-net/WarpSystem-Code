@@ -280,7 +280,7 @@ public class GeneralOptions extends Options {
             s = s.replace(".p.", ping.getPlayers() + "")
                     .replace(".mp.", ping.getMaxPlayers() + "")
                     .replace(".s.", WarpSystem.opt().getStatus(ping))
-                    .replace(".m.", ping.getMotd() == null ? "" : ping.getMotd())
+                    .replace(".m.", ping.getMotd() == null ? "" : de.codingair.codingapi.utils.ChatColor.translateAll('&', ping.getMotd()))
                     .replace(".ci.", WarpSystem.opt().getPlaceholderCountInfo(ping))
             ;
         } else {
@@ -288,7 +288,7 @@ public class GeneralOptions extends Options {
                     .replace(".mp.", "0")
                     .replace(".s.", getPlaceholderOffline())
                     .replace(".m.", "")
-                    .replace(".ci.", WarpSystem.opt().getPlaceholderCountInfo(ping))
+                    .replace(".ci.", WarpSystem.opt().getPlaceholderCountInfo(null))
             ;
         }
 

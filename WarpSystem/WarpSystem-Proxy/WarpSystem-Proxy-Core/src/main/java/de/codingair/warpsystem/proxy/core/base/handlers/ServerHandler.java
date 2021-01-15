@@ -56,27 +56,23 @@ public abstract class ServerHandler {
         if (running) return;
         running = true;
 
-        Core.getPlugin().schedule(() -> {
-            Core.getPlugin().getRegisteredServers().forEach(info -> {
-                info.ping().whenComplete((serverPing, error) -> cachedPing.compute(info, (server, ping) -> {
-                    if (ping == null) ping = new ServerPing(false, 0, 0, null);
+        Core.getPlugin().schedule(() -> Core.getPlugin().getRegisteredServers().forEach(info -> info.ping().whenComplete((serverPing, error) -> cachedPing.compute(info, (server, ping) -> {
+            if (ping == null) ping = new ServerPing(false, 0, 0, null);
 
-                    if (error == null) {
-                        ping.setStatus(true);
-                        ping.setPlayers(serverPing.getPlayers());
-                        ping.setMaxPlayers(serverPing.getPlayers());
-                        ping.setMotd(serverPing.getMotd());
-                    } else {
-                        ping.setStatus(false);
-                        ping.setPlayers(0);
-                        ping.setMaxPlayers(0);
-                        ping.setMotd(null);
-                    }
+            if (error == null) {
+                ping.setStatus(true);
+                ping.setPlayers(serverPing.getPlayers());
+                ping.setMaxPlayers(serverPing.getMaxPlayers());
+                ping.setMotd(serverPing.getMotd());
+            } else {
+                ping.setStatus(false);
+                ping.setPlayers(0);
+                ping.setMaxPlayers(0);
+                ping.setMotd(null);
+            }
 
-                    return ping;
-                }));
-            });
-        }, 0, 10, TimeUnit.SECONDS);
+            return ping;
+        }))), 0, 5, TimeUnit.SECONDS);
 
         Core.getPlugin().schedule(() -> {
             HashMap<String, ServerPing> copy = new HashMap<>();
