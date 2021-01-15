@@ -1,4 +1,4 @@
-package de.codingair.warpsystem.bungee.api.chatinput;
+package de.codingair.warpsystem.bungee.base.managers;
 
 import de.codingair.warpsystem.base.transfer.packets.spigot.ChatInputGUITogglePacket;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
