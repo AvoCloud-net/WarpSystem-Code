@@ -5,11 +5,11 @@ import de.codingair.codingapi.bungeecord.files.FileManager;
 import de.codingair.codingapi.tools.time.TimeFetcher;
 import de.codingair.codingapi.tools.time.Timer;
 import de.codingair.warpsystem.base.utils.Manager;
-import de.codingair.warpsystem.bungee.base.managers.ChatInputManager;
 import de.codingair.warpsystem.bungee.base.commands.CWarpSystem;
 import de.codingair.warpsystem.bungee.base.listeners.MainListener;
 import de.codingair.warpsystem.bungee.base.listeners.PlayerDataListener;
 import de.codingair.warpsystem.bungee.base.listeners.SetupAssistantListener;
+import de.codingair.warpsystem.bungee.base.managers.ChatInputManager;
 import de.codingair.warpsystem.bungee.base.managers.CooldownManager;
 import de.codingair.warpsystem.bungee.base.managers.DataManager;
 import de.codingair.warpsystem.bungee.base.managers.ServerManager;
@@ -26,6 +26,7 @@ import de.codingair.warpsystem.proxy.core.utils.ProxyPlugin;
 import de.codingair.warpsystem.proxy.core.utils.ScheduleTask;
 import de.codingair.warpsystem.proxy.core.utils.Server;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -277,7 +278,9 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
 
     @Override
     public Server getServer(String server) {
-        return new BungeeServer(getProxy().getServerInfo(server));
+        ServerInfo info = getProxy().getServerInfo(server);
+        if (info != null) return new BungeeServer(info);
+        else return null;
     }
 
     @Override

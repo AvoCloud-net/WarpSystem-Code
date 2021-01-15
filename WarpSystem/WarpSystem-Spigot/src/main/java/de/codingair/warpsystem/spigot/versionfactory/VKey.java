@@ -10,7 +10,6 @@ public enum VKey {
     RotationItemComponent(VFac.OBJECTS),
     AnimationPartColor(VFac.OBJECTS),
     AnimationPartSpeed(VFac.OBJECTS),
-    DestinationPageHandler(VFac.OBJECTS),
     ParticlesHandler(VFac.OBJECTS),
     ParticleOptionsSpeed(VFac.OBJECTS),
     ParticleOptionsColor(VFac.OBJECTS),
@@ -19,6 +18,7 @@ public enum VKey {
     WarpGUIChoosePage(VFac.OBJECTS),
     CWarpSystem(VFac.OBJECTS),
 
+    DestinationPageHandler(VFac.HANDLERS),
     TeleportCommandHandler(VFac.HANDLERS),
     WarpGUI(VFac.HANDLERS),
     PlayerWarpHandler(VFac.HANDLERS),

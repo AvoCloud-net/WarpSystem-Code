@@ -1,4 +1,4 @@
-package de.codingair.warpsystem.spigot.versionfactory.objects;
+package de.codingair.warpsystem.spigot.versionfactory.handlers;
 
 import de.codingair.codingapi.player.gui.anvil.*;
 import de.codingair.codingapi.player.gui.inventory.gui.itembutton.ItemButtonOption;
@@ -129,7 +129,7 @@ public class DestinationPageHandler {
 
                         if (send == null) page.getDestination().getCustomOptions().setMessage(!sending);
                         else if (send != sending) page.getDestination().getCustomOptions().setMessage(null);
-                        else if (send == sending) page.getDestination().getCustomOptions().setMessage(!send);
+                        else page.getDestination().getCustomOptions().setMessage(!send);
                         update();
                     }
                 }
@@ -519,16 +519,12 @@ public class DestinationPageHandler {
                             onlineStatus.add("§3" + Lang.get("Status") + ": " + (pinging ? "§7" + Lang.get("Pinging") + "..." : (online ? "§a" + Lang.get("Online") : "§c" + Lang.get("Offline"))));
                         }
 
-                        ItemStack item = new ItemBuilder(XMaterial.ENDER_CHEST).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Server"))
+                        return new ItemBuilder(XMaterial.ENDER_CHEST).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Server"))
                                 .setLore("§3" + Lang.get("Current") + ": " + (name == null ? "§c" + Lang.get("Not_Set") : "§7'§f" + ChatColor.translateAlternateColorCodes('&', name) + "§7'"))
                                 .addLore(onlineStatus)
                                 .addLore("", "§3" + Lang.get("Leftclick") + ": §a" + (name == null ? Lang.get("Set") : Lang.get("Change")))
                                 .addLore(lore)
                                 .getItem();
-
-                        if (lore != null) lore.clear();
-                        if (onlineStatus != null) onlineStatus.clear();
-                        return item;
                     }
 
                     @Override
