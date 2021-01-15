@@ -24,14 +24,14 @@ public class GeneralOptions extends Options {
     private Option<String> cooldownRandomTP = new Option<>("WarpSystem.Cooldown.RandomTP", "5m");
     private Option<String> delayDisplay = new Option<>("WarpSystem.Teleport.Delay_Display", "ACTION_BAR");
     private Option<Boolean> teleportInterceptions = new Option<>("WarpSystem.Beta.Functions.Teleport_Interceptions", false);
-    private Option<Integer> fetchUpdates = new Option<>("WarpSystem.BungeeCord.Fetch_Updated_Jars", 1);
-    private Option<String> placeholderOnline = new Option<>("WarpSystem.BungeeCord.Placeholder.Online", ".sc.Online");
-    private Option<String> placeholderOffline = new Option<>("WarpSystem.BungeeCord.Placeholder.Offline", ".sc.Offline");
-    private Option<String> placeholderCountInfo = new Option<>("WarpSystem.BungeeCord.Placeholder.Count_Info", ".cc..p.&8/.cc..mp.");
-    private Option<String> placeholderColorsOnline = new Option<>("WarpSystem.BungeeCord.Placeholder.Colors.Online", "&a");
-    private Option<String> placeholderColorsOffline = new Option<>("WarpSystem.BungeeCord.Placeholder.Colors.Offline", "&c");
-    private Option<String> placeholderColorsFull = new Option<>("WarpSystem.BungeeCord.Placeholder.Colors.Full", "&c");
-    private Option<String> placeholderColorsNotFull = new Option<>("WarpSystem.BungeeCord.Placeholder.Colors.Not_Full", "&a");
+    private Option<Integer> fetchUpdates = new Option<>("WarpSystem.Proxy.Fetch_Updated_Jars", 1);
+    private Option<String> placeholderOnline = new Option<>("WarpSystem.Proxy.Placeholder.Online", ".sc.Online");
+    private Option<String> placeholderOffline = new Option<>("WarpSystem.Proxy.Placeholder.Offline", ".sc.Offline");
+    private Option<String> placeholderCountInfo = new Option<>("WarpSystem.Proxy.Placeholder.Count_Info", ".cc..p.&8/.cc..mp.");
+    private Option<String> placeholderColorsOnline = new Option<>("WarpSystem.Proxy.Placeholder.Colors.Online", "&a");
+    private Option<String> placeholderColorsOffline = new Option<>("WarpSystem.Proxy.Placeholder.Colors.Offline", "&c");
+    private Option<String> placeholderColorsFull = new Option<>("WarpSystem.Proxy.Placeholder.Colors.Full", "&c");
+    private Option<String> placeholderColorsNotFull = new Option<>("WarpSystem.Proxy.Placeholder.Colors.Not_Full", "&a");
 
     public GeneralOptions() {
         super("Config");

@@ -2,6 +2,7 @@ package de.codingair.warpsystem.spigot.versionfactory.handlers;
 
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.utils.ChatColor;
+import de.codingair.packetmanagement.packets.impl.LongPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.PrepareTeleportPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RequestFullNamePacket;
 import de.codingair.warpsystem.base.transfer.utils.PlayerData;
@@ -22,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class TeleportCommandHandler implements ITeleportCommandHandler {
@@ -49,14 +51,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
         if (playerP == null) {
             //try on proxy
             if (WarpSystem.getInstance().isOnProxy() && TeleportCommandManager.getInstance().isProxy()) {
-                WarpSystem.getDataHandler().send(new PrepareTeleportPacket(gate.getName(), player, x, y, z), gate).thenAccept(packet -> {
-                    long result = packet.a();
-                    int handled = (int) (result >> 32);
-                    int sent = (int) result;
-
-                    if (handled == 0) gate.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
-                    else if (sent == 0) gate.sendMessage(Lang.getPrefix() + Lang.get("Teleport_denied").replace("%PLAYER%", player));
-                });
+                WarpSystem.getDataHandler().send(new PrepareTeleportPacket(gate.getName(), player, x, y, z), gate).thenAccept(processTeleportResponse(gate, player));
             } else gate.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
             return;
         }
@@ -94,14 +89,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
         if (playerP == null || targetP == null) {
             //try on proxy
             if (WarpSystem.getInstance().isOnProxy() && TeleportCommandManager.getInstance().isProxy()) {
-                WarpSystem.getDataHandler().send(new PrepareTeleportPacket(gate.getName(), player, target), gate).thenAccept(packet -> {
-                    long result = packet.a();
-                    int handled = (int) (result >> 32);
-                    int sent = (int) result;
-
-                    if (handled == 0) gate.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
-                    else if (sent == 0) gate.sendMessage(Lang.getPrefix() + Lang.get("Teleport_denied").replace("%PLAYER%", player));
-                });
+                WarpSystem.getDataHandler().send(new PrepareTeleportPacket(gate.getName(), player, target), gate).thenAccept(processTeleportResponse(gate, player));
             } else gate.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
             return;
         }
@@ -119,6 +107,18 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
         options.setMessage(Lang.getPrefix() + (gate == playerP ? Lang.get("Teleported_To") : Lang.get("Teleported_To_By").replace("%gate%", gate.getName())));
 
         WarpSystem.getInstance().getTeleportManager().teleport(playerP, options);
+    }
+
+    @NotNull
+    private Consumer<LongPacket> processTeleportResponse(Player gate, String player) {
+        return packet -> {
+            long result = packet.a();
+            int handled = (int) (result >> 32);
+            int sent = (int) result;
+
+            if (handled == 0) gate.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
+            else if (sent == 0) gate.sendMessage(Lang.getPrefix() + Lang.get("Teleport_denied").replace("%PLAYER%", player));
+        };
     }
 
     private boolean checkStatusTp(Player gate, String player) {

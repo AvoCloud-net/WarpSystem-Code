@@ -10,6 +10,7 @@ import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.listeners.TeleportListener;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.SimulatedTeleportResult;
+import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportUtils;
 import io.papermc.lib.PaperLib;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -58,6 +59,8 @@ public class GlobalLocationAdapter extends LocationAdapter implements Serializab
             if (callback != null) callback.accept(Result.DESTINATION_DOES_NOT_EXIST);
             return false;
         }
+
+        Location location = this.location.clone();
 
         if (server == null || server.equals(WarpSystem.getInstance().getCurrentServer())) {
             if (location.getWorld() == null) {

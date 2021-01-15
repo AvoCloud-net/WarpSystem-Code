@@ -89,7 +89,7 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
         logMessage("Initialize SpigotConnector");
         this.dataHandler.onEnable();
 
-        this.fileManager.loadFile("Config", "/", "bungee/");
+        this.fileManager.loadFile("Config", "/", "proxy/");
         try {
             LangHandler.initPreDefinedLanguages(this);
         } catch (IOException e) {

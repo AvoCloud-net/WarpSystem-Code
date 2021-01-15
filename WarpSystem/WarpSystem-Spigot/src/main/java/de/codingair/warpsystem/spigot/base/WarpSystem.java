@@ -24,6 +24,7 @@ import de.codingair.warpsystem.spigot.base.setupassistant.SetupAssistantManager;
 import de.codingair.warpsystem.spigot.base.setupassistant.utils.SetupAssistantListener;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.ProxyFeature;
+import de.codingair.warpsystem.spigot.base.utils.forwardcompatibility.ConfigTagConverter_v4_2_12;
 import de.codingair.warpsystem.spigot.base.utils.options.OptionBundle;
 import de.codingair.warpsystem.spigot.base.utils.options.Options;
 import de.codingair.warpsystem.spigot.base.utils.options.specific.GeneralOptions;
@@ -176,6 +177,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
         instance = this;
         copyConfig();
+        preload();
 
         try {
             API.getInstance().onEnable(this);
@@ -191,6 +193,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             log("MC-Version: " + Version.get().fullVersion());
             log(" ");
 
+            this.fileManager.loadFile("Config", "/");
             this.serverManager = new ServerManager();
 
             this.dataManager = new DataManager();
@@ -200,11 +203,10 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             loadOptions();
             checkOldDirectory();
 
-            this.fileManager.loadFile("Config", "/");
             Lang.initPreDefinedLanguages(this);
 
             oldVersion = fileManager.getFile("Config").getConfig().getString("Do_Not_Edit.Last_Version", "0");
-            if (!oldVersion.equals(getDescription().getVersion())) createBackup();
+            if (oldVersion == null || !oldVersion.equals(getDescription().getVersion())) createBackup();
 
             //load cooldown list
             cooldownManager.load();
@@ -323,6 +325,10 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             this.ERROR = true;
             Bukkit.getPluginManager().disablePlugin(this);
         }
+    }
+
+    private void preload() {
+        new ConfigTagConverter_v4_2_12();
     }
 
     private void copyConfig() {

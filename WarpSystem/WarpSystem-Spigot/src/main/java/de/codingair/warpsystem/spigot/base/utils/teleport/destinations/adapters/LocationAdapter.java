@@ -6,6 +6,7 @@ import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.base.listeners.TeleportListener;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.SimulatedTeleportResult;
+import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportUtils;
 import io.papermc.lib.PaperLib;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -79,7 +80,7 @@ public class LocationAdapter extends CloneableAdapter {
 
     @Override
     public Location buildLocation(String id) {
-        return this.location == null ? id == null ? null : de.codingair.codingapi.tools.Location.getByJSONString(id) : this.location;
+        return this.location == null ? id == null ? null : Location.getByJSONString(id) : this.location;
     }
 
     public Location getLocation() {

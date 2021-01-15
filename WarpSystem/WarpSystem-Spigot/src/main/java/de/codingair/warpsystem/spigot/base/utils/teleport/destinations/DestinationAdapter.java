@@ -4,6 +4,7 @@ import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.Location;
 import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.base.utils.teleport.SimulatedTeleportResult;
+import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -26,6 +27,6 @@ public abstract class DestinationAdapter {
     public org.bukkit.Location prepare(Player player, org.bukkit.Location location) {
         if (location == null) return null;
         if (destination != null) destination.adjustLocation(player, location);
-        return location;
+        return TeleportUtils.prepareLocation(location, player);
     }
 }

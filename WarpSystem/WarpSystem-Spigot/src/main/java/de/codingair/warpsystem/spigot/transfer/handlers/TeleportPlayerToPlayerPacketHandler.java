@@ -29,7 +29,7 @@ public class TeleportPlayerToPlayerPacketHandler implements PacketHandler<Telepo
         options.setSkip(true);
         options.setConfirmPayment(false);
         options.setOrigin(Origin.TeleportCommand);
-        options.setMessage(Lang.getPrefix() + (gate == player ? Lang.get("Teleported_To") : Lang.get("Teleported_To_By").replace("%gate%", gate.getName())));
+        options.setMessage(Lang.getPrefix() + (gate == player ? Lang.get("Teleported_To") : Lang.get("Teleported_To_By").replace("%gate%", (gate == null ? packet.getGate() : gate.getName()))));
 
         if (gate != null && gate != player && packet.isMessageToGate())
             gate.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", packet.getPlayer()).replace("%warp%", other.getName()));
