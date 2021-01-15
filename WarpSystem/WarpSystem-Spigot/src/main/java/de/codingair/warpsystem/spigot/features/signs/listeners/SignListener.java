@@ -66,24 +66,26 @@ public class SignListener implements Listener {
 
     @EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onBreak(BlockBreakEvent e) {
-        Sign s = (Sign) e.getBlock().getState();
-        WarpSign sign = manager.getByLocation(s.getLocation());
-        if (sign == null) return;
+        if (e.getBlock().getState() instanceof Sign) {
+            Sign s = (Sign) e.getBlock().getState();
+            WarpSign sign = manager.getByLocation(s.getLocation());
+            if (sign == null) return;
 
-        if (!e.getPlayer().hasPermission(Permissions.PERMISSION_MODIFY_WARP_SIGNS)) {
-            e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));
-            e.setCancelled(true);
-        } else if (!e.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
-            e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Creative_Mode_Needed"));
-            e.setCancelled(true);
-        } else {
-            for (WarpSignGUI gui : API.getRemovables(WarpSignGUI.class)) {
-                gui.close();
-                gui.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("WarpSign_Removed"));
+            if (!e.getPlayer().hasPermission(Permissions.PERMISSION_MODIFY_WARP_SIGNS)) {
+                e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));
+                e.setCancelled(true);
+            } else if (!e.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+                e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Creative_Mode_Needed"));
+                e.setCancelled(true);
+            } else {
+                for (WarpSignGUI gui : API.getRemovables(WarpSignGUI.class)) {
+                    gui.close();
+                    gui.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("WarpSign_Removed"));
+                }
+
+                manager.removeWarpSign(sign);
+                e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("WarpSign_Removed"));
             }
-
-            manager.removeWarpSign(sign);
-            e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("WarpSign_Removed"));
         }
     }
 

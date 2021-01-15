@@ -38,6 +38,8 @@ public class RandomTeleportHandler extends RandomTeleportManager {
         this.buyable = config.getBoolean("RandomTeleport.Buyable.Enabled", true);
         this.costs = config.getDouble("RandomTeleport.Buyable.Costs", 500.0);
 
+        this.concurrent = config.getInt("RandomTeleport.Concurrent_Teleports", 5);
+
         this.max = config.getInt("RandomTeleport.Max", 4);
         this.free = config.getInt("RandomTeleport.Free", 1);
 
@@ -140,19 +142,19 @@ public class RandomTeleportHandler extends RandomTeleportManager {
     }
 
     @Override
-    public RandomLocationCalculator newCalculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<Location> callback) {
+    public RandomLocationCalculator newCalculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<RandomLocationCalculator> callback) {
         return new Calculator(player, location, minRange, maxRange, callback);
     }
 
     public static class Calculator extends RandomLocationCalculator {
-        public Calculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<Location> callback) {
+        public Calculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<RandomLocationCalculator> callback) {
             super(player, location, minRange, maxRange, callback);
         }
 
-        public boolean correct(Location location, boolean safety) throws InterruptedException {
+        public boolean correct(Location location, boolean safety) {
             if (RandomTeleportManager.getInstance().getBiomeList() != null && !RandomTeleportManager.getInstance().getBiomeList().contains(location.getWorld().getBiome(location.getBlockX(), location.getBlockZ())))
                 return false;
-            if (RandomTeleportManager.getInstance().isProtectedRegions() && isProtected(location)) return false;
+            if (RandomTeleportManager.getInstance().isProtectedRegions() && isProtected(location).join()) return false;
             if (safety) {
                 Location above = location.clone();
                 above.setY(above.getY() + 1);
@@ -160,7 +162,7 @@ public class RandomTeleportHandler extends RandomTeleportManager {
                 below.setY(below.getY() - 1);
 
 
-                return isSafeLocation(location) && isSafe(above) && isSafe(location) && isSafe(below);
+                return isEnoughSpace(location) && isSafe(above) && isSafe(location) && isSafe(below);
             } else return true;
         }
     }

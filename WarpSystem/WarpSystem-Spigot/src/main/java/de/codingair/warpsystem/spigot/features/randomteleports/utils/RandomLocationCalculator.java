@@ -1,6 +1,7 @@
 package de.codingair.warpsystem.spigot.features.randomteleports.utils;
 
 import de.codingair.codingapi.server.Environment;
+import de.codingair.codingapi.server.reflections.IReflection;
 import de.codingair.codingapi.server.specification.Version;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.Location;
@@ -15,25 +16,32 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 public abstract class RandomLocationCalculator implements Runnable {
+    private static final IReflection.MethodAccessor isFuel = IReflection.getSaveMethod(Material.class, "isFuel", boolean.class);
     private final org.bukkit.Location startLocation;
+    private final Player player;
     private final Player check;
-    private final Callback<Location> callback;
+    private final Callback<RandomLocationCalculator> callback;
     private final double minRange;
     private final double maxRange;
     private final double diffRange;
     private long lastReaction = 0;
+    private Location result = null;
 
-    public RandomLocationCalculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<Location> callback) {
+    public RandomLocationCalculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<RandomLocationCalculator> callback) {
         if (Version.get().isBiggerThan(8)) check = new PermissionPlayer_v1_9(player);
         else check = new PermissionPlayer_v1_8(player);
+        this.player = player;
 
         this.callback = callback;
         this.startLocation = location;
@@ -44,21 +52,18 @@ public abstract class RandomLocationCalculator implements Runnable {
 
     @Override
     public void run() {
-        Location location = null;
-        try {
-            location = calculate();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        Location location = calculate();
         if (location != null) {
             location.setX(location.getBlockX() + 0.5);
             location.setY(location.getBlockY() + 0.5);
             location.setZ(location.getBlockZ() + 0.5);
         }
-        callback.accept(location);
+
+        result = location;
+        callback.accept(this);
     }
 
-    private Location calculate() throws InterruptedException {
+    private Location calculate() {
         long start = System.currentTimeMillis();
         Location location = new Location(startLocation);
 
@@ -106,10 +111,11 @@ public abstract class RandomLocationCalculator implements Runnable {
         return l.contains(below.getBlock().getType());
     }
 
-    protected boolean isSafeLocation(Location location) {
-        return Environment.canBeEntered(location.getBlock().getType())
-                && Environment.canBeEntered(location.clone().add(0, 1, 0).getBlock().getType())
-                && !Environment.canBeEntered(location.clone().subtract(0, 1, 0).getBlock().getType());
+    protected boolean isEnoughSpace(Location location) {
+        Block b;
+        return Environment.canBeEntered(location.getBlock())
+                && Environment.canBeEntered(location.clone().add(0, 1, 0).getBlock())
+                && (!Environment.canBeEntered(b = location.clone().subtract(0, 1, 0).getBlock()) || Environment.isWaterFluid(b));
     }
 
     private boolean checkY(Location location) {
@@ -150,13 +156,13 @@ public abstract class RandomLocationCalculator implements Runnable {
                     loc.setY(loc.getY() + 4);
                 }
 
-                while (Environment.canBeEntered(loc.getBlock().getType())) {
+                while (Environment.canBeEntered(loc.getBlock().getType()) && !Environment.isWaterFluid(loc.getBlock())) {
                     loc.setY(loc.getY() - 1);
                 }
 
                 loc.setY(loc.getY() + 1);
             } else {
-                while (Environment.canBeEntered(loc.getBlock().getType()) && loc.getBlockY() > 0) {
+                while (Environment.canBeEntered(loc.getBlock().getType()) && !Environment.isWaterFluid(loc.getBlock()) && loc.getBlockY() > 0) {
                     loc.setY(loc.getY() - 4);
                 }
 
@@ -171,7 +177,7 @@ public abstract class RandomLocationCalculator implements Runnable {
         return loc.getBlockY();
     }
 
-    public abstract boolean correct(Location location, boolean safety) throws InterruptedException;
+    public abstract boolean correct(Location location, boolean safety);
 
     protected boolean isSafe(Location location) {
         Block b = location.getBlock();
@@ -190,25 +196,29 @@ public abstract class RandomLocationCalculator implements Runnable {
         return true;
     }
 
-    protected boolean isProtected(Location location) throws InterruptedException {
-        synchronized (this) {
-            Value<BlockBreakEvent> eventValue = new Value<>(null);
-            Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> {
-                BlockBreakEvent event = new BlockBreakEvent(location.getBlock(), this.check); //check is a bukkit/Player instance
-                eventValue.setValue(event);
-                Bukkit.getPluginManager().callEvent(event);
+    protected CompletableFuture<Boolean> isProtected(Location location) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
 
-                synchronized (RandomLocationCalculator.this) {
-                    RandomLocationCalculator.this.notify();
-                }
-            });
+        Value<BlockBreakEvent> eventValue = new Value<>(null);
+        Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> {
+            BlockBreakEvent event = new BlockBreakEvent(location.getBlock(), this.check); //check is a bukkit/Player instance
+            eventValue.setValue(event);
+            Bukkit.getPluginManager().callEvent(event);
+            future.complete(event.isCancelled());
+        });
 
-            this.wait();
-            return eventValue.getValue().isCancelled();
-        }
+        return future;
     }
 
     public long getLastReaction() {
         return lastReaction;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Location getResult() {
+        return result;
     }
 }
