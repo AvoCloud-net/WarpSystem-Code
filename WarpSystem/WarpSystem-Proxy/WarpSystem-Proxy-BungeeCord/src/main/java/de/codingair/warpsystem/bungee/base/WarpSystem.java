@@ -1,0 +1,297 @@
+package de.codingair.warpsystem.bungee.base;
+
+import de.codingair.codingapi.bungeecord.BungeeAPI;
+import de.codingair.codingapi.bungeecord.files.FileManager;
+import de.codingair.codingapi.tools.time.TimeFetcher;
+import de.codingair.codingapi.tools.time.Timer;
+import de.codingair.warpsystem.base.utils.Manager;
+import de.codingair.warpsystem.bungee.base.managers.ChatInputManager;
+import de.codingair.warpsystem.bungee.base.commands.CWarpSystem;
+import de.codingair.warpsystem.bungee.base.listeners.MainListener;
+import de.codingair.warpsystem.bungee.base.listeners.PlayerDataListener;
+import de.codingair.warpsystem.bungee.base.listeners.SetupAssistantListener;
+import de.codingair.warpsystem.bungee.base.managers.CooldownManager;
+import de.codingair.warpsystem.bungee.base.managers.DataManager;
+import de.codingair.warpsystem.bungee.base.managers.ServerManager;
+import de.codingair.warpsystem.bungee.utils.BungeeHandler;
+import de.codingair.warpsystem.bungee.utils.BungeePlayer;
+import de.codingair.warpsystem.bungee.utils.BungeeScheduleTask;
+import de.codingair.warpsystem.bungee.utils.BungeeServer;
+import de.codingair.warpsystem.proxy.core.Core;
+import de.codingair.warpsystem.proxy.core.base.handlers.JarManager;
+import de.codingair.warpsystem.proxy.core.base.handlers.PlayerDataHandler;
+import de.codingair.warpsystem.proxy.core.base.utils.LangHandler;
+import de.codingair.warpsystem.proxy.core.utils.Player;
+import de.codingair.warpsystem.proxy.core.utils.ProxyPlugin;
+import de.codingair.warpsystem.proxy.core.utils.ScheduleTask;
+import de.codingair.warpsystem.proxy.core.utils.Server;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+
+public class WarpSystem extends Plugin implements ProxyPlugin {
+    public static final String PERMISSION_MODIFY_SYSTEM = "warpsystem.modify.system";
+
+    private static WarpSystem instance;
+    private final BungeeHandler dataHandler = new BungeeHandler(this);
+    private final FileManager fileManager = new FileManager(this);
+    private DataManager dataManager;
+    private final JarManager jarManager = new JarManager();
+    private final Timer timer = new Timer();
+    private CooldownManager cooldownManager;
+    private PlayerDataListener playerDataListener;
+
+    public static void logMessage(String message) {
+        System.out.println(message);
+    }
+
+    public static BungeeHandler getDataHandler() {
+        return getInstance().dataHandler;
+    }
+
+    public static ProxyServer proxy() {
+        return instance.getProxy();
+    }
+
+    public static WarpSystem getInstance() {
+        return instance;
+    }
+
+    @Override
+    public void onEnable() {
+        instance = this;
+        timer.start();
+        Core.setPlugin(this);
+        Core.setServerManager(new ServerManager());
+
+        BungeeAPI.getInstance().onEnable(this);
+
+        logMessage(" ");
+        logMessage("________________________________________________________");
+        logMessage(" ");
+        logMessage("                   WarpSystem [" + getDescription().getVersion() + "]");
+        logMessage(" ");
+        logMessage("Status:");
+        logMessage(" ");
+
+        dataManager = new DataManager();
+        dataManager.preLoad();
+        logMessage("Initialize SpigotConnector");
+        this.dataHandler.onEnable();
+
+        this.fileManager.loadFile("Config", "/", "bungee/");
+        try {
+            LangHandler.initPreDefinedLanguages(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //listener
+        getProxy().getPluginManager().registerListener(this, new MainListener());
+        getProxy().getPluginManager().registerListener(this, cooldownManager = new CooldownManager());
+
+        cooldownManager.load();
+
+        getProxy().getPluginManager().registerListener(this, new SetupAssistantListener());
+        getProxy().getPluginManager().registerListener(this, (playerDataListener = new PlayerDataListener()));
+
+        Core.getServerManager().run();
+        new ChatInputManager();
+
+        getProxy().getPluginManager().registerCommand(this, new CWarpSystem());
+
+        logMessage("Loading features");
+        boolean createBackup = false;
+        if (!this.dataManager.load(false)) createBackup = true;
+
+        if (createBackup) {
+            logMessage("Loading with errors > Create backup...");
+            createBackup();
+            logMessage("Backup successfully created");
+        }
+
+        this.startAutoSaver();
+
+        logMessage(" ");
+        logMessage("Done (" + timer.result() + ")");
+        logMessage(" ");
+        logMessage("________________________________________________________");
+        logMessage(" ");
+    }
+
+    @Override
+    public void onDisable() {
+        this.dataHandler.flush();
+        this.dataHandler.onDisable();
+        save(false);
+        destroy();
+        BungeeAPI.getInstance().onDisable(this);
+    }
+
+    private void startAutoSaver() {
+        WarpSystem.logMessage("Starting AutoSaver");
+        getProxy().getScheduler().schedule(this, () -> save(true), 10, 10, TimeUnit.MINUTES);
+    }
+
+    private void destroy() {
+        this.dataManager.getManagers().forEach(Manager::destroy);
+    }
+
+    private void save(boolean saver) {
+        try {
+            if (!saver) {
+                timer.start();
+
+                logMessage(" ");
+                logMessage("________________________________________________________");
+                logMessage(" ");
+                logMessage("                   WarpSystem [" + getDescription().getVersion() + "]");
+                logMessage(" ");
+                logMessage("Status:");
+                logMessage(" ");
+            }
+
+            if (!saver) logMessage("Saving features");
+            this.cooldownManager.save();
+
+            this.dataManager.save(saver);
+
+            if (!saver) {
+                logMessage(" ");
+                logMessage("Done (" + timer.result() + ")");
+                logMessage(" ");
+                logMessage("________________________________________________________");
+                logMessage(" ");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void createBackup() {
+        getDataFolder().mkdir();
+
+        File backupFolder = new File(getDataFolder().getPath() + "/Backups/", TimeFetcher.getYear() + "_" + (TimeFetcher.getMonthNum() + 1) + "_" + TimeFetcher.getDay() + " " + TimeFetcher.getHour() + "_" + TimeFetcher.getMinute() + "_" + TimeFetcher.getSecond());
+        backupFolder.mkdirs();
+
+        for (File file : getDataFolder().listFiles()) {
+            if (file.getName().equals("Backups") || file.getName().equals("ErrorReport.txt")) continue;
+            File dest = new File(backupFolder, file.getName());
+
+            try {
+                if (file.isDirectory()) {
+                    copyFolder(file, dest);
+                    continue;
+                }
+
+                copyFileUsingFileChannels(file, dest);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void copyFolder(File source, File dest) throws IOException {
+        dest.mkdirs();
+        for (File file : source.listFiles()) {
+            File copy = new File(dest, file.getName());
+
+            if (file.isDirectory()) {
+                copyFolder(file, copy);
+                continue;
+            }
+
+            copyFileUsingFileChannels(file, copy);
+        }
+    }
+
+    private void copyFileUsingFileChannels(File source, File dest) throws IOException {
+        try (FileChannel inputChannel = new FileInputStream(source).getChannel(); FileChannel outputChannel = new FileOutputStream(dest).getChannel()) {
+            outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
+        }
+    }
+
+    @SuppressWarnings ("unchecked")
+    public @NotNull BungeeHandler dataHandler() {
+        return getInstance().dataHandler;
+    }
+
+    public ServerManager getServerManager() {
+        return (ServerManager) Core.getServerManager();
+    }
+
+    public FileManager getFileManager() {
+        return fileManager;
+    }
+
+    public DataManager getDataManager() {
+        return dataManager;
+    }
+
+    public JarManager getJarManager() {
+        return jarManager;
+    }
+
+    public PlayerDataListener getPlayerListener() {
+        return playerDataListener;
+    }
+
+    @Override
+    public @Nullable Player getPlayer(String name) {
+        return new BungeePlayer(getProxy().getPlayer(name));
+    }
+
+    @Override
+    public @NotNull Stream<Player> getOnlinePlayers() {
+        return getProxy().getPlayers().stream().map(BungeePlayer::new);
+    }
+
+    @Override
+    public @NotNull Stream<Server> getRegisteredServers() {
+        return getProxy().getServers().values().stream().map(BungeeServer::new);
+    }
+
+    @Override
+    public @NotNull ScheduleTask schedule(Runnable runnable, long delay, long interval, TimeUnit unit) {
+        return new BungeeScheduleTask(getProxy().getScheduler().schedule(this, runnable, delay, interval, unit));
+    }
+
+    @Override
+    public void runAsync(Runnable runnable) {
+        getProxy().getScheduler().runAsync(this, runnable);
+    }
+
+    @Override
+    public @NotNull String getVersion() {
+        return getDescription().getVersion();
+    }
+
+    @Override
+    public Server getServer(String server) {
+        return new BungeeServer(getProxy().getServerInfo(server));
+    }
+
+    @Override
+    public void log(String message) {
+        logMessage(message);
+    }
+
+    @Override
+    public <A extends Manager> A getHandler(Class<A> c) {
+        return dataManager.getManager(c);
+    }
+
+    @Override
+    public PlayerDataHandler getPlayerData() {
+        return this.playerDataListener;
+    }
+}

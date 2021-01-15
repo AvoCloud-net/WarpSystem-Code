@@ -1,0 +1,99 @@
+package de.codingair.warpsystem.spigot.features;
+
+import de.codingair.codingapi.files.ConfigFile;
+import de.codingair.warpsystem.base.utils.Manager;
+import de.codingair.warpsystem.spigot.base.WarpSystem;
+import de.codingair.warpsystem.spigot.bstats.MetricsManager;
+import de.codingair.warpsystem.spigot.features.animations.AnimationManager;
+import de.codingair.warpsystem.spigot.features.beta.BetaManager;
+import de.codingair.warpsystem.spigot.features.globalwarps.managers.GlobalWarpManager;
+import de.codingair.warpsystem.spigot.features.playerwarps.managers.PlayerWarpManager;
+import de.codingair.warpsystem.spigot.features.portals.managers.PortalManager;
+import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
+import de.codingair.warpsystem.spigot.features.shortcuts.managers.ShortcutManager;
+import de.codingair.warpsystem.spigot.features.signs.managers.SignManager;
+import de.codingair.warpsystem.spigot.features.simplewarps.managers.SimpleWarpManager;
+import de.codingair.warpsystem.spigot.features.spawn.managers.SpawnManager;
+import de.codingair.warpsystem.spigot.features.teleportcommand.TeleportCommandManager;
+import de.codingair.warpsystem.spigot.features.warps.managers.IconManager;
+import de.codingair.warpsystem.spigot.versionfactory.VFac;
+import de.codingair.warpsystem.spigot.versionfactory.VKey;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public enum FeatureType {
+    BETA(BetaManager.class, Priority.ALWAYS_ON, "Beta"),
+    WARP_GUI(IconManager.class, Priority.HIGH, "WarpGUI"),
+    GLOBAL_WARPS(GlobalWarpManager.class, Priority.LOW, "GlobalWarps"),
+    SIGNS(SignManager.class, Priority.LOWEST, "WarpSigns"),
+    SHORTCUTS(ShortcutManager.class, Priority.LOW, "Shortcuts"),
+    SIMPLE_WARPS(SimpleWarpManager.class, Priority.HIGH, "SimpleWarps"),
+    RANDOM_TELEPORTS(RandomTeleportManager.class, Priority.HIGH, "RandomTeleports", VKey.RandomTeleportHandler),
+    TELEPORT_COMMAND(TeleportCommandManager.class, Priority.HIGH, "TeleportCommand"),
+    ANIMATION_EDITOR(AnimationManager.class, Priority.ALWAYS_ON, "AnimationEditor"),
+    PLAYER_WARS(PlayerWarpManager.class, Priority.LOW, "PlayerWarps", VKey.PlayerWarpHandler),
+    METRICS(MetricsManager.class, Priority.LOWEST, "bStats"),
+    PORTALS(PortalManager.class, Priority.LOW, "Portal"),
+    SPAWN(SpawnManager.class, Priority.LOW, "Spawn"),
+    ;
+
+    private final Class<? extends Manager> managerClass;
+    private final Priority priority;
+    private final String name;
+    private final VKey key;
+
+    FeatureType(Class<? extends Manager> managerClass, Priority priority, String name, VKey key) {
+        this.managerClass = managerClass;
+        this.priority = priority;
+        this.name = name;
+        this.key = key;
+    }
+
+    FeatureType(Class<? extends Manager> managerClass, Priority priority, String name) {
+        this(managerClass, priority, name, null);
+    }
+
+    public static FeatureType[] values(Priority priority) {
+        List<FeatureType> featureTypes = new ArrayList<>();
+
+        for (FeatureType value : values()) {
+            if (value.getPriority().equals(priority)) featureTypes.add(value);
+        }
+
+        return featureTypes.toArray(new FeatureType[0]);
+    }
+
+    public Manager createInstance() throws IllegalAccessException, InstantiationException {
+        if (this.key == null) return managerClass.newInstance();
+        else return VFac.build(this.key);
+    }
+
+    public Class<? extends Manager> getManagerClass() {
+        return managerClass;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isActive() {
+        if (getPriority() == Priority.ALWAYS_ON) return true;
+        if (getPriority() == Priority.DISABLED) return false;
+        ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("Config");
+        return file.getConfig().getBoolean("WarpSystem.Functions." + getName(), true);
+    }
+
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public enum Priority {
+        ALWAYS_ON,
+        HIGHEST,
+        HIGH,
+        LOW,
+        LOWEST,
+        DISABLED
+    }
+}

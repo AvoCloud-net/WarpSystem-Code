@@ -1,0 +1,171 @@
+package de.codingair.warpsystem.spigot.base.managers;
+
+import de.codingair.codingapi.files.ConfigFile;
+import de.codingair.codingapi.tools.io.JSON.JSON;
+import de.codingair.codingapi.tools.time.TimeMap;
+import de.codingair.warpsystem.base.features.cooldown.Cooldown;
+import de.codingair.warpsystem.base.features.cooldown.ICooldownManager;
+import de.codingair.warpsystem.base.transfer.handlers.CooldownDataPacketHandler;
+import de.codingair.warpsystem.base.transfer.handlers.CooldownPacketHandler;
+import de.codingair.warpsystem.base.transfer.packets.spigot.CooldownDataPacket;
+import de.codingair.warpsystem.base.transfer.packets.spigot.CooldownPacket;
+import de.codingair.warpsystem.spigot.api.StringFormatter;
+import de.codingair.warpsystem.spigot.base.WarpSystem;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+
+import java.util.*;
+
+public class CooldownManager implements ICooldownManager {
+    private static final TimeMap<Player, Integer> COOLDOWN_MESSAGE_BUFFER = new TimeMap<>();
+    //expired cooldown will be removed on access (get, save)
+    private final HashMap<UUID, HashMap<Integer, Long>> cache = new HashMap<>();
+    private ConfigFile file;
+
+    public void load() {
+        file = WarpSystem.getInstance().getFileManager().loadFile("Cooldown", "/Memory/");
+        FileConfiguration config = file.getConfig();
+
+        long time = config.getLong("Date", -1);
+        if (time == -1) return; //date does not exist -> stop here
+
+        for (String key : config.getKeys(false)) {
+            try {
+                UUID id = UUID.fromString(key);
+
+                List<?> data = file.getConfig().getList(key);
+                if (data != null) {
+                    for (Object s : data) {
+                        if (s instanceof Map) {
+                            try {
+                                Cooldown cooldown = new Cooldown(id);
+                                JSON json = new JSON((Map<?, ?>) s);
+                                cooldown.read(json, time);
+                                addCooldown(cooldown);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            } catch (IllegalArgumentException ignored) {
+                //might be the date tag
+            }
+        }
+
+        WarpSystem.getDataHandler().registerHandler(CooldownPacket.class, new CooldownPacketHandler(this));
+        WarpSystem.getDataHandler().registerHandler(CooldownDataPacket.class, new CooldownDataPacketHandler(this));
+    }
+
+    public void save() {
+        file.clearConfig();
+
+        FileConfiguration config = file.getConfig();
+        long time = System.currentTimeMillis();
+
+        List<Integer> originList = new ArrayList<>();
+        if (WarpSystem.getInstance().isOnProxy()) {
+            //add to avoid saving them here
+            originList.add(Origin.TeleportRequest.ordinal());
+            originList.add(Origin.TeleportCommand.ordinal());
+            originList.add(Origin.RandomTP.ordinal());
+        }
+
+        cache.entrySet().removeIf(entry -> {
+            if (entry == null) return true;
+
+            UUID id = entry.getKey();
+            if (id == null || entry.getValue() == null) return true;
+
+            List<JSON> configData = new ArrayList<>();
+            HashMap<Integer, Long> data = entry.getValue();
+
+            data.entrySet().removeIf(sub -> {
+                long cooldown = sub.getValue();
+
+                if (cooldown < System.currentTimeMillis()) return true;
+                if (originList.contains(sub.getKey())) return false;
+
+                JSON json = new JSON();
+                json.put("end", cooldown - time);
+                json.put("hash", sub.getKey());
+                configData.add(json);
+                return false;
+            });
+
+            if (!configData.isEmpty()) config.set(id.toString(), configData);
+            return data.isEmpty();
+        });
+
+        if (!cache.isEmpty()) config.set("Date", time);
+        file.saveConfig();
+    }
+
+    public long getCooldown(UUID uuid, int hashCode) {
+        HashMap<Integer, Long> data = cache.get(uuid);
+        if (data == null) return 0;
+
+        Long cooldown = data.get(hashCode);
+        if (cooldown != null && cooldown < System.currentTimeMillis()) {
+            data.remove(cooldown);
+            if (data.isEmpty()) cache.remove(uuid);
+            cooldown = null;
+        }
+
+        return cooldown == null ? 0 : cooldown;
+    }
+
+    public void register(Player player, Origin origin) {
+        long time = origin.getCooldown();
+        if (time == 0 || player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Cooldown)) return;
+        Cooldown cooldown = new Cooldown(WarpSystem.getInstance().getPlayerDataManager().get(player), System.currentTimeMillis() + time, origin.ordinal());
+
+        addCooldown(cooldown);
+        if (WarpSystem.getInstance().isOnProxy()) {
+            //upload to bungee
+            WarpSystem.getInstance().getDataHandler().send(new CooldownPacket(cooldown), player);
+        }
+    }
+
+    public void register(Player player, long time, int hash) {
+        if (player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Cooldown) || time == 0) return;
+        addCooldown(new Cooldown(WarpSystem.getInstance().getPlayerDataManager().get(player), System.currentTimeMillis() + time, hash));
+    }
+
+    public void addCooldown(Cooldown cooldown) {
+        if (cooldown.getRemainingTime() != 0) cache.computeIfAbsent(cooldown.getPlayer(), k -> new HashMap<>()).put(cooldown.getHashId(), cooldown.getEnd());
+    }
+
+    public long getRemainingCooldown(Player player, int hashCode) {
+        if (player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Cooldown)) {
+            cache.remove(WarpSystem.getInstance().getPlayerDataManager().get(player));
+            return 0;
+        }
+        return getRemainingCooldown(WarpSystem.getInstance().getPlayerDataManager().get(player), hashCode);
+    }
+
+    public long getRemainingCooldown(UUID uuid, int hashCode) {
+        long c = getCooldown(uuid, hashCode);
+        return Math.max(c - System.currentTimeMillis(), 0);
+    }
+
+    public boolean checkPlayer(Player player, Origin origin) {
+        return checkPlayer(player, origin.ordinal());
+    }
+
+    public boolean checkPlayer(Player player, int hash) {
+        long cooldown = getRemainingCooldown(player, hash);
+        if (cooldown > 0) {
+            Integer time = COOLDOWN_MESSAGE_BUFFER.get(player);
+            if (time != null && time == (int) (cooldown / 1000)) return true;
+            COOLDOWN_MESSAGE_BUFFER.put(player, (int) (cooldown / 1000), 1000);
+
+            player.sendMessage(Lang.getPrefix() + Lang.get("Cooldown_Info").replace("%TIME%", StringFormatter.convertInTimeFormat(cooldown + 1000)));
+            return true;
+        }
+
+        return false;
+    }
+}

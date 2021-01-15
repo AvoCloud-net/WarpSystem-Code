@@ -1,0 +1,5 @@
+name: WarpSystem
+author: CodingAir
+version: "${project.version}-free"
+description: WarpSystem
+main: de.codingair.warpsystem.bungee.base.WarpSystem
