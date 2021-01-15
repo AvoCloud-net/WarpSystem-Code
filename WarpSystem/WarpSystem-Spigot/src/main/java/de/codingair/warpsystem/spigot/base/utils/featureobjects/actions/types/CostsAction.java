@@ -3,6 +3,7 @@ package de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types;
 import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.ActionObject;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
@@ -26,7 +27,7 @@ public class CostsAction extends ActionObject<Double> {
 
     @Override
     public boolean perform(Player player) {
-        if (player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Costs)) return true;
+        if (player.hasPermission(Permissions.PERMISSION_ByPass_Teleport_Costs)) return true;
         if (Bank.adapter() == null) return true;
         if (WarpSystem.getInstance().getTeleportManager().isTeleporting(player)) return false;
 

@@ -6,7 +6,6 @@ import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.base.listeners.TeleportListener;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.SimulatedTeleportResult;
-import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportUtils;
 import io.papermc.lib.PaperLib;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;

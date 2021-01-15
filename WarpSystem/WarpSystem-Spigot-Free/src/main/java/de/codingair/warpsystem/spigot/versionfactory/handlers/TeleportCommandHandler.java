@@ -5,6 +5,7 @@ import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.base.transfer.utils.PlayerData;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
@@ -142,7 +143,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
     @Override
     public void tpa(Player player, String argument, Player other, boolean tpToSender) {
         if (other == null) {
-            if (WarpSystem.hasPermission(player, WarpSystem.PERMISSION_USE_TELEPORT_COMMAND_TP) && WarpSystem.getInstance().getPlayerDataManager().getCache(argument) != null) {
+            if (Permissions.hasPermission(player, Permissions.PERMISSION_USE_TELEPORT_COMMAND_TP) && WarpSystem.getInstance().getPlayerDataManager().getCache(argument) != null) {
                 TextComponent tc = new TextComponent(Lang.getPrefix() + "§7Teleporting on your entire BungeeCord is a §6premium feature§7!");
                 tc.setColor(net.md_5.bungee.api.ChatColor.GRAY);
                 Lang.PREMIUM_CHAT(tc, player, true);
@@ -169,7 +170,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
 
     @Override
     public void suggestTpa(Player player, String[] args, List<String> suggestions, boolean tpToSender) {
-        if (WarpSystem.hasPermission(player, WarpSystem.PERMISSION_USE_TELEPORT_COMMAND_TP)) {
+        if (Permissions.hasPermission(player, Permissions.PERMISSION_USE_TELEPORT_COMMAND_TP)) {
             WarpSystem.getInstance().getPlayerDataManager().getCached().filter(d -> !d.getName().equals(player.getName()) && !d.isVanished()).filter(d -> {
                 Player other = Bukkit.getPlayer(d.getName());
 

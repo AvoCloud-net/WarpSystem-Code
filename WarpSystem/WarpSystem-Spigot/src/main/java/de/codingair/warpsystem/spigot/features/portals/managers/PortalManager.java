@@ -13,6 +13,7 @@ import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableForSetupAssistant;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.v2.Teleport;
 import de.codingair.warpsystem.spigot.features.FeatureType;
@@ -164,7 +165,7 @@ public class PortalManager implements Manager {
         portal.getListeners().add(new de.codingair.warpsystem.spigot.features.portals.utils.PortalListener() {
             @Override
             public void onEnter(Player player) {
-                if (WarpSystem.hasPermission(player, WarpSystem.PERMISSION_MODIFY_PORTALS)) {
+                if (Permissions.hasPermission(player, Permissions.PERMISSION_MODIFY_PORTALS)) {
                     if (PortalManager.getInstance().isEditing(player) || API.getRemovable(player, PortalEditor.class) != null) {
                         player.setVelocity(player.getLocation().getDirection().normalize().multiply(-0.8));
                         return;
@@ -210,7 +211,7 @@ public class PortalManager implements Manager {
                     }
                 }
 
-                if (!WarpSystem.hasPermission(player, WarpSystem.PERMISSION_USE_PORTALS)) {
+                if (!Permissions.hasPermission(player, Permissions.PERMISSION_USE_PORTALS)) {
                     player.sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));
                     return;
                 }

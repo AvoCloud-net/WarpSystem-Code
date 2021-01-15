@@ -6,6 +6,7 @@ import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.base.transfer.packets.spigot.PrepareServerSwitchPacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.SimulatedTeleportResult;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.DestinationAdapter;
 import org.bukkit.entity.Player;
@@ -19,7 +20,7 @@ public class ServerAdapter extends DestinationAdapter {
             return false;
         }
 
-        WarpSystem.getDataHandler().send(new PrepareServerSwitchPacket(player.getName(), id, message, player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Max_Players)), player).thenAccept(packet -> {
+        WarpSystem.getDataHandler().send(new PrepareServerSwitchPacket(player.getName(), id, message, player.hasPermission(Permissions.PERMISSION_ByPass_Teleport_Max_Players)), player).thenAccept(packet -> {
             int result = packet.a();
             if (callback != null) {
                 if (result == 0) callback.accept(Result.SUCCESS);

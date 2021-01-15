@@ -5,6 +5,7 @@ import de.codingair.codingapi.server.commands.builder.CommandComponent;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.commands.WarpSystemBaseComponent;
 import de.codingair.warpsystem.spigot.features.spawn.managers.SpawnManager;
 import de.codingair.warpsystem.spigot.features.spawn.utils.Spawn;
@@ -18,7 +19,7 @@ import org.bukkit.entity.Player;
 
 public class CSpawn extends WSCommandBuilder {
     public CSpawn() {
-        super("Spawn", new WarpSystemBaseComponent(WarpSystem.PERMISSION_USE_SPAWN) {
+        super("Spawn", new WarpSystemBaseComponent(Permissions.PERMISSION_USE_SPAWN) {
             @Override
             public void unknownSubCommand(CommandSender sender, String label, String[] args) {
                 runCommand(sender, label, args);
@@ -30,7 +31,7 @@ public class CSpawn extends WSCommandBuilder {
 
                 if (spawn == null || !spawn.isValid()) sender.sendMessage(Lang.getPrefix() + Lang.get("WARP_DOES_NOT_EXISTS"));
                 else if (!spawn.switchServer() && (spawn.getUsage() == Spawn.Usage.FIRST_JOIN || spawn.getUsage() == Spawn.Usage.EVERY_JOIN || spawn.getUsage() == Spawn.Usage.DISABLED)) {
-                    if (WarpSystem.hasPermission(sender, WarpSystem.PERMISSION_MODIFY_SPAWN)) {
+                    if (Permissions.hasPermission(sender, Permissions.PERMISSION_MODIFY_SPAWN)) {
                         TextComponent tc = new TextComponent(Lang.getPrefix() + Lang.get("Hidden_command_info"));
                         tc.setColor(ChatColor.GRAY);
                         SimpleMessage message = new SimpleMessage(tc, WarpSystem.getInstance());
@@ -49,7 +50,7 @@ public class CSpawn extends WSCommandBuilder {
             }
         }.setOnlyPlayers(true));
 
-        getBaseComponent().addChild(new CommandComponent("firstjoin", WarpSystem.PERMISSION_MODIFY_SPAWN) {
+        getBaseComponent().addChild(new CommandComponent("firstjoin", Permissions.PERMISSION_MODIFY_SPAWN) {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 Spawn spawn = SpawnManager.getInstance().getSpawn();

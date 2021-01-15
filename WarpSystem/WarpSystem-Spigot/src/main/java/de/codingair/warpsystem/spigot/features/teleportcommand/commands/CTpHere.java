@@ -8,6 +8,7 @@ import de.codingair.warpsystem.base.features.TeleportTabCompleteKeys;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,7 +17,7 @@ import java.util.List;
 
 public class CTpHere extends WSCommandBuilder {
     public CTpHere(CTeleport teleportCommand) {
-        super("TpHere", new BaseComponent(WarpSystem.PERMISSION_USE_TELEPORT_COMMAND_TP) {
+        super("TpHere", new BaseComponent(Permissions.PERMISSION_USE_TELEPORT_COMMAND_TP) {
             @Override
             public void noPermission(CommandSender sender, String label, CommandComponent child) {
                 sender.sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));

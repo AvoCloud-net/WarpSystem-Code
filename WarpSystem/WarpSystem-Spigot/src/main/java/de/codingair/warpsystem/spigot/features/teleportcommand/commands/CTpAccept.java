@@ -4,6 +4,7 @@ import de.codingair.codingapi.server.commands.builder.special.MultiCommandCompon
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.commands.WarpSystemBaseComponent;
 import de.codingair.warpsystem.spigot.features.teleportcommand.Invitation;
 import de.codingair.warpsystem.spigot.features.teleportcommand.TeleportCommandManager;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class CTpAccept extends WSCommandBuilder {
     public CTpAccept() {
-        super("TpAccept", new WarpSystemBaseComponent(WarpSystem.PERMISSION_USE_TELEPORT_COMMAND_TP_ACCEPT) {
+        super("TpAccept", new WarpSystemBaseComponent(Permissions.PERMISSION_USE_TELEPORT_COMMAND_TP_ACCEPT) {
             @Override
             public void unknownSubCommand(CommandSender sender, String label, String[] args) {
                 sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /tpaccept <" + WarpSystem.opt().cmdArg() + "player" + WarpSystem.opt().cmdSug() + ">");

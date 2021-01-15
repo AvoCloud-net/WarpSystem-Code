@@ -13,6 +13,7 @@ import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableForSetupAssistant;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.ProxyFeature;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
@@ -144,7 +145,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     public int getMaxTeleportAmount(Player player) {
         if (player.isOp()) return -1;
 
-        if (WarpSystem.PERMISSION_USE_RANDOM_TELEPORTER != null) {
+        if (Permissions.PERMISSION_USE_RANDOM_TELEPORTER != null) {
             int amount = 0;
             for (PermissionAttachmentInfo effectivePermission : player.getEffectivePermissions()) {
                 if (!effectivePermission.getValue()) continue;
@@ -173,7 +174,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     public int getFreeTeleportAmount(Player player) {
         if (player.isOp()) return -1;
 
-        if (WarpSystem.PERMISSION_USE_RANDOM_TELEPORTER != null) {
+        if (Permissions.PERMISSION_USE_RANDOM_TELEPORTER != null) {
             int amount = 0;
             for (PermissionAttachmentInfo effectivePermission : player.getEffectivePermissions()) {
                 if (!effectivePermission.getValue()) continue;

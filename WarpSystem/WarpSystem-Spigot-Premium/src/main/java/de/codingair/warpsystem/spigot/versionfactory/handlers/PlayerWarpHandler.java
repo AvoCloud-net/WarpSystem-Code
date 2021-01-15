@@ -12,6 +12,7 @@ import de.codingair.warpsystem.base.transfer.packets.spigot.RegisterServerForPla
 import de.codingair.warpsystem.base.transfer.packets.spigot.utils.PlayerWarpData;
 import de.codingair.warpsystem.spigot.api.StringFormatter;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.features.playerwarps.commands.CPlayerWarp;
 import de.codingair.warpsystem.spigot.features.playerwarps.commands.CPlayerWarpReference;
 import de.codingair.warpsystem.spigot.features.playerwarps.commands.CPlayerWarps;
@@ -43,7 +44,7 @@ public class PlayerWarpHandler extends PlayerWarpManager {
     public int getMaxAmount(Player player) {
         if (player.isOp()) return -1;
 
-        if (WarpSystem.PERMISSION_USE_PLAYER_WARPS != null) {
+        if (Permissions.PERMISSION_USE_PLAYER_WARPS != null) {
             int amount = 0;
             for (PermissionAttachmentInfo effectivePermission : player.getEffectivePermissions()) {
                 if (!effectivePermission.getValue()) continue;

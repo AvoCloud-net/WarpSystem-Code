@@ -10,6 +10,7 @@ import de.codingair.codingapi.tools.Callback;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.ProxyFeature;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
@@ -28,7 +29,7 @@ import java.util.logging.Level;
 
 public class CGlobalWarps extends WSCommandBuilder implements ProxyFeature {
     public CGlobalWarps() {
-        super("GlobalWarps", new BaseComponent(WarpSystem.PERMISSION_MODIFY_GLOBAL_WARPS) {
+        super("GlobalWarps", new BaseComponent(Permissions.PERMISSION_MODIFY_GLOBAL_WARPS) {
             @Override
             public void noPermission(CommandSender sender, String label, CommandComponent child) {
                 sender.sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));

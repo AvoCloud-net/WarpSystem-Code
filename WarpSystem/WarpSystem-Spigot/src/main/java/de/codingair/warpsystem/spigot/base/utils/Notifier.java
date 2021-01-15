@@ -16,7 +16,7 @@ public class Notifier {
                 notifyPlayers(p);
             }
         } else {
-            if (player.hasPermission(WarpSystem.PERMISSION_NOTIFY) && WarpSystem.updateAvailable) {
+            if (player.hasPermission(Permissions.PERMISSION_NOTIFY) && WarpSystem.updateAvailable) {
                 String v = WarpSystem.getInstance().getUpdateNotifier().getVersion();
                 if (!v.startsWith("v")) v = "v" + v;
 

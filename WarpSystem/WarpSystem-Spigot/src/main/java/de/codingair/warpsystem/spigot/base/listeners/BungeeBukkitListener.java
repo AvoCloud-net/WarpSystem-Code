@@ -4,6 +4,7 @@ import de.codingair.codingapi.tools.time.TimeMap;
 import de.codingair.warpsystem.base.transfer.packets.proxy.InitialPacket;
 import de.codingair.warpsystem.base.transfer.packets.proxy.PrepareLoginMessagePacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.transfer.handlers.InitialPacketHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,7 +28,7 @@ public class BungeeBukkitListener implements Listener {
         if (message != null) e.getPlayer().sendMessage(message);
 
         Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
-            if (notice != null && (e.getPlayer().hasPermission(WarpSystem.PERMISSION_NOTIFY) || e.getPlayer().isOp())) e.getPlayer().sendMessage(notice);
+            if (notice != null && (e.getPlayer().hasPermission(Permissions.PERMISSION_NOTIFY) || e.getPlayer().isOp())) e.getPlayer().sendMessage(notice);
         }, 20 * 4L);
     }
 

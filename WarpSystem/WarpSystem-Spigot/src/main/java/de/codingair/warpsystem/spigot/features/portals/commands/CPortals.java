@@ -9,6 +9,7 @@ import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.features.portals.guis.PortalEditor;
 import de.codingair.warpsystem.spigot.features.portals.managers.PortalManager;
 import de.codingair.warpsystem.spigot.features.portals.utils.Portal;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class CPortals extends WSCommandBuilder {
     public CPortals() {
-        super("Portals", new BaseComponent(WarpSystem.PERMISSION_MODIFY_PORTALS) {
+        super("Portals", new BaseComponent(Permissions.PERMISSION_MODIFY_PORTALS) {
             @Override
             public void noPermission(CommandSender sender, String label, CommandComponent child) {
                 sender.sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));

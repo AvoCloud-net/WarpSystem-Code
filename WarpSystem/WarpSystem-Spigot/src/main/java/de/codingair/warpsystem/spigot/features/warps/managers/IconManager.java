@@ -11,6 +11,7 @@ import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableForSetupAssistant;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types.WarpAction;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.DestinationType;
@@ -137,7 +138,7 @@ public class IconManager implements Manager {
             Bukkit.getPluginManager().registerEvents(new Listener() {
                 @EventHandler
                 public void onJoin(PlayerJoinEvent e) {
-                    if (e.getPlayer().hasPermission(WarpSystem.PERMISSION_ADMIN)) {
+                    if (e.getPlayer().hasPermission(Permissions.PERMISSION_ADMIN)) {
                         Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
                             e.getPlayer().sendMessage(" ");
                             e.getPlayer().sendMessage(Lang.getPrefix() + "§4Warning! §cCouldn't load all icons successfully.");
@@ -149,7 +150,7 @@ public class IconManager implements Manager {
             }, WarpSystem.getInstance());
 
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                if (onlinePlayer.hasPermission(WarpSystem.PERMISSION_ADMIN)) {
+                if (onlinePlayer.hasPermission(Permissions.PERMISSION_ADMIN)) {
                     Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
                         onlinePlayer.sendMessage(" ");
                         onlinePlayer.sendMessage(Lang.getPrefix() + "§4Warning! §cCouldn't load all icons successfully.");

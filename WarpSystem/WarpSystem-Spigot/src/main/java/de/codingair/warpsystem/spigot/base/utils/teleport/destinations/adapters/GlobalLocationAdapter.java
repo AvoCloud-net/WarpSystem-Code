@@ -9,8 +9,8 @@ import de.codingair.warpsystem.base.transfer.packets.general.PrepareCoordination
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.listeners.TeleportListener;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.SimulatedTeleportResult;
-import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportUtils;
 import io.papermc.lib.PaperLib;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -81,7 +81,7 @@ public class GlobalLocationAdapter extends LocationAdapter implements Serializab
         } else {
             PrepareCoordinationTeleportPacket packet = new PrepareCoordinationTeleportPacket(player.getName(), server, location.getWorldName(), displayName, message,
                     location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch(),
-                    costs, player.hasPermission(WarpSystem.PERMISSION_ByPass_Teleport_Max_Players));
+                    costs, player.hasPermission(Permissions.PERMISSION_ByPass_Teleport_Max_Players));
 
             WarpSystem.getDataHandler().send(packet, player).thenAccept(result -> {
                 if (callback == null) return;

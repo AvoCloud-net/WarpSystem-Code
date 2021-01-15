@@ -4,6 +4,7 @@ import de.codingair.codingapi.server.commands.builder.special.NaturalCommandComp
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
 import de.codingair.warpsystem.spigot.versionfactory.VFac;
@@ -26,7 +27,7 @@ public class RTP_Go_Command extends NaturalCommandComponent {
     }
 
     private boolean checkOther(CommandSender sender) {
-        return sender.hasPermission(WarpSystem.PERMISSION_RANDOM_TELEPORT_SELECTION_OTHER);
+        return sender.hasPermission(Permissions.PERMISSION_RANDOM_TELEPORT_SELECTION_OTHER);
     }
 
     @Override

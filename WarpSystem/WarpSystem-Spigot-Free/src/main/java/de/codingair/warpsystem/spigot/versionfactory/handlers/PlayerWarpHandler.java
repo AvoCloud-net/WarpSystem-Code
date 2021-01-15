@@ -14,6 +14,7 @@ import de.codingair.warpsystem.spigot.api.StringFormatter;
 import de.codingair.warpsystem.spigot.api.events.PlayerFinalJoinEvent;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.features.playerwarps.commands.CPlayerWarp;
 import de.codingair.warpsystem.spigot.features.playerwarps.commands.CPlayerWarpReference;
 import de.codingair.warpsystem.spigot.features.playerwarps.commands.CPlayerWarps;
@@ -57,7 +58,7 @@ public class PlayerWarpHandler extends PlayerWarpManager {
     public int getMaxAmount(Player player) {
         if (player.isOp()) return 3;
 
-        if (WarpSystem.PERMISSION_USE_PLAYER_WARPS != null) {
+        if (Permissions.PERMISSION_USE_PLAYER_WARPS != null) {
             int amount = 0;
             for (PermissionAttachmentInfo effectivePermission : player.getEffectivePermissions()) {
                 if (!effectivePermission.getValue()) continue;
@@ -318,7 +319,7 @@ public class PlayerWarpHandler extends PlayerWarpManager {
                 money += warp.getInactiveSales() * warp.getTeleportCosts();
             }
 
-            if (money > 0 || !notify.isEmpty() || (e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS) && !((PlayerWarpHandler) PlayerWarpManager.getManager()).hideLimitInfo)) {
+            if (money > 0 || !notify.isEmpty() || (e.getPlayer().hasPermission(Permissions.PERMISSION_MODIFY_PLAYER_WARPS) && !((PlayerWarpHandler) PlayerWarpManager.getManager()).hideLimitInfo)) {
                 double finalMoney = money;
                 Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
                     if (!notify.isEmpty()) {
@@ -344,7 +345,7 @@ public class PlayerWarpHandler extends PlayerWarpManager {
                     }
 
                     Player player = e.getPlayer();
-                    if (player.hasPermission(WarpSystem.PERMISSION_MODIFY_PLAYER_WARPS) && !((PlayerWarpHandler) PlayerWarpManager.getManager()).hideLimitInfo) {
+                    if (player.hasPermission(Permissions.PERMISSION_MODIFY_PLAYER_WARPS) && !((PlayerWarpHandler) PlayerWarpManager.getManager()).hideLimitInfo) {
                         SimpleMessage message = new SimpleMessage(Lang.getPrefix() + "§7PlayerWarps are §climited §7to §c3 warps §7per §7player. §8[", WarpSystem.getInstance());
 
                         TextComponent upgrade = new TextComponent("§6§nPremium");

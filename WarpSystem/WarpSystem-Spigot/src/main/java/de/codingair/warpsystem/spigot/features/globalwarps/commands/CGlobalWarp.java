@@ -7,6 +7,7 @@ import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.managers.TeleportManager;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.ProxyFeature;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
@@ -22,7 +23,7 @@ import java.util.logging.Level;
 
 public class CGlobalWarp extends WSCommandBuilder implements ProxyFeature {
     public CGlobalWarp() {
-        super("GlobalWarp", new BaseComponent(WarpSystem.PERMISSION_USE_GLOBAL_WARPS) {
+        super("GlobalWarp", new BaseComponent(Permissions.PERMISSION_USE_GLOBAL_WARPS) {
             @Override
             public void noPermission(CommandSender sender, String label, CommandComponent child) {
                 sender.sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));
@@ -77,7 +78,7 @@ public class CGlobalWarp extends WSCommandBuilder implements ProxyFeature {
             }
         });
 
-        getBaseComponent().getChild(null).addChild(new MultiCommandComponent(WarpSystem.PERMISSION_GLOBAL_WARPS_DIRECT_TELEPORT) {
+        getBaseComponent().getChild(null).addChild(new MultiCommandComponent(Permissions.PERMISSION_GLOBAL_WARPS_DIRECT_TELEPORT) {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
                 for (Player player : Bukkit.getOnlinePlayers()) {

@@ -7,6 +7,7 @@ import de.codingair.codingapi.server.sounds.Sound;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.features.FeatureType;
 import de.codingair.warpsystem.spigot.features.warps.guis.GWarps;
 import de.codingair.warpsystem.spigot.features.warps.managers.IconManager;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class CWarps extends WSCommandBuilder {
     public CWarps() {
-        super("Warps", new BaseComponent(WarpSystem.PERMISSION_USE_WARP_GUI) {
+        super("Warps", new BaseComponent(Permissions.PERMISSION_USE_WARP_GUI) {
             @Override
             public void noPermission(CommandSender sender, String label, CommandComponent child) {
                 sender.sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));
@@ -61,7 +62,7 @@ public class CWarps extends WSCommandBuilder {
                 if (category != null && category.hasPermission() && !sender.hasPermission(category.getPermission())) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Player_Cannot_Use_Page"));
                     return false;
-                } else if (category == null && sender.hasPermission(WarpSystem.PERMISSION_WARP_GUI_OTHER)) {
+                } else if (category == null && sender.hasPermission(Permissions.PERMISSION_WARP_GUI_OTHER)) {
                     Player other = Bukkit.getPlayer(argument);
 
                     if (other == null) {
@@ -77,7 +78,7 @@ public class CWarps extends WSCommandBuilder {
             }
         });
 
-        getComponent((String) null).addChild(new MultiCommandComponent(WarpSystem.PERMISSION_WARP_GUI_OTHER) {
+        getComponent((String) null).addChild(new MultiCommandComponent(Permissions.PERMISSION_WARP_GUI_OTHER) {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
             }
