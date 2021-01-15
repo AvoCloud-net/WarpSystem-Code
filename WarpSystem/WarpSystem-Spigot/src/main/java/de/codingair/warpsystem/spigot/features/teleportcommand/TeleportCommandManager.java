@@ -31,7 +31,7 @@ import java.util.*;
 
 @AvailableForSetupAssistant (type = "TeleportCommands", config = "Config")
 @Function (name = "Enabled", defaultValue = "true", configPath = "WarpSystem.Functions.TeleportCommand", clazz = Boolean.class)
-@Function (name = "BungeeCord", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.BungeeCord", clazz = Boolean.class)
+@Function (name = "Proxy", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.Proxy", clazz = Boolean.class)
 @Function (name = "Teleport requests costs", defaultValue = "0", configPath = "WarpSystem.TeleportCommands.TeleportRequests.Teleport_Costs", clazz = Double.class)
 @Function (name = "Teleport requests expire delay (seconds)", defaultValue = "30", configPath = "WarpSystem.TeleportCommands.TeleportRequests.ExpireDelay", clazz = Integer.class)
 @Function (name = "Back", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.Back.Enabled", clazz = Boolean.class)
@@ -101,7 +101,7 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
         if (file.getConfig().getBoolean("WarpSystem.Functions.TeleportCommand", true)) {
             expireDelay = file.getConfig().getInt("WarpSystem.TeleportCommands.TeleportRequests.ExpireDelay", 30);
             tpaCosts = file.getConfig().getInt("WarpSystem.TeleportCommands.TeleportRequests.Teleport_Costs", 0);
-            proxy = file.getConfig().getBoolean("WarpSystem.TeleportCommands.BungeeCord", true);
+            proxy = file.getConfig().getBoolean("WarpSystem.TeleportCommands.Proxy", true);
 
             if (file.getConfig().getBoolean("WarpSystem.TeleportCommands.Tp", true)) {
                 (tp = new CTeleport()).register();
@@ -165,8 +165,11 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
     @Override
     public void onConnect() {
         TeleportCommandOptionsPacket packet = new TeleportCommandOptionsPacket(back != null, tp != null, tpAll != null, tpToggle != null, tpa != null, tpaHere != null, tpaAll != null, tpaToggle != null);
+
         if (proxy) WarpSystem.getDataHandler().send(packet);
-        else this.serverOptions.put(WarpSystem.getInstance().getCurrentServer().toLowerCase(), packet.getOptions());
+        else WarpSystem.getDataHandler().send(new TeleportCommandOptionsPacket()); //tell our proxy that we disabled proxy wide transportations
+
+        this.serverOptions.put(WarpSystem.getInstance().getCurrentServer().toLowerCase(), packet.getOptions()); //save options for this server
     }
 
     @Override

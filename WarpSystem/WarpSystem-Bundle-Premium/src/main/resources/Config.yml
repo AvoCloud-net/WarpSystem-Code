@@ -18,8 +18,8 @@ WarpSystem:
       #Cancels teleports from other plugins and replaces them with own teleport procedures to add teleport delays, particles, sounds and potion effects
       Teleport_Interceptions: false
 
-  BungeeCord:
-    #If your BungeeCord has a newer jar than your Spigot, there is an option to deliver this jar directly to your Spigot without FTP access.
+  Proxy:
+    #If your proxy has a newer jar than your Spigot, there is an option to deliver this jar directly to your Spigot without FTP access.
     #  Does not work on Windows or Mac.
     #  Works only if a player is on your target Spigot server.
     #Values: 0=Disabled, 1=Ask_on_Enable, 2=Automatically
@@ -137,8 +137,8 @@ WarpSystem:
     TpaAll: true
     TpaToggle: true
     #Tpa, TpaHere& TpaAll: |true: Players on this server can receive/send teleport requests from/to other servers. |false: Players can only send TeleportRequests to players on this server
-    #TpAll: Only players from servers with 'BungeeCord: true' will be teleported to you.
-    BungeeCord: true
+    #TpAll: Only players from servers with 'Proxy: true' will be teleported to you.
+    Proxy: true
     TeleportRequests:
       #Teleport costs for a transportation via tpa or tpaHere; The teleported player has to pay
       Teleport_Costs: 0

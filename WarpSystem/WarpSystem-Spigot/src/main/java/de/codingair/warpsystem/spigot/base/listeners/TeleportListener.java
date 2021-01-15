@@ -9,6 +9,7 @@ import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.managers.TeleportManager;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
+import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportUtils;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.EmptyAdapter;
 import de.codingair.warpsystem.spigot.base.utils.teleport.v2.Teleport;
@@ -74,7 +75,7 @@ public class TeleportListener implements Listener {
 
         if (options != null) {
             teleport.invalidate(e.getPlayer().getName().toLowerCase());
-            org.bukkit.Location l = options.buildLocation();
+            org.bukkit.Location l = TeleportUtils.prepareLocation(options.buildLocation(), e.getPlayer());
 
             if (l == null || l.getWorld() == null) {
                 String world = l instanceof Location ? ((Location) l).getWorldName() : null;

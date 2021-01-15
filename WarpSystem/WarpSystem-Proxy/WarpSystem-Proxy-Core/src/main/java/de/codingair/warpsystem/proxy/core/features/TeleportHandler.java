@@ -30,11 +30,11 @@ public class TeleportHandler implements Manager {
     public void destroy() {
     }
 
-    public void registerOptions(Server info, TeleportCommandOptionsPacket options) {
-        this.commandOptions.put(info, options.getOptions());
+    public void registerOptions(Server server, TeleportCommandOptionsPacket options) {
+        this.commandOptions.put(server, options.getOptions());
 
-        options.setServer(info.getName());
-        Core.getServerManager().getOnlineServer().forEach(s -> Core.getPlugin().dataHandler().send(options, s, Direction.DOWN));
+        options.setServer(server.getName());
+        Core.getServerManager().getOnlineServer().filter(s -> !s.equals(server)).forEach(s -> Core.getPlugin().dataHandler().send(options, s, Direction.DOWN));
     }
 
     public TeleportCommandOptions getOptions(Server info) {
