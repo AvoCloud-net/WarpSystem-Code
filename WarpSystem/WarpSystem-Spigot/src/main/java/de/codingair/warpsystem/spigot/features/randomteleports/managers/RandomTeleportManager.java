@@ -45,13 +45,18 @@ import java.util.*;
 @Function (name = "Biome filter", defaultValue = "false", configPath = "RandomTeleport.Support.Biome.Enabled", description = "§eBiomes §7» §6RTPConfig.yml", clazz = Boolean.class)
 @Function (name = "Max uses", defaultValue = "4", configPath = "RandomTeleport.Max", description = "§cONLY §rif permissions in the main §eConfig.yml §rare §cdisabled", clazz = Integer.class)
 @Function (name = "Free uses", defaultValue = "1", configPath = "RandomTeleport.Free", description = "§cONLY §rif permissions in the main §eConfig.yml §rare §cdisabled", clazz = Integer.class)
+@Function (name = "Concurrent teleports", defaultValue = "5", configPath = "RandomTeleport.Concurrent_Teleports", description = "§7Max amount of random teleports running §cconcurrently§7. Teleport will be queued when limit is reached.", clazz = Integer.class)
 public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     protected final List<Material> materialBlackList = new ArrayList<>();
     protected final List<WorldOption> worldOptions = new ArrayList<>();
-    protected final HashMap<Player, RandomLocationCalculator> searching = new HashMap<>();
     protected final HashMap<String, List<String>> worlds = new HashMap<>();
     protected final List<Location> interactBlocks = new ArrayList<>();
     protected final InteractListener listener = new InteractListener();
+
+    protected final HashMap<Player, RandomLocationCalculator> calculators = new HashMap<>();
+    protected final LinkedList<RandomLocationCalculator> queue = new LinkedList<>();
+    protected final Set<RandomLocationCalculator> running = new HashSet<>();
+
     protected boolean buyable;
     protected double costs;
     protected boolean protectedRegions;
@@ -61,6 +66,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     protected int endHeight;
     protected int max;
     protected int free;
+    protected int concurrent;
 
     public static RandomTeleportManager getInstance() {
         return WarpSystem.getInstance().getDataManager().getManager(FeatureType.RANDOM_TELEPORTS);
@@ -72,7 +78,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
         new RTPTagConverter_v4_2_6();
     }
 
-    public abstract RandomLocationCalculator newCalculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<Location> callback);
+    public abstract RandomLocationCalculator newCalculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<RandomLocationCalculator> callback);
 
     @Override
     public void save(boolean saver) {
@@ -226,21 +232,40 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
         org.bukkit.Location start = new Location();
         option.prepareStart(start, target);
 
-        RandomLocationCalculator t = newCalculator(player, start, option.getMin(), option.getMax(), new Callback<Location>() {
+        RandomLocationCalculator t = newCalculator(player, start, option.getMin(), option.getMax(), new Callback<RandomLocationCalculator>() {
             @Override
-            public void accept(Location loc) {
-                searching.remove(player);
+            public void accept(RandomLocationCalculator t) {
+                Location result = t.getResult();
 
-                if (loc != null) {
-                    loc.setYaw(player.getLocation().getYaw());
-                    loc.setPitch(player.getLocation().getPitch());
+                synchronized (running) {
+                    running.remove(t);
+
+                    RandomLocationCalculator next = queue.poll();
+                    if(next != null) {
+                        running.add(next);
+                        Bukkit.getScheduler().runTaskAsynchronously(WarpSystem.getInstance(), next);
+                    }
                 }
 
-                callback.accept(loc);
+                if (result != null) {
+                    result.setYaw(player.getLocation().getYaw());
+                    result.setPitch(player.getLocation().getPitch());
+                }
+
+                calculators.remove(player);
+                callback.accept(result);
             }
         });
-        searching.put(player, t);
-        Bukkit.getScheduler().runTaskAsynchronously(WarpSystem.getInstance(), t);
+
+        calculators.put(player, t); //register
+
+        synchronized (running) {
+            if(running.size() >= concurrent) queue.add(t);
+            else {
+                running.add(t);
+                Bukkit.getScheduler().runTaskAsynchronously(WarpSystem.getInstance(), t);
+            }
+        }
     }
 
     public void tryToTeleport(String targetPlayer, World target, boolean force, Callback<Integer> callback) {
@@ -252,9 +277,9 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
         }
 
         RandomLocationCalculator c;
-        if ((c = searching.get(player)) != null) {
+        if ((c = calculators.get(player)) != null) {
             if (System.currentTimeMillis() - c.getLastReaction() > 5000) {
-                searching.remove(player);
+                calculators.remove(player);
                 player.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_No_Location_Found"));
             } else player.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Already_Searching"));
 

@@ -32,7 +32,6 @@ public class RandomTeleportHandler extends RandomTeleportManager {
 
     @Override
     public boolean load(boolean loader) {
-        if (WarpSystem.getInstance().getFileManager().getFile("PlayData") == null) WarpSystem.getInstance().getFileManager().loadFile("PlayData", "/Memory/");
         ConfigFile rtpFile = WarpSystem.getInstance().getFileManager().loadFile("RTPConfig", "/");
         UTFConfig config = rtpFile.getConfig();
 
@@ -40,6 +39,8 @@ public class RandomTeleportHandler extends RandomTeleportManager {
 
         this.buyable = config.getBoolean("RandomTeleport.Buyable.Enabled", true);
         this.costs = config.getDouble("RandomTeleport.Buyable.Costs", 500.0);
+
+        this.concurrent = config.getInt("RandomTeleport.Concurrent_Teleports", 5);
 
         this.max = config.getInt("RandomTeleport.Max", 4);
         this.free = config.getInt("RandomTeleport.Free", 1);
@@ -144,7 +145,7 @@ public class RandomTeleportHandler extends RandomTeleportManager {
     }
 
     @Override
-    public RandomLocationCalculator newCalculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<Location> callback) {
+    public RandomLocationCalculator newCalculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<RandomLocationCalculator> callback) {
         return new Calculator(player, location, minRange, maxRange, callback);
     }
 
@@ -153,14 +154,14 @@ public class RandomTeleportHandler extends RandomTeleportManager {
     }
 
     public static class Calculator extends RandomLocationCalculator {
-        public Calculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<Location> callback) {
+        public Calculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<RandomLocationCalculator> callback) {
             super(player, location, minRange, maxRange, callback);
         }
 
-        public boolean correct(Location location, boolean safety) throws InterruptedException {
+        public boolean correct(Location location, boolean safety) {
             if (RandomTeleportManager.getInstance().getBiomeList() != null && !RandomTeleportManager.getInstance().getBiomeList().contains(location.getWorld().getBiome(location.getBlockX(), location.getBlockZ())))
                 return false;
-            if (RandomTeleportManager.getInstance().isProtectedRegions() && isProtected(location)) return false;
+            if (RandomTeleportManager.getInstance().isProtectedRegions() && isProtected(location).join()) return false;
             if (((RandomTeleportHandler) RandomTeleportManager.getInstance()).isWorldBorder() && !isInsideOfWorldBorder(location)) return false;
             if (safety) {
                 Location above = location.clone();
@@ -168,14 +169,13 @@ public class RandomTeleportHandler extends RandomTeleportManager {
                 Location below = location.clone();
                 below.setY(below.getY() - 1);
 
-
-                return isSafeLocation(location) && isSafe(above) && isSafe(location) && isSafe(below);
+                return isEnoughSpace(location) && isSafe(above) && isSafe(location) && isSafe(below);
             } else return true;
         }
 
         private boolean isInsideOfWorldBorder(Location location) {
             WorldBorder border = location.getWorld().getWorldBorder();
-            return border == null || Area.isInArea(location, border.getCenter(), border.getSize() / 2, false, 0);
+            return Area.isInArea(location, border.getCenter(), border.getSize() / 2, false, 0);
         }
     }
 }
