@@ -38,12 +38,15 @@ public class SignListener implements Listener {
     public void onInteract(PlayerInteractEvent e) {
         if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
 
-        if (e.getClickedBlock() == null || e.getClickedBlock().getState() instanceof Sign) {
-            Sign s = e.getClickedBlock() == null ? null : (Sign) e.getClickedBlock().getState();
+        if (e.getClickedBlock() != null && e.getClickedBlock().getState() instanceof Sign) {
+            Sign s = (Sign) e.getClickedBlock().getState();
 
             WarpSign sign = manager.getByLocation(s.getLocation());
             if (sign != null) {
-                if (!e.getPlayer().isSneaking() && e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_WARP_SIGNS) && e.getPlayer().getInventory().getItem(e.getPlayer().getInventory().getHeldItemSlot()).getType().name().toLowerCase().contains("sign")) {
+                ItemStack held = e.getPlayer().getInventory().getItem(e.getPlayer().getInventory().getHeldItemSlot());
+
+                if (!e.getPlayer().isSneaking() && e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_WARP_SIGNS) &&
+                        held != null && held.getType().name().toLowerCase().contains("sign")) {
                     sign.editMode();
                     sign.setEditing(true);
                     Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> new WarpSignGUI(e.getPlayer(), sign).open(), 1L);
@@ -62,28 +65,24 @@ public class SignListener implements Listener {
 
     @EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onBreak(BlockBreakEvent e) {
-        try {
-            Sign s = e.getBlock() == null ? null : (Sign) e.getBlock().getState();
-            if (s == null) return;
-            WarpSign sign = manager.getByLocation(s.getLocation());
-            if (sign == null) return;
+        Sign s = (Sign) e.getBlock().getState();
+        WarpSign sign = manager.getByLocation(s.getLocation());
+        if (sign == null) return;
 
-            if (!e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_WARP_SIGNS)) {
-                e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));
-                e.setCancelled(true);
-            } else if (!e.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
-                e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Creative_Mode_Needed"));
-                e.setCancelled(true);
-            } else {
-                for (WarpSignGUI gui : API.getRemovables(WarpSignGUI.class)) {
-                    gui.close();
-                    gui.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("WarpSign_Removed"));
-                }
-
-                manager.removeWarpSign(sign);
-                e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("WarpSign_Removed"));
+        if (!e.getPlayer().hasPermission(WarpSystem.PERMISSION_MODIFY_WARP_SIGNS)) {
+            e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));
+            e.setCancelled(true);
+        } else if (!e.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+            e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Creative_Mode_Needed"));
+            e.setCancelled(true);
+        } else {
+            for (WarpSignGUI gui : API.getRemovables(WarpSignGUI.class)) {
+                gui.close();
+                gui.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("WarpSign_Removed"));
             }
-        } catch (Exception ignored) {
+
+            manager.removeWarpSign(sign);
+            e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("WarpSign_Removed"));
         }
     }
 
