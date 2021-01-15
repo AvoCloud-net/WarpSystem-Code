@@ -145,6 +145,8 @@ public class UpdateNotifier {
             }
 
             String current = WarpSystem.getInstance().getDescription().getVersion().replaceAll("_Hotfix.*", "");
+            if (current.startsWith("v")) current = current.replaceFirst("v", "");
+
             needsUpdate = !current.equals(version);
             if (needsUpdate) checkUpdateInfo();
             return needsUpdate && !notStable();
