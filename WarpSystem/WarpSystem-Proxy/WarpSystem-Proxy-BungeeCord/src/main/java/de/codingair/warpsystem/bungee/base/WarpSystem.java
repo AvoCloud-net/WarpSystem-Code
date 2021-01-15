@@ -27,6 +27,7 @@ import de.codingair.warpsystem.proxy.core.utils.ScheduleTask;
 import de.codingair.warpsystem.proxy.core.utils.Server;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -248,7 +249,9 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
 
     @Override
     public @Nullable Player getPlayer(String name) {
-        return new BungeePlayer(getProxy().getPlayer(name));
+        ProxiedPlayer p = getProxy().getPlayer(name);
+        if(p != null) return new BungeePlayer(p);
+        else return null;
     }
 
     @Override

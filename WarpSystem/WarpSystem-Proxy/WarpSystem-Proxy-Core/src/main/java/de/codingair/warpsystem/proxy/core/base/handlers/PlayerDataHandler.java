@@ -27,7 +27,7 @@ public class PlayerDataHandler {
     }
 
     protected void onServerProvideOptions(Server s) {
-        sendNames(s);
+        sendData(s);
     }
 
     protected void onConnect(Player player, Server server) {
@@ -50,7 +50,7 @@ public class PlayerDataHandler {
         Core.getServerManager().getOnlineServer().forEach(s -> Core.getPlugin().dataHandler().send(new UpdatePlayerDataPacket(player.getName()).setVanished(false), s, Direction.DOWN));
     }
 
-    protected void sendNames(Server info) {
+    private void sendData(Server info) {
         for (Collection<PlayerData> names : Iterables.partition(cached.values(), 256)) {
             Core.getPlugin().dataHandler().send(new ProvidePlayerDataPacket(names), info, Direction.DOWN);
         }

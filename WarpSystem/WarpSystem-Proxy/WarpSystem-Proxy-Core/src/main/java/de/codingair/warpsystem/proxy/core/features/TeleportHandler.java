@@ -35,6 +35,7 @@ public class TeleportHandler implements Manager {
 
         options.setServer(server.getName());
         Core.getServerManager().getOnlineServer().filter(s -> !s.equals(server)).forEach(s -> Core.getPlugin().dataHandler().send(options, s, Direction.DOWN));
+        commandOptions.entrySet().stream().filter(e -> !e.getKey().equals(server)).forEach(e -> Core.getPlugin().dataHandler().send(new TeleportCommandOptionsPacket(e.getKey().getName(), e.getValue()), server, Direction.DOWN));
     }
 
     public TeleportCommandOptions getOptions(Server info) {

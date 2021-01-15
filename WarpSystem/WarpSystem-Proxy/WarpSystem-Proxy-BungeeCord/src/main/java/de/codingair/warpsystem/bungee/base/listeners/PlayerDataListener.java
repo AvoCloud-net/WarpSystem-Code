@@ -29,20 +29,16 @@ public class PlayerDataListener extends PlayerDataHandler implements Listener {
     }
 
     @EventHandler
-    public void onConnect(PlayerDisconnectEvent e) {
+    public void onDisconnect(PlayerDisconnectEvent e) {
         super.playerDisconnect(new BungeePlayer(e.getPlayer()));
     }
 
     @EventHandler
-    public void onQuit(ServerSwitchEvent e) {
+    public void onSwitch(ServerSwitchEvent e) {
         super.onSwitch(new BungeePlayer(e.getPlayer()));
     }
 
     public void onUpdate(UpdatePlayerDataPacket packet, ServerInfo info) {
         super.onUpdate(packet, new BungeeServer(info));
-    }
-
-    public boolean isVanished(ProxiedPlayer player) {
-        return super.isVanished(new BungeePlayer(player));
     }
 }
