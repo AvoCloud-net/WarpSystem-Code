@@ -1,8 +1,8 @@
 package de.codingair.warpsystem.bungee.base.commands;
 
 import de.codingair.warpsystem.base.transfer.utils.serializeable.ServerOptions;
-import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.Lang;
+import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.utils.BungeeServer;
 import de.codingair.warpsystem.proxy.core.base.Permissions;
 import de.codingair.warpsystem.proxy.core.base.handlers.JarManager;

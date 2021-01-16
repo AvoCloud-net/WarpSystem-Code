@@ -21,24 +21,24 @@ public class ChatInputManager extends ChatInputHandler {
         WarpSystem.proxy().getEventManager().register(WarpSystem.getInstance(), this);
     }
 
-    @Subscribe(order = PostOrder.FIRST)
+    @Subscribe (order = PostOrder.FIRST)
     public void onChatSave(PlayerChatEvent e) {
         Player player = e.getPlayer();
         String name = player.getUsername();
-        if(this.using.contains(name)) {
+        if (this.using.contains(name)) {
             String msg = e.getMessage();
-            if(msg.startsWith("/")) msg = "$c." + msg;
+            if (msg.startsWith("/")) msg = "$c." + msg;
 
             cache.put(name, e.getMessage().substring(0, Math.min(msg.length(), 256)));
             e.setResult(PlayerChatEvent.ChatResult.message(""));
         }
     }
 
-    @Subscribe(order = PostOrder.LAST)
+    @Subscribe (order = PostOrder.LAST)
     public void onChatCache(PlayerChatEvent e) {
         String name = e.getPlayer().getUsername();
 
-        if(this.using.remove(name)) {
+        if (this.using.remove(name)) {
             String message = cache.remove(name);
             e.setResult(PlayerChatEvent.ChatResult.message(message));
         }

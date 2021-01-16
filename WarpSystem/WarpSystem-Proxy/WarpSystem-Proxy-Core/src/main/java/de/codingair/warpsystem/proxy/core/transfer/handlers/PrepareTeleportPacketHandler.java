@@ -25,7 +25,7 @@ public class PrepareTeleportPacketHandler implements ResponsiblePacketHandler<Pr
         Player targetPlayer = packet.getSender().equalsIgnoreCase(packet.getTarget()) ? sender : Players.getPlayer(packet.getTarget());
 
         TeleportHandler handler = Core.getPlugin().getHandler(TeleportHandler.class);
-        
+
         if (targetPlayer == null || handler.isAccessible(targetPlayer.getServer())) {
             return CompletableFuture.completedFuture(new LongPacket((((long) 0) << 32)));
         }

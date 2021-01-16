@@ -45,13 +45,13 @@ public class VelocityServer implements Server<ChannelIdentifier> {
 
                 int online = 0;
                 int max = 0;
-                if(players.isPresent()) {
+                if (players.isPresent()) {
                     online = players.get().getOnline();
                     max = players.get().getMax();
                 }
 
                 String motd = null;
-                if(serverPing.getDescriptionComponent() instanceof TextComponent) {
+                if (serverPing.getDescriptionComponent() instanceof TextComponent) {
                     motd = ((TextComponent) serverPing.getDescriptionComponent()).content();
                 }
 

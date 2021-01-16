@@ -24,11 +24,11 @@ public class Lang extends LangHandler {
     public static String get(String key) {
         String text = getLanguageFile(getCurrentLanguage()).getString(key);
 
-        if(text == null) {
-            if(key.equalsIgnoreCase("Yes") && get("true") != null) {
+        if (text == null) {
+            if (key.equalsIgnoreCase("Yes") && get("true") != null) {
                 String s = get("true");
                 return s.equalsIgnoreCase("true") ? "Yes" : s;
-            } else if(key.equalsIgnoreCase("No") && get("false") != null) {
+            } else if (key.equalsIgnoreCase("No") && get("false") != null) {
                 String s = get("false");
                 return s.equalsIgnoreCase("false") ? "No" : s;
             }
@@ -44,7 +44,7 @@ public class Lang extends LangHandler {
         try {
             ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("Config");
             return file.getSimpleConfig();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -53,12 +53,12 @@ public class Lang extends LangHandler {
     private static Configuration getLanguageFile(String langTag) {
         try {
             ConfigFile file = WarpSystem.getInstance().getFileManager().getFile(langTag);
-            if(file == null) {
+            if (file == null) {
                 WarpSystem.getInstance().getFileManager().getFile(langTag, "/Languages/", "languages/");
                 return getLanguageFile(langTag);
             }
             return file.getSimpleConfig();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -70,7 +70,7 @@ public class Lang extends LangHandler {
             file.load();
             task.run();
             file.save();
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

@@ -13,8 +13,8 @@ import java.util.Set;
 
 public class VelocityConfigMask implements DataMask {
     private final Configuration root;
-    private String prefix;
     private final ConfigFile file;
+    private String prefix;
 
     public VelocityConfigMask() {
         this(new Configuration());
@@ -83,7 +83,7 @@ public class VelocityConfigMask implements DataMask {
     public Object finalCommit(String key, Object value) {
         Object prev;
 
-        if(value instanceof Serializable) {
+        if (value instanceof Serializable) {
             write((Serializable) value, key);
             prev = null;
         } else {
@@ -105,7 +105,7 @@ public class VelocityConfigMask implements DataMask {
     public <T extends Serializable> T getSerializable(String key, Serializable serializable) {
         try {
             read(serializable, key);
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -127,7 +127,7 @@ public class VelocityConfigMask implements DataMask {
         JSONArray array = new JSONArray();
         List l = c().getList(k(key));
 
-        if(l == null) return array;
+        if (l == null) return array;
 
         array.addAll(l);
         return array;
@@ -153,21 +153,21 @@ public class VelocityConfigMask implements DataMask {
     public <T> T get(String key, T def, boolean raw) {
         Object o = c().get(k(key));
 
-        if(!raw) {
-            if(o instanceof Long) {
+        if (!raw) {
+            if (o instanceof Long) {
                 long l = (long) o;
-                if(l <= Integer.MAX_VALUE && l >= Integer.MIN_VALUE) return (T) (Object) Math.toIntExact(l);
+                if (l <= Integer.MAX_VALUE && l >= Integer.MIN_VALUE) return (T) (Object) Math.toIntExact(l);
             }
 
-            if(o instanceof String) {
+            if (o instanceof String) {
                 try {
                     Object result = new JSONParser().parse((String) o);
-                    if(result != null) o = result;
-                } catch(ParseException ignored) {
+                    if (result != null) o = result;
+                } catch (ParseException ignored) {
                 }
             }
 
-            if(o instanceof ConfigurationNode) return (T) new Configuration((ConfigurationNode) o);
+            if (o instanceof ConfigurationNode) return (T) new Configuration((ConfigurationNode) o);
         }
 
         return o == null ? def : (T) o;

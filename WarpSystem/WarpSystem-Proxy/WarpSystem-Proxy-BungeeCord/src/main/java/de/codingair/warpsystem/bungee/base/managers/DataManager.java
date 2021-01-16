@@ -63,9 +63,9 @@ public class DataManager {
     }
 
     private boolean checkSuperClass(Class<?> a, Class<?> b) {
-        if(a.equals(b)) return true;
+        if (a.equals(b)) return true;
 
-        if(a.getSuperclass() == null) return false;
+        if (a.getSuperclass() == null) return false;
         else return checkSuperClass(a.getSuperclass(), b);
     }
 

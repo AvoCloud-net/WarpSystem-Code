@@ -38,7 +38,7 @@ public class BungeePlayer implements Player {
             CompletableFuture<Boolean> future = new CompletableFuture<>();
 
             player.connect(((BungeeServer) server).getServer(), (b, t) -> {
-                if(t != null) future.completeExceptionally(t);
+                if (t != null) future.completeExceptionally(t);
                 else future.complete(b);
             });
 

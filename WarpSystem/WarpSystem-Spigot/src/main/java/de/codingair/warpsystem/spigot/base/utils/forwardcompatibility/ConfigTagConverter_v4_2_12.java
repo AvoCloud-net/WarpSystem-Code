@@ -13,9 +13,9 @@ public class ConfigTagConverter_v4_2_12 {
             Path path = new File(WarpSystem.getInstance().getDataFolder(), "Config.yml").toPath();
             byte[] input = Files.readAllBytes(path);
 
-            if(input != null) {
+            if (input != null) {
                 String s = new String(input);
-                if(s.contains("\n  BungeeCord:")) {
+                if (s.contains("\n  BungeeCord:")) {
                     s = s.replace("BungeeCord", "Proxy");
                     Files.write(path, s.getBytes());
                 }

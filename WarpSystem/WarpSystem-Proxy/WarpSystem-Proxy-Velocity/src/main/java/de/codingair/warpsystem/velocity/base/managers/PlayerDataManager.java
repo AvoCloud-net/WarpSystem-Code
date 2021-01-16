@@ -30,6 +30,6 @@ public class PlayerDataManager extends PlayerDataHandler {
 
     @Subscribe
     public void onSwitch(ServerConnectedEvent e) {
-        if(e.getPreviousServer().isPresent()) super.onSwitch(new VelocityPlayer(e.getPlayer()), new VelocityServer(e.getServer()));
+        if (e.getPreviousServer().isPresent()) super.onSwitch(new VelocityPlayer(e.getPlayer()), new VelocityServer(e.getServer()));
     }
 }

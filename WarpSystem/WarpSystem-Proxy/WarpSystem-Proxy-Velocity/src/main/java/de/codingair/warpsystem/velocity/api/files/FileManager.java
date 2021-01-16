@@ -28,7 +28,7 @@ public class FileManager {
 
     public ConfigFile getFile(String name, String path, String srcPath) {
         ConfigFile file = configs.get(key(name));
-        if(file != null) return file;
+        if (file != null) return file;
 
         file = new ConfigFile(name, path, srcPath, plugin);
         this.configs.put(key(name), file);
