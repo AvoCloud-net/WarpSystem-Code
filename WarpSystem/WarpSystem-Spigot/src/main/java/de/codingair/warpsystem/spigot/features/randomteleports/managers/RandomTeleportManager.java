@@ -241,7 +241,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
                     running.remove(t);
 
                     RandomLocationCalculator next = queue.poll();
-                    if(next != null) {
+                    if (next != null) {
                         running.add(next);
                         Bukkit.getScheduler().runTaskAsynchronously(WarpSystem.getInstance(), next);
                     }
@@ -260,7 +260,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
         calculators.put(player, t); //register
 
         synchronized (running) {
-            if(running.size() >= concurrent) queue.add(t);
+            if (running.size() >= concurrent) queue.add(t);
             else {
                 running.add(t);
                 Bukkit.getScheduler().runTaskAsynchronously(WarpSystem.getInstance(), t);

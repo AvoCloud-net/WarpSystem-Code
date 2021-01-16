@@ -17,12 +17,12 @@ import java.net.URL;
  **/
 
 public class ConfigFile {
-    private YAMLConfigurationLoader loader;
-    private ConfigurationNode config;
     private final String name;
     private final String path;
     private final String srcPath;
     private final VelocityPlugin plugin;
+    private YAMLConfigurationLoader loader;
+    private ConfigurationNode config;
 
     public ConfigFile(String name, String path, String srcPath, VelocityPlugin plugin) {
         this.name = name;
@@ -33,7 +33,7 @@ public class ConfigFile {
         try {
             this.load();
             this.save();
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -59,16 +59,16 @@ public class ConfigFile {
     }
 
     public void load() throws IOException {
-        if(getDataFolder() == null || !getDataFolder().exists()) getDataFolder().mkdir();
+        if (getDataFolder() == null || !getDataFolder().exists()) getDataFolder().mkdir();
 
         File file = new File(getDataFolder() + this.path, this.name + ".yml");
 
         InputStream inStream = plugin.getResourceAsStream(srcPath + this.name + ".yml");
 
-        if(!file.exists()) {
+        if (!file.exists()) {
             file.createNewFile();
 
-            if(inStream != null) {
+            if (inStream != null) {
                 OutputStream out = new FileOutputStream(file);
                 copy(inStream, out);
                 out.close();
@@ -78,7 +78,7 @@ public class ConfigFile {
 
         URL in = plugin.getResource(srcPath + this.name + ".yml");
         ConfigurationNode defaults = null;
-        if(in != null) {
+        if (in != null) {
             this.loader = YAMLConfigurationLoader.builder()
                     .setURL(in)
                     .setFlowStyle(DumperOptions.FlowStyle.BLOCK)
@@ -90,7 +90,7 @@ public class ConfigFile {
 
         this.config = defaults == null ? YAMLConfigurationLoader.builder().build().createEmptyNode() : defaults;
 
-        if(file != null) {
+        if (file != null) {
             this.loader = YAMLConfigurationLoader.builder()
                     .setFile(file)
                     .setFlowStyle(DumperOptions.FlowStyle.BLOCK)
@@ -103,15 +103,15 @@ public class ConfigFile {
     }
 
     private long copy(InputStream from, OutputStream to) throws IOException {
-        if(from == null) return -1;
-        if(to == null) throw new NullPointerException();
+        if (from == null) return -1;
+        if (to == null) throw new NullPointerException();
 
         byte[] buf = new byte[4096];
         long total = 0L;
 
-        while(true) {
+        while (true) {
             int r = from.read(buf);
-            if(r == -1) {
+            if (r == -1) {
                 return total;
             }
 
@@ -123,16 +123,16 @@ public class ConfigFile {
     public void save() {
         try {
             this.loader.save(this.config);
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public ConfigurationNode getConfig() {
-        if(config == null) {
+        if (config == null) {
             try {
                 load();
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

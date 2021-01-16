@@ -3,7 +3,10 @@ package de.codingair.warpsystem.velocity.api.files;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.ConfigurationOptions;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Configuration {
     private final ConfigurationNode node;
@@ -23,7 +26,7 @@ public class Configuration {
     }
 
     public Set<String> keys(boolean depth) {
-        if(this.keys == null) {
+        if (this.keys == null) {
             this.keys = new HashSet<>();
             addKeys(depth, "", node);
         }
@@ -32,11 +35,11 @@ public class Configuration {
     }
 
     private void addKeys(boolean depth, String prefix, ConfigurationNode node) {
-        if(node.getChildrenMap().isEmpty()) {
-            if(node.getKey() != null) this.keys.add(prefix + node.getKey());
+        if (node.getChildrenMap().isEmpty()) {
+            if (node.getKey() != null) this.keys.add(prefix + node.getKey());
         } else {
-            if(depth || node.getKey() == null) {
-                for(Map.Entry<Object, ? extends ConfigurationNode> e : node.getChildrenMap().entrySet()) {
+            if (depth || node.getKey() == null) {
+                for (Map.Entry<Object, ? extends ConfigurationNode> e : node.getChildrenMap().entrySet()) {
                     addKeys(depth, node.getKey() == null ? prefix : prefix + node.getKey() + ".", e.getValue());
                 }
             } else this.keys.add(prefix + node.getKey());
@@ -55,7 +58,7 @@ public class Configuration {
 
     public void set(String key, Object value) {
         ConfigurationNode node = getNode(key);
-        if(node == null) return;
+        if (node == null) return;
         node.setValue(value);
     }
 

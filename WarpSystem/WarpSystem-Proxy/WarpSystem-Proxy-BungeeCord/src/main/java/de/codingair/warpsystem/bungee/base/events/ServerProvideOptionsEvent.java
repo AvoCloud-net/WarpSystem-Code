@@ -3,7 +3,6 @@ package de.codingair.warpsystem.bungee.base.events;
 import de.codingair.warpsystem.base.transfer.utils.serializeable.ServerOptions;
 import de.codingair.warpsystem.bungee.utils.BungeeServer;
 import de.codingair.warpsystem.proxy.core.base.events.IServerProvideOptionsEvent;
-import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Event;
 
 public class ServerProvideOptionsEvent extends Event implements IServerProvideOptionsEvent<BungeeServer> {

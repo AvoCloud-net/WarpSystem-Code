@@ -11,10 +11,6 @@ import net.md_5.bungee.api.event.ServerSwitchEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 public class ChatInputManager extends ChatInputHandler implements Listener {
     public ChatInputManager() {
         Core.getPlugin().dataHandler().registerHandler(ChatInputGUITogglePacket.class, (packet, proxy, connection, direction) -> {

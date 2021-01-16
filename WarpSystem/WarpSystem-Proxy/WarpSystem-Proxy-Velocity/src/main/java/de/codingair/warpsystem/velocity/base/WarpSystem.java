@@ -59,6 +59,22 @@ public class WarpSystem extends VelocityPlugin {
         this.logger = logger;
     }
 
+    public static WarpSystem getInstance() {
+        return instance;
+    }
+
+    public static Logger logger() {
+        return getInstance().logger;
+    }
+
+    public static ProxyServer proxy() {
+        return getInstance().proxy;
+    }
+
+    public static Scheduler.TaskBuilder scheduler(Runnable runnable) {
+        return proxy().getScheduler().buildTask(getInstance(), runnable);
+    }
+
     @Subscribe
     public void onEnable(ProxyInitializeEvent e) {
         Timer t = new Timer();
@@ -97,10 +113,10 @@ public class WarpSystem extends VelocityPlugin {
 
         log("Loading features");
         boolean createBackup = false;
-        if(!this.dataManager.load(false)) createBackup = true;
+        if (!this.dataManager.load(false)) createBackup = true;
         this.cooldownManager.load();
 
-        if(createBackup) {
+        if (createBackup) {
             log("Loading with errors > Create backup...");
             createBackup();
             log("Backup successfully created");
@@ -122,7 +138,7 @@ public class WarpSystem extends VelocityPlugin {
     private void save(boolean saver) {
         try {
             Timer timer = new Timer();
-            if(!saver) {
+            if (!saver) {
                 timer.start();
 
                 log(" ");
@@ -134,18 +150,18 @@ public class WarpSystem extends VelocityPlugin {
                 log(" ");
             }
 
-            if(!saver) log("Saving features");
+            if (!saver) log("Saving features");
             this.dataManager.save(saver);
             this.cooldownManager.save();
 
-            if(!saver) {
+            if (!saver) {
                 log(" ");
                 log("Done (" + timer.result() + ")");
                 log(" ");
                 log("________________________________________________________");
                 log(" ");
             }
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -156,18 +172,18 @@ public class WarpSystem extends VelocityPlugin {
         File backupFolder = new File(getDataFolder().getPath() + "/Backups/", TimeFetcher.getYear() + "_" + (TimeFetcher.getMonthNum() + 1) + "_" + TimeFetcher.getDay() + " " + TimeFetcher.getHour() + "_" + TimeFetcher.getMinute() + "_" + TimeFetcher.getSecond());
         backupFolder.mkdirs();
 
-        for(File file : getDataFolder().listFiles()) {
-            if(file.getName().equals("Backups") || file.getName().equals("ErrorReport.txt")) continue;
+        for (File file : getDataFolder().listFiles()) {
+            if (file.getName().equals("Backups") || file.getName().equals("ErrorReport.txt")) continue;
             File dest = new File(backupFolder, file.getName());
 
             try {
-                if(file.isDirectory()) {
+                if (file.isDirectory()) {
                     copyFolder(file, dest);
                     continue;
                 }
 
                 copyFileUsingFileChannels(file, dest);
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -175,10 +191,10 @@ public class WarpSystem extends VelocityPlugin {
 
     private void copyFolder(File source, File dest) throws IOException {
         dest.mkdirs();
-        for(File file : source.listFiles()) {
+        for (File file : source.listFiles()) {
             File copy = new File(dest, file.getName());
 
-            if(file.isDirectory()) {
+            if (file.isDirectory()) {
                 copyFolder(file, copy);
                 continue;
             }
@@ -204,22 +220,6 @@ public class WarpSystem extends VelocityPlugin {
         return dataHandler;
     }
 
-    public static WarpSystem getInstance() {
-        return instance;
-    }
-
-    public static Logger logger() {
-        return getInstance().logger;
-    }
-
-    public static ProxyServer proxy() {
-        return getInstance().proxy;
-    }
-
-    public static Scheduler.TaskBuilder scheduler(Runnable runnable) {
-        return proxy().getScheduler().buildTask(getInstance(), runnable);
-    }
-
     public FileManager getFileManager() {
         return fileManager;
     }
@@ -235,7 +235,7 @@ public class WarpSystem extends VelocityPlugin {
     @Override
     public @Nullable Player getPlayer(String name) {
         com.velocitypowered.api.proxy.Player player = proxy.getPlayer(name).orElse(null);
-        if(player != null) return new VelocityPlayer(player);
+        if (player != null) return new VelocityPlayer(player);
         else return null;
     }
 
@@ -267,7 +267,7 @@ public class WarpSystem extends VelocityPlugin {
     @Override
     public Server<?> getServer(String server) {
         RegisteredServer s = proxy.getServer(server).orElse(null);
-        if(s != null) return new VelocityServer(s);
+        if (s != null) return new VelocityServer(s);
         else return null;
     }
 

@@ -41,12 +41,10 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
     private final BungeeHandler dataHandler = new BungeeHandler(this);
     private final FileManager fileManager = new FileManager(this);
     private final JarManager jarManager = new JarManager();
-
+    private final Timer timer = new Timer();
     private DataManager dataManager;
     private CooldownManager cooldownManager;
     private PlayerDataManager playerDataManager;
-
-    private final Timer timer = new Timer();
 
     public static void logMessage(String message) {
         System.out.println(message);
@@ -246,7 +244,7 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
     @Override
     public @Nullable Player getPlayer(String name) {
         ProxiedPlayer p = getProxy().getPlayer(name);
-        if(p != null) return new BungeePlayer(p);
+        if (p != null) return new BungeePlayer(p);
         else return null;
     }
 

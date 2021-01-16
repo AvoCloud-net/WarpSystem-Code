@@ -72,7 +72,7 @@ public class VelocityHandler extends CoreDataHandler<ChannelIdentifier> {
 
     @Subscribe
     public void onPluginMessage(PluginMessageEvent e) {
-        if(e.getIdentifier().equals(identifierProxy)) {
+        if (e.getIdentifier().equals(getProxyChannel())) {
             receive(e.getData(), new VelocityServer(((ServerConnection) e.getSource()).getServer()), Direction.DOWN);
         }
     }
