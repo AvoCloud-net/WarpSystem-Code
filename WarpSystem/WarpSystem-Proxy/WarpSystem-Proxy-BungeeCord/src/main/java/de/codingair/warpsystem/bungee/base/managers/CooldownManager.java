@@ -3,7 +3,7 @@ package de.codingair.warpsystem.bungee.base.managers;
 import de.codingair.codingapi.bungeecord.files.ConfigFile;
 import de.codingair.codingapi.tools.io.BungeeConfigMask;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
+import de.codingair.warpsystem.bungee.base.events.ServerProvideOptionsEvent;
 import de.codingair.warpsystem.bungee.utils.BungeePlayer;
 import de.codingair.warpsystem.bungee.utils.BungeeServer;
 import de.codingair.warpsystem.proxy.core.base.handlers.CooldownHandler;
@@ -30,7 +30,7 @@ public class CooldownManager extends CooldownHandler implements Listener {
 
     @EventHandler
     public void onInit(ServerProvideOptionsEvent e) {
-        super.sendData(new BungeeServer(e.getInfo()));
+        super.sendData(e.getServer());
     }
 
     @EventHandler (priority = -64)

@@ -1,10 +1,10 @@
-package de.codingair.warpsystem.bungee.base.utils;
+package de.codingair.warpsystem.velocity.base.utils;
 
-import de.codingair.codingapi.bungeecord.files.ConfigFile;
-import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.proxy.core.base.utils.LangHandler;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.config.Configuration;
+import de.codingair.codingapi.utils.ChatColor;
+import de.codingair.warpsystem.proxy.core.base.LangHandler;
+import de.codingair.warpsystem.velocity.api.files.ConfigFile;
+import de.codingair.warpsystem.velocity.api.files.Configuration;
+import de.codingair.warpsystem.velocity.base.WarpSystem;
 
 import java.io.IOException;
 
@@ -24,11 +24,11 @@ public class Lang extends LangHandler {
     public static String get(String key) {
         String text = getLanguageFile(getCurrentLanguage()).getString(key);
 
-        if (text == null) {
-            if (key.equalsIgnoreCase("Yes") && get("true") != null) {
+        if(text == null) {
+            if(key.equalsIgnoreCase("Yes") && get("true") != null) {
                 String s = get("true");
                 return s.equalsIgnoreCase("true") ? "Yes" : s;
-            } else if (key.equalsIgnoreCase("No") && get("false") != null) {
+            } else if(key.equalsIgnoreCase("No") && get("false") != null) {
                 String s = get("false");
                 return s.equalsIgnoreCase("false") ? "No" : s;
             }
@@ -43,8 +43,8 @@ public class Lang extends LangHandler {
     private static Configuration getConfig() {
         try {
             ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("Config");
-            return file.getConfig();
-        } catch (Exception e) {
+            return file.getSimpleConfig();
+        } catch(Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -53,12 +53,12 @@ public class Lang extends LangHandler {
     private static Configuration getLanguageFile(String langTag) {
         try {
             ConfigFile file = WarpSystem.getInstance().getFileManager().getFile(langTag);
-            if (file == null) {
-                WarpSystem.getInstance().getFileManager().loadFile(langTag, "/Languages/", "languages/");
+            if(file == null) {
+                WarpSystem.getInstance().getFileManager().getFile(langTag, "/Languages/", "languages/");
                 return getLanguageFile(langTag);
             }
-            return file.getConfig();
-        } catch (Exception e) {
+            return file.getSimpleConfig();
+        } catch(Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -70,7 +70,7 @@ public class Lang extends LangHandler {
             file.load();
             task.run();
             file.save();
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
     }

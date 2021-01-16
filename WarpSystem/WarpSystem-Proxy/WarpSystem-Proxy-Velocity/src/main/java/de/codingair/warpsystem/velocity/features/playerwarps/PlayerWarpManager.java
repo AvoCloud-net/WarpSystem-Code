@@ -1,0 +1,30 @@
+package de.codingair.warpsystem.velocity.features.playerwarps;
+
+import de.codingair.warpsystem.proxy.core.features.PlayerWarpHandler;
+import de.codingair.warpsystem.velocity.api.files.ConfigFile;
+import de.codingair.warpsystem.velocity.api.files.VelocityConfigMask;
+import de.codingair.warpsystem.velocity.base.WarpSystem;
+import de.codingair.warpsystem.velocity.features.FeatureType;
+
+public class PlayerWarpManager extends PlayerWarpHandler {
+    public static PlayerWarpManager getInstance() {
+        return WarpSystem.getInstance().getDataManager().getManager(FeatureType.PLAYER_WARPS);
+    }
+
+    @Override
+    public boolean load(boolean loader) {
+        ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("PlayerWarps", "/");
+        ConfigFile configFile = WarpSystem.getInstance().getFileManager().getFile("Config");
+
+        WarpSystem.proxy().getEventManager().register(WarpSystem.getInstance(), new PlayerWarpListener());
+        return super.load(loader, new VelocityConfigMask(file), new VelocityConfigMask(configFile));
+    }
+
+    @Override
+    public void save(boolean saver) {
+        ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("PlayerWarps");
+
+        super.save(saver, new VelocityConfigMask(file));
+        file.save();
+    }
+}

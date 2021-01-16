@@ -30,8 +30,8 @@ public class PlayerDataManager implements Listener {
         return player.getUniqueId();
     }
 
-    public void join(String name, UUID id) {
-        cached.put(name.toLowerCase(), new PlayerData(name, id));
+    public void join(String name, String server, UUID id) {
+        cached.put(name.toLowerCase(), new PlayerData(name, id, server));
     }
 
     public void quit(String name) {

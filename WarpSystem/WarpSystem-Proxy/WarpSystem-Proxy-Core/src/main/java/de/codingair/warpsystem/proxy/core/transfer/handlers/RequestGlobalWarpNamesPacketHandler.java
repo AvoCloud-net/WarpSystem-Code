@@ -14,6 +14,6 @@ public class RequestGlobalWarpNamesPacketHandler implements PacketHandler<Reques
     @Override
     public void process(@NotNull RequestGlobalWarpNamesPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         GlobalWarpHandler handler = Core.getPlugin().getHandler(GlobalWarpHandler.class);
-        handler.synchronize((Server) connection);
+        handler.synchronize((Server<?>) connection);
     }
 }

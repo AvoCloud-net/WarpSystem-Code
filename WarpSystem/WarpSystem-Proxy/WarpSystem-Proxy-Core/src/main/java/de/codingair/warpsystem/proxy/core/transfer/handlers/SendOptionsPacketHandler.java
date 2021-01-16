@@ -14,11 +14,11 @@ public abstract class SendOptionsPacketHandler implements PacketHandler<SendOpti
 
     @Override
     public void process(@NotNull SendOptionsPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
-        Core.getServerManager().applyOptions((Server) connection, packet.getOptions());
+        Core.getServerManager().applyOptions((Server<?>) connection, packet.getOptions());
 
         packet.getOptions().setSameVersion(Core.getPlugin().getVersion().equals(packet.getOptions().getVersion()));
-        callEvent((Server) connection, packet.getOptions());
+        callEvent((Server<?>) connection, packet.getOptions());
     }
 
-    public abstract void callEvent(Server connection, ServerOptions options);
+    public abstract void callEvent(Server<?> connection, ServerOptions options);
 }

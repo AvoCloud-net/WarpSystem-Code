@@ -5,7 +5,7 @@ import de.codingair.warpsystem.base.transfer.packets.spigot.utils.ServerPing;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
-public interface Server {
+public interface Server<C> {
     String getName();
 
     Stream<Player> getOnlinePlayers();
@@ -18,5 +18,5 @@ public interface Server {
 
     CompletableFuture<ServerPing> ping();
 
-    void sendData(String channel, byte[] data);
+    void sendData(C channel, byte[] data);
 }

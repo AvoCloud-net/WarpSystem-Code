@@ -11,6 +11,6 @@ import org.jetbrains.annotations.Nullable;
 public class PlayerJoinPacketHandler implements PacketHandler<PlayerJoinPacket> {
     @Override
     public void process(@NotNull PlayerJoinPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
-        WarpSystem.getInstance().getPlayerDataManager().join(packet.getPlayer(), packet.getId());
+        WarpSystem.getInstance().getPlayerDataManager().join(packet.getPlayer(), packet.getServer(), packet.getId());
     }
 }

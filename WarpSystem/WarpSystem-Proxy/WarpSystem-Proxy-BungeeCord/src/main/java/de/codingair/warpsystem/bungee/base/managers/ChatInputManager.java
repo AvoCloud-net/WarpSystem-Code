@@ -3,6 +3,7 @@ package de.codingair.warpsystem.bungee.base.managers;
 import de.codingair.warpsystem.base.transfer.packets.spigot.ChatInputGUITogglePacket;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.proxy.core.Core;
+import de.codingair.warpsystem.proxy.core.chatinput.ChatInputHandler;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.event.ServerDisconnectEvent;
@@ -14,10 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ChatInputManager implements Listener {
-    private final List<String> using = new ArrayList<>();
-    private final HashMap<String, String> cache = new HashMap<>();
-
+public class ChatInputManager extends ChatInputHandler implements Listener {
     public ChatInputManager() {
         Core.getPlugin().dataHandler().registerHandler(ChatInputGUITogglePacket.class, (packet, proxy, connection, direction) -> {
             if (packet.isUsing()) {
@@ -54,13 +52,11 @@ public class ChatInputManager implements Listener {
 
     @EventHandler
     public void onQuit(ServerDisconnectEvent e) {
-        this.using.remove(e.getPlayer().getName());
-        this.cache.remove(e.getPlayer().getName());
+        remove(e.getPlayer().getName());
     }
 
     @EventHandler
     public void onQuit(ServerSwitchEvent e) {
-        this.using.remove(e.getPlayer().getName());
-        this.cache.remove(e.getPlayer().getName());
+        remove(e.getPlayer().getName());
     }
 }

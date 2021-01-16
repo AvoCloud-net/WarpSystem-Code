@@ -1,4 +1,4 @@
-package de.codingair.warpsystem.proxy.core.base.utils;
+package de.codingair.warpsystem.proxy.core.base;
 
 import de.codingair.warpsystem.proxy.core.utils.ProxyPlugin;
 

@@ -9,8 +9,8 @@ import de.codingair.warpsystem.base.transfer.packets.general.TeleportSpawnPacket
 import de.codingair.warpsystem.base.transfer.packets.spigot.SendOptionsPacket;
 import de.codingair.warpsystem.base.transfer.utils.serializeable.ServerOptions;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.bungee.base.utils.Lang;
-import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
+import de.codingair.warpsystem.bungee.base.Lang;
+import de.codingair.warpsystem.bungee.base.events.ServerProvideOptionsEvent;
 import de.codingair.warpsystem.proxy.core.transfer.CoreDataHandler;
 import de.codingair.warpsystem.proxy.core.transfer.handlers.SendOptionsPacketHandler;
 import de.codingair.warpsystem.proxy.core.transfer.handlers.TeleportSpawnPacketHandler;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
-public class BungeeHandler extends CoreDataHandler implements Listener {
+public class BungeeHandler extends CoreDataHandler<String> implements Listener {
     public BungeeHandler(WarpSystem plugin) {
         super(plugin);
     }
@@ -37,8 +37,8 @@ public class BungeeHandler extends CoreDataHandler implements Listener {
 
         registerHandler(SendOptionsPacket.class, new SendOptionsPacketHandler() {
             @Override
-            public void callEvent(Server connection, ServerOptions options) {
-                WarpSystem.getInstance().getProxy().getPluginManager().callEvent(new ServerProvideOptionsEvent(((BungeeServer) connection).getServer(), options));
+            public void callEvent(Server<?> connection, ServerOptions options) {
+                WarpSystem.getInstance().getProxy().getPluginManager().callEvent(new ServerProvideOptionsEvent((BungeeServer) connection, options));
             }
         });
 
@@ -48,6 +48,16 @@ public class BungeeHandler extends CoreDataHandler implements Listener {
                 ((BungeePlayer) player).getPlayer().sendMessage(new TextComponent(Lang.getPrefix() + Lang.get("Server_Is_Not_Online")));
             }
         });
+    }
+
+    @Override
+    public String getBackendChannel() {
+        return channelBackend;
+    }
+
+    @Override
+    public String getProxyChannel() {
+        return channelProxy;
     }
 
     public void onEnable() {

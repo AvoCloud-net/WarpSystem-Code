@@ -1,10 +1,11 @@
 package de.codingair.warpsystem.bungee.base.listeners;
 
 import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.bungee.base.utils.Lang;
-import de.codingair.warpsystem.bungee.base.utils.ServerInitializeEvent;
-import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
+import de.codingair.warpsystem.bungee.base.Lang;
+import de.codingair.warpsystem.bungee.base.events.ServerInitializeEvent;
+import de.codingair.warpsystem.bungee.base.events.ServerProvideOptionsEvent;
 import de.codingair.warpsystem.bungee.utils.BungeeServer;
+import de.codingair.warpsystem.proxy.core.base.Permissions;
 import de.codingair.warpsystem.proxy.core.utils.Server;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -45,7 +46,7 @@ public class MainListener implements Listener {
     }
 
     private void ask(ProxiedPlayer player) {
-        if (player.hasPermission(WarpSystem.PERMISSION_MODIFY_SYSTEM)) {
+        if (player.hasPermission(Permissions.PERMISSION_MODIFY_SYSTEM)) {
             WarpSystem.getInstance().getProxy().getScheduler().schedule(WarpSystem.getInstance(), () -> {
                 TextComponent base = new TextComponent(Lang.getPrefix() + "§7Do you want to §cfetch §7a new update from your §cBungeeCord§7? §8[");
 
@@ -63,7 +64,7 @@ public class MainListener implements Listener {
 
     @EventHandler
     public void onInit(ServerInitializeEvent e) {
-        asking.remove(e.getInfo());
+        asking.remove(e.getServer().getServer());
     }
 
     @EventHandler
@@ -71,16 +72,15 @@ public class MainListener implements Listener {
         int i = e.getOptions().getUpdateFetching();
         if (i == 1) {
             //ask
-            if (WarpSystem.getInstance().getJarManager().fetchPossible(new BungeeServer(e.getInfo()))) {
-                asking.add(e.getInfo());
+            if (WarpSystem.getInstance().getJarManager().fetchPossible(e.getServer())) {
+                asking.add(e.getServer().getServer());
 
-                for (ProxiedPlayer player : e.getInfo().getPlayers()) {
+                for (ProxiedPlayer player : e.getServer().getServer().getPlayers()) {
                     ask(player);
                 }
             }
         } else if (i == 2) {
-            Server server = new BungeeServer(e.getInfo());
-            if (WarpSystem.getInstance().getJarManager().fetchPossible(server)) WarpSystem.getInstance().getJarManager().sendJar(server, null);
+            if (WarpSystem.getInstance().getJarManager().fetchPossible(e.getServer())) WarpSystem.getInstance().getJarManager().sendJar(e.getServer(), null);
         }
     }
 }

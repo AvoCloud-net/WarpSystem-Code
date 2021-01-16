@@ -1,25 +1,23 @@
-package de.codingair.warpsystem.bungee.base.listeners;
+package de.codingair.warpsystem.bungee.base.managers;
 
-import de.codingair.warpsystem.base.transfer.packets.general.UpdatePlayerDataPacket;
-import de.codingair.warpsystem.bungee.base.utils.ServerProvideOptionsEvent;
+import de.codingair.warpsystem.bungee.base.events.ServerProvideOptionsEvent;
 import de.codingair.warpsystem.bungee.utils.BungeePlayer;
 import de.codingair.warpsystem.bungee.utils.BungeeServer;
 import de.codingair.warpsystem.proxy.core.base.handlers.PlayerDataHandler;
-import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.event.ServerSwitchEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
-public class PlayerDataListener extends PlayerDataHandler implements Listener {
-    public PlayerDataListener() {
+public class PlayerDataManager extends PlayerDataHandler implements Listener {
+    public PlayerDataManager() {
         super();
     }
 
     @EventHandler
     public void onConnect(ServerProvideOptionsEvent e) {
-        onServerProvideOptions(new BungeeServer(e.getInfo()));
+        onServerProvideOptions(e.getServer());
     }
 
     @EventHandler
@@ -34,10 +32,6 @@ public class PlayerDataListener extends PlayerDataHandler implements Listener {
 
     @EventHandler
     public void onSwitch(ServerSwitchEvent e) {
-        super.onSwitch(new BungeePlayer(e.getPlayer()));
-    }
-
-    public void onUpdate(UpdatePlayerDataPacket packet, ServerInfo info) {
-        super.onUpdate(packet, new BungeeServer(info));
+        super.onSwitch(new BungeePlayer(e.getPlayer()), new BungeeServer(e.getPlayer().getServer().getInfo()));
     }
 }
