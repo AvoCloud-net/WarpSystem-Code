@@ -67,7 +67,12 @@ public class VelocityServer implements Server<ChannelIdentifier> {
 
     @Override
     public void sendData(ChannelIdentifier channel, byte[] data) {
-        this.server.sendPluginMessage(channel, data);
+        try {
+            this.server.sendPluginMessage(channel, data);
+        } catch (IllegalStateException ex) {
+            if(ex.getMessage().equals("Not connected to server!")) return;
+            ex.printStackTrace();
+        }
     }
 
     @Override

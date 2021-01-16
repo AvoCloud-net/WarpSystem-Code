@@ -17,7 +17,6 @@ public enum PacketType {
 
     PublishGlobalWarpPacket(de.codingair.warpsystem.base.transfer.packets.spigot.PublishGlobalWarpPacket.class),
     GlobalWarpTeleportPacket(GlobalWarpTeleportPacket.class),
-    TeleportPacket(GlobalWarpTeleportPacket.class),
     DeleteGlobalWarpPacket(DeleteGlobalWarpPacket.class),
     RequestGlobalWarpNamesPacket(RequestGlobalWarpNamesPacket.class),
     SendGlobalWarpNamesPacket(de.codingair.warpsystem.base.transfer.packets.proxy.SendGlobalWarpNamesPacket.class),
