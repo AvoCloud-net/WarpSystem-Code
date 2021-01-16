@@ -62,7 +62,10 @@ public abstract class CoreDataHandler<C> extends DataHandler<Server<C>> {
 
     @Override
     protected void send(byte[] data, Server<C> connection, Direction direction) {
-        if (direction == Direction.DOWN) connection.sendData(getBackendChannel(), data);
+        if (direction == Direction.DOWN) {
+            if(connection.isEmpty()) return;
+            connection.sendData(getBackendChannel(), data);
+        }
     }
 
     public abstract C getBackendChannel();

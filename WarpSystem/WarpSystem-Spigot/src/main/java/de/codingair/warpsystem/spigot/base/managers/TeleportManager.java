@@ -82,7 +82,7 @@ public class TeleportManager implements ITeleportManager {
         }
 
         if ((options.getDestination().getType() == DestinationType.GlobalWarp || options.getDestination().getType() == DestinationType.Server) && !WarpSystem.getInstance().isOnProxy()) {
-            options.fireCallbacks(Result.NOT_ON_BUNGEE_CORD);
+            options.fireCallbacks(Result.NO_CONNECTED_PROXY);
             player.sendMessage(Lang.getPrefix() + Lang.get("Server_Is_Not_Online"));
             return;
         }

@@ -16,7 +16,7 @@ public class ServerAdapter extends DestinationAdapter {
     @Override
     public boolean teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback) {
         if (!WarpSystem.getInstance().isOnProxy()) {
-            if (callback != null) callback.accept(Result.NOT_ON_BUNGEE_CORD);
+            if (callback != null) callback.accept(Result.NO_CONNECTED_PROXY);
             return false;
         }
 
@@ -39,7 +39,7 @@ public class ServerAdapter extends DestinationAdapter {
     @Override
     public SimulatedTeleportResult simulate(Player player, String id, boolean checkPermission) {
         if (!WarpSystem.getInstance().isOnProxy())
-            return new SimulatedTeleportResult(null, Result.NOT_ON_BUNGEE_CORD);
+            return new SimulatedTeleportResult(null, Result.NO_CONNECTED_PROXY);
 
         if (WarpSystem.getInstance().getCurrentServer().equalsIgnoreCase(id))
             return new SimulatedTeleportResult(Lang.getPrefix() + Lang.get("Player_Is_Already_On_Target_Server"), Result.ALREADY_ON_TARGET_SERVER);
