@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class TeleportHandler implements Manager {
-    protected final HashMap<Server, TeleportCommandOptions> commandOptions = new HashMap<>();
+    protected final HashMap<Server<?>, TeleportCommandOptions> commandOptions = new HashMap<>();
     protected final Set<String> denyForceTpRequests = new HashSet<>();
     protected final Set<String> denyForceTps = new HashSet<>();
 
@@ -30,7 +30,7 @@ public class TeleportHandler implements Manager {
     public void destroy() {
     }
 
-    public void registerOptions(Server server, TeleportCommandOptionsPacket options) {
+    public void registerOptions(Server<?> server, TeleportCommandOptionsPacket options) {
         this.commandOptions.put(server, options.getOptions());
 
         options.setServer(server.getName());
@@ -38,11 +38,11 @@ public class TeleportHandler implements Manager {
         commandOptions.entrySet().stream().filter(e -> !e.getKey().equals(server)).forEach(e -> Core.getPlugin().dataHandler().send(new TeleportCommandOptionsPacket(e.getKey().getName(), e.getValue()), server, Direction.DOWN));
     }
 
-    public TeleportCommandOptions getOptions(Server info) {
+    public TeleportCommandOptions getOptions(Server<?> info) {
         return this.commandOptions.get(info);
     }
 
-    public boolean isAccessible(Server info) {
+    public boolean isAccessible(Server<?> info) {
         return getOptions(info) == null;
     }
 

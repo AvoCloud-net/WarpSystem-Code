@@ -30,7 +30,7 @@ public class PrepareTeleportPacketHandler implements ResponsiblePacketHandler<Pr
             return CompletableFuture.completedFuture(new LongPacket((((long) 0) << 32)));
         }
 
-        Server target = targetPlayer.getServer();
+        Server<?> target = targetPlayer.getServer();
 
         String recipient = packet.getRecipient();
         if (recipient == null) {

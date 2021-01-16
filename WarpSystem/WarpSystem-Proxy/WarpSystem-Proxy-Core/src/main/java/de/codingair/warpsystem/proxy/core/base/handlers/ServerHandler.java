@@ -20,12 +20,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public abstract class ServerHandler {
-    private final HashMap<Server, ServerOptions> options = new HashMap<>();
-    private final ConcurrentHashMap<Server, ServerPing> cachedPing = new ConcurrentHashMap<>();
-    private final HashMap<Server, List<Callback<Server>>> waiting = new HashMap<>();
+    private final HashMap<Server<?>, ServerOptions> options = new HashMap<>();
+    private final ConcurrentHashMap<Server<?>, ServerPing> cachedPing = new ConcurrentHashMap<>();
+    private final HashMap<Server<?>, List<Callback<Server<?>>>> waiting = new HashMap<>();
     private boolean running = false;
 
-    public static void sendPlayerTo(Server server, Player player, Callback<Server> c) {
+    public static void sendPlayerTo(Server<?> server, Player player, Callback<Server<?>> c) {
         Preconditions.checkNotNull(server);
         Preconditions.checkNotNull(player);
 
@@ -38,16 +38,16 @@ public abstract class ServerHandler {
         }
     }
 
-    private static void addCallbackTo(Server info, Callback<Server> c) {
-        List<Callback<Server>> l = Core.getServerManager().waiting.computeIfAbsent(info, k -> new ArrayList<>());
+    private static void addCallbackTo(Server<?> info, Callback<Server<?>> c) {
+        List<Callback<Server<?>>> l = Core.getServerManager().waiting.computeIfAbsent(info, k -> new ArrayList<>());
         l.add(c);
     }
 
-    public Stream<Server> getOnlineServer() {
+    public Stream<Server<?>> getOnlineServer() {
         return cachedPing.entrySet().stream().filter((e) -> e.getValue() != null && e.getValue().getStatus()).map(Map.Entry::getKey);
     }
 
-    public boolean isOnline(Server info) {
+    public boolean isOnline(Server<?> info) {
         ServerPing ping = cachedPing.getOrDefault(info, null);
         return ping != null && ping.getStatus();
     }
@@ -76,7 +76,7 @@ public abstract class ServerHandler {
 
         Core.getPlugin().schedule(() -> {
             HashMap<String, ServerPing> copy = new HashMap<>();
-            for (Map.Entry<Server, ServerPing> e : cachedPing.entrySet()) {
+            for (Map.Entry<Server<?>, ServerPing> e : cachedPing.entrySet()) {
                 copy.put(e.getKey().getName().toLowerCase(), new ServerPing(e.getValue()));
             }
 
@@ -89,30 +89,30 @@ public abstract class ServerHandler {
         }, 3, 5, TimeUnit.SECONDS);
     }
 
-    public void sendInitialPacket(Server server) {
+    public void sendInitialPacket(Server<?> server) {
         Core.getPlugin().dataHandler().send(new InitialPacket(Core.getPlugin().getVersion(), server.getName()), server, Direction.DOWN);
         triggerServerInitializeEvent(server);
 
-        List<Callback<Server>> l = Core.getServerManager().waiting.remove(server);
+        List<Callback<Server<?>>> l = Core.getServerManager().waiting.remove(server);
         if (l != null) {
             l.forEach(c -> c.accept(server));
             l.clear();
         }
     }
 
-    public abstract void triggerServerInitializeEvent(Server server);
+    public abstract void triggerServerInitializeEvent(Server<?> server);
 
-    public ServerOptions getOptions(Server info) {
+    public ServerOptions getOptions(Server<?> info) {
         if (info == null) return null;
         return options.get(info);
     }
 
-    public ServerPing getLastPing(Server info) {
+    public ServerPing getLastPing(Server<?> info) {
         if (info == null) return null;
         return cachedPing.get(info);
     }
 
-    public void applyOptions(Server info, ServerOptions options) {
+    public void applyOptions(Server<?> info, ServerOptions options) {
         this.options.putIfAbsent(info, options);
     }
 }

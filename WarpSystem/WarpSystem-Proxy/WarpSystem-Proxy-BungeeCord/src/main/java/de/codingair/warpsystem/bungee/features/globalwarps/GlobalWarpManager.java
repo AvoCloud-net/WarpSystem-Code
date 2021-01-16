@@ -8,10 +8,6 @@ import de.codingair.warpsystem.proxy.core.features.GlobalWarpHandler;
 
 public class GlobalWarpManager extends GlobalWarpHandler {
 
-    public GlobalWarpManager() {
-        WarpSystem.getInstance().getProxy().getPluginManager().registerListener(WarpSystem.getInstance(), new GlobalWarpListener());
-    }
-
     @Override
     public boolean load(boolean loader) {
         WarpSystem.getInstance().getFileManager().loadFile("GlobalWarps", "/");

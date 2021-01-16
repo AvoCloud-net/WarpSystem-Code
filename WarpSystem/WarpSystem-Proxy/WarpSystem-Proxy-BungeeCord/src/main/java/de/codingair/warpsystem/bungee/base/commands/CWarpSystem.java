@@ -2,8 +2,9 @@ package de.codingair.warpsystem.bungee.base.commands;
 
 import de.codingair.warpsystem.base.transfer.utils.serializeable.ServerOptions;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.bungee.base.utils.Lang;
+import de.codingair.warpsystem.bungee.base.Lang;
 import de.codingair.warpsystem.bungee.utils.BungeeServer;
+import de.codingair.warpsystem.proxy.core.base.Permissions;
 import de.codingair.warpsystem.proxy.core.base.handlers.JarManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 
 public class CWarpSystem extends Command implements TabExecutor {
     public CWarpSystem() {
-        super("warpsystembungee", WarpSystem.PERMISSION_MODIFY_SYSTEM, "wsb");
+        super("warpsystembungee", Permissions.PERMISSION_MODIFY_SYSTEM, "wsb");
     }
 
     @Override

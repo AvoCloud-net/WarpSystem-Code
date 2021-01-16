@@ -9,7 +9,7 @@ import de.codingair.warpsystem.proxy.core.transfer.handlers.*;
 import de.codingair.warpsystem.proxy.core.utils.ProxyPlugin;
 import de.codingair.warpsystem.proxy.core.utils.Server;
 
-public abstract class CoreDataHandler extends DataHandler<Server> {
+public abstract class CoreDataHandler<C> extends DataHandler<Server<C>> {
     public CoreDataHandler(ProxyPlugin plugin) {
         super("warpsystem", plugin);
     }
@@ -60,9 +60,12 @@ public abstract class CoreDataHandler extends DataHandler<Server> {
         return direction == Direction.DOWN;
     }
 
-
     @Override
-    protected void send(byte[] data, Server connection, Direction direction) {
-        if (direction == Direction.DOWN) connection.sendData(channelBackend, data);
+    protected void send(byte[] data, Server<C> connection, Direction direction) {
+        if (direction == Direction.DOWN) connection.sendData(getBackendChannel(), data);
     }
+
+    public abstract C getBackendChannel();
+
+    public abstract C getProxyChannel();
 }

@@ -18,15 +18,15 @@ public class RandomTPPacketHandler implements ResponsiblePacketHandler<RandomTPP
     @Override
     public @NotNull CompletableFuture<BooleanPacket> response(@NotNull RandomTPPacket packet, @NotNull Proxy proxy, Object connection, @NotNull Direction direction) {
         Player pp = Core.getPlugin().getPlayer(packet.getPlayer());
-        Server target = Core.getPlugin().getServer(packet.getServer());
+        Server<?> target = Core.getPlugin().getServer(packet.getServer());
 
         if (target == null || !Core.getServerManager().isOnline(target)) return CompletableFuture.completedFuture(new BooleanPacket(false));
 
         if (pp != null) {
-            packet.setServer(((Server) connection).getName());
-            ServerHandler.sendPlayerTo(target, pp, new Callback<Server>() {
+            packet.setServer(((Server<?>) connection).getName());
+            ServerHandler.sendPlayerTo(target, pp, new Callback<Server<?>>() {
                 @Override
-                public void accept(Server server) {
+                public void accept(Server<?> server) {
                     Core.getPlugin().dataHandler().send(packet, server, Direction.DOWN);
                 }
             });

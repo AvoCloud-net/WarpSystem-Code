@@ -21,7 +21,7 @@ public class PrepareServerSwitchPacketHandler implements ResponsiblePacketHandle
     @Override
     public @NotNull CompletableFuture<IntegerPacket> response(@NotNull PrepareServerSwitchPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         Player pp = Core.getPlugin().getPlayer(packet.getPlayer());
-        Server info = Core.getPlugin().getServer(packet.getServer());
+        Server<?> info = Core.getPlugin().getServer(packet.getServer());
 
         if (pp == null || info == null) return CompletableFuture.completedFuture(new IntegerPacket(1));
         else {
@@ -35,9 +35,9 @@ public class PrepareServerSwitchPacketHandler implements ResponsiblePacketHandle
                     if (packet.isIgnoreLimit() || info.getOnlineCount() < ping.getMaxPlayers()) {
                         CompletableFuture<IntegerPacket> future = new CompletableFuture<>();
 
-                        ServerHandler.sendPlayerTo(info, pp, new Callback<Server>() {
+                        ServerHandler.sendPlayerTo(info, pp, new Callback<Server<?>>() {
                             @Override
-                            public void accept(Server object) {
+                            public void accept(Server<?> object) {
                                 Core.getPlugin().dataHandler().send(new PrepareLoginMessagePacket(pp.getName(), packet.getMessage()), info, Direction.DOWN);
                                 future.complete(new IntegerPacket(0));
                             }

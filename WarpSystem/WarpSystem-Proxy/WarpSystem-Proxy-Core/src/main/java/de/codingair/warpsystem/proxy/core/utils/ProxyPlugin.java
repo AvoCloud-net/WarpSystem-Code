@@ -17,9 +17,9 @@ public interface ProxyPlugin extends Proxy {
 
     @NotNull Stream<Player> getOnlinePlayers();
 
-    @NotNull Stream<Server> getRegisteredServers();
+    @NotNull Stream<Server<?>> getRegisteredServers();
 
-    @NotNull <D extends DataHandler<Server>> D dataHandler();
+    @NotNull <D extends DataHandler<Server<?>>> D dataHandler();
 
     @NotNull ScheduleTask schedule(Runnable runnable, long delay, long interval, TimeUnit unit);
 
@@ -33,7 +33,7 @@ public interface ProxyPlugin extends Proxy {
 
     void log(String message);
 
-    Server getServer(String server);
+    Server<?> getServer(String server);
 
     <A extends Manager> A getHandler(Class<A> c);
 

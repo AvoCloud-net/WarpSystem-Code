@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class PlayerWarpHandler implements Manager {
     private final HashMap<UUID, List<PlayerWarpData>> warps = new HashMap<>();
-    private final List<Server> activeServers = new ArrayList<>();
+    private final List<Server<?>> activeServers = new ArrayList<>();
     private final List<String> timeDependent = new ArrayList<>();
     private ScheduleTask task = null;
 
@@ -208,7 +208,7 @@ public abstract class PlayerWarpHandler implements Manager {
     public void interactWithTimeDependentServers(ServerInteraction runnable) {
         List<String> activeServers = new ArrayList<>(this.timeDependent);
         for (String activeServer : activeServers) {
-            Server info = Core.getPlugin().getServer(activeServer);
+            Server<?> info = Core.getPlugin().getServer(activeServer);
             if (info != null) runnable.interact(info);
         }
         activeServers.clear();

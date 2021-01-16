@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
-public class BungeeServer implements Server {
+public class BungeeServer implements Server<String> {
     private final ServerInfo server;
 
     public BungeeServer(@NotNull ServerInfo server) {

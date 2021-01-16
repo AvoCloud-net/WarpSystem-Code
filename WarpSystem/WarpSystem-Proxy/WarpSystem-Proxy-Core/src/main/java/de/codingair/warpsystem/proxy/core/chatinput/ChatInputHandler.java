@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class ChatInputManager {
+public abstract class ChatInputHandler {
     protected final List<String> using = new ArrayList<>();
     protected final HashMap<String, String> cache = new HashMap<>();
 
-    public ChatInputManager() {
+    public ChatInputHandler() {
         Core.getPlugin().dataHandler().registerHandler(ChatInputGUITogglePacket.class, (packet, proxy, connection, direction) -> {
             if (packet.isUsing()) {
                 if (!using.contains(packet.getName())) using.add(packet.getName());

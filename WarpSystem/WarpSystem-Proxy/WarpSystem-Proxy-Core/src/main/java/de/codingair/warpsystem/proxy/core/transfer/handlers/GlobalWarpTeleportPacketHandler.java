@@ -29,11 +29,11 @@ public class GlobalWarpTeleportPacketHandler implements ResponsiblePacketHandler
         if (teleportDisplayName == null) teleportDisplayName = warp.getName();
 
         if (warp == null) {
-            Core.getPlugin().log("The server \"" + ((Server) connection).getName() + "\" is not up to date. Please reload it!");
+            Core.getPlugin().log("The server \"" + ((Server<?>) connection).getName() + "\" is not up to date. Please reload it!");
             return CompletableFuture.completedFuture(new IntegerPacket(1));
         }
 
-        Server otherServer = Core.getPlugin().getServer(warp.getServer());
+        Server<?> otherServer = Core.getPlugin().getServer(warp.getServer());
         Player p = Core.getPlugin().getPlayer(player);
 
         if (otherServer == null || p == null) return CompletableFuture.completedFuture(new IntegerPacket(2));
@@ -52,9 +52,9 @@ public class GlobalWarpTeleportPacketHandler implements ResponsiblePacketHandler
                 else {
                     if (packet.isIgnoreLimit() || otherServer.getOnlineCount() < ping.getMaxPlayers()) {
                         CompletableFuture<IntegerPacket> future = new CompletableFuture<>();
-                        ServerHandler.sendPlayerTo(otherServer, p, new Callback<Server>() {
+                        ServerHandler.sendPlayerTo(otherServer, p, new Callback<Server<?>>() {
                             @Override
-                            public void accept(Server object) {
+                            public void accept(Server<?> object) {
                                 Core.getPlugin().dataHandler().send(out, otherServer, Direction.DOWN);
                                 future.complete(new IntegerPacket(0));
                             }

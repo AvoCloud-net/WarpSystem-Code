@@ -7,20 +7,16 @@ import de.codingair.codingapi.tools.time.Timer;
 import de.codingair.warpsystem.base.utils.Manager;
 import de.codingair.warpsystem.bungee.base.commands.CWarpSystem;
 import de.codingair.warpsystem.bungee.base.listeners.MainListener;
-import de.codingair.warpsystem.bungee.base.listeners.PlayerDataListener;
 import de.codingair.warpsystem.bungee.base.listeners.SetupAssistantListener;
-import de.codingair.warpsystem.bungee.base.managers.ChatInputManager;
-import de.codingair.warpsystem.bungee.base.managers.CooldownManager;
-import de.codingair.warpsystem.bungee.base.managers.DataManager;
-import de.codingair.warpsystem.bungee.base.managers.ServerManager;
+import de.codingair.warpsystem.bungee.base.managers.*;
 import de.codingair.warpsystem.bungee.utils.BungeeHandler;
 import de.codingair.warpsystem.bungee.utils.BungeePlayer;
 import de.codingair.warpsystem.bungee.utils.BungeeScheduleTask;
 import de.codingair.warpsystem.bungee.utils.BungeeServer;
 import de.codingair.warpsystem.proxy.core.Core;
+import de.codingair.warpsystem.proxy.core.base.LangHandler;
 import de.codingair.warpsystem.proxy.core.base.handlers.JarManager;
 import de.codingair.warpsystem.proxy.core.base.handlers.PlayerDataHandler;
-import de.codingair.warpsystem.proxy.core.base.utils.LangHandler;
 import de.codingair.warpsystem.proxy.core.utils.Player;
 import de.codingair.warpsystem.proxy.core.utils.ProxyPlugin;
 import de.codingair.warpsystem.proxy.core.utils.ScheduleTask;
@@ -41,16 +37,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public class WarpSystem extends Plugin implements ProxyPlugin {
-    public static final String PERMISSION_MODIFY_SYSTEM = "warpsystem.modify.system";
-
     private static WarpSystem instance;
     private final BungeeHandler dataHandler = new BungeeHandler(this);
     private final FileManager fileManager = new FileManager(this);
-    private DataManager dataManager;
     private final JarManager jarManager = new JarManager();
-    private final Timer timer = new Timer();
+
+    private DataManager dataManager;
     private CooldownManager cooldownManager;
-    private PlayerDataListener playerDataListener;
+    private PlayerDataManager playerDataManager;
+
+    private final Timer timer = new Timer();
 
     public static void logMessage(String message) {
         System.out.println(message);
@@ -104,7 +100,7 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
         cooldownManager.load();
 
         getProxy().getPluginManager().registerListener(this, new SetupAssistantListener());
-        getProxy().getPluginManager().registerListener(this, (playerDataListener = new PlayerDataListener()));
+        getProxy().getPluginManager().registerListener(this, (playerDataManager = new PlayerDataManager()));
 
         Core.getServerManager().run();
         new ChatInputManager();
@@ -243,8 +239,8 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
         return jarManager;
     }
 
-    public PlayerDataListener getPlayerListener() {
-        return playerDataListener;
+    public PlayerDataManager getPlayerListener() {
+        return playerDataManager;
     }
 
     @Override
@@ -260,7 +256,7 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
     }
 
     @Override
-    public @NotNull Stream<Server> getRegisteredServers() {
+    public @NotNull Stream<Server<?>> getRegisteredServers() {
         return getProxy().getServers().values().stream().map(BungeeServer::new);
     }
 
@@ -280,7 +276,7 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
     }
 
     @Override
-    public Server getServer(String server) {
+    public Server<?> getServer(String server) {
         ServerInfo info = getProxy().getServerInfo(server);
         if (info != null) return new BungeeServer(info);
         else return null;
@@ -298,6 +294,6 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
 
     @Override
     public PlayerDataHandler getPlayerData() {
-        return this.playerDataListener;
+        return this.playerDataManager;
     }
 }
