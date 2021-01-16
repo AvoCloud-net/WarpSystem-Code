@@ -46,8 +46,6 @@ import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -165,7 +163,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             cooldownManager.load();
 
             //check permission before loading features
-            checkPermissions();
+            Permissions.checkPermissions();
             Permissions.PERMISSION_ADMIN = this.fileManager.getFile("Config").getConfig().getString("WarpSystem.Admin.Permission", "WarpSystem.Admin");
 
             new PostWorldManager();
@@ -294,27 +292,6 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         map.set(oldConfig, copy);
 
         this.fileManager.unloadFile(file);
-    }
-
-    private void checkPermissions() {
-        ConfigFile config = fileManager.getFile("Config");
-        if (config.getConfig().getString("Do_Not_Edit.Last_Version", "0").equals("0")) {
-            config.getConfig().set("WarpSystem.Permissions", false);
-            config.saveConfig();
-        }
-
-        if (!config.getConfig().getBoolean("WarpSystem.Permissions", true)) {
-            for (Field f : getClass().getDeclaredFields()) {
-                if (!Modifier.isFinal(f.getModifiers()) && f.getName().startsWith("PERMISSION_USE_")) {
-                    f.setAccessible(true);
-                    try {
-                        f.set(this, null);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
     }
 
     private void afterOnEnable() {

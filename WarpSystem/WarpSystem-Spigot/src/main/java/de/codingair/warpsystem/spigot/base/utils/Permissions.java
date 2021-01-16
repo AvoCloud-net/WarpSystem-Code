@@ -1,6 +1,11 @@
 package de.codingair.warpsystem.spigot.base.utils;
 
+import de.codingair.codingapi.files.ConfigFile;
+import de.codingair.warpsystem.spigot.base.WarpSystem;
 import org.bukkit.command.CommandSender;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 public class Permissions {
     public static final String PERMISSION_NOTIFY = "warpsystem.notify";
@@ -52,5 +57,26 @@ public class Permissions {
 
     public static boolean hasPermission(CommandSender sender, String permission) {
         return permission == null || sender.hasPermission(permission);
+    }
+
+    public static void checkPermissions() {
+        ConfigFile config = WarpSystem.getInstance().getFileManager().getFile("Config");
+        if (config.getConfig().getString("Do_Not_Edit.Last_Version", "0").equals("0")) {
+            config.getConfig().set("WarpSystem.Permissions", false);
+            config.saveConfig();
+        }
+
+        if (!config.getConfig().getBoolean("WarpSystem.Permissions", true)) {
+            for (Field f : Permissions.class.getDeclaredFields()) {
+                if (!Modifier.isFinal(f.getModifiers()) && f.getName().startsWith("PERMISSION_USE_")) {
+                    f.setAccessible(true);
+                    try {
+                        f.set(null, null);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 }
