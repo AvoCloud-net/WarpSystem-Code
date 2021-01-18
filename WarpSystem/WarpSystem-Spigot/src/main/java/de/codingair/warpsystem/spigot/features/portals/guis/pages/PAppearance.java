@@ -169,57 +169,7 @@ public class PAppearance extends PageItem {
             }
         }.setOption(option));
 
-        addButton(new SyncAnvilGUIButton(4, 2, ClickType.LEFT) {
-            @Override
-            public void onClose(AnvilCloseEvent e) {
-            }
-
-            @Override
-            public boolean canClick(ClickType click) {
-                return click == ClickType.LEFT || click == ClickType.RIGHT;
-            }
-
-            @Override
-            public ItemStack craftItem() {
-                return new ItemBuilder(XMaterial.PAPER)
-                        .setName(Editor.ITEM_TITLE_COLOR + Lang.get("Teleport_Name"))
-                        .setLore("§3" + Lang.get("Current") + ": " + (clone.getTeleportName() == null ? "§c" + Lang.get("Not_Set") : "§7'§f" + org.bukkit.ChatColor.translateAlternateColorCodes('&', clone.getTeleportName()) + "§7'"),
-                                "", (clone.getTeleportName() == null ? "§3" + Lang.get("Leftclick") + ": §a" + Lang.get("Set_Name") : "§3" + Lang.get("Leftclick") + ": §a" + Lang.get("Change_Name")),
-                                (clone.getTeleportName() == null ? null : "§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove")))
-                        .getItem();
-            }
-
-            @Override
-            public ItemStack craftAnvilItem(ClickType trigger) {
-                return new ItemBuilder(Material.PAPER).setName(clone.getTeleportName() == null ? Lang.get("Name") + "..." : clone.getTeleportName().replace("§", "&")).getItem();
-            }
-
-            @Override
-            public void onOtherClick(InventoryClickEvent e) {
-                if (e.getClick() == ClickType.RIGHT) {
-                    clone.setTeleportName(null);
-                    update();
-                }
-            }
-
-            @Override
-            public void onClick(AnvilClickEvent e) {
-                if (!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
-
-                String input = e.getInput();
-
-                if (input == null) {
-                    e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Enter_Name"));
-                    return;
-                }
-
-                e.setClose(true);
-                clone.setTeleportName(input);
-                update();
-            }
-        }.setOption(option));
-
-        addButton(new SyncButton(5, 2) {
+        addButton(new SyncButton(4, 2) {
             @Override
             public void onClick(InventoryClickEvent e, Player player) {
                 if (e.isLeftClick()) {

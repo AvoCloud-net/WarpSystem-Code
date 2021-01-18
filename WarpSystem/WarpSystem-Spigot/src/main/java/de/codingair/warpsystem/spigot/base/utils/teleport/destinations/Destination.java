@@ -119,6 +119,8 @@ public class Destination implements Serializable {
         if (!customOptions.sendMessage()) message = null;
         else message = PAPI.convert(message, player);
 
+        if(customOptions.getDisplayName() != null) displayName = customOptions.getDisplayName();
+
         return adapter.teleport(player, id, buildRandomOffset(), displayName, checkPermission, message, silent, costs, callback);
     }
 
@@ -134,7 +136,7 @@ public class Destination implements Serializable {
         message = PAPI.convert(message, player);
         message = message
                 .replace("%AMOUNT%", new ImprovedDouble(costs).toString())
-                .replace("%warp%", ChatColor.translateAlternateColorCodes('&', displayName))
+                .replace("%warp%", ChatColor.translateAlternateColorCodes('&', customOptions.getDisplayName() == null ? displayName : customOptions.getDisplayName()))
                 .replace("%player%", player.getName())
                 .replace("%PLAYER%", player.getName());
 

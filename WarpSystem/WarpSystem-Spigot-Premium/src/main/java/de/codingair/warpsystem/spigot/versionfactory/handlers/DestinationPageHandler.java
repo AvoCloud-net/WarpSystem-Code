@@ -199,6 +199,45 @@ public class DestinationPageHandler {
                     update();
                 }
             }.setOption(option));
+
+            page.addButton(new SyncChatInputGUIButton(4, 2, ClickType.LEFT) {
+                @Override
+                public void onEnter(ChatInputEvent e) {
+                    if (e.getText().isEmpty()) page.getDestination().getCustomOptions().setDisplayName(null);
+                    else page.getDestination().getCustomOptions().setDisplayName(e.getText());
+                    e.setClose(true);
+                }
+
+                @Override
+                public ItemStack craftItem() {
+                    String current = page.getDestination().getCustomOptions().getColoredDisplayName();
+                    ItemBuilder builder = new ItemBuilder(XMaterial.NAME_TAG).setName("§6§n" + Lang.get("Teleport_Name"));
+
+                    builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Current") + ": " + (current == null ? "§e" + Lang.get("Default") : "§7\"§f" + current + "§7\""));
+
+                    builder.addLore("", Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §a" + (current == null ? Lang.get("Set") : Lang.get("Change")));
+                    if (current != null) builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
+
+                    return builder.getItem();
+                }
+
+                @Override
+                public boolean canClick(ClickType click) {
+                    if (click == ClickType.RIGHT) {
+                        return page.getDestination().getCustomOptions().getDisplayName() != null;
+                    }
+
+                    return click == ClickType.LEFT;
+                }
+
+                @Override
+                public void onOtherClick(InventoryClickEvent e) {
+                    if (e.getClick() == ClickType.RIGHT) {
+                        page.getDestination().getCustomOptions().setDisplayName(null);
+                        update();
+                    }
+                }
+            }.setOption(option));
         }
     }
 
@@ -556,7 +595,7 @@ public class DestinationPageHandler {
                     public boolean canTrigger(InventoryClickEvent e, ClickType trigger, Player player) {
                         if (page.getDestination().getType() == DestinationType.Server) {
                             ServerAdapter serverAdapter = (ServerAdapter) page.getDestination().getAdapter();
-                            if(serverAdapter.getServer() == null) return true;
+                            if (serverAdapter.getServer() == null) return true;
 
                             serverAdapter.setKeepPosition(!serverAdapter.isKeepPosition());
                             update();
