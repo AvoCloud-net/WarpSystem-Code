@@ -18,7 +18,7 @@ public class PrepareCoordinationTeleportPacketHandler implements ResponsiblePack
     @Override
     public @NotNull CompletableFuture<IntegerPacket> response(@NotNull PrepareCoordinationTeleportPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         Player p = Core.getPlugin().getPlayer(packet.getPlayer());
-        Server target = Core.getPlugin().getServer(packet.getServer());
+        Server<?> target = Core.getPlugin().getServer(packet.getServer());
 
         if (p != null && Core.getServerManager().isOnline(target)) {
             if (target.isEmpty()) {
@@ -29,7 +29,7 @@ public class PrepareCoordinationTeleportPacketHandler implements ResponsiblePack
                     if (connected) {
                         PrepareCoordinationTeleportPacket finalCall = packet.clone();
                         finalCall.setServer(null);
-                        Core.getPlugin().dataHandler().send(finalCall, target, Direction.DOWN);
+                        Core.getPlugin().dataHandler().send(finalCall.noFuture(), target, Direction.DOWN);
 
                         future.complete(new IntegerPacket(0));
                     } else future.complete(new IntegerPacket(1));

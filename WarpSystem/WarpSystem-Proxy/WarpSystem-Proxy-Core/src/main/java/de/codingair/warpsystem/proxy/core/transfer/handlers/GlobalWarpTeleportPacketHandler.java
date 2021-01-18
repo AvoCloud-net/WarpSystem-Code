@@ -42,7 +42,7 @@ public class GlobalWarpTeleportPacketHandler implements ResponsiblePacketHandler
                 packet.isKeepRotation() ? -420 : warp.getLoc().getYaw(), packet.isKeepRotation() ? -420 : warp.getLoc().getPitch(), packet.getCosts(), packet.isIgnoreLimit());
 
         if (p.getServer().equals(otherServer)) {
-            Core.getPlugin().dataHandler().send(out, otherServer, Direction.DOWN);
+            Core.getPlugin().dataHandler().send(out.noFuture(), otherServer, Direction.DOWN);
             return CompletableFuture.completedFuture(new IntegerPacket(0));
         } else {
             if (Core.getServerManager().isOnline(otherServer)) {
@@ -55,7 +55,7 @@ public class GlobalWarpTeleportPacketHandler implements ResponsiblePacketHandler
                         ServerHandler.sendPlayerTo(otherServer, p, new Callback<Server<?>>() {
                             @Override
                             public void accept(Server<?> object) {
-                                Core.getPlugin().dataHandler().send(out, otherServer, Direction.DOWN);
+                                Core.getPlugin().dataHandler().send(out.noFuture(), otherServer, Direction.DOWN);
                                 future.complete(new IntegerPacket(0));
                             }
                         });
