@@ -313,8 +313,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
                     if (!player.isOp()) increaseTeleports(uuid);
 
                     Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> {
-                        TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(loc)), "");
-                        options.setOrigin(Origin.RandomTP);
+                        TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(loc)), "", Origin.RandomTP);
                         options.setMessage(Lang.getPrefix() + Lang.get("RandomTP_Teleported"));
                         options.setSkip(true);
                         options.addCallback(new Callback<Result>() {

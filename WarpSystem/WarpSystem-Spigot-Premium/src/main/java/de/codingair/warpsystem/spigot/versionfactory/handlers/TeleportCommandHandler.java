@@ -119,8 +119,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
         location.setYaw(0);
         location.setPitch(0);
 
-        TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(location)), destination);
-        options.setOrigin(Origin.TeleportCommand);
+        TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(location)), destination, Origin.TeleportCommand);
         options.setSkip(true);
         options.setMessage(Lang.getPrefix() + (gate == playerP ? Lang.get("Teleported_To") : Lang.get("Teleported_To_By").replace("%gate%", gate.getName())));
 
@@ -150,8 +149,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
 
         if (gate != playerP) gate.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", playerP.getName()).replace("%warp%", targetP.getName()));
 
-        TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(targetP.getLocation())), targetP.getName());
-        options.setOrigin(Origin.TeleportCommand);
+        TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(targetP.getLocation())), targetP.getName(), Origin.TeleportCommand);
         options.setSkip(true);
         options.setMessage(Lang.getPrefix() + (gate == playerP ? Lang.get("Teleported_To") : Lang.get("Teleported_To_By").replace("%gate%", gate.getName())));
 

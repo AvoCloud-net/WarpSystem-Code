@@ -67,9 +67,8 @@ public class CGlobalWarp extends WSCommandBuilder implements ProxyFeature {
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 if (GlobalWarpManager.getInstance().exists(argument)) {
-                    TeleportOptions options = new TeleportOptions(new Destination(argument, DestinationType.GlobalWarp), GlobalWarpManager.getInstance().getCaseCorrectlyName(argument));
+                    TeleportOptions options = new TeleportOptions(new Destination(argument, DestinationType.GlobalWarp), GlobalWarpManager.getInstance().getCaseCorrectlyName(argument), Origin.GlobalWarp);
                     options.setAfterEffects(false);
-                    options.setOrigin(Origin.GlobalWarp);
                     WarpSystem.getInstance().getTeleportManager().teleport((Player) sender, options);
                 } else {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("WARP_DOES_NOT_EXISTS"));
@@ -98,8 +97,7 @@ public class CGlobalWarp extends WSCommandBuilder implements ProxyFeature {
 
                 if (GlobalWarpManager.getInstance().exists(args[0])) {
                     String dest = GlobalWarpManager.getInstance().getCaseCorrectlyName(args[0]);
-                    TeleportOptions options = new TeleportOptions(new Destination(args[0], DestinationType.GlobalWarp), dest);
-                    options.setOrigin(Origin.GlobalWarp);
+                    TeleportOptions options = new TeleportOptions(new Destination(args[0], DestinationType.GlobalWarp), dest, Origin.GlobalWarp);
                     options.setMessage(Lang.getPrefix() + Lang.get("Teleported_To_By").replace("%gate%", sender.getName()));
                     options.setPermission(TeleportManager.NO_PERMISSION);
                     options.setAfterEffects(false);

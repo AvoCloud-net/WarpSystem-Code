@@ -4,6 +4,7 @@ import de.codingair.codingapi.tools.Location;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.versionfactory.VKey;
 import de.codingair.warpsystem.spigot.versionfactory.specified.FactoryBuilder;
+import org.jetbrains.annotations.NotNull;
 
 public class WarpSignFactory extends FactoryBuilder<WarpSign> {
     private static final WarpSignFactory F = new WarpSignFactory();
@@ -16,7 +17,7 @@ public class WarpSignFactory extends FactoryBuilder<WarpSign> {
         return F.newInstance();
     }
 
-    public static WarpSign build(Location location, Destination destination) {
+    public static WarpSign build(@NotNull Location location, @NotNull Destination destination) {
         return F.newInstance(location, destination);
     }
 }

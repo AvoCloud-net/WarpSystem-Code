@@ -143,8 +143,7 @@ public class CWarp extends WSCommandBuilder {
 
                 SimpleWarp warp = m.getWarp(args[0]);
 
-                TeleportOptions options = new TeleportOptions(new Destination(warp.getName(), DestinationType.SimpleWarp), warp.getName());
-                options.setOrigin(Origin.SimpleWarp);
+                TeleportOptions options = new TeleportOptions(new Destination(warp.getName(), DestinationType.SimpleWarp), warp.getName(), Origin.SimpleWarp);
                 options.setMessage(Lang.getPrefix() + Lang.get("Teleported_To_By").replace("%gate%", sender.getName()));
                 options.setPermission(TeleportManager.NO_PERMISSION);
 

@@ -32,8 +32,7 @@ public class StartTeleportToPlayerPacketHandler implements ResponsiblePacketHand
             return CompletableFuture.completedFuture(new IntegerPacket(1));
         }
 
-        TeleportOptions options = new TeleportOptions(new Destination(new EmptyAdapter()), packet.getToDisplayName());
-        options.setOrigin(Origin.TeleportRequest);
+        TeleportOptions options = new TeleportOptions(new Destination(new EmptyAdapter()), packet.getToDisplayName(), Origin.TeleportRequest);
         options.setWaitForTeleport(true);
         options.setMessage(null);
         options.setPayMessage(null);

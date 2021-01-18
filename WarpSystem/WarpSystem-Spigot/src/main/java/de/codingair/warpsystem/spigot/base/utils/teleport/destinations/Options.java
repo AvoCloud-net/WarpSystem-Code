@@ -69,8 +69,8 @@ public class Options implements Serializable {
     }
 
     public String buildMessage(String message) {
-        if (this.message != null && !this.message) message = null;
-        if (customMessage != null) message = ChatColor.translateAlternateColorCodes('&', customMessage);
+        if (this.message != null && !this.message) return null;
+        else if (customMessage != null) return ChatColor.translateAlternateColorCodes('&', customMessage);
         return message;
     }
 

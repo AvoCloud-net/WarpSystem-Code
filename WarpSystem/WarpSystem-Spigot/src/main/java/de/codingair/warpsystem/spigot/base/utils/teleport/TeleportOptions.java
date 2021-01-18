@@ -54,11 +54,19 @@ public class TeleportOptions {
     }
 
     public TeleportOptions(Location location, String displayName) {
-        this(new Destination(new LocationAdapter(location)), displayName);
+        this(location, displayName, Origin.Custom);
+    }
+
+    public TeleportOptions(Location location, String displayName, Origin origin) {
+        this(new Destination(new LocationAdapter(location)), displayName, origin);
     }
 
     public TeleportOptions(Destination destination, String displayName) {
-        this.origin = Origin.Custom;
+        this(destination, displayName, Origin.Custom);
+    }
+
+    public TeleportOptions(Destination destination, String displayName, Origin origin) {
+        this.origin = origin;
         this.destination = destination;
         setDisplayName(displayName);
         this.permission = null;

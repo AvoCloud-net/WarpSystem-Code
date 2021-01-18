@@ -213,8 +213,7 @@ public class CGlobalWarps extends WSCommandBuilder implements ProxyFeature {
                 new GGlobalWarpList((Player) sender) {
                     @Override
                     public void onClick(String warp, ClickType clickType) {
-                        TeleportOptions options = new TeleportOptions(new Destination(warp, DestinationType.GlobalWarp), warp);
-                        options.setOrigin(Origin.GlobalWarp);
+                        TeleportOptions options = new TeleportOptions(new Destination(warp, DestinationType.GlobalWarp), warp, Origin.GlobalWarp);
                         options.setSkip(true);
 
                         WarpSystem.getInstance().getTeleportManager().teleport((Player) sender, options);

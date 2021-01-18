@@ -8,6 +8,7 @@ import de.codingair.warpsystem.api.IDestination;
 import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.api.PAPI;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
+import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.SimulatedTeleportResult;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.*;
 import de.codingair.warpsystem.spigot.features.globalwarps.managers.GlobalWarpManager;
@@ -125,19 +126,25 @@ public class Destination implements Serializable {
         return adapter.teleport(player, id, buildRandomOffset(), displayName, checkPermission, message, silent, costs, callback);
     }
 
-    public void sendMessage(Player player, String message, String displayName, double costs) {
-        message = getMessage(player, message, displayName, costs);
-        if (adapter == null || message == null || !customOptions.sendMessage() || type == DestinationType.GlobalWarp) return;
+    public void sendMessage(Player player, String message, String displayName, double costs, Origin origin) {
+        if (adapter == null
+                || type == DestinationType.GlobalWarp
+                || (customOptions.getMessage() == null ? !origin.sendTeleportMessage() : !customOptions.getMessage())
+        ) return;
+
+        if (customOptions.getCustomMessage() != null) message = ChatColor.translateAlternateColorCodes('&', customOptions.getCustomMessage());
+        if (message == null) return;
+
+        message = PAPI.convert(message, player);
+        message = message
+                .replace("%AMOUNT%", new ImprovedDouble(costs).toString())
+                .replace("%warp%", ChatColor.translateAlternateColorCodes('&', displayName))
+                .replace("%player%", player.getName())
+                .replace("%PLAYER%", player.getName());
+
         player.sendMessage(message);
     }
 
-    public String getMessage(Player player, String message, String displayName, double costs) {
-        message = this.customOptions.buildMessage(message);
-        if (adapter == null || message == null) return null;
-        message = message.replace("%AMOUNT%", new ImprovedDouble(costs).toString()).replace("%warp%", ChatColor.translateAlternateColorCodes('&', displayName));
-        message = PAPI.convert(message, player).replace("%player%", player.getName()).replace("%PLAYER%", player.getName());
-        return message;
-    }
 
     public void adjustLocation(Player player, org.bukkit.Location location) {
         location.add(buildRandomOffset());

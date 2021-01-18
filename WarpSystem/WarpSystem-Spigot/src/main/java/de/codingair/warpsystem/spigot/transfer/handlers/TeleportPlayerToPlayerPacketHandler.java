@@ -24,11 +24,10 @@ public class TeleportPlayerToPlayerPacketHandler implements PacketHandler<Telepo
 
         if (other == null) return;
 
-        TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(other.getLocation())), other.getName());
+        TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(other.getLocation())), other.getName(), Origin.TeleportCommand);
         options.setCosts(Math.max(packet.getCosts(), 0));
         options.setSkip(true);
         options.setConfirmPayment(false);
-        options.setOrigin(Origin.TeleportCommand);
         options.setMessage(Lang.getPrefix() + (gate == player ? Lang.get("Teleported_To") : Lang.get("Teleported_To_By").replace("%gate%", (gate == null ? packet.getGate() : gate.getName()))));
 
         if (gate != null && gate != player && packet.isMessageToGate())
