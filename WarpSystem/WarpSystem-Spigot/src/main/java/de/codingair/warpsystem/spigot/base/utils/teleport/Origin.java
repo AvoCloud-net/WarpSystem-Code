@@ -9,7 +9,7 @@ public enum Origin {
     WarpIcon(Icon.class, "WarpGUI"),
     GlobalWarpIcon,
     GlobalWarp,
-    SimpleWarp,
+    SimpleWarp(null, "SimpleWarps"),
     DirectSimpleWarp,
     Warp,
     TempWarp,

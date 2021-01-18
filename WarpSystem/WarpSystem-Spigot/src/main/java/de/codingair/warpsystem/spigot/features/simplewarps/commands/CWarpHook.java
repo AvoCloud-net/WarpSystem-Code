@@ -25,9 +25,8 @@ public class CWarpHook {
         if (m.existsWarp(argument)) {
             SimpleWarp warp = m.getWarp(argument);
 
-            TeleportOptions options = new TeleportOptions(new Destination(warp.getName(), DestinationType.SimpleWarp), warp.getName());
+            TeleportOptions options = new TeleportOptions(new Destination(warp.getName(), DestinationType.SimpleWarp), warp.getName(), Origin.SimpleWarp);
             options.setCosts(warp.getCosts());
-            options.setOrigin(Origin.SimpleWarp);
 
             WarpSystem.getInstance().getTeleportManager().teleport((Player) sender, options);
 
