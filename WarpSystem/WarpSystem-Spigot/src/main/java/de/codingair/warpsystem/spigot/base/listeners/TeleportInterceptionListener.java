@@ -20,9 +20,8 @@ public class TeleportInterceptionListener implements Listener {
         e.setCancelled(true);
         Location to = e.getTo();
 
-        TeleportOptions options = new TeleportOptions(to, null);
+        TeleportOptions options = new TeleportOptions(to, null, Origin.TeleportInterception);
         options.setMessage(null);
-        options.setOrigin(Origin.TeleportInterception);
 
         TeleportManager.getInstance().teleport(e.getPlayer(), options);
     }

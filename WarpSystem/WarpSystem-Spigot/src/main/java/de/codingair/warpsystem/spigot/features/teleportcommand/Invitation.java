@@ -80,8 +80,7 @@ public class Invitation {
                         sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_accepted_sender").replace("%PLAYER%", ChatColor.stripColor(player.getName())));
                     player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_accepted_other").replace("%PLAYER%", ChatColor.stripColor(sender.getName())));
 
-                    TeleportOptions options = new TeleportOptions(toSender ? sender.getSpigotPlayer().getLocation() : player.getLocation(), toSender ? sender.getName() : player.getName());
-                    options.setOrigin(Origin.TeleportRequest);
+                    TeleportOptions options = new TeleportOptions(toSender ? sender.getSpigotPlayer().getLocation() : player.getLocation(), toSender ? sender.getName() : player.getName(), Origin.TeleportRequest);
                     options.setWaitForTeleport(true);
                     options.setCosts(TeleportCommandManager.getInstance().getTpaCosts());
 
@@ -101,8 +100,7 @@ public class Invitation {
                 handle(player.getName(), true);
 
                 if (toSender) {
-                    TeleportOptions options = new TeleportOptions(new Destination(new EmptyAdapter()), sender.getName());
-                    options.setOrigin(Origin.TeleportRequest);
+                    TeleportOptions options = new TeleportOptions(new Destination(new EmptyAdapter()), sender.getName(), Origin.TeleportRequest);
                     options.setWaitForTeleport(true);
                     options.setMessage(null);
                     options.setPayMessage(null);

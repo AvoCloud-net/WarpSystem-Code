@@ -79,8 +79,7 @@ public class CommandBlockListener implements Listener {
                     if (SimpleWarpManager.getInstance() != null) {
                         SimpleWarp warp = SimpleWarpManager.getInstance().getWarp(arg);
                         if (warp != null) {
-                            TeleportOptions options = new TeleportOptions(new Destination(warp.getName(), DestinationType.SimpleWarp), warp.getName());
-                            options.setOrigin(Origin.CommandBlock);
+                            TeleportOptions options = new TeleportOptions(new Destination(warp.getName(), DestinationType.SimpleWarp), warp.getName(), Origin.CommandBlock);
                             options.setSkip(true);
 
                             for (Player player : players) {
@@ -98,8 +97,7 @@ public class CommandBlockListener implements Listener {
                         if (GlobalWarpManager.getInstance().exists(name)) {
                             name = GlobalWarpManager.getInstance().getCaseCorrectlyName(name);
 
-                            TeleportOptions options = new TeleportOptions(new Destination(name, DestinationType.GlobalWarp), name);
-                            options.setOrigin(Origin.CommandBlock);
+                            TeleportOptions options = new TeleportOptions(new Destination(name, DestinationType.GlobalWarp), name, Origin.CommandBlock);
                             options.setSkip(true);
 
                             for (Player player : players) {

@@ -8,14 +8,14 @@ import de.codingair.warpsystem.spigot.features.warps.nextlevel.utils.Icon;
 public enum Origin {
     WarpIcon(Icon.class, "WarpGUI"),
     GlobalWarpIcon,
-    GlobalWarp,
+    GlobalWarp(null, "GlobalWarps"),
     SimpleWarp(null, "SimpleWarps"),
     DirectSimpleWarp,
     Warp,
     TempWarp,
     WarpSign(de.codingair.warpsystem.spigot.features.signs.utils.WarpSign.class, "WarpSigns"),
     ShortCut(Shortcut.class, "Shortcuts"),
-    CommandBlock,
+    CommandBlock(null, "CommandBlocks"),
     TeleportCommand,
     Custom,
     TeleportRequest,
@@ -26,27 +26,25 @@ public enum Origin {
     TeleportInterception,
     UNKNOWN;
 
-    private Class<? extends FeatureObject> clazz = null;
-    private String configName = null;
+    private final Class<? extends FeatureObject> featureClass;
+    private final String configName;
 
     Origin() {
+        this(null, null);
     }
 
-    Origin(Class<? extends FeatureObject> clazz, String configName) {
-        this.clazz = clazz;
+    Origin(Class<? extends FeatureObject> featureClass, String configName) {
+        this.featureClass = featureClass;
         this.configName = configName;
     }
 
-    public static Origin getByClass(FeatureObject clazz) {
+    public static Origin getByClass(FeatureObject object) {
         for (Origin value : values()) {
-            if (value.clazz == clazz.getClass()) return value;
+            if(value.featureClass == null) continue;
+            if (value.featureClass.isInstance(object)) return value;
         }
 
         return UNKNOWN;
-    }
-
-    public Class<? extends FeatureObject> getClazz() {
-        return clazz;
     }
 
     public String getConfigName() {
@@ -54,7 +52,7 @@ public enum Origin {
     }
 
     public boolean sendTeleportMessage() {
-        if (configName == null) return false;
+        if (configName == null) return true;
         return WarpSystem.getInstance().getFileManager().getFile("Config").getConfig().getBoolean("WarpSystem.Send.Teleport_Message." + getConfigName(), true);
     }
 

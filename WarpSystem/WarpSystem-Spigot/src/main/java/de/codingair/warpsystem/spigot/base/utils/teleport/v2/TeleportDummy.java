@@ -10,6 +10,6 @@ import org.bukkit.entity.Player;
 
 public class TeleportDummy extends Teleport {
     public TeleportDummy(Player player, Origin origin, Callback<Result> callback) {
-        super(player, new TeleportOptions(new Destination(new EmptyAdapter()), "DUMMY").addCallback(callback).setOrigin(origin));
+        super(player, new TeleportOptions(new Destination(new EmptyAdapter()), "DUMMY", origin).addCallback(callback));
     }
 }

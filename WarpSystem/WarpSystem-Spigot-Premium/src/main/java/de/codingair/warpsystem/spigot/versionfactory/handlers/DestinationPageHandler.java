@@ -77,7 +77,7 @@ public class DestinationPageHandler {
                 public ItemStack craftItem() {
                     Boolean send = page.getDestination().getCustomOptions().getMessage();
                     boolean sending = send != null ? send : page.getOrigin().sendTeleportMessage();
-                    ItemBuilder builder = new ItemBuilder(XMaterial.ENDER_EYE).setName("§6§n" + Lang.get("Teleport_Message") + "§8 (" + (sending ? "§7" + Lang.get("Enabled") : "§c" + Lang.get("Disabled")) + "§8)");
+                    ItemBuilder builder = new ItemBuilder(XMaterial.ENDER_EYE).setName("§6§n" + Lang.get("Teleport_Message") + "§8 (" + (sending ? (send == null ? "§7" : "§a") + Lang.get("Enabled") : (send == null ? "§7" : "§c") + Lang.get("Disabled")) + "§8)");
 
                     String message = page.getDestination().getCustomOptions().getCustomMessage();
                     if (message != null) message = PAPI.convert(message, p).replace("%player%", p.getName()).replace("%PLAYER%", p.getName());

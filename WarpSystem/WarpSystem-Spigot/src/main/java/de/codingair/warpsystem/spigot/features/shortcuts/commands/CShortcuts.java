@@ -7,6 +7,7 @@ import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.Permissions;
+import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.features.shortcuts.guis.GEditor;
 import de.codingair.warpsystem.spigot.features.shortcuts.managers.ShortcutManager;
 import de.codingair.warpsystem.spigot.features.shortcuts.utils.Shortcut;
@@ -58,7 +59,7 @@ public class CShortcuts extends WSCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
-                Shortcut shortcut = ShortcutFactory.build(null, argument.toLowerCase());
+                Shortcut shortcut = ShortcutFactory.build(new Destination(), argument.toLowerCase());
                 new GEditor((Player) sender, shortcut).open();
                 return false;
             }

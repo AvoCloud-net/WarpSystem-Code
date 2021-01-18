@@ -89,7 +89,7 @@ public class PlayerTeleport extends TeleportStage {
                 public void onTeleported(PlayerTeleportAcceptEvent e) {
                     if (player.equals(e.getPlayer())) {
                         if (player.isOnline()) {
-                            options.getDestination().sendMessage(player, finalMessage, options.getDisplayName(), options.getCosts(player));
+                            options.getDestination().sendMessage(player, finalMessage, options.getDisplayName(), options.getCosts(player), options.getOrigin());
                             if (options.getTeleportSound() != null) options.getTeleportSound().play(player);
                             end();
                         }

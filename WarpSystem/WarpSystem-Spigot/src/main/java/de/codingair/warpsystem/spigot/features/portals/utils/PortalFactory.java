@@ -2,6 +2,7 @@ package de.codingair.warpsystem.spigot.features.portals.utils;
 
 import de.codingair.warpsystem.spigot.versionfactory.VKey;
 import de.codingair.warpsystem.spigot.versionfactory.specified.FactoryBuilder;
+import org.jetbrains.annotations.NotNull;
 
 public class PortalFactory extends FactoryBuilder<Portal> {
     private static final PortalFactory F = new PortalFactory();
@@ -14,7 +15,7 @@ public class PortalFactory extends FactoryBuilder<Portal> {
         return F.newInstance();
     }
 
-    public static Portal build(String displayName) {
+    public static Portal build(@NotNull String displayName) {
         return F.newInstance(displayName);
     }
 }
