@@ -2,7 +2,7 @@ package de.codingair.warpsystem.bungee.features.teleport;
 
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.features.FeatureType;
-import de.codingair.warpsystem.proxy.core.features.TeleportHandler;
+import de.codingair.warpsystem.core.proxy.features.TeleportHandler;
 
 public class TeleportManager extends TeleportHandler {
 

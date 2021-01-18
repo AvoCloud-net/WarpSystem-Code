@@ -1,8 +1,8 @@
 package de.codingair.warpsystem.bungee.base.listeners;
 
 import de.codingair.packetmanagement.utils.Direction;
-import de.codingair.warpsystem.base.transfer.packets.proxy.SetupAssistantStorePacket;
-import de.codingair.warpsystem.base.transfer.packets.proxy.ToggleSetupAssistantPacket;
+import de.codingair.warpsystem.core.transfer.packets.proxy.SetupAssistantStorePacket;
+import de.codingair.warpsystem.core.transfer.packets.proxy.ToggleSetupAssistantPacket;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

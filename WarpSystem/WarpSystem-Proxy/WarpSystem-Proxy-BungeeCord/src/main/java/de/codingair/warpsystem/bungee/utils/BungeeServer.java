@@ -1,8 +1,8 @@
 package de.codingair.warpsystem.bungee.utils;
 
-import de.codingair.warpsystem.base.transfer.packets.spigot.utils.ServerPing;
-import de.codingair.warpsystem.proxy.core.utils.Player;
-import de.codingair.warpsystem.proxy.core.utils.Server;
+import de.codingair.warpsystem.core.transfer.packets.spigot.utils.ServerPing;
+import de.codingair.warpsystem.core.proxy.utils.Player;
+import de.codingair.warpsystem.core.proxy.utils.Server;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import org.jetbrains.annotations.NotNull;

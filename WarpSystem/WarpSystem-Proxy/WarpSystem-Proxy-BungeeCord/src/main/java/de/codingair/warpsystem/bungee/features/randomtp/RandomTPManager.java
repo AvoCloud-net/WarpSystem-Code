@@ -4,7 +4,7 @@ import de.codingair.codingapi.bungeecord.files.ConfigFile;
 import de.codingair.codingapi.tools.io.BungeeConfigMask;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.features.FeatureType;
-import de.codingair.warpsystem.proxy.core.features.RandomTPHandler;
+import de.codingair.warpsystem.core.proxy.features.RandomTPHandler;
 
 public class RandomTPManager extends RandomTPHandler {
     private ConfigFile file;

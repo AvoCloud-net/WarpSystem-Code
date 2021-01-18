@@ -3,7 +3,7 @@ package de.codingair.warpsystem.velocity.base.managers;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.player.ServerConnectedEvent;
-import de.codingair.warpsystem.proxy.core.base.handlers.PlayerDataHandler;
+import de.codingair.warpsystem.core.proxy.base.handlers.PlayerDataHandler;
 import de.codingair.warpsystem.velocity.base.events.ServerProvideOptionsEvent;
 import de.codingair.warpsystem.velocity.utils.VelocityPlayer;
 import de.codingair.warpsystem.velocity.utils.VelocityServer;

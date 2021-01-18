@@ -2,7 +2,7 @@ package de.codingair.warpsystem.velocity.features.randomtp;
 
 import com.velocitypowered.api.event.Subscribe;
 import de.codingair.packetmanagement.utils.Direction;
-import de.codingair.warpsystem.base.transfer.packets.spigot.RandomTPWorldsPacket;
+import de.codingair.warpsystem.core.transfer.packets.spigot.RandomTPWorldsPacket;
 import de.codingair.warpsystem.velocity.base.WarpSystem;
 import de.codingair.warpsystem.velocity.base.events.ServerProvideOptionsEvent;
 

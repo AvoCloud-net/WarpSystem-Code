@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.velocity.utils;
 
 import com.velocitypowered.api.scheduler.ScheduledTask;
-import de.codingair.warpsystem.proxy.core.utils.ScheduleTask;
+import de.codingair.warpsystem.core.proxy.utils.ScheduleTask;
 import org.jetbrains.annotations.NotNull;
 
 public class VelocityScheduleTask implements ScheduleTask {

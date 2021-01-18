@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.velocity.base.managers;
 
-import de.codingair.warpsystem.base.utils.Manager;
+import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.velocity.features.FeatureType;
 
 import java.util.ArrayList;

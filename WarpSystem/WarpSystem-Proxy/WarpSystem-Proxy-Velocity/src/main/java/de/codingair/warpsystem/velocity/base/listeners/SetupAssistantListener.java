@@ -5,7 +5,7 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.proxy.Player;
-import de.codingair.warpsystem.base.transfer.packets.proxy.ToggleSetupAssistantPacket;
+import de.codingair.warpsystem.core.transfer.packets.proxy.ToggleSetupAssistantPacket;
 import de.codingair.warpsystem.velocity.base.WarpSystem;
 
 public class SetupAssistantListener {

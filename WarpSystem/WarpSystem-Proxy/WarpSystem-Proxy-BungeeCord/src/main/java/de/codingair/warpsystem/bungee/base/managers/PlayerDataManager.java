@@ -3,7 +3,7 @@ package de.codingair.warpsystem.bungee.base.managers;
 import de.codingair.warpsystem.bungee.base.events.ServerProvideOptionsEvent;
 import de.codingair.warpsystem.bungee.utils.BungeePlayer;
 import de.codingair.warpsystem.bungee.utils.BungeeServer;
-import de.codingair.warpsystem.proxy.core.base.handlers.PlayerDataHandler;
+import de.codingair.warpsystem.core.proxy.base.handlers.PlayerDataHandler;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.event.ServerSwitchEvent;

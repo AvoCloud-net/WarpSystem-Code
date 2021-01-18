@@ -13,7 +13,7 @@ import de.codingair.codingapi.tools.io.utils.Serializable;
 import de.codingair.codingapi.utils.ImprovedDouble;
 import de.codingair.codingapi.utils.Value;
 import de.codingair.warpsystem.api.Result;
-import de.codingair.warpsystem.base.transfer.packets.spigot.utils.ServerPing;
+import de.codingair.warpsystem.core.transfer.packets.spigot.utils.ServerPing;
 import de.codingair.warpsystem.spigot.api.PAPI;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.guis.editor.pages.SoundPage;

@@ -2,9 +2,9 @@ package de.codingair.warpsystem.bungee.features.globalwarps;
 
 import de.codingair.codingapi.bungeecord.files.ConfigFile;
 import de.codingair.codingapi.tools.io.BungeeConfigMask;
-import de.codingair.warpsystem.base.transfer.utils.serializeable.SGlobalWarp;
+import de.codingair.warpsystem.core.transfer.utils.serializeable.SGlobalWarp;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
-import de.codingair.warpsystem.proxy.core.features.GlobalWarpHandler;
+import de.codingair.warpsystem.core.proxy.features.GlobalWarpHandler;
 
 public class GlobalWarpManager extends GlobalWarpHandler {
 

@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.spigot.api.players;
 
-import de.codingair.warpsystem.base.transfer.packets.spigot.MessagePacket;
+import de.codingair.warpsystem.core.transfer.packets.spigot.MessagePacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

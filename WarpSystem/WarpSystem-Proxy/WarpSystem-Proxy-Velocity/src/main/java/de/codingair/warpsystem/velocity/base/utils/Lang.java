@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.velocity.base.utils;
 
 import de.codingair.codingapi.utils.ChatColor;
-import de.codingair.warpsystem.proxy.core.base.LangHandler;
+import de.codingair.warpsystem.core.proxy.base.LangHandler;
 import de.codingair.warpsystem.velocity.api.files.ConfigFile;
 import de.codingair.warpsystem.velocity.api.files.Configuration;
 import de.codingair.warpsystem.velocity.base.WarpSystem;

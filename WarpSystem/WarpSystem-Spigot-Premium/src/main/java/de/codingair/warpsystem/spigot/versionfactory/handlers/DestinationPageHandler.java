@@ -8,7 +8,7 @@ import de.codingair.codingapi.player.gui.inventory.gui.simple.SyncButton;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.codingapi.utils.TextAlignment;
-import de.codingair.warpsystem.base.transfer.packets.spigot.RequestServerStatusPacket;
+import de.codingair.warpsystem.core.transfer.packets.spigot.RequestServerStatusPacket;
 import de.codingair.warpsystem.spigot.api.PAPI;
 import de.codingair.warpsystem.spigot.api.chatinput.ChatInputEvent;
 import de.codingair.warpsystem.spigot.api.chatinput.SyncChatInputGUIButton;

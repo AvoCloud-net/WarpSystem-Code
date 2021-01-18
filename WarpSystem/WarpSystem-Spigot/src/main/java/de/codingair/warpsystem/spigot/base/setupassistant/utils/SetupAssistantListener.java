@@ -6,7 +6,7 @@ import de.codingair.codingapi.server.specification.Version;
 import de.codingair.packetmanagement.handlers.PacketHandler;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
-import de.codingair.warpsystem.base.transfer.packets.proxy.SetupAssistantStorePacket;
+import de.codingair.warpsystem.core.transfer.packets.proxy.SetupAssistantStorePacket;
 import de.codingair.warpsystem.spigot.api.events.PlayerFinalJoinEvent;
 import de.codingair.warpsystem.spigot.base.setupassistant.SetupAssistantManager;
 import org.bukkit.event.EventHandler;

@@ -5,7 +5,7 @@ import de.codingair.codingapi.tools.Location;
 import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
 import de.codingair.warpsystem.api.Result;
-import de.codingair.warpsystem.base.transfer.packets.general.PrepareCoordinationTeleportPacket;
+import de.codingair.warpsystem.core.transfer.packets.general.PrepareCoordinationTeleportPacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.listeners.TeleportListener;
 import de.codingair.warpsystem.spigot.base.utils.Lang;

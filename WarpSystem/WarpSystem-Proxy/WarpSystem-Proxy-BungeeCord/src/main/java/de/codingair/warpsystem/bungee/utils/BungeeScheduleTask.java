@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.bungee.utils;
 
-import de.codingair.warpsystem.proxy.core.utils.ScheduleTask;
+import de.codingair.warpsystem.core.proxy.utils.ScheduleTask;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 import org.jetbrains.annotations.NotNull;
 

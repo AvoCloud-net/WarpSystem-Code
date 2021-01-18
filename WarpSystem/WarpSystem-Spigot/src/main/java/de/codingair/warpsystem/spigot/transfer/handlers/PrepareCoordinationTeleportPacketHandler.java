@@ -1,12 +1,11 @@
 package de.codingair.warpsystem.spigot.transfer.handlers;
 
 import de.codingair.codingapi.tools.Location;
-import de.codingair.packetmanagement.handlers.PacketHandler;
 import de.codingair.packetmanagement.handlers.ResponsiblePacketHandler;
 import de.codingair.packetmanagement.packets.impl.IntegerPacket;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
-import de.codingair.warpsystem.base.transfer.packets.general.PrepareCoordinationTeleportPacket;
+import de.codingair.warpsystem.core.transfer.packets.general.PrepareCoordinationTeleportPacket;
 import de.codingair.warpsystem.spigot.base.listeners.TeleportListener;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import org.jetbrains.annotations.NotNull;

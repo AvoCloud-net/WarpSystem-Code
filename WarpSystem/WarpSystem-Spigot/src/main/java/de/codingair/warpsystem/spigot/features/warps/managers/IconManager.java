@@ -6,7 +6,7 @@ import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.io.JSON.JSONParser;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
-import de.codingair.warpsystem.base.utils.Manager;
+import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableForSetupAssistant;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
@@ -38,10 +38,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @AvailableForSetupAssistant (type = "WarpGUI", config = "Config")
 @Function (name = "Enabled", defaultValue = "true", configPath = "WarpSystem.Functions.WarpGUI", clazz = Boolean.class)
@@ -49,7 +48,7 @@ import java.util.Objects;
 @Function (name = "Different GUI for each world", defaultValue = "false", configPath = "WarpSystem.GUI.Bound_to_world", clazz = Boolean.class)
 @Function (name = "Use /warp for WarpGUI", defaultValue = "false", configPath = "WarpSystem.Commands.Warp.GUI", clazz = Boolean.class)
 public class IconManager implements Manager {
-    private final List<Icon> icons = new ArrayList<>();
+    private final Set<Icon> icons = new HashSet<>();
     private ItemStack background = null;
 
     private static ItemBuilder STANDARD_ITEM() {
@@ -86,21 +85,22 @@ public class IconManager implements Manager {
         } else WarpSystem.log("      ...got 1 background");
 
         WarpSystem.log("    > Loading Icons");
-        icons.clear();
-        List<?> l = file.getConfig().getList("Icons");
+        this.icons.clear();
+
+        List<?> l = file.getConfig().getList("Pages");
+        if(l != null) {
+            for (Object o : l) {
+                if(o instanceof Map) {
+                    success = buildIcon(success, (Map<?, ?>) o);
+                }
+            }
+        }
+
+        l = file.getConfig().getList("Icons");
         if (l != null)
             for (Object s : l) {
                 if (s instanceof Map) {
-                    JSON json = new JSON((Map<?, ?>) s);
-
-                    Icon icon = new Icon();
-                    try {
-                        icon.read(json);
-                        icons.add(icon);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        success = false;
-                    }
+                    success = buildIcon(success, (Map<?, ?>) s);
                 } else if (s instanceof String) {
                     try {
                         JSON json = (JSON) new JSONParser().parse((String) s);
@@ -124,43 +124,6 @@ public class IconManager implements Manager {
             new CWarp().register();
         }
 
-        if (!success) {
-            TextComponent base = new TextComponent(Lang.getPrefix() + "§cTry to use WarpSystem ");
-            TextComponent link = new TextComponent("§c§nv3.0.1");
-            TextComponent end = new TextComponent("§c to convert your icons!");
-
-            link.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/warps-portals-and-warpsigns-warp-system-only-gui.29595/history"));
-            link.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[] {new TextComponent("§8» Click «")}));
-
-            base.addExtra(link);
-            base.addExtra(end);
-
-            Bukkit.getPluginManager().registerEvents(new Listener() {
-                @EventHandler
-                public void onJoin(PlayerJoinEvent e) {
-                    if (e.getPlayer().hasPermission(Permissions.PERMISSION_ADMIN)) {
-                        Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
-                            e.getPlayer().sendMessage(" ");
-                            e.getPlayer().sendMessage(Lang.getPrefix() + "§4Warning! §cCouldn't load all icons successfully.");
-                            e.getPlayer().spigot().sendMessage(base);
-                            e.getPlayer().sendMessage(" ");
-                        }, 20);
-                    }
-                }
-            }, WarpSystem.getInstance());
-
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                if (onlinePlayer.hasPermission(Permissions.PERMISSION_ADMIN)) {
-                    Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
-                        onlinePlayer.sendMessage(" ");
-                        onlinePlayer.sendMessage(Lang.getPrefix() + "§4Warning! §cCouldn't load all icons successfully.");
-                        onlinePlayer.spigot().sendMessage(base);
-                        onlinePlayer.sendMessage(" ");
-                    }, 20);
-                }
-            }
-        }
-
         int icons = this.icons.size();
         clean(null);
         if (icons > this.icons.size()) {
@@ -169,6 +132,25 @@ public class IconManager implements Manager {
 
         WarpSystem.log("      ...got " + this.icons.size() + " " + (this.icons.size() == 1 ? "Icon" : "Icons"));
         return success;
+    }
+
+    private boolean buildIcon(boolean success, Map<?, ?> o) {
+        JSON json = new JSON(o);
+
+        Icon icon = new Icon();
+        try {
+            icon.read(json);
+            icons.add(icon);
+        } catch (Exception e) {
+            e.printStackTrace();
+            success = false;
+        }
+
+        return success;
+    }
+
+    private Stream<Icon> sortPages(Set<Icon> pages) {
+        return pages.stream().filter(Icon::isPage).sorted(Comparator.comparingInt(Icon::getDepth));
     }
 
     private void clean(Icon page) {
@@ -212,32 +194,37 @@ public class IconManager implements Manager {
     }
 
     public void save(boolean saver) {
-        //Save
         if (!saver) WarpSystem.log("  > Saving Icons");
 
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("ActionIcons");
-        FileConfiguration config = file.getConfig();
-
-        ConfigMask writer = new ConfigMask(file);
+        ConfigMask mask = new ConfigMask(file);
 
         if (!saver) WarpSystem.log("    > Saving background");
-        writer.put("Background_Item", this.background);
+        mask.put("Background_Item", this.background);
         if (!saver) WarpSystem.log("      ...saved 1 background");
 
         if (!saver) WarpSystem.log("    > Saving Icons");
-        List<JSON> icons = new ArrayList<>();
-        for (Icon icon : this.icons) {
-            JSON json = new JSON();
-            icon.write(json);
-            icons.add(json);
-        }
-        config.set("Icons", icons);
-        if (!saver) WarpSystem.log("      ...saved " + icons.size() + " Icon(s)");
 
-        config.set("DecoIcons", null);
-        config.set("GlobalWarps", null);
-        config.set("Warps", null);
-        config.set("Categories", null);
+        //pages
+        List<JSON> pages = new ArrayList<>();
+        sortPages(this.icons).forEach(i -> {
+            JSON json = new JSON();
+            i.write(json);
+            pages.add(json);
+        });
+        mask.put("Pages", pages);
+
+        //icons
+        List<JSON> icons = new ArrayList<>();
+        this.icons.stream().filter(i -> !i.isPage()).forEach(i -> {
+            JSON json = new JSON();
+            i.write(json);
+            icons.add(json);
+        });
+        mask.put("Icons", icons);
+
+
+        if (!saver) WarpSystem.log("      ...saved " + (icons.size() + pages.size()) + " Icon(s)");
 
         file.saveConfig();
     }
@@ -401,7 +388,7 @@ public class IconManager implements Manager {
         this.icons.remove(icon);
     }
 
-    public List<Icon> getIcons() {
+    public Set<Icon> getIcons() {
         return icons;
     }
 

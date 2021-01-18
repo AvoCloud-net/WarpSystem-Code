@@ -9,7 +9,7 @@ import de.codingair.codingapi.tools.io.lib.JSONArray;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.codingapi.utils.ImprovedDouble;
-import de.codingair.warpsystem.base.transfer.packets.spigot.utils.PlayerWarpData;
+import de.codingair.warpsystem.core.transfer.packets.spigot.utils.PlayerWarpData;
 import de.codingair.warpsystem.spigot.api.StringFormatter;
 import de.codingair.warpsystem.spigot.api.events.PlayerFinalJoinEvent;
 import de.codingair.warpsystem.spigot.base.WarpSystem;

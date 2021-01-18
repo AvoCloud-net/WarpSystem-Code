@@ -2,7 +2,7 @@ package de.codingair.warpsystem.velocity.api;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import de.codingair.warpsystem.proxy.core.utils.ProxyPlugin;
+import de.codingair.warpsystem.core.proxy.utils.ProxyPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

@@ -3,7 +3,7 @@ package de.codingair.warpsystem.spigot.transfer.handlers;
 import de.codingair.packetmanagement.handlers.PacketHandler;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
-import de.codingair.warpsystem.base.transfer.packets.spigot.QueueRTPUsagePacket;
+import de.codingair.warpsystem.core.transfer.packets.spigot.QueueRTPUsagePacket;
 import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

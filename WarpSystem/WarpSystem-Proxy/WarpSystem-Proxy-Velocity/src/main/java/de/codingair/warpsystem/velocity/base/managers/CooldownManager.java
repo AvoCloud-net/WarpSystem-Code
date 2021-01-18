@@ -3,7 +3,7 @@ package de.codingair.warpsystem.velocity.base.managers;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.ServerConnectedEvent;
-import de.codingair.warpsystem.proxy.core.base.handlers.CooldownHandler;
+import de.codingair.warpsystem.core.proxy.base.handlers.CooldownHandler;
 import de.codingair.warpsystem.velocity.api.files.ConfigFile;
 import de.codingair.warpsystem.velocity.api.files.VelocityConfigMask;
 import de.codingair.warpsystem.velocity.base.WarpSystem;

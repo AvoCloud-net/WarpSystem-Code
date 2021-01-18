@@ -3,7 +3,7 @@ package de.codingair.warpsystem.spigot.transfer.handlers;
 import de.codingair.packetmanagement.handlers.PacketHandler;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
-import de.codingair.warpsystem.base.transfer.packets.spigot.TeleportRequestHandledPacket;
+import de.codingair.warpsystem.core.transfer.packets.spigot.TeleportRequestHandledPacket;
 import de.codingair.warpsystem.spigot.features.teleportcommand.Invitation;
 import de.codingair.warpsystem.spigot.features.teleportcommand.TeleportCommandManager;
 import org.jetbrains.annotations.NotNull;

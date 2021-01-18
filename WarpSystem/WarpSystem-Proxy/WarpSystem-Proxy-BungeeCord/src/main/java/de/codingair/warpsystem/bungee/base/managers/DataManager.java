@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.bungee.base.managers;
 
-import de.codingair.warpsystem.base.utils.Manager;
+import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.bungee.features.FeatureType;
 
 import java.util.ArrayList;

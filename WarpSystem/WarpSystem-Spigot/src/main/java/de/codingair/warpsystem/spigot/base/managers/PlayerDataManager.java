@@ -2,8 +2,8 @@ package de.codingair.warpsystem.spigot.base.managers;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import de.codingair.warpsystem.base.transfer.packets.general.UpdatePlayerDataPacket;
-import de.codingair.warpsystem.base.transfer.utils.PlayerData;
+import de.codingair.warpsystem.core.transfer.packets.general.UpdatePlayerDataPacket;
+import de.codingair.warpsystem.core.transfer.utils.PlayerData;
 import de.codingair.warpsystem.spigot.api.events.PlayerFinalJoinEvent;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import org.bukkit.Bukkit;
