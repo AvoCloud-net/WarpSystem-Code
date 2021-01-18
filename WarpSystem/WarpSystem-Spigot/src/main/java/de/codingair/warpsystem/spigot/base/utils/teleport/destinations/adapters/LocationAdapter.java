@@ -51,8 +51,9 @@ public class LocationAdapter extends CloneableAdapter {
             if (silent) TeleportListener.TELEPORTS.put(player, finalLoc);
 
             CompletableFuture<Boolean> f = PaperLib.teleportAsync(player, finalLoc, PlayerTeleportEvent.TeleportCause.PLUGIN);
-            if (callback != null) f.thenAccept(b -> {
-                if (b) callback.accept(Result.SUCCESS);
+            if (callback != null) f.whenComplete((b, t) -> {
+                if(t != null) t.printStackTrace();
+                else if (b) callback.accept(Result.SUCCESS);
                 else callback.accept(Result.ERROR);
             });
             return true;
