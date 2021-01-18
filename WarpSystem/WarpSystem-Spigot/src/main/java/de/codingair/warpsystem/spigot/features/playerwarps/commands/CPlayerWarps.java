@@ -87,12 +87,14 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
                     return false;
                 }
 
-                if (!warp.isOwner((Player) sender) && !sender.hasPermission(Permissions.PERMISSION_MODIFY_PLAYER_WARPS)) {
+                boolean owner = warp.isOwner((Player) sender);
+
+                if (!owner && !sender.hasPermission(Permissions.PERMISSION_MODIFY_PLAYER_WARPS)) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_no_access"));
                     return false;
                 }
 
-                SimpleMessage message = new SimpleMessage(Lang.getPrefix() + Lang.get("Warp_Delete_Info").replace("%NAME%", warp.getName()), WarpSystem.getInstance());
+                SimpleMessage message = new SimpleMessage(Lang.getPrefix() + Lang.get("Warp_Delete_Info" + (!owner ? "_Admin" : "")).replace("%NAME%", warp.getName()).replace("%PLAYER%", warp.getOwner() == null ? "NULL" : warp.getOwner().getName()), WarpSystem.getInstance());
 
                 List<String> lore = Lang.getStringList("Warp_Delete_Button_Info");
                 List<String> prepared = new ArrayList<>();
@@ -111,10 +113,10 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
                         double refund = PlayerWarpManager.getManager().delete(warp, true);
                         if (refund == -1) return;
 
-                        if (refund > 0 && PlayerWarpManager.getManager().isEconomy() && warp.isOwner(player)) {
-                            Bank.adapter().deposit((Player) sender, refund);
-                            sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_Deleted_Info").replace("%NAME%", warp.getName(true)).replace("%PRICE%", CPlayerWarps.cut(refund) + ""));
-                        } else sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_was_deleted").replace("%NAME%", warp.getName(true)));
+                        if (refund > 0 && PlayerWarpManager.getManager().isEconomy()) {
+                            if(owner) Bank.adapter().deposit((Player) sender, refund);
+                            sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_Deleted_Info" + (!owner ? "_Admin" : "")).replace("%NAME%", warp.getName(true)).replace("%PLAYER%", warp.getOwner() == null ? "NULL" : warp.getOwner().getName()).replace("%PRICE%", CPlayerWarps.cut(refund) + ""));
+                        } else sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_was_deleted" + (!owner ? "_Admin" : "")).replace("%NAME%", warp.getName(true)).replace("%PLAYER%", warp.getOwner() == null ? "NULL" : warp.getOwner().getName()));
 
                         message.destroy();
                     }
