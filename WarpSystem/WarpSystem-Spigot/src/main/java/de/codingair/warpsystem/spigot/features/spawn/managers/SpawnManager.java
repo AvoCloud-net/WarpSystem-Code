@@ -2,8 +2,8 @@ package de.codingair.warpsystem.spigot.features.spawn.managers;
 
 import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.codingapi.tools.io.ConfigMask;
-import de.codingair.warpsystem.base.transfer.packets.general.SendGlobalSpawnOptionsPacket;
-import de.codingair.warpsystem.base.utils.Manager;
+import de.codingair.warpsystem.core.transfer.packets.general.SendGlobalSpawnOptionsPacket;
+import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableForSetupAssistant;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;

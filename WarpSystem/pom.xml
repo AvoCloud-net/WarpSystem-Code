@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>WarpSystem-Base</module>
+        <module>WarpSystem-Core</module>
         <module>WarpSystem-Spigot-v1.8</module>
         <module>WarpSystem-Spigot</module>
         <module>WarpSystem-Spigot-Free</module>

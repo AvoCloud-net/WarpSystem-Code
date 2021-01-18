@@ -12,8 +12,8 @@ import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.api.Result;
-import de.codingair.warpsystem.base.transfer.packets.spigot.PlayerWarpTeleportProcessPacket;
-import de.codingair.warpsystem.base.transfer.packets.spigot.utils.PlayerWarpData;
+import de.codingair.warpsystem.core.transfer.packets.spigot.PlayerWarpTeleportProcessPacket;
+import de.codingair.warpsystem.core.transfer.packets.spigot.utils.PlayerWarpData;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.guis.editor.Editor;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
@@ -749,7 +749,7 @@ public class PlayerWarp extends FeatureObject {
         return money;
     }
 
-    public static class User implements Serializable, de.codingair.warpsystem.base.transfer.utils.serializeable.Serializable {
+    public static class User implements Serializable, de.codingair.warpsystem.core.transfer.utils.serializeable.Serializable {
         private final String jsonPrefix;
         private String name;
         private UUID id;

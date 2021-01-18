@@ -2,7 +2,7 @@ package de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types;
 
 import de.codingair.codingapi.server.commands.builder.CommandBuilder;
 import de.codingair.codingapi.tools.io.utils.DataMask;
-import de.codingair.warpsystem.base.transfer.packets.spigot.PerformCommandOnBungeePacket;
+import de.codingair.warpsystem.core.transfer.packets.spigot.PerformCommandOnBungeePacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;

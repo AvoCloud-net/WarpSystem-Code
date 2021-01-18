@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.velocity.base.events;
 
-import de.codingair.warpsystem.proxy.core.base.events.IServerInitializeEvent;
+import de.codingair.warpsystem.core.proxy.base.events.IServerInitializeEvent;
 import de.codingair.warpsystem.velocity.utils.VelocityServer;
 
 public class ServerInitializeEvent implements IServerInitializeEvent<VelocityServer> {

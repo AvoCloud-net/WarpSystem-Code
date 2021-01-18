@@ -4,7 +4,7 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.player.ServerConnectedEvent;
 import de.codingair.packetmanagement.utils.Direction;
-import de.codingair.warpsystem.base.transfer.packets.spigot.ToggleForceTeleportsPacket;
+import de.codingair.warpsystem.core.transfer.packets.spigot.ToggleForceTeleportsPacket;
 import de.codingair.warpsystem.velocity.base.WarpSystem;
 import de.codingair.warpsystem.velocity.utils.VelocityPlayer;
 import de.codingair.warpsystem.velocity.utils.VelocityServer;

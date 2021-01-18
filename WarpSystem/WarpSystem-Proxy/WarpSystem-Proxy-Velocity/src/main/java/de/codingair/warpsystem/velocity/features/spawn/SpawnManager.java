@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.velocity.features.spawn;
 
-import de.codingair.warpsystem.proxy.core.features.SpawnHandler;
+import de.codingair.warpsystem.core.proxy.features.SpawnHandler;
 import de.codingair.warpsystem.velocity.api.files.ConfigFile;
 import de.codingair.warpsystem.velocity.api.files.VelocityConfigMask;
 import de.codingair.warpsystem.velocity.base.WarpSystem;

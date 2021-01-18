@@ -6,7 +6,7 @@ import de.codingair.codingapi.player.MessageAPI;
 import de.codingair.codingapi.server.sounds.SoundData;
 import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.codingapi.utils.Removable;
-import de.codingair.warpsystem.base.transfer.packets.spigot.ChatInputGUITogglePacket;
+import de.codingair.warpsystem.core.transfer.packets.spigot.ChatInputGUITogglePacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import org.bukkit.Bukkit;

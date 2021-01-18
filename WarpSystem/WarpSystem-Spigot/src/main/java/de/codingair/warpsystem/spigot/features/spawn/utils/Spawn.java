@@ -2,7 +2,7 @@ package de.codingair.warpsystem.spigot.features.spawn.utils;
 
 import de.codingair.codingapi.server.Environment;
 import de.codingair.codingapi.tools.io.utils.DataMask;
-import de.codingair.warpsystem.base.transfer.packets.general.TeleportSpawnPacket;
+import de.codingair.warpsystem.core.transfer.packets.general.TeleportSpawnPacket;
 import de.codingair.warpsystem.spigot.api.PAPI;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;

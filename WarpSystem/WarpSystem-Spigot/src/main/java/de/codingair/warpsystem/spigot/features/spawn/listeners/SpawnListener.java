@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.spigot.features.spawn.listeners;
 
-import de.codingair.warpsystem.base.transfer.packets.general.TeleportSpawnPacket;
+import de.codingair.warpsystem.core.transfer.packets.general.TeleportSpawnPacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.features.spawn.managers.SpawnManager;
 import de.codingair.warpsystem.spigot.features.spawn.utils.Spawn;

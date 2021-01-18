@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.spigot.versionfactory.objects;
 
-import de.codingair.warpsystem.base.transfer.packets.spigot.RandomTPPacket;
+import de.codingair.warpsystem.core.transfer.packets.spigot.RandomTPPacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import org.bukkit.command.CommandSender;

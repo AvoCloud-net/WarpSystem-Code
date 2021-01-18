@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.bungee.utils;
 
-import de.codingair.warpsystem.proxy.core.utils.Player;
-import de.codingair.warpsystem.proxy.core.utils.Server;
+import de.codingair.warpsystem.core.proxy.utils.Player;
+import de.codingair.warpsystem.core.proxy.utils.Server;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

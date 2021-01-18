@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.velocity.features.teleport;
 
-import de.codingair.warpsystem.proxy.core.features.TeleportHandler;
+import de.codingair.warpsystem.core.proxy.features.TeleportHandler;
 import de.codingair.warpsystem.velocity.base.WarpSystem;
 import de.codingair.warpsystem.velocity.features.FeatureType;
 

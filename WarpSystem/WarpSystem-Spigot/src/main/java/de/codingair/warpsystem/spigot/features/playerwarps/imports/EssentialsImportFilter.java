@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.spigot.features.playerwarps.imports;
 
-import de.codingair.warpsystem.base.transfer.packets.spigot.utils.PlayerWarpData;
+import de.codingair.warpsystem.core.transfer.packets.spigot.utils.PlayerWarpData;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.features.playerwarps.utils.PlayerWarp;
 import org.bukkit.configuration.file.FileConfiguration;

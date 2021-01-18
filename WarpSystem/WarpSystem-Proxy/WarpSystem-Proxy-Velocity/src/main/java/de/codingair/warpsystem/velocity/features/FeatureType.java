@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.velocity.features;
 
-import de.codingair.warpsystem.base.utils.Manager;
+import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.velocity.features.globalwarps.GlobalWarpManager;
 import de.codingair.warpsystem.velocity.features.playerwarps.PlayerWarpManager;
 import de.codingair.warpsystem.velocity.features.randomtp.RandomTPManager;

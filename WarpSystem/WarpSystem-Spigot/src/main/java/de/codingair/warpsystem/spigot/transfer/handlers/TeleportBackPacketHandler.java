@@ -4,7 +4,7 @@ import de.codingair.packetmanagement.handlers.ResponsiblePacketHandler;
 import de.codingair.packetmanagement.packets.impl.BooleanPacket;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
-import de.codingair.warpsystem.base.transfer.packets.general.TeleportBackPacket;
+import de.codingair.warpsystem.core.transfer.packets.general.TeleportBackPacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.features.teleportcommand.TeleportCommandManager;

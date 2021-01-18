@@ -3,7 +3,7 @@ package de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.Location;
 import de.codingair.warpsystem.api.Result;
-import de.codingair.warpsystem.base.transfer.packets.spigot.GlobalWarpTeleportPacket;
+import de.codingair.warpsystem.core.transfer.packets.spigot.GlobalWarpTeleportPacket;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
 import de.codingair.warpsystem.spigot.base.utils.teleport.SimulatedTeleportResult;

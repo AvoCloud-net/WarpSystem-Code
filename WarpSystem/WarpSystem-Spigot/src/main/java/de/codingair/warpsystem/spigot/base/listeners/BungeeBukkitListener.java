@@ -1,8 +1,8 @@
 package de.codingair.warpsystem.spigot.base.listeners;
 
 import de.codingair.codingapi.tools.time.TimeMap;
-import de.codingair.warpsystem.base.transfer.packets.proxy.InitialPacket;
-import de.codingair.warpsystem.base.transfer.packets.proxy.PrepareLoginMessagePacket;
+import de.codingair.warpsystem.core.transfer.packets.proxy.InitialPacket;
+import de.codingair.warpsystem.core.transfer.packets.proxy.PrepareLoginMessagePacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.transfer.handlers.InitialPacketHandler;

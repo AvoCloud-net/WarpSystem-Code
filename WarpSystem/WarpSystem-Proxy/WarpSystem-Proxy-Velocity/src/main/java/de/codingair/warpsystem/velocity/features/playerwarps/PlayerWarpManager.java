@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.velocity.features.playerwarps;
 
-import de.codingair.warpsystem.proxy.core.features.PlayerWarpHandler;
+import de.codingair.warpsystem.core.proxy.features.PlayerWarpHandler;
 import de.codingair.warpsystem.velocity.api.files.ConfigFile;
 import de.codingair.warpsystem.velocity.api.files.VelocityConfigMask;
 import de.codingair.warpsystem.velocity.base.WarpSystem;

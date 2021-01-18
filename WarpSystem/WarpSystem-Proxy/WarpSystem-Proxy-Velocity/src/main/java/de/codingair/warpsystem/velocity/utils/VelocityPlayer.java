@@ -2,8 +2,8 @@ package de.codingair.warpsystem.velocity.utils;
 
 import com.velocitypowered.api.proxy.ConnectionRequestBuilder;
 import com.velocitypowered.api.proxy.ServerConnection;
-import de.codingair.warpsystem.proxy.core.utils.Player;
-import de.codingair.warpsystem.proxy.core.utils.Server;
+import de.codingair.warpsystem.core.proxy.utils.Player;
+import de.codingair.warpsystem.core.proxy.utils.Server;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.jetbrains.annotations.NotNull;

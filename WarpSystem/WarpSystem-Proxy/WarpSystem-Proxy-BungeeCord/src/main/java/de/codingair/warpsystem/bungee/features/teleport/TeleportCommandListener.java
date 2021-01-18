@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.bungee.features.teleport;
 
 import de.codingair.packetmanagement.utils.Direction;
-import de.codingair.warpsystem.base.transfer.packets.spigot.ToggleForceTeleportsPacket;
+import de.codingair.warpsystem.core.transfer.packets.spigot.ToggleForceTeleportsPacket;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.utils.BungeePlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;

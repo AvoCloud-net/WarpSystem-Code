@@ -1,7 +1,7 @@
 package de.codingair.warpsystem.velocity.features.globalwarps;
 
-import de.codingair.warpsystem.base.transfer.utils.serializeable.SGlobalWarp;
-import de.codingair.warpsystem.proxy.core.features.GlobalWarpHandler;
+import de.codingair.warpsystem.core.transfer.utils.serializeable.SGlobalWarp;
+import de.codingair.warpsystem.core.proxy.features.GlobalWarpHandler;
 import de.codingair.warpsystem.velocity.api.files.ConfigFile;
 import de.codingair.warpsystem.velocity.api.files.VelocityConfigMask;
 import de.codingair.warpsystem.velocity.base.WarpSystem;

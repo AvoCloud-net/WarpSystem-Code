@@ -2,8 +2,7 @@ package de.codingair.warpsystem.spigot.versionfactory.handlers;
 
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.utils.ChatColor;
-import de.codingair.warpsystem.base.transfer.utils.PlayerData;
-import de.codingair.warpsystem.base.transfer.utils.TeleportCommandOptions;
+import de.codingair.warpsystem.core.transfer.utils.PlayerData;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.Permissions;

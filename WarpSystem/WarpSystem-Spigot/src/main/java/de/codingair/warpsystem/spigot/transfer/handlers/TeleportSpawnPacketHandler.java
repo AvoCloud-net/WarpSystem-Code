@@ -3,7 +3,7 @@ package de.codingair.warpsystem.spigot.transfer.handlers;
 import de.codingair.packetmanagement.handlers.PacketHandler;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
-import de.codingair.warpsystem.base.transfer.packets.general.TeleportSpawnPacket;
+import de.codingair.warpsystem.core.transfer.packets.general.TeleportSpawnPacket;
 import de.codingair.warpsystem.spigot.base.listeners.TeleportListener;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.features.spawn.managers.SpawnManager;

@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.velocity.features.randomtp;
 
-import de.codingair.warpsystem.proxy.core.features.RandomTPHandler;
+import de.codingair.warpsystem.core.proxy.features.RandomTPHandler;
 import de.codingair.warpsystem.velocity.api.files.ConfigFile;
 import de.codingair.warpsystem.velocity.api.files.VelocityConfigMask;
 import de.codingair.warpsystem.velocity.base.WarpSystem;

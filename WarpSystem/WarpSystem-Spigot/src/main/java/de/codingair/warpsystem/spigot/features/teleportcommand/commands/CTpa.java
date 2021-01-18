@@ -3,7 +3,7 @@ package de.codingair.warpsystem.spigot.features.teleportcommand.commands;
 import de.codingair.codingapi.server.commands.builder.BaseComponent;
 import de.codingair.codingapi.server.commands.builder.CommandComponent;
 import de.codingair.codingapi.server.commands.builder.special.MultiCommandComponent;
-import de.codingair.warpsystem.base.transfer.utils.PlayerData;
+import de.codingair.warpsystem.core.transfer.utils.PlayerData;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;

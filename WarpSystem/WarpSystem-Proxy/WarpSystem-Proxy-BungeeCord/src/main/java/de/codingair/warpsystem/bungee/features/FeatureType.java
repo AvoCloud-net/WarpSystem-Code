@@ -1,6 +1,6 @@
 package de.codingair.warpsystem.bungee.features;
 
-import de.codingair.warpsystem.base.utils.Manager;
+import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.bungee.features.globalwarps.GlobalWarpManager;
 import de.codingair.warpsystem.bungee.features.playerwarps.PlayerWarpManager;
 import de.codingair.warpsystem.bungee.features.randomtp.RandomTPManager;

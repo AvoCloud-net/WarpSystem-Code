@@ -1,11 +1,11 @@
 package de.codingair.warpsystem.bungee.base.managers;
 
-import de.codingair.warpsystem.base.transfer.utils.serializeable.ServerOptions;
+import de.codingair.warpsystem.core.transfer.utils.serializeable.ServerOptions;
 import de.codingair.warpsystem.bungee.base.WarpSystem;
 import de.codingair.warpsystem.bungee.base.events.ServerInitializeEvent;
 import de.codingair.warpsystem.bungee.utils.BungeeServer;
-import de.codingair.warpsystem.proxy.core.base.handlers.ServerHandler;
-import de.codingair.warpsystem.proxy.core.utils.Server;
+import de.codingair.warpsystem.core.proxy.base.handlers.ServerHandler;
+import de.codingair.warpsystem.core.proxy.utils.Server;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Listener;
 
