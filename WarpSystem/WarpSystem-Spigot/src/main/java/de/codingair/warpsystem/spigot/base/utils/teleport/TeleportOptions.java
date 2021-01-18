@@ -189,6 +189,9 @@ public class TeleportOptions {
     }
 
     public String getMessage() {
+        String displayName = this.displayName;
+        if(destination.getCustomOptions().getDisplayName() != null) displayName = destination.getCustomOptions().getColoredDisplayName();
+
         return message == null ? null : displayName == null ? message : message.replace("%warp%", displayName);
     }
 

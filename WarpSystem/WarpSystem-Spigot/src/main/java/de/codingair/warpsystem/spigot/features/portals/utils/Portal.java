@@ -37,7 +37,6 @@ public class Portal extends FeatureObject {
     protected Axis cachedAxis = null;
 
     protected String displayName;
-    protected String teleportName;
     protected boolean waitingForWorld = false;
 
     protected Portal() {
@@ -90,7 +89,10 @@ public class Portal extends FeatureObject {
         }
 
         this.displayName = d.getString("name");
-        this.teleportName = d.getString("displayname");
+        String teleportName = d.getString("displayname", "§§");
+        if(!teleportName.equals("§§")) {
+            getDestination().getCustomOptions().setDisplayName(teleportName);
+        }
 
         String world = d.getString("world");
 
@@ -153,7 +155,6 @@ public class Portal extends FeatureObject {
         super.write(d);
 
         d.put("name", displayName);
-        d.put("displayname", teleportName);
         d.put("world", blocks.isEmpty() ? null : blocks.get(0).getLocation().getWorldName());
 
         List<JSON> data = new ArrayList<>();
@@ -227,7 +228,6 @@ public class Portal extends FeatureObject {
         this.listeners.clear();
         this.listeners.addAll(portal.getListeners());
         this.displayName = portal.getDisplayName();
-        this.teleportName = portal.getTeleportName();
 
         this.hologram.destroy();
         this.hologram.apply(((Portal) object).hologram);
@@ -263,7 +263,6 @@ public class Portal extends FeatureObject {
                 animations.equals(portal.animations) &&
                 Objects.equals(this.spawn, portal.spawn) &&
                 Objects.equals(this.displayName, portal.displayName) &&
-                Objects.equals(this.teleportName, portal.teleportName) &&
                 listeners.equals(portal.listeners);
     }
 
@@ -278,7 +277,6 @@ public class Portal extends FeatureObject {
 
         if (!this.animations.isEmpty()) options.setTeleportAnimation(false);
         options.setCanMove(true);
-        if (this.teleportName != null) options.setDisplayName(ChatColor.translateAlternateColorCodes('&', this.teleportName));
     }
 
     public int enteredPortal(LivingEntity entity, org.bukkit.Location from) {
@@ -563,7 +561,7 @@ public class Portal extends FeatureObject {
     public void setSpawn(Location spawn) {
         if (this.spawn != null && spawn != null) this.spawn.apply(spawn);
         else if (this.spawn == null && spawn != null) this.spawn = spawn.clone();
-        else if (this.spawn != null && spawn == null) {
+        else if (this.spawn != null) {
             this.spawn.destroy();
             this.spawn = null;
         }
@@ -575,16 +573,5 @@ public class Portal extends FeatureObject {
 
     public void setEditing(Portal editing) {
         this.editing = editing;
-    }
-
-    public String getTeleportName() {
-        return teleportName;
-    }
-
-    public void setTeleportName(String teleportName) {
-        this.teleportName = teleportName;
-        if (this.displayName.equals(this.teleportName)) {
-            this.teleportName = null;
-        }
     }
 }

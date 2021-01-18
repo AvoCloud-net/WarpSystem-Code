@@ -11,12 +11,14 @@ public class Options implements Serializable {
     private String customMessage;
     private Integer delay;
     private Boolean rotation;
+    private String displayName;
 
     public Options apply(Options options) {
         this.message = options.message;
         this.customMessage = options.customMessage;
         this.delay = options.delay;
         this.rotation = options.rotation;
+        this.displayName = options.displayName;
         return this;
     }
 
@@ -33,6 +35,9 @@ public class Options implements Serializable {
         i = d.getInteger("rotation", null);
         if (i == null) rotation = null;
         else rotation = i == 2;
+
+        this.displayName = d.getString("displayName");
+
         return true;
     }
 
@@ -42,6 +47,7 @@ public class Options implements Serializable {
         d.put("custom_message", customMessage);
         d.put("delay", delay == null ? null : (delay == 0 ? -1 : delay));
         d.put("rotation", rotation == null ? 0 : (rotation ? 2 : 1));
+        d.put("displayName", displayName);
     }
 
     @Override
@@ -50,6 +56,7 @@ public class Options implements Serializable {
         customMessage = null;
         delay = null;
         rotation = null;
+        displayName = null;
     }
 
     @Override
@@ -60,12 +67,13 @@ public class Options implements Serializable {
         return Objects.equals(message, options.message) &&
                 Objects.equals(customMessage, options.customMessage) &&
                 Objects.equals(delay, options.delay) &&
-                Objects.equals(rotation, options.rotation);
+                Objects.equals(rotation, options.rotation) &&
+                Objects.equals(displayName, options.displayName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(message, customMessage, delay, rotation);
+        return Objects.hash(message, customMessage, delay, rotation, displayName);
     }
 
     public String buildMessage(String message) {
@@ -108,6 +116,18 @@ public class Options implements Serializable {
     }
 
     public void setRotation(Boolean rotation) {
-        this.rotation = rotation ? null : rotation;
+        this.rotation = rotation ? null : false;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public String getColoredDisplayName() {
+        return displayName == null ? null : de.codingair.codingapi.utils.ChatColor.translateAll('&', displayName);
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 }

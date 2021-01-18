@@ -2,6 +2,7 @@ package de.codingair.warpsystem.core.transfer.packets.spigot;
 
 import de.codingair.packetmanagement.packets.RequestPacket;
 import de.codingair.packetmanagement.packets.impl.IntegerPacket;
+import de.codingair.packetmanagement.utils.ByteMask;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -33,9 +34,10 @@ public class PrepareServerSwitchPacket implements RequestPacket<IntegerPacket> {
         out.writeUTF(player);
         out.writeUTF(server);
 
-        byte options = (byte) (message != null ? 1 : 0);
-        if (ignoreLimit) options |= 1 << 1;
-        out.writeByte(options);
+        ByteMask mask = new ByteMask();
+        mask.setBit(0, message != null);
+        mask.setBit(1, ignoreLimit);
+        mask.write(out);
 
         if (message != null) out.writeUTF(message);
     }
@@ -45,9 +47,11 @@ public class PrepareServerSwitchPacket implements RequestPacket<IntegerPacket> {
         player = in.readUTF();
         server = in.readUTF();
 
-        byte options = in.readByte();
-        if ((options & 1) != 0) message = in.readUTF();
-        this.ignoreLimit = (options & (1 << 1)) != 0;
+        ByteMask mask = new ByteMask();
+        mask.read(in);
+
+        if (mask.getBit(0)) message = in.readUTF();
+        this.ignoreLimit = mask.getBit(1);
     }
 
     public String getPlayer() {
