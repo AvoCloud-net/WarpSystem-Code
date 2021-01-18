@@ -7,12 +7,8 @@ import de.codingair.warpsystem.spigot.features.warps.nextlevel.utils.Icon;
 
 public enum Origin {
     WarpIcon(Icon.class, "WarpGUI"),
-    GlobalWarpIcon,
     GlobalWarp(null, "GlobalWarps"),
     SimpleWarp(null, "SimpleWarps"),
-    DirectSimpleWarp,
-    Warp,
-    TempWarp,
     WarpSign(de.codingair.warpsystem.spigot.features.signs.utils.WarpSign.class, "WarpSigns"),
     ShortCut(Shortcut.class, "Shortcuts"),
     CommandBlock(null, "CommandBlocks"),
