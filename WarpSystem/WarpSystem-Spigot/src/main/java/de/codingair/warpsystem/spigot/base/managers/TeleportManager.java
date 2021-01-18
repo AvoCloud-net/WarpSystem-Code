@@ -68,7 +68,11 @@ public class TeleportManager implements ITeleportManager {
     }
 
     public synchronized void teleport(Player player, TeleportOptions options) {
-        if (isTeleporting(player)) {
+        teleport(player, options, false);
+    }
+
+    public synchronized void teleport(Player player, TeleportOptions options, boolean force) {
+        if (!force && isTeleporting(player)) {
             Teleport teleport = getTeleport(player);
             long diff = System.currentTimeMillis() - teleport.getStartTime();
             if (diff > 50)
