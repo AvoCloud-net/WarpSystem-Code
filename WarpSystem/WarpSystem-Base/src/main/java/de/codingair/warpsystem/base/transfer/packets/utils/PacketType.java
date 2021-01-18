@@ -63,6 +63,7 @@ public enum PacketType {
     PlayerJoinPacket(PlayerJoinPacket.class),
     PlayerQuitPacket(PlayerQuitPacket.class),
     UpdatePlayerDataPacket(UpdatePlayerDataPacket.class),
+    TeleportBackPacket(TeleportBackPacket.class),
     ;
 
     private final Class<? extends Packet> packet;

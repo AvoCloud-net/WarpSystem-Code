@@ -36,6 +36,7 @@ public class Permissions {
     public static final String PERMISSION_ByPass_Teleport_Cooldown = "warpsystem.bypass.cooldown";
     public static String PERMISSION_ADMIN = "warpsystem.admin"; //will be set after removing all non-final permission (if permissions are disabled)
     public static String PERMISSION_USE_TELEPORT_COMMAND_BACK = PERMISSION_USE_TELEPORT_COMMAND + ".back";
+    public static final String PERMISSION_USE_TELEPORT_COMMAND_BACK_OTHER = PERMISSION_USE_TELEPORT_COMMAND_BACK + ".other";
     public static String PERMISSION_USE_TELEPORT_COMMAND_BACK_DETECT_DEATHS = PERMISSION_USE_TELEPORT_COMMAND_BACK + ".deaths";
     public static String PERMISSION_USE_TELEPORT_COMMAND_TPA = PERMISSION_USE_TELEPORT_COMMAND + ".tpa";
     public static String PERMISSION_USE_TELEPORT_COMMAND_TP_ACCEPT = PERMISSION_USE_TELEPORT_COMMAND + ".tpaccept";

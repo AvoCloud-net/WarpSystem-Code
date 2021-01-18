@@ -3,6 +3,7 @@ package de.codingair.warpsystem.spigot.versionfactory.handlers;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.base.transfer.utils.PlayerData;
+import de.codingair.warpsystem.base.transfer.utils.TeleportCommandOptions;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.Permissions;
@@ -33,6 +34,36 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
         if (WarpSystem.cooldown().checkPlayer(player, Origin.TeleportCommand)) return;
         if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(player)) player.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
         else WarpSystem.cooldown().register(player, Origin.TeleportCommand);
+    }
+
+    @Override
+    public void back(CommandSender sender, String player) {
+        Player p = Bukkit.getPlayer(player);
+
+        if (p == null) {
+            if (WarpSystem.getInstance().getPlayerDataManager().getCache(player) != null) {
+                TextComponent tc = new TextComponent(Lang.getPrefix() + "§7Teleporting on your entire BungeeCord is a §6premium feature§7!");
+                tc.setColor(net.md_5.bungee.api.ChatColor.GRAY);
+                Lang.PREMIUM_CHAT(tc, sender, true);
+            } else sender.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
+        } else {
+            if (sender instanceof Player && sender.equals(p)) {
+                back(p);
+                return;
+            }
+
+            if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(p)) sender.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
+            else {
+                WarpSystem.cooldown().register(p, Origin.TeleportCommand);
+                sender.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", p.getName()).replace("%warp%", Lang.get("Last_Position")));
+            }
+        }
+    }
+
+    @Override
+    public List<String> suggestBack(String[] args, List<String> suggestions) {
+        WarpSystem.getInstance().getPlayerDataManager().getCached().forEach(p -> suggestions.add(p.getName()));
+        return suggestions;
     }
 
     @Override
@@ -117,12 +148,12 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
         int deep = args.length - 1;
 
         if (args[deep].isEmpty()) {
-            if (deep == 1 && Character.isDigit(args[0].charAt(0)) && Bukkit.getPlayer(args[0]) == null) return suggestions;
-            else if (deep == 0 || deep == 1) Bukkit.getOnlinePlayers().forEach(p -> suggestions.add(p.getName()));
+            if (deep == 1 && Character.isDigit(args[0].charAt(0)) && WarpSystem.getInstance().getPlayerDataManager().getCache(args[0]) == null) return suggestions;
+            else if (deep == 0 || deep == 1) WarpSystem.getInstance().getPlayerDataManager().getCached().forEach(p -> suggestions.add(p.getName()));
         } else {
             if (deep == 0 || deep == 1) {
                 String last = args[deep];
-                Bukkit.getOnlinePlayers().stream().filter(e -> e.getName().toLowerCase().startsWith(last.toLowerCase())).forEach(p -> suggestions.add(p.getName()));
+                WarpSystem.getInstance().getPlayerDataManager().getCached().filter(e -> e.getName().toLowerCase().startsWith(last.toLowerCase())).forEach(p -> suggestions.add(p.getName()));
             }
         }
 
@@ -131,7 +162,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
 
     @Override
     public List<String> suggestTpHere(CommandSender sender, String[] args, List<String> suggestions) {
-        Bukkit.getOnlinePlayers().forEach(p -> suggestions.add(p.getName()));
+        WarpSystem.getInstance().getPlayerDataManager().getCached().forEach(p -> suggestions.add(p.getName()));
         return suggestions;
     }
 

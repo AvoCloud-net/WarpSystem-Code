@@ -2,11 +2,16 @@ package de.codingair.warpsystem.spigot.features.teleportcommand.commands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public interface ITeleportCommandHandler {
     void back(Player player);
+
+    void back(CommandSender sender, String player);
+
+    List<String> suggestBack(String[] args, List<String> suggestions);
 
     void tp(Player gate, String player, double x, double y, double z);
 

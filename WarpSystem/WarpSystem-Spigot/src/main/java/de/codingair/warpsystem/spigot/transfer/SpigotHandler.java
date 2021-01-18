@@ -49,6 +49,7 @@ public class SpigotHandler extends OneWayDataHandler<Player> implements PluginMe
         registerHandler(UpdatePlayerDataPacket.class, new UpdatePlayerDataPacketHandler());
         registerHandler(RandomTPWorldsPacket.class, new RandomTPWorldsPacketHandler());
         registerHandler(TeleportCommandOptionsPacket.class, new TeleportCommandOptionsPacketHandler());
+        registerHandler(TeleportBackPacket.class, new TeleportBackPacketHandler());
     }
 
     public void onEnable() {

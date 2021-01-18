@@ -53,6 +53,7 @@ public abstract class CoreDataHandler<C> extends DataHandler<Server<C>> {
         registerHandler(QueueRTPUsagePacket.class, new QueueRTPUsagePacketHandler());
         registerHandler(RandomTPWorldsPacket.class, new RandomTPWorldsPacketHandler());
         registerHandler(SendGlobalSpawnOptionsPacket.class, new SendGlobalSpawnOptionsPacketHandler());
+        registerHandler(TeleportBackPacket.class, new TeleportBackPacketHandler());
     }
 
     @Override
