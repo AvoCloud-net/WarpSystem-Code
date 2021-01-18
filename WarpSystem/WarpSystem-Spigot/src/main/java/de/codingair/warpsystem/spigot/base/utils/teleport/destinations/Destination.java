@@ -103,15 +103,11 @@ public class Destination implements Serializable {
         return this;
     }
 
-    public boolean hasServerDestination() {
-        return adapter instanceof GlobalWarpAdapter || adapter instanceof ServerAdapter;
-    }
-
     public String getTargetServer() {
         if (adapter instanceof GlobalWarpAdapter) {
             return GlobalWarpManager.getInstance().getGlobalWarps().get(id);
         } else if (adapter instanceof ServerAdapter) {
-            return id;
+            return ((ServerAdapter) adapter).getServer();
         } else return null;
     }
 
@@ -179,10 +175,9 @@ public class Destination implements Serializable {
     }
 
     public String getId() {
-        if (this.adapter instanceof LocationAdapter && ((LocationAdapter) this.adapter).getLocation() != null) {
-            return new de.codingair.codingapi.tools.Location(((LocationAdapter) this.adapter).getLocation()).toJSONString(2);
-        }
-        return id;
+        if (this.adapter instanceof IdAdapter) {
+            return ((IdAdapter) this.adapter).getId();
+        } else return id;
     }
 
     public void setId(String id) {
@@ -213,14 +208,10 @@ public class Destination implements Serializable {
     public boolean read(DataMask d) throws Exception {
         this.type = DestinationType.getById(d.getInteger("type"));
         this.adapter = type.getInstance();
-        this.adapter.destination = this;
+        if (this.adapter != null) this.adapter.destination = this;
 
         if (adapter != null && adapter instanceof Serializable) {
             ((Serializable) adapter).read(d);
-        } else if (type == DestinationType.Location) {
-            de.codingair.codingapi.tools.Location loc = new de.codingair.codingapi.tools.Location();
-            d.getSerializable("id", loc);
-            ((LocationAdapter) this.adapter).setLocation(loc);
         } else id = d.getRaw("id");
 
         this.offsetX = d.getDouble("oX");
@@ -236,16 +227,9 @@ public class Destination implements Serializable {
     public void write(DataMask d) {
         d.put("type", type.getId());
 
-        if (adapter != null && adapter instanceof Serializable) {
-            ((Serializable) adapter).write(d);
-        } else {
-            Object id;
-            if (type == DestinationType.Location) {
-                id = new de.codingair.codingapi.tools.Location(buildLocation());
-            } else id = this.id;
+        if (adapter != null && adapter instanceof Serializable) ((Serializable) adapter).write(d);
+        else d.put("id", this.id);
 
-            d.put("id", id);
-        }
         d.put("oX", offsetX);
         d.put("oY", offsetY);
         d.put("oZ", offsetZ);
@@ -312,7 +296,7 @@ public class Destination implements Serializable {
         this.offsetZ = offsetZ;
     }
 
-    public boolean isBungee() {
+    public boolean isProxy() {
         return type != null && type.isBungee() && (!(adapter instanceof GlobalLocationAdapter) || (((GlobalLocationAdapter) adapter).getServer() != null && !Objects.equals(((GlobalLocationAdapter) adapter).getServer(), WarpSystem.getInstance().getCurrentServer())));
     }
 

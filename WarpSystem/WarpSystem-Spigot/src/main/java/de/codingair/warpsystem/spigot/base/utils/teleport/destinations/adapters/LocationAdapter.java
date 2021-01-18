@@ -2,9 +2,12 @@ package de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters
 
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.Location;
+import de.codingair.codingapi.tools.io.utils.DataMask;
+import de.codingair.codingapi.tools.io.utils.Serializable;
 import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.base.listeners.TeleportListener;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Usable;
 import de.codingair.warpsystem.spigot.base.utils.teleport.SimulatedTeleportResult;
 import io.papermc.lib.PaperLib;
 import org.bukkit.entity.Player;
@@ -13,7 +16,7 @@ import org.bukkit.util.Vector;
 
 import java.util.concurrent.CompletableFuture;
 
-public class LocationAdapter extends CloneableAdapter {
+public class LocationAdapter extends CloneableAdapter implements Serializable, Usable, IdAdapter {
     protected Location location;
 
     public LocationAdapter() {
@@ -89,5 +92,26 @@ public class LocationAdapter extends CloneableAdapter {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    @Override
+    public boolean read(DataMask d) throws Exception {
+        this.location = d.getSerializable("id", new Location());
+        return true;
+    }
+
+    @Override
+    public void write(DataMask d) {
+        d.put("id", this.location);
+    }
+
+    @Override
+    public boolean usable() {
+        return location != null;
+    }
+
+    @Override
+    public String getId() {
+        return location.toJSONString(2);
     }
 }

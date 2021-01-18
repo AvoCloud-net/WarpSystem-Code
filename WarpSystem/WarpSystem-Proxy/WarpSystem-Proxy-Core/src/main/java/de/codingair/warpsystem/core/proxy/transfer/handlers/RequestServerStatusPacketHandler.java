@@ -16,14 +16,12 @@ import java.util.concurrent.CompletableFuture;
 public class RequestServerStatusPacketHandler implements ResponsiblePacketHandler<RequestServerStatusPacket, BooleanPacket> {
     @Override
     public @NotNull CompletableFuture<BooleanPacket> response(@NotNull RequestServerStatusPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
-        Server server = Core.getPlugin().getServer(packet.getServer());
+        Server<?> server = Core.getPlugin().getServer(packet.getServer());
 
         if (server == null) {
-            System.out.println("Server '" + packet.getServer() + "' is null");
             return CompletableFuture.completedFuture(new BooleanPacket(false));
         } else {
             ServerPing ping = Core.getServerManager().getLastPing(server);
-            System.out.println("Check last ping for '" + packet.getServer() + "': " + (ping != null) + " && " + (ping != null && ping.getStatus()));
             return CompletableFuture.completedFuture(new BooleanPacket(ping != null && ping.getStatus()));
         }
     }

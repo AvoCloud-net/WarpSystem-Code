@@ -3,6 +3,7 @@ package de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types;
 import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.ActionObject;
+import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Usable;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.LocationAdapter;
 import org.bukkit.entity.Player;
@@ -41,7 +42,9 @@ public class WarpAction extends ActionObject<Destination> {
 
     @Override
     public boolean usable() {
-        return getValue() != null && (getValue().getId() != null || (getValue().getAdapter() instanceof LocationAdapter && ((LocationAdapter) getValue().getAdapter()).getLocation() != null));
+        return getValue() != null && (getValue().getId() != null
+                || (getValue().getAdapter() instanceof Usable && ((Usable) getValue().getAdapter()).usable())
+        );
     }
 
     @Override
