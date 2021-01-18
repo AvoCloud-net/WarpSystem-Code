@@ -3,6 +3,7 @@ package de.codingair.warpsystem.spigot.versionfactory.handlers;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.packetmanagement.packets.impl.LongPacket;
+import de.codingair.warpsystem.base.transfer.packets.general.TeleportBackPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.PrepareTeleportPacket;
 import de.codingair.warpsystem.base.transfer.packets.spigot.RequestFullNamePacket;
 import de.codingair.warpsystem.base.transfer.utils.PlayerData;
@@ -38,6 +39,54 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
         if (WarpSystem.cooldown().checkPlayer(player, Origin.TeleportCommand)) return;
         if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(player)) player.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
         else WarpSystem.cooldown().register(player, Origin.TeleportCommand);
+    }
+
+    @Override
+    public void back(CommandSender sender, String player) {
+        PlayerData playerData = WarpSystem.getInstance().getPlayerDataManager().getCache(player);
+        if (checkStatusBack(sender, playerData)) return;
+
+        if (playerData.getName().equals(sender.getName()) && sender instanceof Player) {
+            back((Player) sender);
+            return;
+        }
+
+        Player p = Bukkit.getPlayerExact(playerData.getName());
+
+        if (p == null) {
+            //Proxy
+            WarpSystem.getDataHandler().send(new TeleportBackPacket(playerData.getName(), true)).whenComplete((success, err) -> {
+                if (err != null) err.printStackTrace();
+                else if (success.getBoolean())
+                    sender.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", playerData.getName()).replace("%warp%", Lang.get("Last_Position")));
+                else sender.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
+            });
+        } else {
+            if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(p)) sender.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
+            else {
+                WarpSystem.cooldown().register(p, Origin.TeleportCommand);
+                sender.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", playerData.getName()).replace("%warp%", Lang.get("Last_Position")));
+            }
+        }
+    }
+
+    private boolean checkStatusBack(CommandSender gate, PlayerData data) {
+        if (data == null || (data.getServer() != null && (!TeleportCommandManager.getInstance().isServerAccessible(data.getServer()) || !TeleportCommandManager.getInstance().getServerOptions(data.getServer()).isBack()))) {
+            //offline
+            gate.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
+            return true;
+        } else return false;
+    }
+
+    @Override
+    public List<String> suggestBack(String[] args, List<String> suggestions) {
+        WarpSystem.getInstance().getPlayerDataManager().getCached().filter(d -> {
+            if (Bukkit.getPlayer(d.getName()) != null) return true;
+            if (d.getServer() == null) return false;
+            TeleportCommandOptions options = TeleportCommandManager.getInstance().getServerOptions(d.getServer());
+            return options != null && options.isBack();
+        }).forEach(p -> suggestions.add(p.getName()));
+        return suggestions;
     }
 
     @Override
