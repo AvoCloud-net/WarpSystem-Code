@@ -44,6 +44,8 @@ public class BungeeBukkitListener implements Listener {
     }
 
     public void process(PrepareLoginMessagePacket packet) {
+        if(packet.getMessage() == null) return;
+
         Player p = Bukkit.getPlayer(packet.getPlayer());
         if (p != null) p.sendMessage(packet.getMessage());
         else loginMessage.put(packet.getPlayer(), packet.getMessage(), 10000);

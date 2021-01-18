@@ -49,10 +49,6 @@ public class GlobalLocationAdapter extends LocationAdapter implements Serializab
     }
 
     @Override
-    public void destroy() {
-    }
-
-    @Override
     public boolean teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback) {
         if (location == null) {
             player.sendMessage(Lang.getPrefix() + Lang.get("WARP_DOES_NOT_EXISTS"));
@@ -83,27 +79,31 @@ public class GlobalLocationAdapter extends LocationAdapter implements Serializab
                     location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch(),
                     costs, player.hasPermission(Permissions.PERMISSION_ByPass_Teleport_Max_Players));
 
-            WarpSystem.getDataHandler().send(packet, player).thenAccept(result -> {
-                if (callback == null) return;
-                switch (result.a()) {
-                    case 0:
-                        callback.accept(Result.SUCCESS);
-                        break;
-                    case 1:
-                        callback.accept(Result.SERVER_NOT_AVAILABLE);
-                        break;
-                    case 2:
-                        callback.accept(Result.WORLD_DOES_NOT_EXIST);
-                        break;
-                    case 3:
-                        callback.accept(Result.TARGET_SERVER_IS_FULL);
-                        break;
-                    default:
-                        callback.accept(Result.CANCELLED);
-                }
-            });
+            coordinationTeleportPacket(player, callback, packet);
             return true;
         }
+    }
+
+    static void coordinationTeleportPacket(Player player, Callback<Result> callback, PrepareCoordinationTeleportPacket packet) {
+        WarpSystem.getDataHandler().send(packet, player).thenAccept(result -> {
+            if (callback == null) return;
+            switch (result.a()) {
+                case 0:
+                    callback.accept(Result.SUCCESS);
+                    break;
+                case 1:
+                    callback.accept(Result.SERVER_NOT_AVAILABLE);
+                    break;
+                case 2:
+                    callback.accept(Result.WORLD_DOES_NOT_EXIST);
+                    break;
+                case 3:
+                    callback.accept(Result.TARGET_SERVER_IS_FULL);
+                    break;
+                default:
+                    callback.accept(Result.CANCELLED);
+            }
+        });
     }
 
     @Override

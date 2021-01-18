@@ -48,7 +48,7 @@ public class PlayerTeleport extends TeleportStage {
 
         String finalMessage = message;
 
-        if (!options.getDestination().isBungee()) {
+        if (!options.getDestination().isProxy()) {
             Bukkit.getPluginManager().registerEvents(listener = new Listener() {
                 @EventHandler (priority = EventPriority.MONITOR)
                 public void onTeleport(PlayerTeleportEvent e) {
@@ -111,7 +111,7 @@ public class PlayerTeleport extends TeleportStage {
             public void accept(Result res) {
                 if (res == Result.SERVER_NOT_AVAILABLE) player.sendMessage(options.getServerNotOnline());
 
-                if (options.getDestination().isBungee()) {
+                if (options.getDestination().isProxy()) {
                     if (res == Result.SUCCESS) end();
                     else cancel(res);
                 }

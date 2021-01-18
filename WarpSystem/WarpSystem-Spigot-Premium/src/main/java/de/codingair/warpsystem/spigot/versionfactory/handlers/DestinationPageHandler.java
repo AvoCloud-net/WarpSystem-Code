@@ -18,6 +18,7 @@ import de.codingair.warpsystem.spigot.base.guis.editor.StandardButtonOption;
 import de.codingair.warpsystem.spigot.base.guis.editor.pages.DestinationPage;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.DestinationType;
+import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.ServerAdapter;
 import de.codingair.warpsystem.spigot.features.globalwarps.guis.GGlobalWarpList;
 import de.codingair.warpsystem.spigot.features.simplewarps.SimpleWarp;
 import de.codingair.warpsystem.spigot.features.simplewarps.guis.GSimpleWarpList;
@@ -492,16 +493,12 @@ public class DestinationPageHandler {
                     @Override
                     public ItemStack craftItem() {
                         String name = null;
-                        if (page.getDestination().getType() == DestinationType.Server) name = page.getDestination().getId();
+                        ServerAdapter serverAdapter = null;
 
-                        List<String> lore = name == null ? null : new ArrayList<>();
-                        if (lore != null) {
-                            lore.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
-                            lore.add("");
-                            lore.add("§3" + Lang.get("Shift_Leftclick") + ": §b" + Lang.get("Refresh"));
+                        if (page.getDestination().getType() == DestinationType.Server) {
+                            serverAdapter = (ServerAdapter) page.getDestination().getAdapter();
+                            name = serverAdapter.getServer();
                         }
-
-                        List<String> onlineStatus = new ArrayList<>();
 
                         if (!Objects.equals(server, name)) {
                             server = name;
@@ -515,16 +512,24 @@ public class DestinationPageHandler {
                             }
                         }
 
-                        if (server != null) {
-                            onlineStatus.add("§3" + Lang.get("Status") + ": " + (pinging ? "§7" + Lang.get("Pinging") + "..." : (online ? "§a" + Lang.get("Online") : "§c" + Lang.get("Offline"))));
+                        ItemBuilder builder = new ItemBuilder(XMaterial.ENDER_CHEST).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Server"));
+
+                        builder.setLore("§3" + Lang.get("Current") + ": " + (name == null ? "§c" + Lang.get("Not_Set") : "§7'§f" + ChatColor.translateAlternateColorCodes('&', name) + "§7'"));
+
+                        if (serverAdapter != null && serverAdapter.getServer() != null) {
+                            builder.addLore("§3" + Lang.get("Status") + ": " + (pinging ? "§7" + Lang.get("Pinging") + "..." : (online ? "§a" + Lang.get("Online") : "§c" + Lang.get("Offline"))));
+                            builder.addLore("§3" + Lang.get("Keep_Position") + ": " + (serverAdapter.isKeepPosition() ? "§a" + Lang.get("Yes") : "§c" + Lang.get("No")));
                         }
 
-                        return new ItemBuilder(XMaterial.ENDER_CHEST).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Server"))
-                                .setLore("§3" + Lang.get("Current") + ": " + (name == null ? "§c" + Lang.get("Not_Set") : "§7'§f" + ChatColor.translateAlternateColorCodes('&', name) + "§7'"))
-                                .addLore(onlineStatus)
-                                .addLore("", "§3" + Lang.get("Leftclick") + ": §a" + (name == null ? Lang.get("Set") : Lang.get("Change")))
-                                .addLore(lore)
-                                .getItem();
+                        builder.addLore("", "§3" + Lang.get("Leftclick") + ": §a" + (name == null ? Lang.get("Set") : Lang.get("Toggle")));
+
+                        if (name != null) {
+                            builder.addLore("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"),
+                                    "",
+                                    "§3" + Lang.get("Shift_Leftclick") + ": §b" + Lang.get("Refresh"));
+                        }
+
+                        return builder.getItem();
                     }
 
                     @Override
@@ -538,11 +543,25 @@ public class DestinationPageHandler {
                             return;
                         }
 
-                        page.getDestination().setId(input);
                         page.getDestination().setType(DestinationType.Server);
                         page.getDestination().setAdapter(DestinationType.Server.getInstance());
+                        ServerAdapter serverAdapter = (ServerAdapter) page.getDestination().getAdapter();
+                        serverAdapter.setServer(input);
+
                         page.updateDestinationButtons();
                         e.setClose(true);
+                    }
+
+                    @Override
+                    public boolean canTrigger(InventoryClickEvent e, ClickType trigger, Player player) {
+                        if (page.getDestination().getType() == DestinationType.Server) {
+                            ServerAdapter serverAdapter = (ServerAdapter) page.getDestination().getAdapter();
+                            if(serverAdapter.getServer() == null) return true;
+
+                            serverAdapter.setKeepPosition(!serverAdapter.isKeepPosition());
+                            update();
+                            return false;
+                        } else return true;
                     }
 
                     @Override

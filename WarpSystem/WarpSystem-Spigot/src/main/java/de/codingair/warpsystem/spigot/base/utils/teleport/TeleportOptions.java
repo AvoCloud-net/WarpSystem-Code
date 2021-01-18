@@ -189,7 +189,7 @@ public class TeleportOptions {
     }
 
     public String getMessage() {
-        return message == null ? null : message.replace("%warp%", displayName);
+        return message == null ? null : displayName == null ? message : message.replace("%warp%", displayName);
     }
 
     public void setMessage(String message) {
