@@ -97,8 +97,7 @@ public class PClasses extends PageItem {
             removeButton(slot);
         }
 
-        int i;
-        for (i = 0; i < PlayerWarpManager.getManager().getWarpClasses().size(); i++) {
+        for (int i = 0; i < PlayerWarpManager.getManager().getWarpClasses().size(); i++) {
             Category c = PlayerWarpManager.getManager().getWarpClasses().get(i);
 
             addButton(new SyncButton(slots[i]) {

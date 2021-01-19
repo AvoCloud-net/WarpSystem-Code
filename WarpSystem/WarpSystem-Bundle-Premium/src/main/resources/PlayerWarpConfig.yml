@@ -36,7 +36,7 @@ PlayerWarps:
       - twarp
     #Listed names will be blocked
     Name_Blacklist: [ ]
-    #Listed worlds will be blocked
+    #Listed worlds will be blocked. Players (in those worlds) will not be able to interact PlayerWarps (create, teleport, edit, list)
     World_Blacklist: [ ]
     Categories:
       Enabled: true

@@ -23,6 +23,11 @@ public class CPlayerWarp extends WarpSystemCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
+                if(PlayerWarpManager.isWorldBlocked(((Player) sender).getWorld().getName())) {
+                    sender.sendMessage(Lang.getPrefix() + Lang.get("Not_Available_In_World").replace("%SUBJECT%", Lang.get("Player_Warps")));
+                    return true;
+                }
+
                 List<PlayerWarp> warps = PlayerWarpManager.getManager().getOwnWarps((Player) sender);
 
                 if (warps.size() == 1) {
@@ -75,6 +80,11 @@ public class CPlayerWarp extends WarpSystemCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
+                if(PlayerWarpManager.isWorldBlocked(((Player) sender).getWorld().getName())) {
+                    sender.sendMessage(Lang.getPrefix() + Lang.get("Not_Available_In_World").replace("%SUBJECT%", Lang.get("Player_Warps")));
+                    return true;
+                }
+
                 PlayerWarp warp = PlayerWarpManager.getManager().getWarp((Player) sender, argument);
 
                 if (warp == null) {
