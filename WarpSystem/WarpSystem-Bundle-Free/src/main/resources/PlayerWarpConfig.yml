@@ -25,6 +25,9 @@ PlayerWarps:
     Allow_Trusted_Members: true
     Allow_Teleport_Messages: true
     Allow_Description: true
+    #Page that will be displayed after opening the PlayerWarp list with /playerwarps
+    #Values: OWN_WARPS, ALL_WARPS, ALL_PLAYERS, CLASSES (CASE-SENSITIVE!)
+    Default_GUI_Page: OWN_WARPS
     PlayerWarps_Command_Aliases:
       - pwarps
     PlayerWarp_Command_Aliases:

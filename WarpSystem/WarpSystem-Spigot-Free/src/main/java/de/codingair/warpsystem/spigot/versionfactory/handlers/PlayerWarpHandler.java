@@ -18,6 +18,7 @@ import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.features.playerwarps.commands.CPlayerWarp;
 import de.codingair.warpsystem.spigot.features.playerwarps.commands.CPlayerWarpReference;
 import de.codingair.warpsystem.spigot.features.playerwarps.commands.CPlayerWarps;
+import de.codingair.warpsystem.spigot.features.playerwarps.guis.list.FilterType;
 import de.codingair.warpsystem.spigot.features.playerwarps.guis.list.PWList;
 import de.codingair.warpsystem.spigot.features.playerwarps.listeners.PlayerWarpListener;
 import de.codingair.warpsystem.spigot.features.playerwarps.managers.PlayerWarpManager;
@@ -106,7 +107,6 @@ public class PlayerWarpHandler extends PlayerWarpManager {
         config.set("PlayerWarps.General.Custom_teleport_costs", true);
         config.set("PlayerWarps.General.Categories.Enabled", false);
         config.set("PlayerWarps.General.Categories.Classes", new ArrayList<>());
-        this.config.saveConfig();
 
         WarpSystem.log("  > Loading PlayerWarps [Bungee: " + bungeeCord + "; TimeDependent: " + economy + "]");
 
@@ -143,6 +143,10 @@ public class PlayerWarpHandler extends PlayerWarpManager {
         this.allowTrustedMembers = config.getBoolean("PlayerWarps.General.Allow_Trusted_Members", true);
         this.allowTeleportMessage = config.getBoolean("PlayerWarps.General.Allow_Teleport_Messages", true);
         this.allowDescription = config.getBoolean("PlayerWarps.General.Allow_Description", true);
+        this.defaultPage = FilterType.checkName(config.getString("PlayerWarps.General.Default_GUI_Page", "OWN_WARPS"));
+        config.set("PlayerWarps.General.Default_GUI_Page", this.defaultPage.name()); //replace mistakes
+        this.config.saveConfig();
+
         this.time = true;
 
         //Costs - Editing
@@ -221,7 +225,7 @@ public class PlayerWarpHandler extends PlayerWarpManager {
 
         //loading PlayerWarps
         List<?> data = playerWarpsData.getConfig().getList("PlayerWarps");
-        if (data != null)
+        if (data != null) {
             for (Object o : data) {
                 JSON json = new JSON((Map<?, ?>) o);
                 PlayerWarp p = new PlayerWarp();
@@ -234,6 +238,7 @@ public class PlayerWarpHandler extends PlayerWarpManager {
                     e.printStackTrace();
                 }
             }
+        }
 
         List<PlayerWarp> imported = TempWarpAdapter.convertTempWarps(true);
         for (PlayerWarp playerWarp : imported) {

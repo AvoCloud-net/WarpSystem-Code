@@ -35,7 +35,7 @@ public class PWPage extends Page {
 
         this.size = size;
 
-        filter = FilterType.OWN_WARPS;
+        filter = PlayerWarpManager.getManager().getDefaultPage();
         extra = new Object[] {p};
         updateTitle();
 
@@ -66,7 +66,7 @@ public class PWPage extends Page {
     public void initialize(Player p) {
         getButtons().clear();
         Node<List<Button>, Integer> data = filter.getListItems((size / 9) * 7, page, p, search, extra);
-        maxPage = (int) Math.floor(data.getValue() / ((size / 9) * 7));
+        maxPage = (int) Math.floor(data.getValue() / ((size / 9D) * 7D));
         updateTitle();
 
         int slot = 0;
@@ -225,10 +225,10 @@ public class PWPage extends Page {
                 if (e.isShiftClick() && e.isRightClick()) page.setSearch(null);
                 else if (page.filter.deleteExtraBeforeChangeFilter() && page.extra != null) page.extra = null;
                 else if (e.isLeftClick()) {
-                    page.filter = page.filter.previous();
+                    page.filter = page.filter.previous((Player) e.getWhoClicked());
                     page.extra = page.filter.getStandardExtra((PWList) page.getLast());
                 } else if (e.isRightClick()) {
-                    page.filter = page.filter.next();
+                    page.filter = page.filter.next((Player) e.getWhoClicked());
                     page.extra = page.filter.getStandardExtra((PWList) page.getLast());
                 }
             } else {

@@ -26,6 +26,7 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.
 import de.codingair.warpsystem.spigot.bstats.Collectible;
 import de.codingair.warpsystem.spigot.bstats.Metrics;
 import de.codingair.warpsystem.spigot.features.FeatureType;
+import de.codingair.warpsystem.spigot.features.playerwarps.guis.list.FilterType;
 import de.codingair.warpsystem.spigot.features.playerwarps.guis.list.PWList;
 import de.codingair.warpsystem.spigot.features.playerwarps.listeners.PlayerWarpListener;
 import de.codingair.warpsystem.spigot.features.playerwarps.utils.Category;
@@ -56,6 +57,7 @@ import java.util.regex.Pattern;
 @Function (name = "Standard time value", defaultValue = "1h", configPath = "PlayerWarps.Time.Standard_Value", clazz = String.class)
 @Function (name = "Min. time value", defaultValue = "0d, 0h, 5m", configPath = "PlayerWarps.Time.Min_Time", clazz = String.class)
 @Function (name = "Max. time value", defaultValue = "30d, 0h, 0m", configPath = "PlayerWarps.Time.Max_Time", clazz = String.class)
+@Function (name = "Default list page", defaultValue = "OWN_WARPS", description = "Values: OWN_WARPS, ALL_WARPS, ALL_PLAYERS, CLASSES §8(§cCASE-SENSITIVE!§8)", configPath = "PlayerWarps.General.Default_GUI_Page", clazz = String.class)
 public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature, Collectible {
     protected final HashMap<UUID, List<PlayerWarp>> warps = new HashMap<>();
     protected final HashMap<String, UUID> names = new HashMap<>();
@@ -116,6 +118,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     protected boolean allowTeleportMessage;
     protected boolean allowDescription;
     protected boolean time;
+    protected FilterType defaultPage;
 
     public PlayerWarpManager() {
         listener = new PlayerWarpListener();
@@ -882,5 +885,9 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
 
     public boolean isTime() {
         return time;
+    }
+
+    public FilterType getDefaultPage() {
+        return defaultPage;
     }
 }
