@@ -33,6 +33,7 @@ import de.codingair.warpsystem.spigot.features.playerwarps.utils.Category;
 import de.codingair.warpsystem.spigot.features.playerwarps.utils.PlayerWarp;
 import de.codingair.warpsystem.spigot.features.playerwarps.utils.forwardcompatibility.PlayerWarpTagConverter_v4_2_2;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 
@@ -62,8 +63,8 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     protected final HashMap<UUID, List<PlayerWarp>> warps = new HashMap<>();
     protected final HashMap<String, UUID> names = new HashMap<>();
     protected final List<Category> warpCategories = new ArrayList<>();
-    protected final List<String> nameBlacklist = new ArrayList<>();
-    protected final List<String> worldBlacklist = new ArrayList<>();
+    protected final Set<String> nameBlacklist = new HashSet<>();
+    protected final Set<String> worldBlacklist = new HashSet<>();
     protected int lastCountedPlayerWarpSize = 0;
     protected ConfigFile playerWarpsData = null;
     protected ConfigFile config = null;
@@ -128,12 +129,12 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
         return WarpSystem.getInstance().getDataManager().getManager(FeatureType.PLAYER_WARS);
     }
 
-    public static boolean isProtected(Player player) {
-        String w = player.getLocation().getWorld().getName().toLowerCase();
-        for (String s : getManager().worldBlacklist) {
-            if (w.equals(s.toLowerCase())) return true;
-        }
+    public static boolean isWorldBlocked(String world) {
+        return getManager().worldBlacklist.contains(world.toLowerCase());
+    }
 
+    public static boolean isProtected(Player player) {
+        if(isWorldBlocked(player.getWorld().getName())) return true;
         if (!getManager().isProtectedRegions()) return false;
 
         Player check;
@@ -843,7 +844,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
         return protectedRegions;
     }
 
-    public List<String> getNameBlacklist() {
+    public Set<String> getNameBlacklist() {
         return nameBlacklist;
     }
 
@@ -871,7 +872,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
         return allowTrustedMembers;
     }
 
-    public List<String> getWorldBlacklist() {
+    public Set<String> getWorldBlacklist() {
         return worldBlacklist;
     }
 

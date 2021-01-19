@@ -543,3 +543,4 @@ Hide: 'Ocultar'
 RTP_Not_available_in_this_world: '&7Los teletransportes aleatorios son &cno están disponibles &7en este mundo.'
 Unknown_Command: "&7This command &ccannot be found&7."
 Keep_Position: "Keep position"
+Not_Available_In_World: "&7%SUBJECT% are &cnot available &7in this world."
