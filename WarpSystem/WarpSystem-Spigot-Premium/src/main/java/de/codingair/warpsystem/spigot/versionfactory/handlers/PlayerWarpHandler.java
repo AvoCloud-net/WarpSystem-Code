@@ -16,6 +16,7 @@ import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.features.playerwarps.commands.CPlayerWarp;
 import de.codingair.warpsystem.spigot.features.playerwarps.commands.CPlayerWarpReference;
 import de.codingair.warpsystem.spigot.features.playerwarps.commands.CPlayerWarps;
+import de.codingair.warpsystem.spigot.features.playerwarps.guis.list.FilterType;
 import de.codingair.warpsystem.spigot.features.playerwarps.managers.PlayerWarpManager;
 import de.codingair.warpsystem.spigot.features.playerwarps.utils.Category;
 import de.codingair.warpsystem.spigot.features.playerwarps.utils.PlayerWarp;
@@ -115,6 +116,9 @@ public class PlayerWarpHandler extends PlayerWarpManager {
         this.allowTeleportMessage = config.getBoolean("PlayerWarps.General.Allow_Teleport_Messages", true);
         this.allowDescription = config.getBoolean("PlayerWarps.General.Allow_Description", true);
         this.time = economy && config.getBoolean("PlayerWarps.General.Time_Bound", true);
+        this.defaultPage = FilterType.checkName(config.getString("PlayerWarps.General.Default_GUI_Page", "OWN_WARPS"));
+        config.set("PlayerWarps.General.Default_GUI_Page", this.defaultPage.name()); //replace mistakes
+        this.config.saveConfig();
 
         //Costs - Editing
         this.nameChangeCosts = config.getDouble("PlayerWarps.Costs.Editing.Name", 400);
