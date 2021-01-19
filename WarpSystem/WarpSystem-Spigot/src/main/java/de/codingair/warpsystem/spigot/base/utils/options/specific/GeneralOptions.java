@@ -223,7 +223,7 @@ public class GeneralOptions extends Options {
     }
 
     public String getStatus(ServerPing ping) {
-        if (ping.getStatus()) {
+        if (ping != null && ping.getStatus()) {
             return getPlaceholderOnline(ping);
         } else {
             return getPlaceholderOffline();

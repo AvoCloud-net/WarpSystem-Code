@@ -1,4 +1,4 @@
-package de.codingair.warpsystem.spigot.api;
+package de.codingair.warpsystem.spigot.api.placeholders;
 
 import de.codingair.warpsystem.spigot.features.playerwarps.utils.PlayerWarpPlaceholderExpansion;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -24,6 +24,7 @@ public class PAPI {
     public static void register() {
         if (papi()) {
             new PlayerWarpPlaceholderExpansion().register();
+            new ServerPlaceholderExpansion().register();
         }
     }
 }

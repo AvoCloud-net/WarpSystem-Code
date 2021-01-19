@@ -6,7 +6,7 @@ import de.codingair.codingapi.tools.io.utils.Serializable;
 import de.codingair.codingapi.utils.ImprovedDouble;
 import de.codingair.warpsystem.api.IDestination;
 import de.codingair.warpsystem.api.Result;
-import de.codingair.warpsystem.spigot.api.PAPI;
+import de.codingair.warpsystem.spigot.api.placeholders.PAPI;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.SimulatedTeleportResult;
