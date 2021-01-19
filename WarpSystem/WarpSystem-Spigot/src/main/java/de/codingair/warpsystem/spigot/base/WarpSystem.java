@@ -15,7 +15,7 @@ import de.codingair.warpsystem.core.transfer.packets.proxy.SendJarPacket;
 import de.codingair.warpsystem.core.transfer.packets.proxy.SetupAssistantStorePacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.RequestInitialPacket;
 import de.codingair.warpsystem.core.utils.Manager;
-import de.codingair.warpsystem.spigot.api.PAPI;
+import de.codingair.warpsystem.spigot.api.placeholders.PAPI;
 import de.codingair.warpsystem.spigot.api.SpigotAPI;
 import de.codingair.warpsystem.spigot.base.commands.CWarpSystem;
 import de.codingair.warpsystem.spigot.base.listeners.*;
