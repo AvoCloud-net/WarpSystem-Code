@@ -79,4 +79,14 @@ public class PlayerData implements Serializable {
         this.vanished = vanished;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "PlayerData{" +
+                "name='" + name + '\'' +
+                ", id=" + id +
+                ", server='" + server + '\'' +
+                ", vanished=" + vanished +
+                '}';
+    }
 }

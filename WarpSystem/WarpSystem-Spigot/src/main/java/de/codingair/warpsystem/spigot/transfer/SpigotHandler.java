@@ -45,7 +45,7 @@ public class SpigotHandler extends OneWayDataHandler<Player> implements PluginMe
         registerHandler(SendGlobalWarpNamesPacket.class, new SendGlobalWarpNamesPacketHandler());
         registerHandler(PlayerJoinPacket.class, new PlayerJoinPacketHandler());
         registerHandler(PlayerQuitPacket.class, new PlayerQuitPacketHandler());
-        registerHandler(ProvidePlayerDataPacket.class, new ProvideNamesPacketHandler());
+        registerHandler(ProvidePlayerDataPacket.class, new ProvidePlayerDataPacketHandler());
         registerHandler(UpdatePlayerDataPacket.class, new UpdatePlayerDataPacketHandler());
         registerHandler(RandomTPWorldsPacket.class, new RandomTPWorldsPacketHandler());
         registerHandler(TeleportCommandOptionsPacket.class, new TeleportCommandOptionsPacketHandler());

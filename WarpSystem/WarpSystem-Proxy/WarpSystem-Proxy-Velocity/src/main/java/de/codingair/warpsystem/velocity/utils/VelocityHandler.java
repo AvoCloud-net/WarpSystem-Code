@@ -61,11 +61,13 @@ public class VelocityHandler extends CoreDataHandler<ChannelIdentifier> {
     }
 
     public void onEnable() {
+        super.onEnable();
         WarpSystem.proxy().getEventManager().register(WarpSystem.getInstance(), this);
         WarpSystem.proxy().getChannelRegistrar().register(identifierProxy, identifierBackend);
     }
 
     public void onDisable() {
+        super.onDisable();
         WarpSystem.proxy().getEventManager().unregisterListener(WarpSystem.getInstance(), this);
         WarpSystem.proxy().getChannelRegistrar().unregister(identifierProxy, identifierBackend);
     }

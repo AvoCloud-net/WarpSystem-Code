@@ -12,7 +12,12 @@ import org.jetbrains.annotations.NotNull;
 public class TeleportCommandOptionsPacketHandler implements PacketHandler<TeleportCommandOptionsPacket> {
     @Override
     public void process(@NotNull TeleportCommandOptionsPacket packet, @NotNull Proxy proxy, Object connection, @NotNull Direction direction) {
-        TeleportHandler handler = Core.getPlugin().getHandler(TeleportHandler.class);
-        handler.registerOptions((Server) connection, packet);
+        if(direction == Direction.DOWN) {
+            TeleportHandler handler = Core.getPlugin().getHandler(TeleportHandler.class);
+            handler.registerOptions((Server<?>) connection, packet);
+        } else if (direction == Direction.UP) {
+            TeleportHandler handler = Core.getPlugin().getHandler(TeleportHandler.class);
+            handler.registerOptions(packet);
+        }
     }
 }

@@ -45,7 +45,7 @@ public class UpdatePlayerDataPacket implements Packet {
         return this;
     }
 
-    public UpdatePlayerDataPacket serServer(String server) {
+    public UpdatePlayerDataPacket setServer(String server) {
         this.updated.setBit(1, true);
         this.server = server;
         return this;

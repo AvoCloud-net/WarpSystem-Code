@@ -26,6 +26,7 @@ public abstract class ServerHandler {
     private boolean running = false;
 
     public static void sendPlayerTo(Server<?> server, Player player, Callback<Server<?>> c) {
+        //TODO: SERVER MIGHT BE UNREACHABLE -> RUNNING INTO VOID
         Preconditions.checkNotNull(server);
         Preconditions.checkNotNull(player);
 

@@ -9,6 +9,7 @@ import de.codingair.warpsystem.core.transfer.utils.serializeable.ServerOptions;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.listeners.BungeeBukkitListener;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,6 +54,6 @@ public class InitialPacketHandler implements PacketHandler<InitialPacket> {
             WarpSystem.getInstance().setBungeePluginVersion(version);
         }
 
-        WarpSystem.getDataHandler().send(new SendOptionsPacket(new ServerOptions(WarpSystem.getInstance().getDescription().getVersion(), WarpSystem.opt().getFetchUpdateOption())));
+        WarpSystem.getDataHandler().send(new SendOptionsPacket(new ServerOptions(WarpSystem.getInstance().getDescription().getVersion(), WarpSystem.opt().getFetchUpdateOption())), (Player) connection);
     }
 }

@@ -4,6 +4,8 @@ import de.codingair.codingapi.bungeecord.BungeeAPI;
 import de.codingair.codingapi.bungeecord.files.FileManager;
 import de.codingair.codingapi.tools.time.TimeFetcher;
 import de.codingair.codingapi.tools.time.Timer;
+import de.codingair.warpsystem.core.proxy.redis.RedisCore;
+import de.codingair.warpsystem.core.proxy.redis.trevor.TrevorHandler;
 import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.bungee.base.commands.CWarpSystem;
 import de.codingair.warpsystem.bungee.base.listeners.MainListener;
@@ -79,6 +81,8 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
         logMessage("Status:");
         logMessage(" ");
 
+        checkRedis();
+
         dataManager = new DataManager();
         dataManager.preLoad();
         logMessage("Initialize SpigotConnector");
@@ -131,6 +135,12 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
         save(false);
         destroy();
         BungeeAPI.getInstance().onDisable(this);
+    }
+
+    private void checkRedis() {
+        if(getProxy().getPluginManager().getPlugin("Trevor") != null) {
+            RedisCore.core().setHandler(new TrevorHandler());
+        }
     }
 
     private void startAutoSaver() {

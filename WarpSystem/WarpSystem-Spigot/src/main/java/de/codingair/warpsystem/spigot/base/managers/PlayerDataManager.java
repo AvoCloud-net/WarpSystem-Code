@@ -31,10 +31,12 @@ public class PlayerDataManager implements Listener {
     }
 
     public void join(String name, String server, UUID id) {
+        System.out.println(name + " has joined the network!");
         cached.put(name.toLowerCase(), new PlayerData(name, id, server));
     }
 
     public void quit(String name) {
+        System.out.println(name + " has left the network!");
         cached.remove(name.toLowerCase());
     }
 
@@ -90,11 +92,12 @@ public class PlayerDataManager implements Listener {
         }
     }
 
-    public void update(UpdatePlayerDataPacket packet) {
+    public void update(UpdatePlayerDataPacket packet, Player connection) {
         PlayerData data = cached.get(packet.getName().toLowerCase());
         if (data == null) return;
         packet.update(data);
 
+        System.out.println("Updating: " + data);
         Player player = Bukkit.getPlayer(data.getId());
         if (player != null) {
             //check attributes
@@ -105,7 +108,7 @@ public class PlayerDataManager implements Listener {
                 response.setVanished(false);
             }
 
-            if (response != null) WarpSystem.getDataHandler().send(response);
+            if (response != null) WarpSystem.getDataHandler().send(response, connection);
         }
     }
 
@@ -115,7 +118,7 @@ public class PlayerDataManager implements Listener {
 
         if (data.isVanished() != vanished) {
             data.setVanished(vanished);
-            WarpSystem.getDataHandler().send(new UpdatePlayerDataPacket(player.getName()).setVanished(vanished));
+            WarpSystem.getDataHandler().send(new UpdatePlayerDataPacket(player.getName()).setVanished(vanished), player);
         }
     }
 
@@ -124,7 +127,10 @@ public class PlayerDataManager implements Listener {
     }
 
     public void apply(Collection<PlayerData> data) {
-        data.forEach(entry -> cached.put(entry.getName().toLowerCase(), entry));
+        data.forEach(entry -> {
+            System.out.println("apply: " + entry);
+            cached.put(entry.getName().toLowerCase(), entry);
+        });
     }
 
     @EventHandler (priority = EventPriority.LOWEST)

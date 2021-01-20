@@ -20,12 +20,12 @@ public class PlayerDataManager extends PlayerDataHandler {
 
     @Subscribe
     public void onConnect(ServerConnectedEvent e) {
-        super.onConnect(new VelocityPlayer(e.getPlayer()), new VelocityServer(e.getServer()));
+        super.connectPlayer(new VelocityPlayer(e.getPlayer()), new VelocityServer(e.getServer()));
     }
 
     @Subscribe
     public void onDisconnect(DisconnectEvent e) {
-        super.playerDisconnect(new VelocityPlayer(e.getPlayer()));
+        super.disconnectPlayer(new VelocityPlayer(e.getPlayer()));
     }
 
     @Subscribe

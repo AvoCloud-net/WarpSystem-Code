@@ -9,13 +9,15 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.scheduler.Scheduler;
 import de.codingair.codingapi.tools.time.TimeFetcher;
 import de.codingair.codingapi.tools.time.Timer;
-import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.core.proxy.Core;
 import de.codingair.warpsystem.core.proxy.base.handlers.JarManager;
 import de.codingair.warpsystem.core.proxy.base.handlers.PlayerDataHandler;
+import de.codingair.warpsystem.core.proxy.redis.RedisCore;
+import de.codingair.warpsystem.core.proxy.redis.trevor.TrevorHandler;
 import de.codingair.warpsystem.core.proxy.utils.Player;
 import de.codingair.warpsystem.core.proxy.utils.ScheduleTask;
 import de.codingair.warpsystem.core.proxy.utils.Server;
+import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.velocity.api.VelocityPlugin;
 import de.codingair.warpsystem.velocity.api.files.FileManager;
 import de.codingair.warpsystem.velocity.base.listeners.MainListener;
@@ -95,6 +97,7 @@ public class WarpSystem extends VelocityPlugin {
         Core.setServerManager(new ServerManager());
         Core.getServerManager().run();
         this.dataHandler = new VelocityHandler(this);
+        checkRedis();
 
         dataManager = new DataManager();
         dataManager.preLoad();
@@ -133,6 +136,12 @@ public class WarpSystem extends VelocityPlugin {
     public void onDisable(ProxyShutdownEvent e) {
         this.dataHandler.onDisable();
         save(true);
+    }
+
+    private void checkRedis() {
+        if(proxy.getPluginManager().getPlugin("trevor").isPresent()) {
+            RedisCore.core().setHandler(new TrevorHandler());
+        }
     }
 
     private void save(boolean saver) {

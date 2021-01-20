@@ -43,11 +43,6 @@ public class CTpaHere extends WSCommandBuilder {
 
         getBaseComponent().addChild(new MultiCommandComponent() {
             @Override
-            public boolean matchTabComplete(CommandSender sender, String suggestion, String argument) {
-                return WarpSystem.getInstance().isOnProxy() || super.matchTabComplete(sender, suggestion, argument);
-            }
-
-            @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
                 TeleportCommandManager.handler().suggestTpa((Player) sender, args, suggestions, true);
             }

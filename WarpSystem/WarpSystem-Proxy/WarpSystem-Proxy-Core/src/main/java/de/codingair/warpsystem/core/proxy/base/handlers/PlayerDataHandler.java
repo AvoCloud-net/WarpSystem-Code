@@ -1,20 +1,27 @@
 package de.codingair.warpsystem.core.proxy.base.handlers;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Iterables;
 import de.codingair.packetmanagement.utils.Direction;
+import de.codingair.warpsystem.core.proxy.Core;
+import de.codingair.warpsystem.core.proxy.utils.Player;
+import de.codingair.warpsystem.core.proxy.utils.Server;
 import de.codingair.warpsystem.core.transfer.packets.general.UpdatePlayerDataPacket;
 import de.codingair.warpsystem.core.transfer.packets.proxy.PlayerJoinPacket;
 import de.codingair.warpsystem.core.transfer.packets.proxy.PlayerQuitPacket;
 import de.codingair.warpsystem.core.transfer.packets.proxy.ProvidePlayerDataPacket;
 import de.codingair.warpsystem.core.transfer.utils.PlayerData;
-import de.codingair.warpsystem.core.proxy.Core;
-import de.codingair.warpsystem.core.proxy.utils.Player;
-import de.codingair.warpsystem.core.proxy.utils.Server;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class PlayerDataHandler {
+    private final Cache<String, String> abbreviations = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.MINUTES).build();
     private final ConcurrentHashMap<String, PlayerData> cached = new ConcurrentHashMap<>();
 
     protected PlayerDataHandler() {
@@ -26,33 +33,79 @@ public class PlayerDataHandler {
         });
     }
 
+    public PlayerData getCache(String name) {
+        if (name == null) return null;
+
+        PlayerData data = getCacheExact(name);
+        if (data != null) return data;
+
+        String lowerName = name.toLowerCase(Locale.ENGLISH);
+        String abbreviation = abbreviations.getIfPresent(lowerName);
+        if (abbreviation != null) return getCacheExact(abbreviation);
+
+        int delta = 2147483647;
+        for (String player : cached.keySet()) {
+            if (player.startsWith(lowerName)) {
+                int curDelta = Math.abs(player.length() - lowerName.length());
+                if (curDelta < delta) {
+                    abbreviation = player;
+                    delta = curDelta;
+                }
+
+                if (curDelta == 0) break;
+            }
+        }
+
+        if (abbreviation != null) abbreviations.put(lowerName, abbreviation);
+        return getCacheExact(abbreviation);
+    }
+
+    public PlayerData getCacheExact(String name) {
+        if (name == null) return null;
+        return cached.get(name.toLowerCase());
+    }
+
     protected void onServerProvideOptions(Server<?> s) {
-        sendData(s);
+        buildPlayerDataPackets(p -> Core.getPlugin().dataHandler().send(p, s, Direction.DOWN));
     }
 
-    protected void onConnect(Player player, Server<?> server) {
-        if (this.cached.putIfAbsent(player.getName().toLowerCase(), new PlayerData(player.getName(), player.getUniqueId(), server.getName())) == null)
+    protected void connectPlayer(Player player, Server<?> server) {
+        if (this.cached.putIfAbsent(player.getName().toLowerCase(), new PlayerData(player.getName(), player.getUniqueId(), server.getName())) == null) {
             Core.getServerManager().getOnlineServer().forEach(s -> Core.getPlugin().dataHandler().send(new PlayerJoinPacket(player.getName(), server.getName(), player.getUniqueId()), s, Direction.DOWN));
+            Core.getPlugin().dataHandler().send(new PlayerJoinPacket(player.getName(), server.getName(), player.getUniqueId()), null, Direction.UP);
+        }
     }
 
-    protected void playerDisconnect(Player player) {
-        if (this.cached.remove(player.getName().toLowerCase()) != null)
+    protected void disconnectPlayer(Player player) {
+        if (this.cached.remove(player.getName().toLowerCase()) != null) {
             Core.getServerManager().getOnlineServer().filter(s -> s.getOnlineCount() > 0).forEach(s -> Core.getPlugin().dataHandler().send(new PlayerQuitPacket(player.getName()), s, Direction.DOWN));
+            Core.getPlugin().dataHandler().send(new PlayerQuitPacket(player.getName()), null, Direction.UP);
+        }
     }
 
     protected void onSwitch(Player player, Server<?> server) {
         PlayerData cached = this.cached.get(player.getName().toLowerCase());
-        if (cached == null || !cached.isVanished()) return;
+        if (cached == null) return;
 
-        cached.setVanished(false);
-        cached.setServer(server.getName());
+        UpdatePlayerDataPacket packet = new UpdatePlayerDataPacket(player.getName());
 
-        Core.getServerManager().getOnlineServer().forEach(s -> Core.getPlugin().dataHandler().send(new UpdatePlayerDataPacket(player.getName()).setVanished(false), s, Direction.DOWN));
+        if(cached.isVanished()) {
+            cached.setVanished(false);
+            packet.setVanished(false);
+        }
+
+        if(!cached.getServer().equals(server.getName())) {
+            cached.setServer(server.getName());
+            packet.setServer(server.getName());
+        }
+
+        Core.getServerManager().getOnlineServer().forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
+        Core.getPlugin().dataHandler().send(packet, null, Direction.UP);
     }
 
-    private void sendData(Server<?> info) {
+    public void buildPlayerDataPackets(Consumer<ProvidePlayerDataPacket> consumer) {
         for (Collection<PlayerData> names : Iterables.partition(cached.values(), 256)) {
-            Core.getPlugin().dataHandler().send(new ProvidePlayerDataPacket(names), info, Direction.DOWN);
+            consumer.accept(new ProvidePlayerDataPacket(names));
         }
     }
 
@@ -62,6 +115,40 @@ public class PlayerDataHandler {
 
         packet.update(data);
         Core.getServerManager().getOnlineServer().filter(s -> !s.equals(info)).forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
+        Core.getPlugin().dataHandler().send(packet, null, Direction.UP);
+    }
+
+    //redis
+    public void onUpdate(UpdatePlayerDataPacket packet) {
+        PlayerData data = this.cached.get(packet.getName().toLowerCase());
+        if (data == null) return;
+
+        packet.update(data);
+        Core.getServerManager().getOnlineServer().forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
+    }
+
+    //redis
+    public void apply(@NotNull ProvidePlayerDataPacket packet) {
+        packet.getData().forEach(entry -> {
+            System.out.println("apply: " + entry);
+            cached.put(entry.getName().toLowerCase(), entry);
+        });
+
+        Core.getServerManager().getOnlineServer().forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
+    }
+
+    //redis
+    public void connectPlayer(PlayerJoinPacket packet) {
+        System.out.println("Redis connect: " + packet.getPlayer());
+        this.cached.putIfAbsent(packet.getPlayer().toLowerCase(), new PlayerData(packet.getPlayer(), packet.getId(), packet.getServer()));
+        Core.getServerManager().getOnlineServer().forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
+    }
+
+    //redis
+    public void disconnectPlayer(PlayerQuitPacket packet) {
+        System.out.println("Redis disconnect: " + packet.getPlayer());
+        this.cached.remove(packet.getPlayer().toLowerCase());
+        Core.getServerManager().getOnlineServer().forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
     }
 
     public boolean isVanished(Player player) {
