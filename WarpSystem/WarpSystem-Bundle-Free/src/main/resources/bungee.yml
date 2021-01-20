@@ -4,4 +4,4 @@ version: "${project.version}-free"
 description: WarpSystem
 main: de.codingair.warpsystem.bungee.base.WarpSystem
 
-softDepends: [ "Trevor" ]
+softDepends: [ "Trevor", "RedisBungee" ]

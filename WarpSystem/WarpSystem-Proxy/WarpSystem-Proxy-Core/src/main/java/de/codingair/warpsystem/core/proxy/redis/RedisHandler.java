@@ -2,17 +2,19 @@ package de.codingair.warpsystem.core.proxy.redis;
 
 public abstract class RedisHandler {
     protected final String source;
+    protected final String channel;
     protected DataSink sink;
 
-    public RedisHandler(String source) {
+    public RedisHandler(String source, String channel) {
         this.source = source;
+        this.channel = channel;
     }
 
-    public abstract void send(byte[] data, String channel);
+    public abstract void send(byte[] data);
 
-    public abstract void registerChannel(String... channel);
+    public abstract void registerChannel();
 
-    public abstract void unregisterChannel(String... channel);
+    public abstract void unregisterChannel();
 
     public void receive(byte[] data, String source) {
         if (this.source != null && this.source.equals(source)) return;

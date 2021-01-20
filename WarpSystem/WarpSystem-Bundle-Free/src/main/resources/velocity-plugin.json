@@ -9,6 +9,10 @@
     {
       "id": "Trevor",
       "optional": true
+    },
+    {
+      "id": "RedisBungee",
+      "optional": true
     }
   ],
   "main": "de.codingair.warpsystem.velocity.base.WarpSystem"
