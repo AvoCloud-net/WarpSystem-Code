@@ -1,19 +1,19 @@
 package de.codingair.warpsystem.core.proxy.features;
 
 import de.codingair.packetmanagement.utils.Direction;
-import de.codingair.warpsystem.core.transfer.packets.general.TeleportCommandOptionsPacket;
-import de.codingair.warpsystem.core.transfer.utils.TeleportCommandOptions;
-import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.core.proxy.Core;
 import de.codingair.warpsystem.core.proxy.utils.Player;
 import de.codingair.warpsystem.core.proxy.utils.Server;
+import de.codingair.warpsystem.core.transfer.packets.general.TeleportCommandOptionsPacket;
+import de.codingair.warpsystem.core.transfer.utils.TeleportCommandOptions;
+import de.codingair.warpsystem.core.utils.Manager;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 public class TeleportHandler implements Manager {
-    protected final HashMap<Server<?>, TeleportCommandOptions> commandOptions = new HashMap<>();
+    protected final HashMap<String, TeleportCommandOptions> commandOptions = new HashMap<>();
     protected final Set<String> denyForceTpRequests = new HashSet<>();
     protected final Set<String> denyForceTps = new HashSet<>();
 
@@ -30,20 +30,31 @@ public class TeleportHandler implements Manager {
     public void destroy() {
     }
 
-    public void registerOptions(Server<?> server, TeleportCommandOptionsPacket options) {
-        this.commandOptions.put(server, options.getOptions());
+    public void registerOptions(Server<?> server, TeleportCommandOptionsPacket packet) {
+        if(this.commandOptions.putIfAbsent(server.getName(), packet.getOptions()) != null) return;
 
-        options.setServer(server.getName());
-        Core.getServerManager().getOnlineServer().filter(s -> !s.equals(server)).forEach(s -> Core.getPlugin().dataHandler().send(options, s, Direction.DOWN));
-        commandOptions.entrySet().stream().filter(e -> !e.getKey().equals(server)).forEach(e -> Core.getPlugin().dataHandler().send(new TeleportCommandOptionsPacket(e.getKey().getName(), e.getValue()), server, Direction.DOWN));
+        packet.setServer(server.getName());
+        Core.getServerManager().getOnlineServer().filter(s -> !s.equals(server)).forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
+        commandOptions.entrySet().stream().filter(e -> !e.getKey().equals(server.getName())).forEach(e -> Core.getPlugin().dataHandler().send(new TeleportCommandOptionsPacket(e.getKey(), e.getValue()), server, Direction.DOWN));
+        Core.getPlugin().dataHandler().send(packet, null, Direction.UP);
+    }
+
+    //redis
+    public void registerOptions(TeleportCommandOptionsPacket packet) {
+        if(this.commandOptions.putIfAbsent(packet.getServer(), packet.getOptions()) != null) return;
+        Core.getServerManager().getOnlineServer().filter(s -> !s.getName().equals(packet.getServer())).forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
     }
 
     public TeleportCommandOptions getOptions(Server<?> info) {
-        return this.commandOptions.get(info);
+        return this.commandOptions.get(info.getName());
+    }
+
+    public HashMap<String, TeleportCommandOptions> getCommandOptions() {
+        return commandOptions;
     }
 
     public boolean isAccessible(Server<?> info) {
-        return getOptions(info) == null;
+        return getOptions(info) != null;
     }
 
     public boolean deniesForceTps(Player player) {
@@ -56,7 +67,11 @@ public class TeleportHandler implements Manager {
     }
 
     public boolean deniesForceTpRequests(Player player) {
-        return this.denyForceTpRequests.contains(player.getName());
+        return deniesForceTpRequests(player.getName());
+    }
+
+    public boolean deniesForceTpRequests(String player) {
+        return this.denyForceTpRequests.contains(player);
     }
 
     public void setDenyForceTpRequests(Player player, boolean deny) {

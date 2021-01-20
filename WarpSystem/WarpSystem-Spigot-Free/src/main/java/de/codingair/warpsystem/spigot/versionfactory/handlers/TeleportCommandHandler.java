@@ -14,6 +14,7 @@ import de.codingair.warpsystem.spigot.features.teleportcommand.TeleportCommandMa
 import de.codingair.warpsystem.spigot.features.teleportcommand.commands.ITeleportCommandHandler;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -182,6 +183,11 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
             return;
         }
 
+        if(other.getGameMode() == GameMode.SPECTATOR || !player.canSee(other)) {
+            player.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
+            return;
+        }
+
         TeleportCommandManager.getInstance().invite(player.getName(), tpToSender, new Callback<Long>() {
             @Override
             public void accept(Long result) {
@@ -202,11 +208,13 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
             WarpSystem.getInstance().getPlayerDataManager().getCached().filter(d -> !d.getName().equals(player.getName()) && !d.isVanished()).filter(d -> {
                 Player other = Bukkit.getPlayer(d.getName());
 
-                return other == null || player.canSee(other);
+                return (other == null || player.canSee(other)) && !d.isVanished();
             }).forEach(d -> suggestions.add(ChatColor.stripColor(d.getName())));
         } else {
             for (Player other : Bukkit.getOnlinePlayers()) {
-                if (other.getName().equals(player.getName()) || !player.canSee(other)) continue;
+                PlayerData data = WarpSystem.getInstance().getPlayerDataManager().getCache(other);
+
+                if (other.getName().equals(player.getName()) || !player.canSee(other) || data.isVanished()) continue;
                 suggestions.add(ChatColor.stripColor(other.getName()));
             }
         }

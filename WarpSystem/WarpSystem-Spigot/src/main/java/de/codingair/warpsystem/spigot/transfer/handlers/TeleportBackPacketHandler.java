@@ -20,8 +20,10 @@ public class TeleportBackPacketHandler implements ResponsiblePacketHandler<Telep
     public @NotNull CompletableFuture<BooleanPacket> response(@NotNull TeleportBackPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         Player player = Bukkit.getPlayer(packet.getName());
 
-        if(TeleportCommandManager.getInstance() == null || player == null) return CompletableFuture.completedFuture(new BooleanPacket(false));
+        if (TeleportCommandManager.getInstance() == null || player == null) return CompletableFuture.completedFuture(new BooleanPacket(false));
         else {
+            if (!packet.isBypassCooldownCheck() && WarpSystem.cooldown().checkPlayer(player, Origin.TeleportCommand)) return CompletableFuture.completedFuture(new BooleanPacket(false));
+
             if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(player)) return CompletableFuture.completedFuture(new BooleanPacket(false));
             else {
                 WarpSystem.cooldown().register(player, Origin.TeleportCommand);

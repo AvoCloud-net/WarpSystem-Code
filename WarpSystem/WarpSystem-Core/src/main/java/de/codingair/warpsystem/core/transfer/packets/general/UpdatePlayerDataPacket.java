@@ -45,15 +45,16 @@ public class UpdatePlayerDataPacket implements Packet {
         return this;
     }
 
-    public UpdatePlayerDataPacket serServer(String server) {
+    public UpdatePlayerDataPacket setServer(String server) {
         this.updated.setBit(1, true);
         this.server = server;
         return this;
     }
 
-    public void update(PlayerData data) {
+    public boolean update(PlayerData data) {
         if (updated.getBit(0)) data.setVanished(this.values.getBit(0));
         if (updated.getBit(1)) data.setServer(this.server);
+        return updated.getByte() != 0;
     }
 
     public String getName() {

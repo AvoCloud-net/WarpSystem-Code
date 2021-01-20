@@ -4,11 +4,11 @@ import de.codingair.codingapi.bungeecord.BungeeAPI;
 import de.codingair.codingapi.bungeecord.files.FileManager;
 import de.codingair.codingapi.tools.time.TimeFetcher;
 import de.codingair.codingapi.tools.time.Timer;
-import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.bungee.base.commands.CWarpSystem;
 import de.codingair.warpsystem.bungee.base.listeners.MainListener;
 import de.codingair.warpsystem.bungee.base.listeners.SetupAssistantListener;
 import de.codingair.warpsystem.bungee.base.managers.*;
+import de.codingair.warpsystem.bungee.redis.RedisBungeeHandler;
 import de.codingair.warpsystem.bungee.utils.BungeeHandler;
 import de.codingair.warpsystem.bungee.utils.BungeePlayer;
 import de.codingair.warpsystem.bungee.utils.BungeeScheduleTask;
@@ -17,10 +17,13 @@ import de.codingair.warpsystem.core.proxy.Core;
 import de.codingair.warpsystem.core.proxy.base.LangHandler;
 import de.codingair.warpsystem.core.proxy.base.handlers.JarManager;
 import de.codingair.warpsystem.core.proxy.base.handlers.PlayerDataHandler;
+import de.codingair.warpsystem.core.proxy.redis.RedisCore;
+import de.codingair.warpsystem.core.proxy.redis.trevor.TrevorHandler;
 import de.codingair.warpsystem.core.proxy.utils.Player;
 import de.codingair.warpsystem.core.proxy.utils.ProxyPlugin;
 import de.codingair.warpsystem.core.proxy.utils.ScheduleTask;
 import de.codingair.warpsystem.core.proxy.utils.Server;
+import de.codingair.warpsystem.core.utils.Manager;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -47,7 +50,7 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
     private PlayerDataManager playerDataManager;
 
     public static void logMessage(String message) {
-        System.out.println(message);
+        System.out.print(message);
     }
 
     public static BungeeHandler getDataHandler() {
@@ -79,9 +82,12 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
         logMessage("Status:");
         logMessage(" ");
 
+        checkRedis();
+
         dataManager = new DataManager();
         dataManager.preLoad();
         logMessage("Initialize SpigotConnector");
+        logMessage(" ");
         this.dataHandler.onEnable();
 
         this.fileManager.loadFile("Config", "/", "proxy/");
@@ -131,6 +137,22 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
         save(false);
         destroy();
         BungeeAPI.getInstance().onDisable(this);
+    }
+
+    private void checkRedis() {
+        String name = "-";
+
+        if(getProxy().getPluginManager().getPlugin("Trevor") != null) {
+            RedisCore.core().setHandler(new TrevorHandler());
+            name = "Trevor";
+        } else if(getProxy().getPluginManager().getPlugin("RedisBungee") != null) {
+            RedisBungeeHandler handler = new RedisBungeeHandler();
+            RedisCore.core().setHandler(handler);
+            getProxy().getPluginManager().registerListener(this, handler);
+            name = "RedisBungee";
+        }
+
+        logMessage("Redis hook: " + name);
     }
 
     private void startAutoSaver() {

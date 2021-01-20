@@ -15,7 +15,6 @@ public class MessagePacketHandler implements PacketHandler<MessagePacket> {
         Player player = Core.getPlugin().getPlayer(packet.getPlayer());
 
         if (player != null) player.sendGrayMessage(packet.getMessage());
+        else if(direction == Direction.DOWN) Core.getPlugin().dataHandler().send(packet, null, Direction.UP);
     }
-
-
 }

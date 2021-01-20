@@ -22,12 +22,12 @@ public class PlayerDataManager extends PlayerDataHandler implements Listener {
 
     @EventHandler
     public void onConnect(ServerConnectedEvent e) {
-        super.onConnect(new BungeePlayer(e.getPlayer()), new BungeeServer(e.getServer().getInfo()));
+        super.connectPlayer(new BungeePlayer(e.getPlayer()), new BungeeServer(e.getServer().getInfo()));
     }
 
     @EventHandler
     public void onDisconnect(PlayerDisconnectEvent e) {
-        super.playerDisconnect(new BungeePlayer(e.getPlayer()));
+        super.disconnectPlayer(new BungeePlayer(e.getPlayer()));
     }
 
     @EventHandler

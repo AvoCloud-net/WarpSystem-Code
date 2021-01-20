@@ -9,6 +9,7 @@ import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.Permissions;
+import de.codingair.warpsystem.spigot.features.teleportcommand.TeleportCommandManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -42,13 +43,8 @@ public class CTpHere extends WSCommandBuilder {
 
         getBaseComponent().addChild(new MultiCommandComponent() {
             @Override
-            public boolean matchTabComplete(CommandSender sender, String suggestion, String argument) {
-                return WarpSystem.getInstance().isOnProxy() || super.matchTabComplete(sender, suggestion, argument);
-            }
-
-            @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
-                suggestTpHere(sender, args, suggestions);
+                TeleportCommandManager.handler().suggestTpHere(sender, args, suggestions);
             }
 
             @Override
@@ -57,29 +53,5 @@ public class CTpHere extends WSCommandBuilder {
                 return false;
             }
         });
-    }
-
-    private void suggestTpHere(CommandSender sender, String[] args, List<String> suggestions) {
-        Player p = (Player) sender;
-        if (WarpSystem.getInstance().isOnProxy()) {
-            suggestions.add(TeleportTabCompleteKeys.ID_TP_HERE);
-
-            StringBuilder builder = new StringBuilder("tpa");
-            for (String arg : args) {
-                builder.append(" ").append(arg);
-            }
-            suggestions.add(builder.toString());
-
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (!p.canSee(player)) {
-                    suggestions.add("-" + player.getName());
-                }
-            }
-        } else {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (player.getName().equals(sender.getName())) continue;
-                suggestions.add(ChatColor.stripColor(player.getName()));
-            }
-        }
     }
 }

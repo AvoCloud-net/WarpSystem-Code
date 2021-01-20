@@ -2,6 +2,9 @@ package de.codingair.warpsystem.core.transfer.packets.spigot;
 
 import de.codingair.packetmanagement.packets.RequestPacket;
 import de.codingair.packetmanagement.packets.impl.LongPacket;
+import de.codingair.packetmanagement.utils.ByteMask;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -15,13 +18,13 @@ public class PrepareTeleportPacket implements RequestPacket<LongPacket> {
         recipient = null;
     }
 
-    public PrepareTeleportPacket(String sender, String recipient, String target) {
+    public PrepareTeleportPacket(@NotNull String sender, @Nullable String recipient, @NotNull String target) {
         this.sender = sender;
         this.recipient = recipient;
         this.target = target;
     }
 
-    public PrepareTeleportPacket(String sender, String recipient, double x, double y, double z) {
+    public PrepareTeleportPacket(@NotNull String sender, @NotNull String recipient, double x, double y, double z) {
         this.sender = sender;
         this.recipient = recipient;
         this.x = x;
@@ -31,14 +34,16 @@ public class PrepareTeleportPacket implements RequestPacket<LongPacket> {
 
     @Override
     public void write(DataOutputStream out) throws IOException {
-        byte options = (byte) (target == null ? 1 : 0);
+        ByteMask mask = new ByteMask();
+        mask.setBit(0, target == null); //coordinates only
 
-        if (target != null) {
-            if (!sender.equalsIgnoreCase(target)) options |= (1 << 1);
-            if (recipient != null) options |= (1 << 2);
+        if(target != null) {
+            //no coordinates
+            mask.setBit(1, !sender.equalsIgnoreCase(target));
+            mask.setBit(2, recipient != null);
         }
 
-        out.writeByte(options);
+        mask.write(out);
         out.writeUTF(sender);
 
         if (target == null) {
@@ -54,17 +59,20 @@ public class PrepareTeleportPacket implements RequestPacket<LongPacket> {
 
     @Override
     public void read(DataInputStream in) throws IOException {
-        byte options = in.readByte();
+        ByteMask mask = new ByteMask();
+        mask.read(in);
 
         this.sender = in.readUTF();
-
-        if ((options & 1) != 0) {
+        if (mask.getBit(0)) {
             //target is null
+            this.x = in.readDouble();
+            this.y = in.readDouble();
+            this.z = in.readDouble();
             this.recipient = in.readUTF();
         } else {
-            if ((options & (1 << 1)) != 0) this.target = in.readUTF();
+            if (mask.getBit(1)) this.target = in.readUTF();
             else this.target = this.sender;
-            if ((options & (1 << 2)) != 0) this.recipient = in.readUTF();
+            if (mask.getBit(2)) this.recipient = in.readUTF();
         }
     }
 

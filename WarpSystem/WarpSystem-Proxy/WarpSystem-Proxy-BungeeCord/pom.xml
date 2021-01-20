@@ -60,5 +60,10 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.imaginarycode.minecraft</groupId>
+            <artifactId>RedisBungee</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

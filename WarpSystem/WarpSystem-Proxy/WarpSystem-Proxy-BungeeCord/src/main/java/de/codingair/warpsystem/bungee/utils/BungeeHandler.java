@@ -61,12 +61,14 @@ public class BungeeHandler extends CoreDataHandler<String> implements Listener {
     }
 
     public void onEnable() {
+        super.onEnable();
         BungeeAPI.getProxy().getPluginManager().registerListener((WarpSystem) proxy, this);
         BungeeAPI.getProxy().registerChannel(channelProxy);
         BungeeAPI.getProxy().registerChannel(channelBackend);
     }
 
     public void onDisable() {
+        super.onDisable();
         BungeeAPI.getProxy().getPluginManager().unregisterListener(this);
         BungeeAPI.getProxy().unregisterChannel(channelProxy);
         BungeeAPI.getProxy().unregisterChannel(channelBackend);

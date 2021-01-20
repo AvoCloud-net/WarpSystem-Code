@@ -52,5 +52,10 @@
             <artifactId>guava</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.TaglineTech</groupId>
+            <artifactId>Trevor</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

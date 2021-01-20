@@ -1,0 +1,19 @@
+{
+  "id": "warpsystem",
+  "name": "WarpSystem",
+  "version": "${project.version}-free",
+  "authors": [
+    "CodingAir"
+  ],
+  "dependencies": [
+    {
+      "id": "Trevor",
+      "optional": true
+    },
+    {
+      "id": "RedisBungee",
+      "optional": true
+    }
+  ],
+  "main": "de.codingair.warpsystem.velocity.base.WarpSystem"
+}
