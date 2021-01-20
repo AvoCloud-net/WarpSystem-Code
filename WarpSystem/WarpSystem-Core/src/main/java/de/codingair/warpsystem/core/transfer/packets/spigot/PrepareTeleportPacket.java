@@ -35,11 +35,12 @@ public class PrepareTeleportPacket implements RequestPacket<LongPacket> {
     @Override
     public void write(DataOutputStream out) throws IOException {
         ByteMask mask = new ByteMask();
-        mask.setBit(0, target == null);
+        mask.setBit(0, target == null); //coordinates only
 
         if(target != null) {
+            //no coordinates
             mask.setBit(1, !sender.equalsIgnoreCase(target));
-            mask.setBit(1, recipient != null);
+            mask.setBit(2, recipient != null);
         }
 
         mask.write(out);

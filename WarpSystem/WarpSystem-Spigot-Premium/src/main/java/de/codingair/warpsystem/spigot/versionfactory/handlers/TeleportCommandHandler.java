@@ -257,7 +257,6 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
     @NotNull
     private Predicate<PlayerData> suggestTpaPredicate() {
         return d -> {
-            System.out.println(d.getName() + ": vanished=" + d.isVanished());
             if (d.isVanished()) return false;
             if (Bukkit.getPlayer(d.getName()) != null) return true;
             if (d.getServer() == null) return false;

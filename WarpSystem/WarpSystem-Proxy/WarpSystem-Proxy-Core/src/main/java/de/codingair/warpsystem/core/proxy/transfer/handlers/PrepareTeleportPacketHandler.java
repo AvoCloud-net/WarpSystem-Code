@@ -10,6 +10,7 @@ import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.core.proxy.Core;
 import de.codingair.warpsystem.core.proxy.base.handlers.ServerHandler;
 import de.codingair.warpsystem.core.proxy.features.TeleportHandler;
+import de.codingair.warpsystem.core.proxy.redis.RedisCore;
 import de.codingair.warpsystem.core.proxy.utils.Player;
 import de.codingair.warpsystem.core.proxy.utils.Players;
 import de.codingair.warpsystem.core.proxy.utils.Server;
@@ -36,6 +37,7 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
             Player targetPlayer = packet.getSender().equalsIgnoreCase(packet.getTarget()) ? sender : Players.getPlayer(packet.getTarget());
             if (targetPlayer == null) {
                 //redis
+                System.out.println("(" + direction.name() + ") /tpa " + packet.getTarget() + " -> redis");
                 PlayerData data = Core.getPlugin().getPlayerData().getCache(packet.getTarget());
                 target = Core.getPlugin().getServer(data.getServer());
                 targetName = data.getName();
@@ -65,6 +67,7 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
         }
 
         String recipient = packet.getRecipient();
+        System.out.println("recipient: " + recipient);
         if (recipient == null) {
             //forward to all
             if (direction == Direction.DOWN) Core.getPlugin().dataHandler().send(packet, null, Direction.UP); //redis
@@ -92,10 +95,11 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
         } else {
             //only recipient
             Player player = Players.getPlayer(packet.getRecipient());
+            System.out.println("Player: " + player);
 
             if (player == null) {
                 //redis
-                if (direction == Direction.DOWN) throw new Escalation(this, Direction.UP, packet, err -> new LongPacket(0));
+                if (direction == Direction.DOWN) throw new Escalation(this, Direction.UP, packet, err -> new LongPacket(0), RedisCore.TIME_OUT);
                 else return CompletableFuture.completedFuture(new LongPacket(0));
             } else if (!handler.isAccessible(player.getServer())) {
                 //not online/accessible
@@ -104,6 +108,7 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
                 //auto deny
                 return CompletableFuture.completedFuture(new LongPacket(1L << 32));
             } else {
+                System.out.println("send " + player.getName() + " to " + target.getName());
                 ServerHandler.sendPlayerTo(target, player, new Callback<Server<?>>() {
                     @Override
                     public void accept(Server<?> target) {
