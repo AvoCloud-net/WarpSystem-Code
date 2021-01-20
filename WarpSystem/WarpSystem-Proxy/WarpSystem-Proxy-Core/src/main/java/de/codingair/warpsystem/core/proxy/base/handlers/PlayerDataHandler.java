@@ -113,7 +113,7 @@ public class PlayerDataHandler {
         PlayerData data = this.cached.get(packet.getName().toLowerCase());
         if (data == null) return;
 
-        packet.update(data);
+        if(!packet.update(data)) return;
         Core.getServerManager().getOnlineServer().filter(s -> !s.equals(info)).forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
         Core.getPlugin().dataHandler().send(packet, null, Direction.UP);
     }
@@ -123,14 +123,13 @@ public class PlayerDataHandler {
         PlayerData data = this.cached.get(packet.getName().toLowerCase());
         if (data == null) return;
 
-        packet.update(data);
+        if(!packet.update(data)) return;
         Core.getServerManager().getOnlineServer().forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
     }
 
     //redis
     public void apply(@NotNull ProvidePlayerDataPacket packet) {
         packet.getData().forEach(entry -> {
-            System.out.println("apply: " + entry);
             cached.put(entry.getName().toLowerCase(), entry);
         });
 
@@ -139,20 +138,13 @@ public class PlayerDataHandler {
 
     //redis
     public void connectPlayer(PlayerJoinPacket packet) {
-        System.out.println("Redis connect: " + packet.getPlayer());
         this.cached.putIfAbsent(packet.getPlayer().toLowerCase(), new PlayerData(packet.getPlayer(), packet.getId(), packet.getServer()));
         Core.getServerManager().getOnlineServer().forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
     }
 
     //redis
     public void disconnectPlayer(PlayerQuitPacket packet) {
-        System.out.println("Redis disconnect: " + packet.getPlayer());
         this.cached.remove(packet.getPlayer().toLowerCase());
         Core.getServerManager().getOnlineServer().forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
-    }
-
-    public boolean isVanished(Player player) {
-        PlayerData cached = this.cached.get(player.getName().toLowerCase());
-        return cached != null && cached.isVanished();
     }
 }

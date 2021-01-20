@@ -41,7 +41,7 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
                 targetName = data.getName();
 
                 if (target == null) return CompletableFuture.completedFuture(new LongPacket((((long) 0) << 32)));
-            } else if (handler.isAccessible(targetPlayer.getServer())) {
+            } else if (!handler.isAccessible(targetPlayer.getServer())) {
                 return CompletableFuture.completedFuture(new LongPacket((((long) 0) << 32)));
             } else {
                 target = targetPlayer.getServer();
@@ -56,7 +56,7 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
                 targetName = data.getName();
 
                 if (target == null) return CompletableFuture.completedFuture(new LongPacket((((long) 0) << 32)));
-            } else if (handler.isAccessible(sender.getServer())) {
+            } else if (!handler.isAccessible(sender.getServer())) {
                 return CompletableFuture.completedFuture(new LongPacket((((long) 0) << 32)));
             } else {
                 target = sender.getServer();
@@ -75,7 +75,7 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
             Core.getServerManager().getOnlineServer().forEach(s -> {
                 if (s.equals(connection)) return;
                 handled.setValue(handled.getValue() + s.getOnlineCount());
-                if (handler.isAccessible(s)) return;
+                if (!handler.isAccessible(s)) return;
 
                 //tp all
                 s.getOnlinePlayers().forEach(player -> {
@@ -97,7 +97,7 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
                 //redis
                 if (direction == Direction.DOWN) throw new Escalation(this, Direction.UP, packet, err -> new LongPacket(0));
                 else return CompletableFuture.completedFuture(new LongPacket(0));
-            } else if (handler.isAccessible(player.getServer())) {
+            } else if (!handler.isAccessible(player.getServer())) {
                 //not online/accessible
                 return CompletableFuture.completedFuture(new LongPacket(0));
             } else if (handler.deniesForceTps(player) && !player.equals(sender)) {

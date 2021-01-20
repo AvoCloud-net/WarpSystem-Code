@@ -16,7 +16,6 @@ public abstract class RedisHandler {
 
     public void receive(byte[] data, String source) {
         if (this.source != null && this.source.equals(source)) return;
-        System.out.println("got foreign payload");
         sink.receive(data, source);
     }
 

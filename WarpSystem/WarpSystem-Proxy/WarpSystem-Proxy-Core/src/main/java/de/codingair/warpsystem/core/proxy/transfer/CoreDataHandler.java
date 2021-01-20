@@ -1,6 +1,8 @@
 package de.codingair.warpsystem.core.proxy.transfer;
 
 import de.codingair.packetmanagement.DataHandler;
+import de.codingair.packetmanagement.packets.RequestPacket;
+import de.codingair.packetmanagement.packets.ResponsePacket;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.warpsystem.core.proxy.Core;
 import de.codingair.warpsystem.core.proxy.redis.RedisCore;
@@ -14,6 +16,10 @@ import de.codingair.warpsystem.core.transfer.packets.proxy.PlayerQuitPacket;
 import de.codingair.warpsystem.core.transfer.packets.proxy.ProvidePlayerDataPacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.*;
 import de.codingair.warpsystem.core.transfer.packets.utils.PacketType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.concurrent.CompletableFuture;
 
 public abstract class CoreDataHandler<C> extends DataHandler<Server<C>> {
     protected final String redisChannel;
@@ -47,11 +53,6 @@ public abstract class CoreDataHandler<C> extends DataHandler<Server<C>> {
         registerHandler(DeleteGlobalWarpPacket.class, new DeleteGlobalWarpPacketHandler());
         registerHandler(GlobalWarpTeleportPacket.class, new GlobalWarpTeleportPacketHandler());
         registerHandler(RequestGlobalWarpNamesPacket.class, new RequestGlobalWarpNamesPacketHandler());
-        registerHandler(TeleportRequestHandledPacket.class, new TeleportRequestHandledPacketHandler());
-        registerHandler(PrepareTeleportPlayerToPlayerPacket.class, new PrepareTeleportPlayerToPlayerPacketHandler());
-        registerHandler(PrepareTeleportRequestPacket.class, new PrepareTeleportRequestPacketHandler());
-        registerHandler(PrepareTeleportPacket.class, new PrepareTeleportPacketHandler());
-        registerHandler(ToggleForceTeleportsPacket.class, new ToggleForceTeleportsPacketHandler());
         registerHandler(PrepareCoordinationTeleportPacket.class, new PrepareCoordinationTeleportPacketHandler());
         registerHandler(RequestUUIDPacket.class, new SendUUIDPacketHandler());
         registerHandler(MessagePacket.class, new MessagePacketHandler());

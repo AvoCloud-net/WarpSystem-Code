@@ -5,7 +5,6 @@ import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.packetmanagement.packets.impl.LongPacket;
 import de.codingair.warpsystem.core.transfer.packets.general.TeleportBackPacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.PrepareTeleportPacket;
-import de.codingair.warpsystem.core.transfer.packets.spigot.RequestFullNamePacket;
 import de.codingair.warpsystem.core.transfer.utils.PlayerData;
 import de.codingair.warpsystem.core.transfer.utils.TeleportCommandOptions;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
@@ -225,36 +224,25 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
 
     @Override
     public void tpa(Player player, String argument, Player other, boolean tpToSender) {
-        //get original name
-        Callback<String> callback = new Callback<String>() {
-            @Override
-            public void accept(String name) {
-                if (name == null) {
-                    player.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
-                    return;
-                }
+        PlayerData data = WarpSystem.getInstance().getPlayerDataManager().getCache(argument);
 
-                TeleportCommandManager.getInstance().invite(player.getName(), tpToSender, new Callback<Long>() {
-                    @Override
-                    public void accept(Long result) {
-                        int handled = (int) (result >> 32);
-                        int sent = result.intValue();
-
-                        if (handled == 0) player.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
-                        else if (handled == -1) player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_denied_sender").replace("%PLAYER%", ChatColor.stripColor(name)));
-                        else if (sent == 0) player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_already_sent"));
-                        else player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_sent").replace("%PLAYER%", ChatColor.stripColor(name)));
-                    }
-                }, name);
-            }
-        };
-
-        if (!WarpSystem.getInstance().isOnProxy() || !TeleportCommandManager.getInstance().isProxy() || other != null) {
-            callback.accept(other == null ? argument : other.getName());
+        if (data == null || data.isVanished()) {
+            player.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
             return;
         }
 
-        WarpSystem.getDataHandler().send(new RequestFullNamePacket(argument), player).thenAccept(packet -> callback.accept(packet.a()));
+        TeleportCommandManager.getInstance().invite(player.getName(), tpToSender, new Callback<Long>() {
+            @Override
+            public void accept(Long result) {
+                int handled = (int) (result >> 32);
+                int sent = result.intValue();
+
+                if (handled == 0) player.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
+                else if (handled == -1) player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_denied_sender").replace("%PLAYER%", ChatColor.stripColor(data.getName())));
+                else if (sent == 0) player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_already_sent"));
+                else player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_sent").replace("%PLAYER%", ChatColor.stripColor(data.getName())));
+            }
+        }, data.getName());
     }
 
     @Override
@@ -269,6 +257,8 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
     @NotNull
     private Predicate<PlayerData> suggestTpaPredicate() {
         return d -> {
+            System.out.println(d.getName() + ": vanished=" + d.isVanished());
+            if (d.isVanished()) return false;
             if (Bukkit.getPlayer(d.getName()) != null) return true;
             if (d.getServer() == null) return false;
             TeleportCommandOptions options = TeleportCommandManager.getInstance().getServerOptions(d.getServer());
@@ -279,6 +269,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
     @NotNull
     private Predicate<PlayerData> suggestTpaHerePredicate() {
         return d -> {
+            if (d.isVanished()) return false;
             if (Bukkit.getPlayer(d.getName()) != null) return true;
             if (d.getServer() == null) return false;
             TeleportCommandOptions options = TeleportCommandManager.getInstance().getServerOptions(d.getServer());

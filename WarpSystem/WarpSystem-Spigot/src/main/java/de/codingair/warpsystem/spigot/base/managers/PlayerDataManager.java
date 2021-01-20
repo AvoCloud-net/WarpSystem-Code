@@ -13,7 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collection;
 import java.util.Locale;
@@ -31,19 +30,17 @@ public class PlayerDataManager implements Listener {
     }
 
     public void join(String name, String server, UUID id) {
-        System.out.println(name + " has joined the network!");
         cached.put(name.toLowerCase(), new PlayerData(name, id, server));
     }
 
     public void quit(String name) {
-        System.out.println(name + " has left the network!");
         cached.remove(name.toLowerCase());
     }
 
     public Stream<PlayerData> getCached() {
         if (cached.isEmpty()) {
             return Bukkit.getOnlinePlayers().stream().map(player -> new PlayerData(player.getName(), get(player))
-                    .setVanished(player.getGameMode() == GameMode.SPECTATOR || player.hasPotionEffect(PotionEffectType.INVISIBILITY)));
+                    .setVanished(player.getGameMode() == GameMode.SPECTATOR));
         } else return cached.values().stream();
     }
 
@@ -97,19 +94,24 @@ public class PlayerDataManager implements Listener {
         if (data == null) return;
         packet.update(data);
 
-        System.out.println("Updating: " + data);
         Player player = Bukkit.getPlayer(data.getId());
         if (player != null) {
             //check attributes
-            UpdatePlayerDataPacket response = null;
-
-            if (data.isVanished() != (player.getGameMode() == GameMode.SPECTATOR || player.hasPotionEffect(PotionEffectType.INVISIBILITY))) {
-                response = new UpdatePlayerDataPacket(packet.getName());
-                response.setVanished(false);
-            }
-
-            if (response != null) WarpSystem.getDataHandler().send(response, connection);
+            updatePlayer(connection, data, player);
         }
+    }
+
+    private void updatePlayer(Player connection, PlayerData data, Player player) {
+        UpdatePlayerDataPacket response = null;
+
+        boolean vanished;
+        if (data.isVanished() != (vanished = (player.getGameMode() == GameMode.SPECTATOR))) {
+            response = new UpdatePlayerDataPacket(player.getName());
+            response.setVanished(vanished);
+            data.setVanished(vanished);
+        }
+
+        if (response != null) WarpSystem.getDataHandler().send(response, connection);
     }
 
     public void updateVisibility(Player player, boolean vanished) {
@@ -126,10 +128,12 @@ public class PlayerDataManager implements Listener {
         cached.clear();
     }
 
-    public void apply(Collection<PlayerData> data) {
+    public void apply(Collection<PlayerData> data, Player connection) {
         data.forEach(entry -> {
-            System.out.println("apply: " + entry);
             cached.put(entry.getName().toLowerCase(), entry);
+
+            Player p = Bukkit.getPlayerExact(entry.getName());
+            if(p != null) updatePlayer(connection, entry, p);
         });
     }
 

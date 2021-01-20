@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class TeleportHandler implements Manager {
-    protected final HashMap<Server<?>, TeleportCommandOptions> commandOptions = new HashMap<>();
+    protected final HashMap<String, TeleportCommandOptions> commandOptions = new HashMap<>();
     protected final Set<String> denyForceTpRequests = new HashSet<>();
     protected final Set<String> denyForceTps = new HashSet<>();
 
@@ -31,29 +31,30 @@ public class TeleportHandler implements Manager {
     }
 
     public void registerOptions(Server<?> server, TeleportCommandOptionsPacket packet) {
-        this.commandOptions.put(server, packet.getOptions());
+        if(this.commandOptions.putIfAbsent(server.getName(), packet.getOptions()) != null) return;
 
         packet.setServer(server.getName());
         Core.getServerManager().getOnlineServer().filter(s -> !s.equals(server)).forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
-        commandOptions.entrySet().stream().filter(e -> !e.getKey().equals(server)).forEach(e -> Core.getPlugin().dataHandler().send(new TeleportCommandOptionsPacket(e.getKey().getName(), e.getValue()), server, Direction.DOWN));
+        commandOptions.entrySet().stream().filter(e -> !e.getKey().equals(server.getName())).forEach(e -> Core.getPlugin().dataHandler().send(new TeleportCommandOptionsPacket(e.getKey(), e.getValue()), server, Direction.DOWN));
         Core.getPlugin().dataHandler().send(packet, null, Direction.UP);
     }
 
     //redis
     public void registerOptions(TeleportCommandOptionsPacket packet) {
-        Server<?> server = Core.getPlugin().getServer(packet.getServer());
-        this.commandOptions.put(server, packet.getOptions());
-
-        packet.setServer(server.getName());
-        Core.getServerManager().getOnlineServer().filter(s -> !s.equals(server)).forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
+        if(this.commandOptions.putIfAbsent(packet.getServer(), packet.getOptions()) != null) return;
+        Core.getServerManager().getOnlineServer().filter(s -> !s.getName().equals(packet.getServer())).forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
     }
 
     public TeleportCommandOptions getOptions(Server<?> info) {
-        return this.commandOptions.get(info);
+        return this.commandOptions.get(info.getName());
+    }
+
+    public HashMap<String, TeleportCommandOptions> getCommandOptions() {
+        return commandOptions;
     }
 
     public boolean isAccessible(Server<?> info) {
-        return getOptions(info) == null;
+        return getOptions(info) != null;
     }
 
     public boolean deniesForceTps(Player player) {

@@ -261,7 +261,7 @@ public class Invitation {
 
             callback.accept((((long) 1) << 32) | (1 & 0xffffffffL));
         } else if (WarpSystem.getInstance().isOnProxy() && !bukkitOnly) {
-            //try on bungee
+            //try on proxy
             WarpSystem.getDataHandler().send(new PrepareTeleportRequestPacket(sender, this.recipient, toSender)).thenAccept(packet -> callback.accept(packet.a()));
         } else callback.accept(0L);
     }

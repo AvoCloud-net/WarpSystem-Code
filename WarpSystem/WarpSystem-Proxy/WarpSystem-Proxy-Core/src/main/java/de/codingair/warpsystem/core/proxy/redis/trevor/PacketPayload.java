@@ -15,7 +15,6 @@ public class PacketPayload extends NetworkPayload<String> {
 
     @Override
     public EventProcessor.EventAction<NetworkIntercomEvent> process(EventProcessor processor) {
-        System.out.println("Got some payload");
         RedisCore.core().getHandler().receive(data, source());
 
         //dummy

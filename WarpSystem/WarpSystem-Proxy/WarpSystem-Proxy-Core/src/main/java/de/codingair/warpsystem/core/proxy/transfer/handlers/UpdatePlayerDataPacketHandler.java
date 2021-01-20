@@ -12,9 +12,6 @@ public class UpdatePlayerDataPacketHandler implements PacketHandler<UpdatePlayer
     @Override
     public void process(@NotNull UpdatePlayerDataPacket packet, @NotNull Proxy proxy, Object connection, @NotNull Direction direction) {
         if (direction == Direction.DOWN) Core.getPlugin().getPlayerData().onUpdate(packet, (Server<?>) connection);
-        else if (direction == Direction.UP) {
-            System.out.println("Another proxy updates player data!");
-            Core.getPlugin().getPlayerData().onUpdate(packet);
-        }
+        else if (direction == Direction.UP) Core.getPlugin().getPlayerData().onUpdate(packet);
     }
 }
