@@ -18,6 +18,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -61,27 +62,26 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
     }
 
     @Override
-    public List<String> suggestBack(String[] args, List<String> suggestions) {
+    public void suggestBack(String[] args, List<String> suggestions) {
         WarpSystem.getInstance().getPlayerDataManager().getCached().forEach(p -> suggestions.add(p.getName()));
-        return suggestions;
     }
 
     @Override
-    public void tp(Player gate, String player, double x, double y, double z) {
-        if (checkStatusTp(gate, player)) return;
+    public boolean tp(Player gate, PlayerData player, @Nullable Double x, @Nullable Double y, @Nullable Double z, @Nullable Float yaw, @Nullable Float pitch, @Nullable String world, @Nullable String server) {
+        if (checkStatusTp(gate, player)) return true;
 
-        Player playerP = Bukkit.getPlayer(player);
+        Player playerP = Bukkit.getPlayer(player.getName());
 
         String destination = "x=" + cut(x) + ", y=" + cut(y) + ", z=" + cut(z);
 
         if (playerP == null) {
             gate.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
-            return;
+            return true;
         }
 
         if (gate != playerP && TeleportCommandManager.getInstance().deniesForceTps(playerP)) {
             gate.sendMessage(Lang.getPrefix() + Lang.get("Teleport_denied").replace("%PLAYER%", playerP.getName()));
-            return;
+            return true;
         }
 
         if (gate != playerP) gate.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", playerP.getName()).replace("%warp%", destination));
@@ -98,15 +98,16 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
         options.setMessage(Lang.getPrefix() + (gate == playerP ? Lang.get("Teleported_To") : Lang.get("Teleported_To_By").replace("%gate%", gate.getName())));
 
         WarpSystem.getInstance().getTeleportManager().teleport(playerP, options);
+        return true;
     }
 
     @Override
-    public void tp(Player gate, String player, String target) {
+    public void tp(Player gate, PlayerData player, PlayerData target) {
         if (checkStatusTp(gate, player)) return;
         if (checkStatusTp(gate, target)) return;
 
-        Player playerP = Bukkit.getPlayer(player);
-        Player targetP = Bukkit.getPlayer(target);
+        Player playerP = Bukkit.getPlayer(player.getName());
+        Player targetP = Bukkit.getPlayer(target.getName());
 
         if (playerP == null || targetP == null) {
             gate.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
@@ -127,13 +128,12 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
         WarpSystem.getInstance().getTeleportManager().teleport(playerP, options);
     }
 
-    private boolean checkStatusTp(Player gate, String player) {
-        PlayerData data = WarpSystem.getInstance().getPlayerDataManager().getCache(player);
+    private boolean checkStatusTp(Player gate, PlayerData data) {
         if (data == null) {
             //offline
             gate.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
             return true;
-        } else if (Bukkit.getPlayer(player) == null) {
+        } else if (Bukkit.getPlayer(data.getName()) == null) {
             TextComponent tc = new TextComponent(Lang.getPrefix() + "§7Teleporting on your entire BungeeCord is a §6premium feature§7!");
             tc.setColor(net.md_5.bungee.api.ChatColor.GRAY);
             Lang.PREMIUM_CHAT(tc, gate, true);

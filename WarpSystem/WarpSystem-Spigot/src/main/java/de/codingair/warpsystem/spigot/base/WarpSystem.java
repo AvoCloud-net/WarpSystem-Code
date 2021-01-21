@@ -220,7 +220,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
             this.ERROR = false;
 
-            if (!Bukkit.getOnlinePlayers().isEmpty()) this.dataHandler.send(new RequestInitialPacket());
+            if (!Bukkit.getOnlinePlayers().isEmpty()) this.dataHandler.send(new RequestInitialPacket(), null);
             BungeeBukkitListener packetListener = new BungeeBukkitListener();
             Bukkit.getPluginManager().registerEvents(packetListener, this);
 
@@ -495,8 +495,10 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             outputChannel = new FileOutputStream(dest).getChannel();
             outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
         } finally {
-            inputChannel.close();
-            outputChannel.close();
+            if (inputChannel != null && outputChannel != null) {
+                inputChannel.close();
+                outputChannel.close();
+            }
         }
     }
 
@@ -508,12 +510,13 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         return onBungeeCord;
     }
 
-    public synchronized void setOnBungeeCord(boolean onBungeeCord) {
+    public synchronized void setOnBungeeCord(boolean onBungeeCord, Player connection) {
+        if(onBungeeCord) this.proxyFeatureList.forEach(proxyFeature -> proxyFeature.onInitiate(connection));
         if (this.onBungeeCord == onBungeeCord) return;
 
         this.onBungeeCord = onBungeeCord;
         if (onBungeeCord) {
-            this.proxyFeatureList.forEach(ProxyFeature::onConnect);
+            this.proxyFeatureList.forEach(proxyFeature -> proxyFeature.onConnect(connection));
         } else {
             this.proxyFeatureList.forEach(ProxyFeature::onDisconnect);
         }
@@ -555,7 +558,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         this.bungeePluginVersion = bungeePluginVersion;
     }
 
-    public List<ProxyFeature> getBungeeFeatureList() {
+    public List<ProxyFeature> getProxyFeatureList() {
         return proxyFeatureList;
     }
 

@@ -3,7 +3,7 @@ package de.codingair.warpsystem.core.proxy.utils;
 import de.codingair.packetmanagement.DataHandler;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.core.proxy.base.handlers.PlayerDataHandler;
-import de.codingair.warpsystem.core.proxy.transfer.CoreDataHandler;
+import de.codingair.warpsystem.core.proxy.base.handlers.WorldHandler;
 import de.codingair.warpsystem.core.utils.Manager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,4 +39,6 @@ public interface ProxyPlugin extends Proxy {
     <A extends Manager> A getHandler(Class<A> c);
 
     PlayerDataHandler getPlayerData();
+
+    WorldHandler getWorldManager();
 }

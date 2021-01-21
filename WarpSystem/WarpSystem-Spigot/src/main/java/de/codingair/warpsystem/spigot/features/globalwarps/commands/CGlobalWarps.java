@@ -54,11 +54,11 @@ public class CGlobalWarps extends WSCommandBuilder implements ProxyFeature {
             }
         });
 
-        WarpSystem.getInstance().getBungeeFeatureList().add(this);
+        WarpSystem.getInstance().getProxyFeatureList().add(this);
     }
 
     @Override
-    public void onConnect() {
+    public void onConnect(Player connection) {
         if (getComponent("create") != null) {
             WarpSystem.getInstance().getLogger().log(Level.WARNING, "Trying to register already known command components (CGlobalWarps)! Please contact the author (PlayerCount=" + Bukkit.getOnlinePlayers().size() + ").");
             return;

@@ -136,7 +136,7 @@ public class RandomTeleportHandler extends RandomTeleportManager {
         new CRandomTp().register();
 
         WarpSystem.log("    ...got " + this.interactBlocks.size() + " InteractBlock(s)");
-        WarpSystem.getInstance().getBungeeFeatureList().add(this);
+        WarpSystem.getInstance().getProxyFeatureList().add(this);
 
         return success;
     }

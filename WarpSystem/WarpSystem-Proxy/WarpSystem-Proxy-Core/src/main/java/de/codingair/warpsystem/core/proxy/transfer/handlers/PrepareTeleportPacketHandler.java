@@ -37,37 +37,38 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
             Player targetPlayer = packet.getSender().equalsIgnoreCase(packet.getTarget()) ? sender : Players.getPlayer(packet.getTarget());
             if (targetPlayer == null) {
                 //redis
-                System.out.println("(" + direction.name() + ") /tpa " + packet.getTarget() + " -> redis");
                 PlayerData data = Core.getPlugin().getPlayerData().getCache(packet.getTarget());
                 target = Core.getPlugin().getServer(data.getServer());
                 targetName = data.getName();
 
-                if (target == null) return CompletableFuture.completedFuture(new LongPacket((((long) 0) << 32)));
+                if (target == null) return CompletableFuture.completedFuture(new LongPacket(PrepareTeleportPacket.Result.PLAYER_NOT_ONLINE.ordinal()));
             } else if (!handler.isAccessible(targetPlayer.getServer())) {
-                return CompletableFuture.completedFuture(new LongPacket((((long) 0) << 32)));
+                return CompletableFuture.completedFuture(new LongPacket(PrepareTeleportPacket.Result.SERVER_NOT_ONLINE.ordinal()));
             } else {
                 target = targetPlayer.getServer();
                 targetName = targetPlayer.getName();
             }
         } else {
-            //always to server of sender
             if (sender == null) {
                 //redis
                 PlayerData data = Core.getPlugin().getPlayerData().getCache(packet.getSender());
                 target = Core.getPlugin().getServer(data.getServer());
                 targetName = data.getName();
 
-                if (target == null) return CompletableFuture.completedFuture(new LongPacket((((long) 0) << 32)));
+                if (target == null) return CompletableFuture.completedFuture(new LongPacket(PrepareTeleportPacket.Result.PLAYER_NOT_ONLINE.ordinal()));
             } else if (!handler.isAccessible(sender.getServer())) {
-                return CompletableFuture.completedFuture(new LongPacket((((long) 0) << 32)));
+                return CompletableFuture.completedFuture(new LongPacket(PrepareTeleportPacket.Result.SERVER_NOT_ONLINE.ordinal()));
             } else {
-                target = sender.getServer();
+                if(packet.getServer() != null) {
+                    target = Core.getPlugin().getServer(packet.getServer());
+                    if(target == null) return CompletableFuture.completedFuture(new LongPacket(PrepareTeleportPacket.Result.SERVER_NOT_ONLINE.ordinal()));
+                } else target = sender.getServer();
+
                 targetName = sender.getName();
             }
         }
 
         String recipient = packet.getRecipient();
-        System.out.println("recipient: " + recipient);
         if (recipient == null) {
             //forward to all
             if (direction == Direction.DOWN) Core.getPlugin().dataHandler().send(packet, null, Direction.UP); //redis
@@ -95,7 +96,6 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
         } else {
             //only recipient
             Player player = Players.getPlayer(packet.getRecipient());
-            System.out.println("Player: " + player);
 
             if (player == null) {
                 //redis
@@ -108,7 +108,6 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
                 //auto deny
                 return CompletableFuture.completedFuture(new LongPacket(1L << 32));
             } else {
-                System.out.println("send " + player.getName() + " to " + target.getName());
                 ServerHandler.sendPlayerTo(target, player, new Callback<Server<?>>() {
                     @Override
                     public void accept(Server<?> target) {
@@ -126,7 +125,7 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
                     }
                 });
 
-                return CompletableFuture.completedFuture(new LongPacket((((long) 1) << 32) | (1 & 0xffffffffL)));
+                return CompletableFuture.completedFuture(new LongPacket(PrepareTeleportPacket.Result.SUCCESS.ordinal()));
             }
         }
     }

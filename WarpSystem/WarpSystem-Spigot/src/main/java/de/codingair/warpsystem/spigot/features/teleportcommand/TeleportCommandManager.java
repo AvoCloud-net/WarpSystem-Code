@@ -92,7 +92,7 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
 
     @Override
     public boolean load(boolean loader) {
-        WarpSystem.getInstance().getBungeeFeatureList().add(this);
+        WarpSystem.getInstance().getProxyFeatureList().add(this);
         Bukkit.getPluginManager().registerEvents(new TeleportListener(), WarpSystem.getInstance());
         Bukkit.getPluginManager().registerEvents(new BackListener(), WarpSystem.getInstance());
 
@@ -163,11 +163,11 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
     }
 
     @Override
-    public void onConnect() {
+    public void onConnect(Player connection) {
         TeleportCommandOptionsPacket packet = new TeleportCommandOptionsPacket(back != null, tp != null, tpAll != null, tpToggle != null, tpa != null, tpaHere != null, tpaAll != null, tpaToggle != null);
 
-        if (proxy) WarpSystem.getDataHandler().send(packet);
-        else WarpSystem.getDataHandler().send(new TeleportCommandOptionsPacket()); //tell our proxy that we disabled proxy wide transportations
+        if (proxy) WarpSystem.getDataHandler().send(packet, connection);
+        else WarpSystem.getDataHandler().send(new TeleportCommandOptionsPacket(), connection); //tell our proxy that we disabled proxy wide transportations
 
         this.serverOptions.put(WarpSystem.getInstance().getCurrentServer().toLowerCase(), packet.getOptions()); //save options for this server
     }
@@ -393,6 +393,7 @@ public class TeleportCommandManager implements Manager, ProxyFeature, Collectibl
 
     public TeleportCommandOptions getServerOptions(String server) {
         if (server == null) return null;
+        if(!WarpSystem.getInstance().isOnProxy() || !TeleportCommandManager.getInstance().isProxy()) return null;
         return this.serverOptions.get(server.toLowerCase());
     }
 

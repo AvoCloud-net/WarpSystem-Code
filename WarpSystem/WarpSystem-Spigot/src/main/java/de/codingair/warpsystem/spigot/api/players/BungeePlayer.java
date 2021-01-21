@@ -27,7 +27,7 @@ public class BungeePlayer {
     }
 
     public void sendMessage(String msg) {
-        if (player == null) WarpSystem.getDataHandler().send(new MessagePacket(name, msg));
+        if (player == null) WarpSystem.getDataHandler().send(new MessagePacket(name, msg), null);
         else player.sendMessage(msg);
     }
 

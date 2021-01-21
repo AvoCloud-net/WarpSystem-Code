@@ -16,7 +16,7 @@ public class RandomTPManager extends RandomTPHandler {
     @Override
     public boolean load(boolean loader) {
         WarpSystem.proxy().getEventManager().register(WarpSystem.getInstance(), new RandomTPListener());
-        return super.load(loader, new VelocityConfigMask(WarpSystem.getInstance().getFileManager().getFile("RTP_Queue", "/")), new VelocityConfigMask(this.file = WarpSystem.getInstance().getFileManager().getFile("Worlds", "/")));
+        return super.load(loader, new VelocityConfigMask(WarpSystem.getInstance().getFileManager().getFile("RTP_Queue", "/")), new VelocityConfigMask(this.file = WarpSystem.getInstance().getFileManager().getFile("RTP_Worlds", "/")));
     }
 
     @Override

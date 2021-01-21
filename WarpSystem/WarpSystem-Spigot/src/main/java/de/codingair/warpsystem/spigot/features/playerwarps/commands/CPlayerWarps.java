@@ -110,7 +110,7 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
                 message.replace("%HERE%", new ChatButton(Lang.get("Warp_Delete_Info_Here"), prepared) {
                     @Override
                     public void onClick(Player player) {
-                        double refund = PlayerWarpManager.getManager().delete(warp, true);
+                        double refund = PlayerWarpManager.getManager().delete(warp, true, player);
                         if (refund == -1) return;
 
                         if (refund > 0 && PlayerWarpManager.getManager().isEconomy()) {

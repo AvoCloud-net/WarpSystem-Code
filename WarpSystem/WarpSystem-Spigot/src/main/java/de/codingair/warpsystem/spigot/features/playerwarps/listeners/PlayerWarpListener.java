@@ -56,7 +56,7 @@ public class PlayerWarpListener implements Listener {
 
         WarpSystem.getDataHandler().registerHandler(DeletePlayerWarpPacket.class, (packet, proxy, connection, direction) -> {
             PlayerWarp warp = PlayerWarpManager.getManager().getWarp(packet.getId(), packet.getName());
-            PlayerWarpManager.getManager().delete(warp, false);
+            PlayerWarpManager.getManager().delete(warp, false, (Player) connection);
             if (warp != null) warp.setSource(true);
             PlayerWarpManager.getManager().updateGUIs();
         });

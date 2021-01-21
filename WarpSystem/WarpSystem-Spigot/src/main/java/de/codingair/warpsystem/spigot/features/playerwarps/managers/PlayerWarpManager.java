@@ -33,9 +33,9 @@ import de.codingair.warpsystem.spigot.features.playerwarps.utils.Category;
 import de.codingair.warpsystem.spigot.features.playerwarps.utils.PlayerWarp;
 import de.codingair.warpsystem.spigot.features.playerwarps.utils.forwardcompatibility.PlayerWarpTagConverter_v4_2_2;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -192,7 +192,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
         new PlayerWarpTagConverter_v4_2_2();
     }
 
-    public void sync(PlayerWarp old, PlayerWarp warp) {
+    public void sync(PlayerWarp old, PlayerWarp warp, Player connection) {
         if (!bungeeCord || !WarpSystem.getInstance().isOnProxy()) return;
 
         if (warp.isSource()) {
@@ -201,17 +201,17 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
                 add(warp.getData());
             }});
             packet.setClearable(true);
-            WarpSystem.getDataHandler().send(packet);
-        } else sync(old.getData(), warp.getData());
+            WarpSystem.getDataHandler().send(packet, connection);
+        } else sync(old.getData(), warp.getData(), connection);
     }
 
-    public void sync(PlayerWarpData old, PlayerWarpData warp) {
+    public void sync(PlayerWarpData old, PlayerWarpData warp, Player connection) {
         if (!bungeeCord || !WarpSystem.getInstance().isOnProxy()) return;
         PlayerWarpUpdate update = warp.diff(old);
 
         if (update.isEmpty()) return;
 
-        WarpSystem.getDataHandler().send(new SendPlayerWarpUpdatePacket(update));
+        WarpSystem.getDataHandler().send(new SendPlayerWarpUpdatePacket(update), connection);
         old.destroy();
         warp.destroy();
     }
@@ -252,7 +252,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
 
                     if (inactive.before(new Date())) {
                         //Delete
-                        delete(warp, false);
+                        delete(warp, false, null);
                         warp.destroy();
                         Player player = warp.getOwner().getPlayer();
                         if (player != null) player.sendMessage(Lang.getPrefix() + Lang.get("Warp_was_deleted").replace("%NAME%", warp.getName()));
@@ -586,7 +586,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
         return name;
     }
 
-    public double delete(PlayerWarp warp, boolean informBungee) {
+    public double delete(PlayerWarp warp, boolean informBungee, @Nullable Player connection) {
         if (warp == null) return 0;
         List<PlayerWarp> warps = getOwnWarps(warp.getOwner().getId());
         double refund = warps.remove(warp) ? calculateRefund(warp) : -1;
@@ -598,7 +598,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
 
         if (informBungee && checkBungeeCord()) {
             DeletePlayerWarpPacket packet = new DeletePlayerWarpPacket(warp.getName(), warp.getOwner().getId());
-            WarpSystem.getDataHandler().send(packet);
+            WarpSystem.getDataHandler().send(packet, connection);
         }
 
         return refund;

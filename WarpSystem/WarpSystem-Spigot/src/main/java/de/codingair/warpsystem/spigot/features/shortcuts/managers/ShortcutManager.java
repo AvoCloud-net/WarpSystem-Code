@@ -20,6 +20,7 @@ import de.codingair.warpsystem.spigot.features.shortcuts.utils.Shortcut;
 import de.codingair.warpsystem.spigot.features.shortcuts.utils.ShortcutFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +40,7 @@ public class ShortcutManager implements Manager, ProxyFeature {
 
     @Override
     public boolean load(boolean loader) {
-        WarpSystem.getInstance().getBungeeFeatureList().add(this);
+        WarpSystem.getInstance().getProxyFeatureList().add(this);
 
         if (WarpSystem.getInstance().getFileManager().getFile("Shortcuts") == null) WarpSystem.getInstance().getFileManager().loadFile("Shortcuts", "/Memory/");
 
@@ -196,7 +197,7 @@ public class ShortcutManager implements Manager, ProxyFeature {
     }
 
     @Override
-    public void onConnect() {
+    public void onConnect(Player connection) {
     }
 
     @Override

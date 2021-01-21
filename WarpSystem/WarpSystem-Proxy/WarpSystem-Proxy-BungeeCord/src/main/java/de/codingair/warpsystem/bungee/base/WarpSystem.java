@@ -17,6 +17,7 @@ import de.codingair.warpsystem.core.proxy.Core;
 import de.codingair.warpsystem.core.proxy.base.LangHandler;
 import de.codingair.warpsystem.core.proxy.base.handlers.JarManager;
 import de.codingair.warpsystem.core.proxy.base.handlers.PlayerDataHandler;
+import de.codingair.warpsystem.core.proxy.base.handlers.WorldHandler;
 import de.codingair.warpsystem.core.proxy.redis.RedisCore;
 import de.codingair.warpsystem.core.proxy.redis.trevor.TrevorHandler;
 import de.codingair.warpsystem.core.proxy.utils.Player;
@@ -45,6 +46,7 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
     private final FileManager fileManager = new FileManager(this);
     private final JarManager jarManager = new JarManager();
     private final Timer timer = new Timer();
+    private final WorldManager worldManager = new WorldManager();
     private DataManager dataManager;
     private CooldownManager cooldownManager;
     private PlayerDataManager playerDataManager;
@@ -86,9 +88,6 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
 
         dataManager = new DataManager();
         dataManager.preLoad();
-        logMessage("Initialize SpigotConnector");
-        logMessage(" ");
-        this.dataHandler.onEnable();
 
         this.fileManager.loadFile("Config", "/", "proxy/");
         try {
@@ -96,6 +95,8 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        this.worldManager.load();
 
         //listener
         getProxy().getPluginManager().registerListener(this, new MainListener());
@@ -110,6 +111,10 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
         new ChatInputManager();
 
         getProxy().getPluginManager().registerCommand(this, new CWarpSystem());
+
+        logMessage("Initialize SpigotConnector");
+        logMessage(" ");
+        this.dataHandler.onEnable();
 
         logMessage("Loading features");
         boolean createBackup = false;
@@ -142,10 +147,10 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
     private void checkRedis() {
         String name = "-";
 
-        if(getProxy().getPluginManager().getPlugin("Trevor") != null) {
+        if (getProxy().getPluginManager().getPlugin("Trevor") != null) {
             RedisCore.core().setHandler(new TrevorHandler());
             name = "Trevor";
-        } else if(getProxy().getPluginManager().getPlugin("RedisBungee") != null) {
+        } else if (getProxy().getPluginManager().getPlugin("RedisBungee") != null) {
             RedisBungeeHandler handler = new RedisBungeeHandler();
             RedisCore.core().setHandler(handler);
             getProxy().getPluginManager().registerListener(this, handler);
@@ -180,7 +185,7 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
 
             if (!saver) logMessage("Saving features");
             this.cooldownManager.save();
-
+            this.worldManager.save();
             this.dataManager.save(saver);
 
             if (!saver) {
@@ -315,5 +320,10 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
     @Override
     public PlayerDataHandler getPlayerData() {
         return this.playerDataManager;
+    }
+
+    @Override
+    public WorldHandler getWorldManager() {
+        return this.worldManager;
     }
 }

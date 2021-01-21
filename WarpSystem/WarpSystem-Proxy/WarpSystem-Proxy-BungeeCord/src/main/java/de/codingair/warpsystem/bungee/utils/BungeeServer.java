@@ -64,4 +64,11 @@ public class BungeeServer implements Server<String> {
     public int hashCode() {
         return Objects.hash(server);
     }
+
+    @Override
+    public String toString() {
+        return "BungeeServer{" +
+                "server=" + server +
+                '}';
+    }
 }

@@ -11,6 +11,8 @@ import org.jetbrains.annotations.NotNull;
 public class RequestInitialPacketHandler implements PacketHandler<RequestInitialPacket> {
     @Override
     public void process(@NotNull RequestInitialPacket packet, @NotNull Proxy proxy, Object connection, @NotNull Direction direction) {
-        Core.getServerManager().sendInitialPacket((Server) connection);
+        if(direction == Direction.DOWN) {
+            Core.getServerManager().sendInitialPacket((Server<?>) connection);
+        }
     }
 }

@@ -12,6 +12,7 @@ import de.codingair.codingapi.tools.time.Timer;
 import de.codingair.warpsystem.core.proxy.Core;
 import de.codingair.warpsystem.core.proxy.base.handlers.JarManager;
 import de.codingair.warpsystem.core.proxy.base.handlers.PlayerDataHandler;
+import de.codingair.warpsystem.core.proxy.base.handlers.WorldHandler;
 import de.codingair.warpsystem.core.proxy.redis.RedisCore;
 import de.codingair.warpsystem.core.proxy.redis.trevor.TrevorHandler;
 import de.codingair.warpsystem.core.proxy.utils.Player;
@@ -46,6 +47,7 @@ public class WarpSystem extends VelocityPlugin {
 
     private final FileManager fileManager = new FileManager(this);
     private final JarManager jarManager = new JarManager();
+    private final WorldManager worldManager = new WorldManager();
 
     private DataManager dataManager;
     private CooldownManager cooldownManager;
@@ -94,10 +96,12 @@ public class WarpSystem extends VelocityPlugin {
         log(" ");
 
         log("Initialize SpigotConnector");
-        Core.setServerManager(new ServerManager());
-        Core.getServerManager().run();
+
         this.dataHandler = new VelocityHandler(this);
         checkRedis();
+
+        Core.setServerManager(new ServerManager());
+        Core.getServerManager().run();
 
         dataManager = new DataManager();
         dataManager.preLoad();
@@ -117,6 +121,7 @@ public class WarpSystem extends VelocityPlugin {
         log("Loading features");
         boolean createBackup = false;
         if (!this.dataManager.load(false)) createBackup = true;
+        this.worldManager.load();
         this.cooldownManager.load();
 
         if (createBackup) {
@@ -139,7 +144,7 @@ public class WarpSystem extends VelocityPlugin {
     }
 
     private void checkRedis() {
-        if(proxy.getPluginManager().getPlugin("trevor").isPresent()) {
+        if (proxy.getPluginManager().getPlugin("trevor").isPresent()) {
             RedisCore.core().setHandler(new TrevorHandler());
         }
     }
@@ -162,6 +167,7 @@ public class WarpSystem extends VelocityPlugin {
             if (!saver) log("Saving features");
             this.dataManager.save(saver);
             this.cooldownManager.save();
+            this.worldManager.save();
 
             if (!saver) {
                 log(" ");
@@ -220,8 +226,10 @@ public class WarpSystem extends VelocityPlugin {
             outputChannel = new FileOutputStream(dest).getChannel();
             outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
         } finally {
-            inputChannel.close();
-            outputChannel.close();
+            if (inputChannel != null && outputChannel != null) {
+                inputChannel.close();
+                outputChannel.close();
+            }
         }
     }
 
@@ -297,5 +305,10 @@ public class WarpSystem extends VelocityPlugin {
 
     public JarManager getJarManager() {
         return jarManager;
+    }
+
+    @Override
+    public WorldHandler getWorldManager() {
+        return this.worldManager;
     }
 }

@@ -86,7 +86,7 @@ public class POptions extends PageItem {
                         } else {
                             //reset
                             reset = true;
-                            SpawnManager.getInstance().updateGlobalOptions(null, SpawnManager.getInstance().getRespawnServer());
+                            SpawnManager.getInstance().updateGlobalOptions(null, SpawnManager.getInstance().getRespawnServer(), p);
                         }
 
                         update();
@@ -159,7 +159,7 @@ public class POptions extends PageItem {
                         } else {
                             //reset
                             reset = true;
-                            SpawnManager.getInstance().updateGlobalOptions(SpawnManager.getInstance().getSpawnServer(), null);
+                            SpawnManager.getInstance().updateGlobalOptions(SpawnManager.getInstance().getSpawnServer(), null, p);
                         }
 
                         update();

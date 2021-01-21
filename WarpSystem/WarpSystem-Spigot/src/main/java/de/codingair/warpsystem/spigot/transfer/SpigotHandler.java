@@ -1,8 +1,5 @@
 package de.codingair.warpsystem.spigot.transfer;
 
-import de.codingair.packetmanagement.packets.Packet;
-import de.codingair.packetmanagement.packets.RequestPacket;
-import de.codingair.packetmanagement.packets.ResponsePacket;
 import de.codingair.packetmanagement.variants.OneWayDataHandler;
 import de.codingair.warpsystem.core.transfer.packets.general.*;
 import de.codingair.warpsystem.core.transfer.packets.proxy.*;
@@ -19,7 +16,6 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 public class SpigotHandler extends OneWayDataHandler<Player> implements PluginMessageListener {
     public SpigotHandler(WarpSystem plugin) {
@@ -73,14 +69,6 @@ public class SpigotHandler extends OneWayDataHandler<Player> implements PluginMe
     @Override
     public void onPluginMessageReceived(@NotNull String tag, @NotNull Player player, @NotNull byte[] bytes) {
         if (tag.equals(getChannelBackend())) receive(bytes, player);
-    }
-
-    public void send(@NotNull Packet packet) {
-        super.send(packet, null);
-    }
-
-    public <A extends ResponsePacket> CompletableFuture<A> send(@NotNull RequestPacket<A> packet) {
-        return super.send(packet, null);
     }
 
     private Player getAny() {

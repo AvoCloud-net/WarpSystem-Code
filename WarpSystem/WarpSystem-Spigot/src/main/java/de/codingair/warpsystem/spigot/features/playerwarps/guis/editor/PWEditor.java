@@ -75,7 +75,7 @@ public class PWEditor extends Editor<PlayerWarp> implements Ticker {
                                 WarpSystem.getDataHandler().send(packet, p);
                             }
                         } else {
-                            PlayerWarpManager.getManager().sync(warp, clone);
+                            PlayerWarpManager.getManager().sync(warp, clone, p);
                             warp.apply(clone);
                         }
 
