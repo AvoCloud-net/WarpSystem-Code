@@ -31,7 +31,9 @@ import de.codingair.warpsystem.spigot.features.playerwarps.managers.PlayerWarpMa
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -226,21 +228,23 @@ public class PlayerWarp extends FeatureObject {
         if (this.item == null) this.item = new ItemBuilder();
         if (d.data != null) this.item.setData(d.data);
         if (d.type != null) {
-            Optional<XMaterial> m = XMaterial.matchXMaterial(d.type, d.data == null || Version.get().isBiggerThan(Version.v1_12) ? 0 : d.data);
+            Optional<XMaterial> m = XMaterial.matchDefinedXMaterial(d.type, d.data == null || Version.get().isBiggerThan(Version.v1_12) ? 0 : d.data);
 
             if (!m.isPresent()) {
                 throw new IllegalArgumentException("Error at loading PlayerWarp(Owner-Name=" + (d.owner == null ? owner.getName() : d.owner.getName()) + "; Warp-Name=" + (d.name == null ? name : d.name) + "). Material is null: (" + d.type + ", " + d.data + ")");
             } else {
-                this.item.setType(m.get().parseMaterial(true, true, XMaterial.STONE.parseMaterial()));
+                ItemStack i = m.get().parseItem();
+                this.item.setType(i == null ? Material.STONE : i.getType());
                 this.item.setData(m.get().getData());
             }
         } else if (d.data != null) {
-            Optional<XMaterial> m = XMaterial.matchXMaterial(item.getType().name(), Version.get().isBiggerThan(Version.v1_12) ? 0 : d.data);
+            Optional<XMaterial> m = XMaterial.matchDefinedXMaterial(item.getType().name(), Version.get().isBiggerThan(Version.v1_12) ? 0 : d.data);
 
             if (!m.isPresent()) {
                 throw new IllegalArgumentException("Error at loading PlayerWarp(Owner-Name=" + (d.owner == null ? owner.getName() : d.owner.getName()) + "; Warp-Name=" + (d.name == null ? name : d.name) + "). Material is null: (" + d.type + ", " + d.data + ")");
             } else {
-                this.item.setType(m.get().parseMaterial(true, true, XMaterial.STONE.parseMaterial()));
+                ItemStack i = m.get().parseItem();
+                this.item.setType(i == null ? Material.STONE : i.getType());
                 this.item.setData(m.get().getData());
             }
         }
@@ -339,8 +343,9 @@ public class PlayerWarp extends FeatureObject {
         this.teleportMessage = d.getString("tpmsg");
         this.item = d.getItemBuilder("item");
 
-        if (!XMaterial.isNewVersion() && this.item.getType() == XMaterial.PLAYER_HEAD.parseMaterial(false, false)) {
-            this.item.setType(XMaterial.PLAYER_HEAD.parseMaterial(true, false));
+        if (!XMaterial.isNewVersion() && XMaterial.matchXMaterial(this.item.getType()) == XMaterial.PLAYER_HEAD) {
+            ItemStack i = XMaterial.PLAYER_HEAD.parseItem();
+            this.item.setType(i == null ? Material.STONE : i.getType());
             this.item.setDurability(XMaterial.PLAYER_HEAD.getData());
             this.item.setData(XMaterial.PLAYER_HEAD.getData());
         }
@@ -437,7 +442,7 @@ public class PlayerWarp extends FeatureObject {
     }
 
     public boolean isStandardItem() {
-        return this.item != null && this.item.getType() == XMaterial.PLAYER_HEAD.parseMaterial(true, false) && Objects.equals(this.item.getSkullId(), WarpSystem.getInstance().getHeadManager().getSkinId(this.owner.id));
+        return this.item != null && XMaterial.matchXMaterial(this.item.getType()) == XMaterial.PLAYER_HEAD && Objects.equals(this.item.getSkullId(), WarpSystem.getInstance().getHeadManager().getSkinId(this.owner.id));
     }
 
     @Override
