@@ -8,10 +8,7 @@ import de.codingair.warpsystem.core.proxy.transfer.handlers.*;
 import de.codingair.warpsystem.core.proxy.utils.ProxyPlugin;
 import de.codingair.warpsystem.core.proxy.utils.Server;
 import de.codingair.warpsystem.core.transfer.packets.general.*;
-import de.codingair.warpsystem.core.transfer.packets.proxy.InitialPacket;
-import de.codingair.warpsystem.core.transfer.packets.proxy.PlayerJoinPacket;
-import de.codingair.warpsystem.core.transfer.packets.proxy.PlayerQuitPacket;
-import de.codingair.warpsystem.core.transfer.packets.proxy.ProvidePlayerDataPacket;
+import de.codingair.warpsystem.core.transfer.packets.proxy.*;
 import de.codingair.warpsystem.core.transfer.packets.spigot.*;
 import de.codingair.warpsystem.core.transfer.packets.utils.PacketType;
 
@@ -64,6 +61,7 @@ public abstract class CoreDataHandler<C> extends DataHandler<Server<C>> {
         registerHandler(PlayerJoinPacket.class, new PlayerJoinPacketHandler());
         registerHandler(PlayerQuitPacket.class, new PlayerQuitPacketHandler());
         registerHandler(SendWorldNamesPacket.class, new SendWorldNamesPacketHandler());
+        registerHandler(ProxyAwarenessPacket.class, new ProxyAwarenessPacketHandler());
     }
 
     public void onEnable() {

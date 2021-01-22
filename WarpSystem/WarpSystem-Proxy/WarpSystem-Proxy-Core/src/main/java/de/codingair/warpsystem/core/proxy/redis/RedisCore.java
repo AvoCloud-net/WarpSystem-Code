@@ -2,6 +2,7 @@ package de.codingair.warpsystem.core.proxy.redis;
 
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.warpsystem.core.proxy.Core;
+import de.codingair.warpsystem.core.transfer.packets.proxy.ProxyAwarenessPacket;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,6 +27,8 @@ public class RedisCore {
     public void setHandler(RedisHandler handler) {
         this.handler = handler;
         this.handler.setSink((data, source) -> Core.getPlugin().dataHandler().receive(data, null, Direction.UP));
+
+        Core.getPlugin().dataHandler().send(new ProxyAwarenessPacket(handler.source), null, Direction.UP);
     }
 
     public static void recognize(String proxy) {
