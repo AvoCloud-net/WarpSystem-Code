@@ -5,24 +5,24 @@ import de.codingair.warpsystem.spigot.base.WarpSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class BungeePlayer {
+public class ProxyPlayer {
     private final Player player;
     private final String name;
     private final String displayName;
 
-    public BungeePlayer(Player player) {
+    public ProxyPlayer(Player player) {
         this.player = player;
         this.name = player.getName();
         this.displayName = player.getDisplayName();
     }
 
-    public BungeePlayer(String name, String displayName) {
+    public ProxyPlayer(String name, String displayName) {
         this.player = Bukkit.getPlayer(name);
         this.name = name;
         this.displayName = displayName;
     }
 
-    public BungeePlayer(String name) {
+    public ProxyPlayer(String name) {
         this(name, name);
     }
 

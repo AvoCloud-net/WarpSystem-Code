@@ -59,9 +59,9 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
             } else if (!handler.isAccessible(sender.getServer())) {
                 return CompletableFuture.completedFuture(new LongPacket(PrepareTeleportPacket.Result.SERVER_NOT_ONLINE.ordinal()));
             } else {
-                if(packet.getServer() != null) {
+                if (packet.getServer() != null) {
                     target = Core.getPlugin().getServer(packet.getServer());
-                    if(target == null) return CompletableFuture.completedFuture(new LongPacket(PrepareTeleportPacket.Result.SERVER_NOT_ONLINE.ordinal()));
+                    if (target == null) return CompletableFuture.completedFuture(new LongPacket(PrepareTeleportPacket.Result.SERVER_NOT_ONLINE.ordinal()));
                 } else target = sender.getServer();
 
                 targetName = sender.getName();
@@ -113,8 +113,10 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
                     public void accept(Server<?> target) {
                         if (packet.isCoordsPacket()) {
                             TeleportPlayerToCoordsPacket ptcPacket = new TeleportPlayerToCoordsPacket(
-                                    packet.getSender(), player.getName(),
+                                    packet.getSender(), player.getName(), null, 0,
                                     packet.getX(), packet.getY(), packet.getZ(),
+                                    packet.getYaw(), packet.getPitch(),
+                                    packet.getWorld(), packet.getServer(),
                                     false, false, false);
 
                             Core.getPlugin().dataHandler().send(ptcPacket, target, Direction.DOWN);

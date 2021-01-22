@@ -10,7 +10,7 @@ import de.codingair.warpsystem.core.transfer.packets.spigot.PrepareTeleportPlaye
 import de.codingair.warpsystem.core.transfer.packets.spigot.PrepareTeleportRequestPacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.TeleportRequestHandledPacket;
 import de.codingair.warpsystem.spigot.api.bungee.HoverEventBuilder;
-import de.codingair.warpsystem.spigot.api.players.BungeePlayer;
+import de.codingair.warpsystem.spigot.api.players.ProxyPlayer;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
@@ -69,7 +69,7 @@ public class Invitation {
     public void accept(Player player) {
         if (!isRecipient(player.getName())) return;
         //to sender
-        BungeePlayer sender = new BungeePlayer(this.sender);
+        ProxyPlayer sender = new ProxyPlayer(this.sender);
 
         if (WarpSystem.getInstance().getTeleportManager().isTeleporting(player)) {
             player.sendMessage(Lang.getPrefix() + Lang.get("Player_Is_Already_Teleporting"));
@@ -159,7 +159,7 @@ public class Invitation {
         //to sender
         handle(player.getName(), false);
 
-        BungeePlayer sender = new BungeePlayer(this.sender);
+        ProxyPlayer sender = new ProxyPlayer(this.sender);
 
         if (recipient != null) sender.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_denied_sender").replace("%PLAYER%", ChatColor.stripColor(player.getName())));
         player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_denied_other").replace("%PLAYER%", ChatColor.stripColor(sender.getName())));

@@ -92,7 +92,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
 
     private boolean allNull(Object... o) {
         for (Object o1 : o) {
-            if(o1 != null) {
+            if (o1 != null) {
                 return false;
             }
         }
@@ -101,13 +101,21 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
     }
 
     @Override
-    public boolean tp(Player gate, PlayerData player, @Nullable Double x, @Nullable Double y, @Nullable Double z, @Nullable Float yaw, @Nullable Float pitch, @Nullable String world, @Nullable String server) {
+    public boolean tp(Player gate, PlayerData player, @Nullable Double x, @Nullable Double y, @Nullable Double z, @Nullable Float yaw, @Nullable Float pitch, @Nullable String server, @Nullable String world) {
         if (checkStatusTp(gate, player)) return true;
         Player p = Bukkit.getPlayer(player.getName());
 
-        if(allNull(x, y, z, yaw, pitch, world, server)) return false; //trigger usage
+        if (allNull(x, y, z, yaw, pitch, world, server)) return false; //trigger usage
 
-        boolean move = server != null && !server.equalsIgnoreCase(WarpSystem.getInstance().getCurrentServer());
+        boolean move = false;
+        if (server != null) {
+            if (server.equalsIgnoreCase(WarpSystem.getInstance().getCurrentServer())) {
+                if (allNull(x, y, z, yaw, pitch, world)) {
+                    gate.sendMessage(Lang.getPrefix() + Lang.get("Other_Is_Already_On_Target_Server").replace("%PLAYER%", player.getName()));
+                    return true;
+                } else server = null;
+            } else move = true;
+        }
 
         if (p == null || move) {
             //proxy
@@ -131,16 +139,25 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
                 return true;
             }
 
-            destination.append(w.getName());
+            if(w.equals(p.getWorld()) && allNull(x, y, z, yaw, pitch) || !w.equals(p.getWorld())) {
+                destination.append(w.getName());
+            }
         } else w = gate.getWorld();
 
-        Location l;
-        if (x == null || y == null || z == null) l = w.getSpawnLocation();
-        else {
-            l = new Location(w, x, y, z);
+        Location l = new Location(w, 0, 0, 0);
+
+        if (x != null && y != null && z != null) {
+            l.setX(x);
+            l.setY(y);
+            l.setZ(z);
 
             if (destination.length() > 0) destination.append(", ");
             destination.append("x: ").append(cut(x)).append(", y: ").append(cut(y)).append(", z: ").append(cut(z));
+        } else if(yaw != null && pitch != null) {
+            l = p.getLocation(l);
+            l.setWorld(w);
+        } else {
+            l = w.getSpawnLocation();
         }
 
         if (yaw != null && pitch != null) {
@@ -149,6 +166,9 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
 
             if (destination.length() > 0) destination.append(", ");
             destination.append("yaw: ").append(cut(yaw)).append(", pitch: ").append(cut(pitch));
+        } else {
+            l.setYaw(p.getLocation().getYaw());
+            l.setPitch(p.getLocation().getPitch());
         }
 
         if (gate != p) gate.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", p.getName()).replace("%warp%", destination.toString()));

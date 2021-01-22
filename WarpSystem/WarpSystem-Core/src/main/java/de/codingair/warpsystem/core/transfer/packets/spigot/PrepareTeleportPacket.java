@@ -69,7 +69,7 @@ public class PrepareTeleportPacket implements RequestPacket<LongPacket> {
                 out.writeFloat(pitch);
             }
 
-            if(server != null) out.writeUTF(sender);
+            if(server != null) out.writeUTF(server);
             if(world != null) out.writeUTF(world);
 
             out.writeUTF(recipient);

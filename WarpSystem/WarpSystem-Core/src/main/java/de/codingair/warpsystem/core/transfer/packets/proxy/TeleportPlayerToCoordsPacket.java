@@ -8,7 +8,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class TeleportPlayerToCoordsPacket implements Packet {
-    private String gate, player, destinationName = null, world = null;
+    private String gate, player, destinationName = null, world = null, server = null;
     private Double x, y, z;
     private double costs = 0;
     private Float yaw, pitch;
@@ -28,7 +28,7 @@ public class TeleportPlayerToCoordsPacket implements Packet {
         this.relativeZ = relativeZ;
     }
 
-    public TeleportPlayerToCoordsPacket(String gate, String player, String destinationName, Double x, Double y, Double z, double costs, Float yaw, Float pitch, String world, boolean relativeX, boolean relativeY, boolean relativeZ) {
+    public TeleportPlayerToCoordsPacket(String gate, String player, String destinationName, double costs, Double x, Double y, Double z, Float yaw, Float pitch, String world, String server, boolean relativeX, boolean relativeY, boolean relativeZ) {
         this.gate = gate;
         this.player = player;
         this.destinationName = destinationName;
@@ -39,6 +39,7 @@ public class TeleportPlayerToCoordsPacket implements Packet {
         this.yaw = yaw;
         this.pitch = pitch;
         this.world = world;
+        this.server = server;
         this.relativeX = relativeX;
         this.relativeY = relativeY;
         this.relativeZ = relativeZ;
@@ -65,6 +66,7 @@ public class TeleportPlayerToCoordsPacket implements Packet {
         mask.setBit(3, x != null);
         mask.setBit(4, yaw != null && pitch != null);
         mask.setBit(5, world != null);
+        mask.setBit(6, server != null);
         mask.write(out);
 
         out.writeUTF(this.gate);
@@ -83,6 +85,7 @@ public class TeleportPlayerToCoordsPacket implements Packet {
             out.writeFloat(pitch);
         }
         if (world != null) out.writeUTF(world);
+        if (server != null) out.writeUTF(server);
     }
 
     @Override
@@ -111,10 +114,15 @@ public class TeleportPlayerToCoordsPacket implements Packet {
             this.pitch = in.readFloat();
         }
         if(mask.getBit(5)) this.world = in.readUTF();
+        if(mask.getBit(6)) this.server = in.readUTF();
     }
 
     public String getWorld() {
         return world;
+    }
+
+    public String getServer() {
+        return server;
     }
 
     public String getGate() {

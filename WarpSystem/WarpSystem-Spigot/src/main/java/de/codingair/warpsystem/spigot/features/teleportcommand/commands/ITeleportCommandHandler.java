@@ -14,7 +14,7 @@ public interface ITeleportCommandHandler {
 
     void suggestBack(String[] args, List<String> suggestions);
 
-    boolean tp(Player gate, PlayerData player, @Nullable Double x, @Nullable Double y, @Nullable Double z, @Nullable Float yaw, @Nullable Float pitch, @Nullable String world, @Nullable String server);
+    boolean tp(Player gate, PlayerData player, @Nullable Double x, @Nullable Double y, @Nullable Double z, @Nullable Float yaw, @Nullable Float pitch, @Nullable String server, @Nullable String world);
 
     void tp(Player gate, PlayerData player, PlayerData target);
 

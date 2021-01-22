@@ -87,7 +87,7 @@ public abstract class ServerHandler {
                     Core.getPlugin().dataHandler().send(p, target, Direction.DOWN);
                 }
             });
-        }, 3, 5, TimeUnit.SECONDS);
+        }, 1, 5, TimeUnit.SECONDS);
     }
 
     public void sendInitialPacket(Server<?> server) {

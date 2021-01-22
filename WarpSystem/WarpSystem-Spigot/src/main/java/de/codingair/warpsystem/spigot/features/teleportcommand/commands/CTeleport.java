@@ -48,6 +48,8 @@ public class CTeleport extends WSCommandBuilder {
                     String bracket = WarpSystem.opt().cmdSug();
                     String arg = WarpSystem.opt().cmdArg();
 
+                    // /tp [player] [<player> | [<x> <y> <z>] [<yaw> <pitch>] [<server> [world] | <world>]
+
                     TextComponent help = new TextComponent(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": " + bracket + "/tp <");
 
                     TextComponent add = new TextComponent(bracket + "[" + arg + "player" + bracket + "]");
@@ -132,7 +134,7 @@ public class CTeleport extends WSCommandBuilder {
             data = WarpSystem.getInstance().getPlayerDataManager().getCache(name);
         }
 
-        if(args.length == 1 && data != null) {
+        if (args.length == 1 && data != null) {
             TeleportCommandManager.handler().tp(p, WarpSystem.getInstance().getPlayerDataManager().getCache(p), data);
             return true;
         }
@@ -231,7 +233,8 @@ public class CTeleport extends WSCommandBuilder {
                 if (yaw == null) yaw = (float) parse(args[i]);
                 else yaw += (float) parse(args[i]);
 
-                yaw = ((yaw + 180) % 360) - 180;
+                if(yaw > 180) yaw = 180F;
+                else if(yaw < -180) yaw = -180F;
             }
 
             if (yaw != null) {
@@ -244,9 +247,10 @@ public class CTeleport extends WSCommandBuilder {
 
                     if (isNumeric(args[i + 1])) {
                         if (pitch == null) pitch = (float) parse(args[i + 1]);
-                        pitch += (float) parse(args[i + 1]);
+                        else pitch += (float) parse(args[i + 1]);
 
-                        pitch = ((pitch + 90) % 180) - 90;
+                        if(pitch > 90) pitch = 90F;
+                        else if(pitch < -90) pitch = -90F;
                     } else if (!args[i + 1].isEmpty()) return false;
                 } else return false;
             }
@@ -263,16 +267,16 @@ public class CTeleport extends WSCommandBuilder {
 
         String world = null, server = null;
 
-        if(args.length > i + 2) return false;
+        if (args.length > i + 2) return false;
 
         if (args.length - 1 >= i + 1) {
             server = args[i];
             world = args[i + 1];
 
-            if(WarpSystem.getInstance().getServerManager().getProperties(server) == null) {
+            if (WarpSystem.getInstance().getServerManager().getProperties(server) == null) {
                 p.sendMessage(Lang.getPrefix() + Lang.get("Server_Is_Not_Online"));
                 return true;
-            } else if(!WarpSystem.getInstance().getServerManager().getWorlds(server).contains(world)) {
+            } else if (!WarpSystem.getInstance().getServerManager().getWorlds(server).contains(world)) {
                 p.sendMessage(Lang.getPrefix() + Lang.get("World_Not_Exists"));
                 return true;
             }
@@ -290,7 +294,8 @@ public class CTeleport extends WSCommandBuilder {
             }
         }
 
-        return TeleportCommandManager.handler().tp(p, other == null ? WarpSystem.getInstance().getPlayerDataManager().getCache(p) : other, x, y, z, yaw, pitch, world, server);
+        if (other == null) other = WarpSystem.getInstance().getPlayerDataManager().getCache(p);
+        return TeleportCommandManager.handler().tp(p, other, x, y, z, yaw, pitch, server, world);
     }
 
     private static boolean isNumeric(String s) {

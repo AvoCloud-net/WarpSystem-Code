@@ -4,14 +4,18 @@ import de.codingair.packetmanagement.handlers.PacketHandler;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.core.transfer.packets.proxy.TeleportPlayerToCoordsPacket;
-import de.codingair.warpsystem.spigot.api.players.BungeePlayer;
+import de.codingair.warpsystem.spigot.api.players.ProxyPlayer;
 import de.codingair.warpsystem.spigot.base.listeners.TeleportListener;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
+import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.DestinationAdapter;
+import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.EmptyAdapter;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.LocationAdapter;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,14 +28,19 @@ public class TeleportPlayerToCoordsPacketHandler implements PacketHandler<Telepo
         Player player = Bukkit.getPlayer(packet.getPlayer());
         if (player == null) return;
 
+        boolean onlySwitch = true;
         StringBuilder destination = new StringBuilder();
-        String world;
-        if(packet.getWorld() != null) {
-            world = packet.getWorld();
-            destination.append(world);
-        } else {
-            world = player.getWorld().getName();
+        World world = null;
+
+        if (packet.getWorld() != null) {
+            world = Bukkit.getWorld(packet.getWorld());
+            if (world != null) {
+                destination.append(world.getName());
+                onlySwitch = false;
+            }
         }
+
+        if (world == null) world = player.getWorld();
 
         double x = 0, y = 0, z = 0;
         if (packet.getX() != null) {
@@ -40,29 +49,52 @@ public class TeleportPlayerToCoordsPacketHandler implements PacketHandler<Telepo
             z = (packet.isRelativeZ() ? player.getLocation().getZ() : 0) + packet.getZ();
 
             if (destination.length() > 0) destination.append(", ");
-            if(packet.isRelativeX()) destination.append("x: ").append("~").append(x > 0 ? "+" : "").append(cut(x)).append(", ");
-            if(packet.isRelativeY()) destination.append("y: ").append("~").append(y > 0 ? "+" : "").append(cut(y)).append(", ");
-            if(packet.isRelativeZ()) destination.append("z: ").append("~").append(z > 0 ? "+" : "").append(cut(z));
+
+            if (packet.isRelativeZ()) destination.append("x: ").append("~").append(x > 0 ? "+" : "").append(cut(x)).append(", ");
+            else destination.append("x: ").append(cut(x)).append(", ");
+
+            if (packet.isRelativeY()) destination.append("y: ").append("~").append(y > 0 ? "+" : "").append(cut(y)).append(", ");
+            else destination.append("y: ").append(cut(y)).append(", ");
+
+            if (packet.isRelativeZ()) destination.append("z: ").append("~").append(z > 0 ? "+" : "").append(cut(z));
+            else destination.append("z: ").append(cut(z));
+
+            onlySwitch = false;
+        } else if (packet.getWorld() != null) {
+            Location spawn = world.getSpawnLocation();
+            x = spawn.getX();
+            y = spawn.getY();
+            z = spawn.getZ();
         }
 
-        float yaw = 0, pitch = 0;
-
-        if(packet.getYaw() != null) {
+        float yaw, pitch;
+        if (packet.getYaw() != null) {
             yaw = packet.getYaw();
             pitch = packet.getPitch();
 
             if (destination.length() > 0) destination.append(", ");
             destination.append("yaw: ").append(cut(yaw)).append(", ");
             destination.append("pitch: ").append(cut(pitch));
+            onlySwitch = false;
+        } else {
+            yaw = player.getLocation().getYaw();
+            pitch = player.getLocation().getPitch();
         }
 
-        de.codingair.codingapi.tools.Location l = new de.codingair.codingapi.tools.Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
-        TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(l)), destination.toString());
+        if (destination.length() == 0) destination.append(packet.getServer());
+
+        de.codingair.codingapi.tools.Location l = new de.codingair.codingapi.tools.Location(world, x, y, z, yaw, pitch);
+        DestinationAdapter adapter;
+
+        if (onlySwitch) adapter = new EmptyAdapter();
+        else adapter = new LocationAdapter(l);
+
+        TeleportOptions options = new TeleportOptions(new Destination(adapter), destination.toString());
 
         if (packet.getGate() != null && packet.getPlayer() != null) {
             if (!packet.getGate().equals(packet.getPlayer())) {
-                BungeePlayer end = new BungeePlayer(packet.getGate(), packet.getGate());
-                end.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", packet.getPlayer()).replace("%warp%", "x=" + cut(x) + ", y=" + cut(y) + ", z=" + cut(z)));
+                ProxyPlayer end = new ProxyPlayer(packet.getGate(), packet.getGate());
+                end.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", packet.getPlayer()).replace("%warp%", destination.toString()));
             }
 
             options.setMessage(Lang.getPrefix() + (packet.getGate().equals(packet.getPlayer()) ? Lang.get("Teleported_To") :
