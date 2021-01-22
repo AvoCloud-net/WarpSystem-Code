@@ -3,6 +3,8 @@ package de.codingair.warpsystem.core.proxy.transfer.handlers;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.utils.Value;
 import de.codingair.packetmanagement.exceptions.Escalation;
+import de.codingair.packetmanagement.exceptions.NoConnectionException;
+import de.codingair.packetmanagement.exceptions.TimeOutException;
 import de.codingair.packetmanagement.handlers.ResponsibleMultiLayerPacketHandler;
 import de.codingair.packetmanagement.packets.impl.LongPacket;
 import de.codingair.packetmanagement.utils.Direction;
@@ -24,6 +26,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacketHandler<PrepareTeleportPacket, LongPacket> {
+
+    @Override
+    public boolean answer(@NotNull PrepareTeleportPacket packet, @NotNull Proxy proxy, @NotNull Direction direction) {
+        //redis
+        //we might not be able to handle this packet!
+        return direction == Direction.DOWN || packet.getRecipient() == null || Players.getPlayer(packet.getRecipient()) != null;
+    }
+
     @Override
     public @NotNull CompletableFuture<LongPacket> response(@NotNull PrepareTeleportPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         Player sender = Players.getPlayer(packet.getSender());
@@ -71,15 +81,11 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
         String recipient = packet.getRecipient();
         if (recipient == null) {
             //forward to all
-            if (direction == Direction.DOWN) Core.getPlugin().dataHandler().send(packet, null, Direction.UP); //redis
-
             Value<Integer> handled = new Value<>(0);
             Value<Integer> sent = new Value<>(0);
 
-            Core.getServerManager().getOnlineServer().forEach(s -> {
-                if (s.equals(connection)) return;
+            Core.getServerManager().getOnlineServer().filter(s -> !s.equals(connection) && handler.isAccessible(s)).forEach(s -> {
                 handled.setValue(handled.getValue() + s.getOnlineCount());
-                if (!handler.isAccessible(s)) return;
 
                 //tp all
                 s.getOnlinePlayers().forEach(player -> {
@@ -92,14 +98,30 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
                 });
             });
 
-            return CompletableFuture.completedFuture(new LongPacket((((long) handled.getValue()) << 32) | (sent.getValue() & 0xffffffffL)));
+            CompletableFuture<LongPacket> future = new CompletableFuture<>();
+
+            if (direction == Direction.DOWN && RedisCore.ready()) {
+                //wait for other proxies
+                Core.getPlugin().dataHandler().send(packet
+                                .mergeFuture(RedisCore.core().getProxies().size(), (longPacket, longPacket2) -> new LongPacket(longPacket.a() + longPacket2.a())),
+                        null, Direction.UP).whenComplete((result, t) -> {
+                    long res = 0;
+                    if (t != null) {
+                        //time out or not even connected?
+                        if (!(t instanceof NoConnectionException) && !(t instanceof TimeOutException)) t.printStackTrace();
+                    } else res = result.a();
+                    future.complete(new LongPacket(((((long) handled.getValue()) << 32) | (sent.getValue() & 0xffffffffL)) + res));
+                });
+            } else future.complete(new LongPacket((((long) handled.getValue()) << 32) | (sent.getValue() & 0xffffffffL)));
+
+            return future;
         } else {
             //only recipient
             Player player = Players.getPlayer(packet.getRecipient());
 
             if (player == null) {
                 //redis
-                if (direction == Direction.DOWN) throw new Escalation(this, Direction.UP, packet, err -> new LongPacket(0), RedisCore.TIME_OUT);
+                if (direction == Direction.DOWN) throw new Escalation(this, Direction.UP, packet, err -> new LongPacket(0));
                 else return CompletableFuture.completedFuture(new LongPacket(0));
             } else if (!handler.isAccessible(player.getServer())) {
                 //not online/accessible

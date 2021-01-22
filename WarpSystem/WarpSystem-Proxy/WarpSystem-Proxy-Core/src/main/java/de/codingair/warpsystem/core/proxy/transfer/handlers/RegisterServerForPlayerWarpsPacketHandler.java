@@ -36,15 +36,15 @@ public class RegisterServerForPlayerWarpsPacketHandler implements PacketHandler<
 
         if (!l.isEmpty()) uploads.add(l);
 
-        handler.setActive((Server) connection, true);
-        handler.setTimeDependent((Server) connection, packet.isTimeDependent());
+        handler.setActive((Server<?>) connection, true);
+        handler.setTimeDependent((Server<?>) connection, packet.isTimeDependent());
 
         SendPlayerWarpOptionsPacket options = new SendPlayerWarpOptionsPacket(handler.getInactiveTime());
-        Core.getPlugin().dataHandler().send(options, (Server) connection, Direction.DOWN);
+        Core.getPlugin().dataHandler().send(options, (Server<?>) connection, Direction.DOWN);
 
         for (List<PlayerWarpData> upload : uploads) {
             SendPlayerWarpsPacket p = new SendPlayerWarpsPacket(upload);
-            Core.getPlugin().dataHandler().send(p, (Server) connection, Direction.DOWN);
+            Core.getPlugin().dataHandler().send(p, (Server<?>) connection, Direction.DOWN);
         }
 
         uploads.clear();

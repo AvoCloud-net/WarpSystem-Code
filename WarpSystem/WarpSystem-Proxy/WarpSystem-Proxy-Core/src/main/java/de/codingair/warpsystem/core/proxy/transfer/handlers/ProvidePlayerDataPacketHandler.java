@@ -13,7 +13,6 @@ public class ProvidePlayerDataPacketHandler implements PacketHandler<ProvidePlay
     public void process(@NotNull ProvidePlayerDataPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         if(direction == Direction.UP) {
             //redis
-            System.out.println("Another proxy provides player data!");
             Core.getPlugin().getPlayerData().apply(packet);
         }
     }

@@ -6,7 +6,6 @@ import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.core.proxy.Core;
 import de.codingair.warpsystem.core.proxy.features.TeleportHandler;
 import de.codingair.warpsystem.core.proxy.redis.RedisCore;
-import de.codingair.warpsystem.core.proxy.utils.Server;
 import de.codingair.warpsystem.core.transfer.packets.general.TeleportCommandOptionsPacket;
 import de.codingair.warpsystem.core.transfer.packets.proxy.InitialPacket;
 import de.codingair.warpsystem.core.transfer.utils.TeleportCommandOptions;

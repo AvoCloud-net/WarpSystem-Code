@@ -23,7 +23,7 @@ public class MoveLocalPlayerWarpsPacketHandler implements PacketHandler<MoveLoca
 
         for (List<PlayerWarpData> value : handler.getWarps().values()) {
             for (PlayerWarpData w : value) {
-                if (w.getServer().equalsIgnoreCase(((Server) connection).getName())) l.add(w);
+                if (w.getServer().equalsIgnoreCase(((Server<?>) connection).getName())) l.add(w);
                 if (l.size() == 100) {
                     uploads.add(new ArrayList<>(l));
                     l.clear();
@@ -33,7 +33,7 @@ public class MoveLocalPlayerWarpsPacketHandler implements PacketHandler<MoveLoca
 
         if (!l.isEmpty()) uploads.add(l);
 
-        handler.setActive((Server) connection, false);
+        handler.setActive((Server<?>) connection, false);
 
         for (List<PlayerWarpData> upload : uploads) {
             for (PlayerWarpData d : upload) {
@@ -41,7 +41,7 @@ public class MoveLocalPlayerWarpsPacketHandler implements PacketHandler<MoveLoca
             }
 
             SendPlayerWarpsPacket p = new SendPlayerWarpsPacket(upload);
-            Core.getPlugin().dataHandler().send(p, (Server) connection, Direction.DOWN);
+            Core.getPlugin().dataHandler().send(p, (Server<?>) connection, Direction.DOWN);
         }
 
         uploads.clear();

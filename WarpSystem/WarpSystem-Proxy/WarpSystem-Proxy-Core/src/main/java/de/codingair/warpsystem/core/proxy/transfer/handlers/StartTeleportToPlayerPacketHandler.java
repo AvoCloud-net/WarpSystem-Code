@@ -15,6 +15,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class StartTeleportToPlayerPacketHandler implements ResponsibleMultiLayerPacketHandler<StartTeleportToPlayerPacket, IntegerPacket> {
+
+    @Override
+    public boolean answer(@NotNull StartTeleportToPlayerPacket packet, @NotNull Proxy proxy, @NotNull Direction direction) {
+        //redis
+        //we might not be able to handle this packet!
+        return direction == Direction.DOWN || Players.getPlayer(packet.getPlayer()) != null;
+    }
+
     @Override
     public @NotNull CompletableFuture<IntegerPacket> response(@NotNull StartTeleportToPlayerPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         Player player = Players.getPlayer(packet.getPlayer());
