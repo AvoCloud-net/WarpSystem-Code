@@ -25,6 +25,11 @@ public class CooldownManager implements ICooldownManager {
     private final HashMap<UUID, HashMap<Integer, Long>> cache = new HashMap<>();
     private ConfigFile file;
 
+    public CooldownManager() {
+        WarpSystem.getDataHandler().registerHandler(CooldownPacket.class, new CooldownPacketHandler(this));
+        WarpSystem.getDataHandler().registerHandler(CooldownDataPacket.class, new CooldownDataPacketHandler(this));
+    }
+
     public void load() {
         file = WarpSystem.getInstance().getFileManager().loadFile("Cooldown", "/Memory/");
         FileConfiguration config = file.getConfig();
@@ -55,9 +60,6 @@ public class CooldownManager implements ICooldownManager {
                 //might be the date tag
             }
         }
-
-        WarpSystem.getDataHandler().registerHandler(CooldownPacket.class, new CooldownPacketHandler(this));
-        WarpSystem.getDataHandler().registerHandler(CooldownDataPacket.class, new CooldownDataPacketHandler(this));
     }
 
     public void save() {
