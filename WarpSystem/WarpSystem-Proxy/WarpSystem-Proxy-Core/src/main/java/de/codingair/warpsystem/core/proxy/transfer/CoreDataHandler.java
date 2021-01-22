@@ -81,7 +81,7 @@ public abstract class CoreDataHandler<C> extends DataHandler<Server<C>> {
 
     @Override
     protected boolean isConnected(Direction direction) {
-        return direction == Direction.DOWN || (direction == Direction.UP && RedisCore.core().getHandler() != null);
+        return direction == Direction.DOWN || direction == Direction.UP && RedisCore.core().getHandler() != null;
     }
 
     @Override

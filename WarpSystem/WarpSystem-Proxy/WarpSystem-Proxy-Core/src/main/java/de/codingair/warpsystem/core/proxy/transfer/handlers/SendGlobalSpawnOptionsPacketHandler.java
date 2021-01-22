@@ -13,6 +13,6 @@ public class SendGlobalSpawnOptionsPacketHandler implements PacketHandler<SendGl
     @Override
     public void process(@NotNull SendGlobalSpawnOptionsPacket packet, @NotNull Proxy proxy, Object connection, @NotNull Direction direction) {
         SpawnHandler handler = Core.getPlugin().getHandler(SpawnHandler.class);
-        handler.update((Server) connection, packet.getSpawn(), packet.getRespawn());
+        handler.update((Server<?>) connection, packet.getSpawn(), packet.getRespawn());
     }
 }

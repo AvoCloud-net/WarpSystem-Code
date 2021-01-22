@@ -13,6 +13,6 @@ public class RandomTPWorldsPacketHandler implements PacketHandler<RandomTPWorlds
     @Override
     public void process(@NotNull RandomTPWorldsPacket packet, @NotNull Proxy proxy, Object connection, @NotNull Direction direction) {
         RandomTPHandler handler = Core.getPlugin().getHandler(RandomTPHandler.class);
-        handler.addWorldData(((Server) connection), packet);
+        handler.addWorldData(((Server<?>) connection), packet);
     }
 }

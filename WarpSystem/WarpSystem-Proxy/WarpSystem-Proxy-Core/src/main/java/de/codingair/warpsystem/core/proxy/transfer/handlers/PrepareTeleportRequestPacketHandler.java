@@ -22,6 +22,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class PrepareTeleportRequestPacketHandler implements ResponsibleMultiLayerPacketHandler<PrepareTeleportRequestPacket, LongPacket> {
+
+    @Override
+    public boolean answer(@NotNull PrepareTeleportRequestPacket packet, @NotNull Proxy proxy, @NotNull Direction direction) {
+        //redis
+        //we might not be able to handle this packet!
+        return direction == Direction.DOWN || packet.getRecipient() == null || Players.getPlayer(packet.getRecipient()) != null;
+    }
+
     @Override
     public @NotNull CompletableFuture<LongPacket> response(@NotNull PrepareTeleportRequestPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         TeleportHandler handler = Core.getPlugin().getHandler(TeleportHandler.class);
@@ -46,8 +54,6 @@ public class PrepareTeleportRequestPacketHandler implements ResponsibleMultiLaye
                         err.printStackTrace();
                     }
 
-                    int a = (int) result.a();
-                    int b = (int) (result.a() >> 32);
                     l.getAndAdd(result.a());
                     future.complete(new LongPacket(l.get()));
                 });

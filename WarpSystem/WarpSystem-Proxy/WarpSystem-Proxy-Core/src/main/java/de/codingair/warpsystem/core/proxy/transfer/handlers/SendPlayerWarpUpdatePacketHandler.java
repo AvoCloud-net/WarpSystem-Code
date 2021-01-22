@@ -21,7 +21,7 @@ public class SendPlayerWarpUpdatePacketHandler implements PacketHandler<SendPlay
 
         //forwarding
         handler.interactWithServers(s -> {
-            if (s.getName().equalsIgnoreCase(((Server) connection).getName())) return;
+            if (s.getName().equalsIgnoreCase(((Server<?>) connection).getName())) return;
             Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN);
         });
         update.destroy();
