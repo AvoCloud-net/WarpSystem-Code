@@ -15,8 +15,8 @@ import de.codingair.warpsystem.core.transfer.packets.proxy.SendJarPacket;
 import de.codingair.warpsystem.core.transfer.packets.proxy.SetupAssistantStorePacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.RequestInitialPacket;
 import de.codingair.warpsystem.core.utils.Manager;
-import de.codingair.warpsystem.spigot.api.placeholders.PAPI;
 import de.codingair.warpsystem.spigot.api.SpigotAPI;
+import de.codingair.warpsystem.spigot.api.placeholders.PAPI;
 import de.codingair.warpsystem.spigot.base.commands.CWarpSystem;
 import de.codingair.warpsystem.spigot.base.listeners.*;
 import de.codingair.warpsystem.spigot.base.managers.*;
@@ -62,10 +62,10 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     private final FileManager fileManager = new FileManager(this);
     private final HeadManager headManager = new HeadManager();
     private final SetupAssistantManager setupAssistantManager = new SetupAssistantManager();
-    private final CooldownManager cooldownManager = new CooldownManager();
     private final Timer timer = new Timer();
     private final SpigotHandler dataHandler = new SpigotHandler(this);
     private final PlayerDataManager playerDataManager = new PlayerDataManager();
+    private CooldownManager cooldownManager;
     private OptionBundle options;
     private GeneralOptions generalOptions;
     private boolean onBungeeCord = false;
@@ -160,6 +160,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             if (oldVersion == null || !oldVersion.equals(getDescription().getVersion())) createBackup();
 
             //load cooldown list
+            cooldownManager = new CooldownManager();
             cooldownManager.load();
 
             //check permission before loading features
@@ -511,7 +512,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     }
 
     public synchronized void setOnBungeeCord(boolean onBungeeCord, Player connection) {
-        if(onBungeeCord) this.proxyFeatureList.forEach(proxyFeature -> proxyFeature.onInitiate(connection));
+        if (onBungeeCord) this.proxyFeatureList.forEach(proxyFeature -> proxyFeature.onInitiate(connection));
         if (this.onBungeeCord == onBungeeCord) return;
 
         this.onBungeeCord = onBungeeCord;

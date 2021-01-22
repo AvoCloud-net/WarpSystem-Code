@@ -18,6 +18,5 @@ public class CooldownPacketHandler implements PacketHandler<CooldownPacket> {
     @Override
     public void process(@NotNull CooldownPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         manager.addCooldown(packet.getCooldown());
-
     }
 }
