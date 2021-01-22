@@ -3,16 +3,22 @@ package de.codingair.warpsystem.spigot.features.teleportcommand.commands;
 import de.codingair.codingapi.server.commands.builder.BaseComponent;
 import de.codingair.codingapi.server.commands.builder.CommandComponent;
 import de.codingair.codingapi.tools.items.XMaterial;
+import de.codingair.warpsystem.core.transfer.utils.PlayerData;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.features.teleportcommand.TeleportCommandManager;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class CTeleport extends WSCommandBuilder {
     public CTeleport() {
@@ -38,92 +44,69 @@ public class CTeleport extends WSCommandBuilder {
 
                 Player p = (Player) sender;
 
-                try {
-                    if (args.length == 1 && args[0].equals("/" + label)) {
-                        //HELP
-                        p.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /tp <" + WarpSystem.opt().cmdArg() + "player" + WarpSystem.opt().cmdSug() + "> [" + WarpSystem.opt().cmdArg() + "player" + WarpSystem.opt().cmdSug() + "] §c" + Lang.get("Or") + " " + WarpSystem.opt().cmdSug() + "/tp [" + WarpSystem.opt().cmdArg() + "player" + WarpSystem.opt().cmdSug() + "] <" + WarpSystem.opt().cmdArg() + "x" + WarpSystem.opt().cmdSug() + "> <" + WarpSystem.opt().cmdArg() + "y" + WarpSystem.opt().cmdSug() + "> <" + WarpSystem.opt().cmdArg() + "z" + WarpSystem.opt().cmdSug() + ">");
-                    } else if ((args.length == 1 && !args[0].isEmpty()) || (args.length == 2 && !args[1].isEmpty())) {
-                        //player [to player]
-                        if (args.length == 1) {
-                            //Teleport sender to 0
-                            TeleportCommandManager.handler().tp(p, p.getName(), args[0]);
-                        } else {
-                            //Teleport 0 to 1
-                            TeleportCommandManager.handler().tp(p, args[0], args[1]);
-                        }
-                    } else if ((args.length == 3 && !args[2].isEmpty()) || (args.length == 4 && !args[3].isEmpty())) {
-                        //player to coords
+                if (!process(p, args)) {
+                    String bracket = WarpSystem.opt().cmdSug();
+                    String arg = WarpSystem.opt().cmdArg();
 
-                        double x = 0;
-                        double y = 0;
-                        double z = 0;
+                    // /tp [player] [<player> | [<x> <y> <z>] [<yaw> <pitch>] [<server> [world] | <world>]
 
-                        if (args.length == 3) {
-                            //Teleport sender to coords
-                            args[0] = args[0].replace(",", ".");
-                            args[1] = args[1].replace(",", ".");
-                            args[2] = args[2].replace(",", ".");
+                    TextComponent help = new TextComponent(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": " + bracket + "/tp <");
 
-                            if (args[0].contains("~")) {
-                                x = ((Player) sender).getLocation().getX();
-                                args[0] = args[0].replace("~", "");
-                            }
+                    TextComponent add = new TextComponent(bracket + "[" + arg + "player" + bracket + "]");
+                    add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[] {
+                            new TextComponent(bracket + "/tp <" + arg + "player" + bracket + ">")
+                    }));
 
-                            if (args[1].contains("~")) {
-                                y = ((Player) sender).getLocation().getY();
-                                args[1] = args[1].replace("~", "");
-                            }
+                    help.addExtra(add);
+                    help.addExtra(bracket + " [");
 
-                            if (args[2].contains("~")) {
-                                z = ((Player) sender).getLocation().getZ();
-                                args[2] = args[2].replace("~", "");
-                            }
+                    add = new TextComponent(bracket + "<" + arg + "player" + bracket + ">");
+                    add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[] {
+                            new TextComponent(bracket + "/tp <" + arg + "player" + bracket + "> <" + arg + "player" + bracket + ">")
+                    }));
 
-                            if (!args[0].isEmpty()) x += args[0].contains(".") ? Double.parseDouble(args[0]) : Integer.parseInt(args[0]);
-                            if (!args[1].isEmpty()) y += args[1].contains(".") ? Double.parseDouble(args[1]) : Integer.parseInt(args[1]);
-                            if (!args[2].isEmpty()) z += args[2].contains(".") ? Double.parseDouble(args[2]) : Integer.parseInt(args[2]);
+                    help.addExtra(add);
+                    help.addExtra(bracket + " | [");
 
-                            TeleportCommandManager.handler().tp(p, p.getName(), x, y, z);
-                        } else {
-                            //Teleport 0 to coords
-                            args[1] = args[1].replace(",", ".");
-                            args[2] = args[2].replace(",", ".");
-                            args[3] = args[3].replace(",", ".");
+                    add = new TextComponent(bracket + "<" + arg + "x" + bracket + "> <" + arg + "y" + bracket + "> <" + arg + "z" + bracket + ">");
+                    add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[] {
+                            new TextComponent(bracket + "/tp [" + arg + "player" + bracket + "] <" + arg + "x" + bracket + "> <" + arg + "y" + bracket + "> <" + arg + "z" + bracket + ">")
+                    }));
 
-                            if (args[1].contains("~")) {
-                                x = ((Player) sender).getLocation().getX();
-                                args[1] = args[1].replace(",", ".").replace("~", "");
-                            }
+                    help.addExtra(add);
+                    help.addExtra(bracket + "] [");
 
-                            if (args[2].contains("~")) {
-                                y = ((Player) sender).getLocation().getY();
-                                args[2] = args[2].replace(",", ".").replace("~", "");
-                            }
+                    add = new TextComponent(bracket + "<" + arg + "yaw" + bracket + "> <" + arg + "pitch" + bracket + ">");
+                    add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[] {
+                            new TextComponent(bracket + "/tp [" + arg + "player" + bracket + "] [<" + arg + "x" + bracket + "> <" + arg + "y" + bracket + "> <" + arg + "z" + bracket + ">] <" + arg + "yaw" + bracket + "> <" + arg + "pitch" + bracket + ">")
+                    }));
 
-                            if (args[3].contains("~")) {
-                                z = ((Player) sender).getLocation().getZ();
-                                args[3] = args[3].replace(",", ".").replace("~", "");
-                            }
+                    help.addExtra(add);
+                    help.addExtra(bracket + "] [");
 
-                            if (!args[1].isEmpty()) x += args[1].contains(".") ? Double.parseDouble(args[1]) : Integer.parseInt(args[1]);
-                            if (!args[2].isEmpty()) y += args[2].contains(".") ? Double.parseDouble(args[2]) : Integer.parseInt(args[2]);
-                            if (!args[3].isEmpty()) z += args[3].contains(".") ? Double.parseDouble(args[3]) : Integer.parseInt(args[3]);
+                    add = new TextComponent(bracket + "<" + arg + "server" + bracket + "> [" + arg + "world" + bracket + "]");
+                    add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[] {
+                            new TextComponent(bracket + "/tp [" + arg + "player" + bracket + "] [<" + arg + "x" + bracket + "> <" + arg + "y" + bracket + "> <" + arg + "z" + bracket + ">] [<" + arg + "yaw" + bracket + "> <" + arg + "pitch" + bracket + ">] <" + arg + "server" + bracket + "> [" + arg + "world" + bracket + "]")
+                    }));
 
-                            TeleportCommandManager.handler().tp(p, args[0], x, y, z);
-                        }
-                    } else {
-                        //HELP
-                        p.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /tp <" + WarpSystem.opt().cmdArg() + "player" + WarpSystem.opt().cmdSug() + "> [" + WarpSystem.opt().cmdArg() + "player" + WarpSystem.opt().cmdSug() + "] §c" + Lang.get("Or") + " " + WarpSystem.opt().cmdSug() + "/tp [" + WarpSystem.opt().cmdArg() + "player" + WarpSystem.opt().cmdSug() + "] <" + WarpSystem.opt().cmdArg() + "x" + WarpSystem.opt().cmdSug() + "> <" + WarpSystem.opt().cmdArg() + "y" + WarpSystem.opt().cmdSug() + "> <" + WarpSystem.opt().cmdArg() + "z" + WarpSystem.opt().cmdSug() + ">");
-                    }
-                } catch (NumberFormatException ex) {
-                    //HELP
-                    p.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /tp <" + WarpSystem.opt().cmdArg() + "player" + WarpSystem.opt().cmdSug() + "> [" + WarpSystem.opt().cmdArg() + "player" + WarpSystem.opt().cmdSug() + "] §c" + Lang.get("Or") + " " + WarpSystem.opt().cmdSug() + "/tp [" + WarpSystem.opt().cmdArg() + "player" + WarpSystem.opt().cmdSug() + "] <" + WarpSystem.opt().cmdArg() + "x" + WarpSystem.opt().cmdSug() + "> <" + WarpSystem.opt().cmdArg() + "y" + WarpSystem.opt().cmdSug() + "> <" + WarpSystem.opt().cmdArg() + "z" + WarpSystem.opt().cmdSug() + ">");
+                    help.addExtra(add);
+                    help.addExtra(bracket + " | ");
+
+                    add = new TextComponent(bracket + "<" + arg + "world" + bracket + ">");
+                    add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[] {
+                            new TextComponent(bracket + "/tp [" + arg + "player" + bracket + "] [<" + arg + "x" + bracket + "> <" + arg + "y" + bracket + "> <" + arg + "z" + bracket + ">] [<" + arg + "yaw" + bracket + "> <" + arg + "pitch" + bracket + ">] <" + arg + "world" + bracket + ">")
+                    }));
+
+                    help.addExtra(add);
+                    help.addExtra(bracket + "]]");
+
+                    p.spigot().sendMessage(help);
                 }
-
-                return false;
+                return true;
             }
         }.setOnlyPlayers(true), true);
 
+        setMergeSpaceArguments(false);
         setOwnTabCompleter((commandSender, command, s, args) -> {
             if (!Permissions.hasPermission(commandSender, Permissions.PERMISSION_USE_TELEPORT_COMMAND_TP)) {
                 return new ArrayList<>();
@@ -139,5 +122,195 @@ public class CTeleport extends WSCommandBuilder {
 
             return TeleportCommandManager.handler().suggestTp(args, new ArrayList<>());
         });
+    }
+
+    private static boolean process(Player p, String[] args) {
+        if (args.length == 0) return false;
+
+        String name = args[0].replace("~", "");
+        PlayerData data = null;
+
+        if (!name.isEmpty() && !isNumeric(args[0])) {
+            data = WarpSystem.getInstance().getPlayerDataManager().getCache(name);
+        }
+
+        if (args.length == 1 && data != null) {
+            TeleportCommandManager.handler().tp(p, WarpSystem.getInstance().getPlayerDataManager().getCache(p), data);
+            return true;
+        }
+
+        if (args.length - 1 >= 1) {
+            String other = args[1].replace("~", "");
+            if (other.isEmpty() || isNumeric(args[1])) {
+                //coordinate
+                other = null;
+            }
+
+            PlayerData otherData = WarpSystem.getInstance().getPlayerDataManager().getCache(other);
+
+            if (otherData != null) {
+                TeleportCommandManager.handler().tp(p, data, otherData);
+                return true;
+            }
+        }
+
+        return process(p, data, args);
+    }
+
+    private static boolean process(Player p, PlayerData other, String[] args) {
+        int i = 0;
+        if (other != null) i++;
+
+        Double x = null, y = null, z = null;
+
+        if (args.length - 1 >= i) {
+            //x
+            if (args[i].contains("~")) {
+                x = p.getLocation().getX();
+                args[i] = args[i].replace("~", "");
+            }
+
+            if (isNumeric(args[i])) {
+                if (x == null) x = parse(args[i]);
+                else x += parse(args[i]);
+            }
+
+            if (x != null) {
+                //y
+                if (args.length - 1 >= i + 1) {
+                    if (args[i + 1].contains("~")) {
+                        y = p.getLocation().getY();
+                        args[i + 1] = args[i + 1].replace("~", "");
+                    }
+
+                    if (isNumeric(args[i + 1])) {
+                        if (y == null) y = parse(args[i + 1]);
+                        else y += parse(args[i + 1]);
+                    } else if (!args[i + 1].isEmpty()) return false;
+                } else return false;
+
+                //z
+                if (args.length - 1 >= i + 2) {
+                    if (args[i + 2].contains("~")) {
+                        z = p.getLocation().getZ();
+                        args[i + 2] = args[i + 2].replace("~", "");
+                    }
+
+                    if (isNumeric(args[i + 2])) {
+                        if (z == null) z = parse(args[i + 2]);
+                        else z += parse(args[i + 2]);
+                    } else if (!args[i + 2].isEmpty()) {
+                        //x and y might be yaw and pitch
+                        x = null;
+                        y = null;
+                    }
+                } else {
+                    //x and y might be yaw and pitch
+                    x = null;
+                    y = null;
+                }
+            }
+        }
+
+        return process(p, other, x, y, z, args);
+    }
+
+    private static boolean process(Player p, PlayerData other, Double x, Double y, Double z, String[] args) {
+        int i = 0;
+        if (other != null) i++;
+        if (x != null) i += 3;
+
+        Float yaw = null, pitch = null;
+
+        //yaw
+        if (args.length - 1 >= i) {
+            if (args[i].contains("~")) {
+                yaw = p.getLocation().getYaw();
+                args[i] = args[i].replace("~", "");
+            }
+
+            if (isNumeric(args[i])) {
+                if (yaw == null) yaw = (float) parse(args[i]);
+                else yaw += (float) parse(args[i]);
+
+                if(yaw > 180) yaw = 180F;
+                else if(yaw < -180) yaw = -180F;
+            }
+
+            if (yaw != null) {
+                //pitch
+                if (args.length - 1 >= i + 1) {
+                    if (args[i + 1].contains("~")) {
+                        pitch = p.getLocation().getPitch();
+                        args[i + 1] = args[i + 1].replace("~", "");
+                    }
+
+                    if (isNumeric(args[i + 1])) {
+                        if (pitch == null) pitch = (float) parse(args[i + 1]);
+                        else pitch += (float) parse(args[i + 1]);
+
+                        if(pitch > 90) pitch = 90F;
+                        else if(pitch < -90) pitch = -90F;
+                    } else if (!args[i + 1].isEmpty()) return false;
+                } else return false;
+            }
+        }
+
+        return process(p, other, x, y, z, yaw, pitch, args);
+    }
+
+    private static boolean process(Player p, PlayerData other, Double x, Double y, Double z, Float yaw, Float pitch, String[] args) {
+        int i = 0;
+        if (other != null) i++;
+        if (x != null) i += 3;
+        if (yaw != null) i += 2;
+
+        String world = null, server = null;
+
+        if (args.length > i + 2) return false;
+
+        if (args.length - 1 >= i + 1) {
+            server = args[i];
+            world = args[i + 1];
+
+            if (WarpSystem.getInstance().getServerManager().getProperties(server) == null) {
+                p.sendMessage(Lang.getPrefix() + Lang.get("Server_Is_Not_Online"));
+                return true;
+            } else if (!WarpSystem.getInstance().getServerManager().getWorlds(server).contains(world)) {
+                p.sendMessage(Lang.getPrefix() + Lang.get("World_Not_Exists"));
+                return true;
+            }
+        } else if (args.length - 1 >= i) {
+            String s = args[i];
+
+            if (WarpSystem.getInstance().getServerManager().getProperties(s) != null) server = s;
+            else {
+                World w = Bukkit.getWorld(s);
+                if (w != null) world = w.getName();
+                else {
+                    p.sendMessage(Lang.getPrefix() + Lang.get("Player_Server_Or_World_Not_Available"));
+                    return true;
+                }
+            }
+        }
+
+        if (other == null) other = WarpSystem.getInstance().getPlayerDataManager().getCache(p);
+        return TeleportCommandManager.handler().tp(p, other, x, y, z, yaw, pitch, server, world);
+    }
+
+    private static boolean isNumeric(String s) {
+        return Pattern.matches("[-+]?\\d+([.,]\\d+)?", s);
+    }
+
+    private static double parse(String s) {
+        if (s.isEmpty()) return 0;
+        s = s.replace(",", ".");
+
+        try {
+            if (s.contains(".")) return Double.parseDouble(s);
+            else return Integer.parseInt(s);
+        } catch (NumberFormatException ex) {
+            return 0;
+        }
     }
 }

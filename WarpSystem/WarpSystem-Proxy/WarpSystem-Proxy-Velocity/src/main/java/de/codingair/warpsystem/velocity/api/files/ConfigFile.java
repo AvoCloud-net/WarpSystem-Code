@@ -59,7 +59,8 @@ public class ConfigFile {
     }
 
     public void load() throws IOException {
-        if (getDataFolder() == null || !getDataFolder().exists()) getDataFolder().mkdir();
+        getDataFolder();
+        if (!getDataFolder().exists()) getDataFolder().mkdir();
 
         File file = new File(getDataFolder() + this.path, this.name + ".yml");
 
@@ -90,16 +91,14 @@ public class ConfigFile {
 
         this.config = defaults == null ? YAMLConfigurationLoader.builder().build().createEmptyNode() : defaults;
 
-        if (file != null) {
-            this.loader = YAMLConfigurationLoader.builder()
-                    .setFile(file)
-                    .setFlowStyle(DumperOptions.FlowStyle.BLOCK)
-                    .setIndent(2)
-                    .setHeaderMode(HeaderMode.PRESERVE)
-                    .build();
-            ConfigurationNode config = loader.load();
-            this.config.mergeValuesFrom(config);
-        }
+        this.loader = YAMLConfigurationLoader.builder()
+                .setFile(file)
+                .setFlowStyle(DumperOptions.FlowStyle.BLOCK)
+                .setIndent(2)
+                .setHeaderMode(HeaderMode.PRESERVE)
+                .build();
+        ConfigurationNode config = loader.load();
+        this.config.mergeValuesFrom(config);
     }
 
     private long copy(InputStream from, OutputStream to) throws IOException {

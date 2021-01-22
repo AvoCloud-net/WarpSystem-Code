@@ -51,6 +51,10 @@ public class PlayerDataManager implements Listener {
         else return new PlayerData(player.getName(), player.getUniqueId());
     }
 
+    public boolean isPresent(String name) {
+        return getCache(name) != null;
+    }
+
     public PlayerData getCache(String name) {
         if (name == null) return null;
 

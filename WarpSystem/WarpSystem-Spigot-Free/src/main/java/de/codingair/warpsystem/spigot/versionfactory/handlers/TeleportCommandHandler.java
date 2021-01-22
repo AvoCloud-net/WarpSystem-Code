@@ -16,11 +16,14 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class TeleportCommandHandler implements ITeleportCommandHandler {
     public static Number cut(double n) {
@@ -61,52 +64,93 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
     }
 
     @Override
-    public List<String> suggestBack(String[] args, List<String> suggestions) {
+    public void suggestBack(String[] args, List<String> suggestions) {
         WarpSystem.getInstance().getPlayerDataManager().getCached().forEach(p -> suggestions.add(p.getName()));
-        return suggestions;
+    }
+
+    private boolean allNull(Object... o) {
+        for (Object o1 : o) {
+            if (o1 != null) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
-    public void tp(Player gate, String player, double x, double y, double z) {
-        if (checkStatusTp(gate, player)) return;
+    public boolean tp(Player gate, PlayerData player, @Nullable Double x, @Nullable Double y, @Nullable Double z, @Nullable Float yaw, @Nullable Float pitch, @Nullable String server, @Nullable String world) {
+        if (checkStatusTp(gate, player)) return true;
+        Player p = Bukkit.getPlayer(player.getName());
+        if(p == null) return false;
 
-        Player playerP = Bukkit.getPlayer(player);
+        if(server != null && world == null) world = server;
+        if (allNull(x, y, z, yaw, pitch, world)) return false; //trigger usage
 
-        String destination = "x=" + cut(x) + ", y=" + cut(y) + ", z=" + cut(z);
-
-        if (playerP == null) {
-            gate.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
-            return;
+        if (gate != p && TeleportCommandManager.getInstance().deniesForceTps(p)) {
+            gate.sendMessage(Lang.getPrefix() + Lang.get("Teleport_denied").replace("%PLAYER%", p.getName()));
+            return true;
         }
 
-        if (gate != playerP && TeleportCommandManager.getInstance().deniesForceTps(playerP)) {
-            gate.sendMessage(Lang.getPrefix() + Lang.get("Teleport_denied").replace("%PLAYER%", playerP.getName()));
-            return;
+        StringBuilder destination = new StringBuilder();
+
+        World w;
+        if (world != null) {
+            w = Bukkit.getWorld(world);
+
+            if (w == null) {
+                gate.sendMessage(Lang.getPrefix() + Lang.get("World_Not_Exists"));
+                return true;
+            }
+
+            if(w.equals(p.getWorld()) && allNull(x, y, z, yaw, pitch) || !w.equals(p.getWorld())) {
+                destination.append(w.getName());
+            }
+        } else w = gate.getWorld();
+
+        Location l = new Location(w, 0, 0, 0);
+
+        if (x != null && y != null && z != null) {
+            l.setX(x);
+            l.setY(y);
+            l.setZ(z);
+
+            if (destination.length() > 0) destination.append(", ");
+            destination.append("x: ").append(cut(x)).append(", y: ").append(cut(y)).append(", z: ").append(cut(z));
+        } else if(yaw != null && pitch != null) {
+            l = p.getLocation(l);
+            l.setWorld(w);
+        } else {
+            l = w.getSpawnLocation();
         }
 
-        if (gate != playerP) gate.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", playerP.getName()).replace("%warp%", destination));
+        if (yaw != null && pitch != null) {
+            l.setYaw(yaw);
+            l.setPitch(pitch);
 
-        Location location = playerP.getLocation();
-        location.setX(x);
-        location.setY(y);
-        location.setZ(z);
-        location.setYaw(0);
-        location.setPitch(0);
+            if (destination.length() > 0) destination.append(", ");
+            destination.append("yaw: ").append(cut(yaw)).append(", pitch: ").append(cut(pitch));
+        } else {
+            l.setYaw(p.getLocation().getYaw());
+            l.setPitch(p.getLocation().getPitch());
+        }
 
-        TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(location)), destination, Origin.TeleportCommand);
+        if (gate != p) gate.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", p.getName()).replace("%warp%", destination.toString()));
+        TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(l)), destination.toString(), Origin.TeleportCommand);
         options.setSkip(true);
-        options.setMessage(Lang.getPrefix() + (gate == playerP ? Lang.get("Teleported_To") : Lang.get("Teleported_To_By").replace("%gate%", gate.getName())));
+        options.setMessage(Lang.getPrefix() + (gate == p ? Lang.get("Teleported_To") : Lang.get("Teleported_To_By").replace("%gate%", gate.getName())));
 
-        WarpSystem.getInstance().getTeleportManager().teleport(playerP, options);
+        WarpSystem.getInstance().getTeleportManager().teleport(p, options);
+        return true;
     }
 
     @Override
-    public void tp(Player gate, String player, String target) {
+    public void tp(Player gate, PlayerData player, PlayerData target) {
         if (checkStatusTp(gate, player)) return;
         if (checkStatusTp(gate, target)) return;
 
-        Player playerP = Bukkit.getPlayer(player);
-        Player targetP = Bukkit.getPlayer(target);
+        Player playerP = Bukkit.getPlayer(player.getName());
+        Player targetP = Bukkit.getPlayer(target.getName());
 
         if (playerP == null || targetP == null) {
             gate.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
@@ -127,13 +171,12 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
         WarpSystem.getInstance().getTeleportManager().teleport(playerP, options);
     }
 
-    private boolean checkStatusTp(Player gate, String player) {
-        PlayerData data = WarpSystem.getInstance().getPlayerDataManager().getCache(player);
+    private boolean checkStatusTp(Player gate, PlayerData data) {
         if (data == null) {
             //offline
             gate.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
             return true;
-        } else if (Bukkit.getPlayer(player) == null) {
+        } else if (Bukkit.getPlayer(data.getName()) == null) {
             TextComponent tc = new TextComponent(Lang.getPrefix() + "§7Teleporting on your entire BungeeCord is a §6premium feature§7!");
             tc.setColor(net.md_5.bungee.api.ChatColor.GRAY);
             Lang.PREMIUM_CHAT(tc, gate, true);
@@ -144,18 +187,70 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
     @Override
     public List<String> suggestTp(String[] args, List<String> suggestions) {
         int deep = args.length - 1;
+        if (deep < 0) return suggestions;
 
-        if (args[deep].isEmpty()) {
-            if (deep == 1 && Character.isDigit(args[0].charAt(0)) && WarpSystem.getInstance().getPlayerDataManager().getCache(args[0]) == null) return suggestions;
-            else if (deep == 0 || deep == 1) WarpSystem.getInstance().getPlayerDataManager().getCached().forEach(p -> suggestions.add(p.getName()));
-        } else {
-            if (deep == 0 || deep == 1) {
-                String last = args[deep];
-                WarpSystem.getInstance().getPlayerDataManager().getCached().filter(e -> e.getName().toLowerCase().startsWith(last.toLowerCase())).forEach(p -> suggestions.add(p.getName()));
+        String last = args[deep].toLowerCase().trim();
+        int name = isNumeric(args[0]) || !WarpSystem.getInstance().getPlayerDataManager().isPresent(args[0]) ? 0 : 1;
+
+        int world;
+        if (name == 0 && !isNumeric(args[0])) world = 0;
+        else if (args.length >= 2 && !isNumeric(args[1]) && !WarpSystem.getInstance().getPlayerDataManager().isPresent(args[1])) world = 1;
+        else world = -1;
+
+        if (world == -1) {
+            if (deep <= 4 + name && (isNumeric(last) || last.isEmpty())) {
+                //[<x> <y> <z>] or [<yaw> <pitch>]
+
+                if (deep < 1 + name || isNumeric(args[name])) {
+                    if (name == 0 || WarpSystem.getInstance().getPlayerDataManager().isPresent(args[0])) {
+                        boolean clean = true;
+                        for (int i = name; i < 5 + name && i < args.length; i++) {
+                            if (!isNumeric(args[i]) && !args[i].isEmpty()) {
+                                clean = false;
+                                break;
+                            }
+                        }
+
+                        if (clean) {
+                            if (deep < 4 + name || deep == 4 + name && last.isEmpty()) suggestions.add(suggest(last, "~"));
+                            if (deep < 3 + name || deep == 3 + name && last.isEmpty()) suggestions.add(suggest(last, "~ ~"));
+                            if (deep < 2 + name || deep == 2 + name && last.isEmpty()) suggestions.add(suggest(last, "~ ~ ~"));
+                            if (deep < 1 + name || deep == 1 + name && last.isEmpty()) suggestions.add(suggest(last, "~ ~ ~ ~"));
+                            if (deep == name && last.isEmpty()) suggestions.add("~ ~ ~ ~ ~");
+                        }
+                    }
+                }
+            }
+
+            if (deep == 0 || deep == 1 && !isNumeric(args[0]) && WarpSystem.getInstance().getPlayerDataManager().isPresent(args[0])) {
+                WarpSystem.getInstance().getPlayerDataManager().getCached().forEach(e -> suggestions.add(e.getName()));
             }
         }
 
+        if (world == -1 || world == deep) {
+            if (deep == 0
+                    || deep == 1 && !isNumeric(args[0]) && WarpSystem.getInstance().getPlayerDataManager().isPresent(args[0])
+                    || deep == 2 + name && isNumeric(args[name]) && isNumeric(args[1 + name])
+                    || deep == 3 + name && isNumeric(args[name]) && isNumeric(args[1 + name]) && isNumeric(args[2 + name])
+                    || deep == 5 + name && isNumeric(args[name]) && isNumeric(args[1 + name]) && isNumeric(args[2 + name]) && isNumeric(args[3 + name]) && isNumeric(args[4 + name])) {
+                Bukkit.getWorlds().forEach(w -> suggestions.add(w.getName()));
+            }
+        }
+
+        suggestions.removeIf(s -> !s.toLowerCase().startsWith(last));
         return suggestions;
+    }
+
+    private String suggest(String last, String s) {
+        if (last.isEmpty()) return s;
+        else return last + " " + s;
+    }
+
+    private boolean isNumeric(String s) {
+        if (s.isEmpty()) return false;
+        s = s.replace("~", "");
+        if (s.isEmpty()) return true;
+        return Pattern.matches("[-+]?\\d+[.,]?(\\d+)?", s);
     }
 
     @Override

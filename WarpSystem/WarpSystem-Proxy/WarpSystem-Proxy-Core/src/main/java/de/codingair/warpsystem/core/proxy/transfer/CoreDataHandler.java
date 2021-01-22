@@ -63,6 +63,7 @@ public abstract class CoreDataHandler<C> extends DataHandler<Server<C>> {
         registerHandler(ProvidePlayerDataPacket.class, new ProvidePlayerDataPacketHandler());
         registerHandler(PlayerJoinPacket.class, new PlayerJoinPacketHandler());
         registerHandler(PlayerQuitPacket.class, new PlayerQuitPacketHandler());
+        registerHandler(SendWorldNamesPacket.class, new SendWorldNamesPacketHandler());
     }
 
     public void onEnable() {

@@ -64,6 +64,8 @@ public enum PacketType {
     PlayerQuitPacket(PlayerQuitPacket.class),
     UpdatePlayerDataPacket(UpdatePlayerDataPacket.class),
     TeleportBackPacket(TeleportBackPacket.class),
+    SendWorldNamesPacket(SendWorldNamesPacket.class),
+    SendServerWorldNamesPacket(SendServerWorldNamesPacket.class),
     ;
 
     private final Class<? extends Packet> packet;

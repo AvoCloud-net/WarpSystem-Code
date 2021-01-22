@@ -43,7 +43,7 @@ public class SpawnEditor extends Editor<Spawn> {
                     if (spawn.getRespawnUsage().isBungee()) respawnServer = s;
                     else if (s.equals(respawnServer)) respawnServer = null;
 
-                    SpawnManager.getInstance().updateGlobalOptions(spawnServer, respawnServer);
+                    SpawnManager.getInstance().updateGlobalOptions(spawnServer, respawnServer, p);
                 }
             }
 

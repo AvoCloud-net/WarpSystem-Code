@@ -546,3 +546,5 @@ RTP_Not_available_in_this_world: '&7Zufällige Teleportationen sind in dieser We
 Unknown_Command: "&7Dieser Befehl wurde &cnicht gefunden&7."
 Keep_Position: "Position beibehalten"
 Not_Available_In_World: "&7%SUBJECT% sind in dieser Welt &cnicht verfügbar&7."
+Player_Server_Or_World_Not_Available: "&7Der angeforderte &eSpieler&7, &eServer &7oder die angeforderte &eWelt &cexistiert nicht&7."
+Other_Is_Already_On_Target_Server: '&7Der Spieler &e%PLAYER% &7ist &cbereits &7auf diesem Server.'

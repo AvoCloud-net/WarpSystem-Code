@@ -19,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.Objects;
@@ -104,12 +105,12 @@ public class SpawnManager implements Manager {
         return spawnServer;
     }
 
-    public void updateGlobalOptions(String spawn, String respawn) {
+    public void updateGlobalOptions(String spawn, String respawn, Player connection) {
         if (!Objects.equals(this.spawnServer, spawn) || !Objects.equals(this.respawnServer, respawn)) {
             this.spawnServer = spawn;
             this.respawnServer = respawn;
 
-            WarpSystem.getDataHandler().send(new SendGlobalSpawnOptionsPacket(spawn, respawn));
+            WarpSystem.getDataHandler().send(new SendGlobalSpawnOptionsPacket(spawn, respawn), connection);
         }
     }
 

@@ -291,15 +291,15 @@ public class PlayerWarpHandler extends PlayerWarpManager {
     }
 
     @Override
-    public void sync(PlayerWarp old, PlayerWarp warp) {
+    public void sync(PlayerWarp old, PlayerWarp warp, Player connection) {
     }
 
     @Override
-    public void sync(PlayerWarpData old, PlayerWarpData warp) {
+    public void sync(PlayerWarpData old, PlayerWarpData warp, Player connection) {
     }
 
     @Override
-    public void onConnect() {
+    public void onConnect(Player connection) {
     }
 
     @Override

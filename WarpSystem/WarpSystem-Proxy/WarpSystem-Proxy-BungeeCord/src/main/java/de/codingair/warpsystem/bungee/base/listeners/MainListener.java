@@ -30,7 +30,7 @@ public class MainListener implements Listener {
         if (e.getServer().getInfo().getPlayers().size() == 0) {
             //Update it
 
-            Server server = new BungeeServer(e.getServer().getInfo());
+            Server<?> server = new BungeeServer(e.getServer().getInfo());
             ProxyServer.getInstance().getScheduler().schedule(WarpSystem.getInstance(), () -> {
                 WarpSystem.getInstance().getServerManager().sendInitialPacket(server);
                 if (asking.contains(e.getServer().getInfo())) {

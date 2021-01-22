@@ -95,7 +95,7 @@ public class GlobalWarpManager implements Manager, ProxyFeature {
     public boolean load(boolean loader) {
         this.globalWarps.clear();
 
-        WarpSystem.getInstance().getBungeeFeatureList().add(this);
+        WarpSystem.getInstance().getProxyFeatureList().add(this);
 
         new CGlobalWarp().register();
         new CGlobalWarps().register();
@@ -112,8 +112,8 @@ public class GlobalWarpManager implements Manager, ProxyFeature {
     }
 
     @Override
-    public void onConnect() {
-        if (getGlobalWarps().isEmpty()) WarpSystem.getDataHandler().send(new RequestGlobalWarpNamesPacket());
+    public void onConnect(Player connection) {
+        if (getGlobalWarps().isEmpty()) WarpSystem.getDataHandler().send(new RequestGlobalWarpNamesPacket(), connection);
     }
 
     @Override

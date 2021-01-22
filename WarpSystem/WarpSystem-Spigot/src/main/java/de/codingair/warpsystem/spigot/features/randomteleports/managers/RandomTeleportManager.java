@@ -101,7 +101,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     }
 
     @Override
-    public void onConnect() {
+    public void onConnect(Player connection) {
         List<String> worlds = new ArrayList<>();
         for (World world : Bukkit.getWorlds()) {
             if (world == null) continue;
@@ -112,7 +112,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
             worlds.add(world.getName());
         }
 
-        WarpSystem.getDataHandler().send(new RandomTPWorldsPacket(worlds));
+        WarpSystem.getDataHandler().send(new RandomTPWorldsPacket(worlds), connection);
     }
 
     @Override

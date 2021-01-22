@@ -87,4 +87,11 @@ public class VelocityServer implements Server<ChannelIdentifier> {
     public int hashCode() {
         return Objects.hash(server);
     }
+
+    @Override
+    public String toString() {
+        return "VelocityServer{" +
+                "server=" + server +
+                '}';
+    }
 }

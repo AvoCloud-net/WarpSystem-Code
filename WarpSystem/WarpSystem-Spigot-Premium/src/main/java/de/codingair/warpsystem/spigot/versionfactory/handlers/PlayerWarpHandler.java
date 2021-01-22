@@ -217,7 +217,7 @@ public class PlayerWarpHandler extends PlayerWarpManager {
         if (!bungeeCord) WarpSystem.log("    ...got " + size + " PlayerWarp(s)");
         if (economy && time) API.addTicker(this);
 
-        WarpSystem.getInstance().getBungeeFeatureList().add(this);
+        WarpSystem.getInstance().getProxyFeatureList().add(this);
         Bukkit.getPluginManager().registerEvents(this.listener, WarpSystem.getInstance());
 
         return true;
@@ -291,7 +291,7 @@ public class PlayerWarpHandler extends PlayerWarpManager {
     }
 
     @Override
-    public void onConnect() {
+    public void onConnect(Player connection) {
         if (bungeeCord) {
             if (!getWarps().isEmpty()) {
                 List<List<PlayerWarpData>> uploads = new ArrayList<>();
@@ -313,14 +313,14 @@ public class PlayerWarpHandler extends PlayerWarpManager {
                 for (List<PlayerWarpData> upload : uploads) {
                     SendPlayerWarpsPacket p = new SendPlayerWarpsPacket(upload);
                     p.setClearable(true);
-                    WarpSystem.getDataHandler().send(p);
+                    WarpSystem.getDataHandler().send(p, connection);
                 }
 
                 uploads.clear();
             }
 
-            WarpSystem.getDataHandler().send(new RegisterServerForPlayerWarpsPacket(isEconomy()));
-        } else WarpSystem.getDataHandler().send(new MoveLocalPlayerWarpsPacket());
+            WarpSystem.getDataHandler().send(new RegisterServerForPlayerWarpsPacket(isEconomy()), connection);
+        } else WarpSystem.getDataHandler().send(new MoveLocalPlayerWarpsPacket(), connection);
     }
 
     @Override

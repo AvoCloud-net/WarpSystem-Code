@@ -66,7 +66,7 @@ public class OwnWarpFilter implements Filter {
                 } else {
                     if (runnable != null) {
                         //delete
-                        double refund = PlayerWarpManager.getManager().delete(w, true);
+                        double refund = PlayerWarpManager.getManager().delete(w, true, player);
                         if (refund == -1) return;
 
                         if (refund > 0 && PlayerWarpManager.getManager().isEconomy() && w.isOwner(player)) {
