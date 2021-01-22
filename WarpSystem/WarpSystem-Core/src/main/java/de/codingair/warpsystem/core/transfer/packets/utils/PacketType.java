@@ -66,6 +66,7 @@ public enum PacketType {
     TeleportBackPacket(TeleportBackPacket.class),
     SendWorldNamesPacket(SendWorldNamesPacket.class),
     SendServerWorldNamesPacket(SendServerWorldNamesPacket.class),
+    ProxyAwarenessPacket(ProxyAwarenessPacket.class),
     ;
 
     private final Class<? extends Packet> packet;
