@@ -52,7 +52,7 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
     private PlayerDataManager playerDataManager;
 
     public static void logMessage(String message) {
-        System.out.print(message);
+        System.out.println(message);
     }
 
     public static BungeeHandler getDataHandler() {
