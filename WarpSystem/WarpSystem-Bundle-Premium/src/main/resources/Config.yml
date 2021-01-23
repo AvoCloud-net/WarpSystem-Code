@@ -124,11 +124,7 @@ WarpSystem:
 
   #'TeleportCommand' in 'Functions' (above) have to be toggled to true as well, if you want to use this feature.
   TeleportCommands:
-    Back:
-      #Amount of temp. saved locations for the /back command
-      #If set to '1', the plugin counts the position from which the /back command was executed
-      History_Size: 1
-      Enabled: true
+    Back: true
     Tp: true
     TpAll: true
     TpToggle: true

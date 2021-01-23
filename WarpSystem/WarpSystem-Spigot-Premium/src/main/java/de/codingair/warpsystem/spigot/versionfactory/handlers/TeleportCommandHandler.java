@@ -39,7 +39,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
     @Override
     public void back(Player player) {
         if (WarpSystem.cooldown().checkPlayer(player, Origin.TeleportCommand)) return;
-        if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(player)) player.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
+        if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(player, false)) player.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
         else WarpSystem.cooldown().register(player, Origin.TeleportCommand);
     }
 
@@ -59,12 +59,31 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
             //Proxy
             WarpSystem.getDataHandler().send(new TeleportBackPacket(playerData.getName(), true), null).whenComplete((success, err) -> {
                 if (err != null) err.printStackTrace();
-                else if (success.getBoolean())
-                    sender.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", playerData.getName()).replace("%warp%", Lang.get("Last_Position")));
-                else sender.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
+                else {
+                    TeleportBackPacket.Result result = TeleportBackPacket.Result.fromId(success.getByte());
+                    if(result == null) return;
+
+                    switch (result) {
+                        case SUCCESS:
+                            sender.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", playerData.getName()).replace("%warp%", Lang.get("Last_Position")));
+                            break;
+
+                        case SERVER_NOT_AVAILABLE:
+                            sender.sendMessage(Lang.getPrefix() + Lang.get("Server_Is_Not_Online"));
+                            break;
+
+                        case PLAYER_NOT_AVAILABLE:
+                            sender.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
+                            break;
+
+                        case NO_LAST_POSITION:
+                            sender.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
+                            break;
+                    }
+                }
             });
         } else {
-            if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(p)) sender.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
+            if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(p, false)) sender.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
             else {
                 WarpSystem.cooldown().register(p, Origin.TeleportCommand);
                 sender.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", playerData.getName()).replace("%warp%", Lang.get("Last_Position")));

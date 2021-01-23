@@ -12,25 +12,37 @@ public class PlayerData implements Serializable {
     private String name;
     private UUID id;
 
+    private String oldServer;
     private String server;
+    private boolean firstServer;
     private boolean vanished;
 
     public PlayerData() {
     }
 
-    public PlayerData(String name, UUID id, String server) {
+    public PlayerData(String name, UUID id, String server, boolean firstServer) {
         this.name = name;
         this.id = id;
         this.server = server;
+        this.firstServer = firstServer;
         this.vanished = false;
     }
 
+    public PlayerData(String name, UUID id, String server, String oldServer, boolean firstServer) {
+        this.name = name;
+        this.id = id;
+        this.oldServer = oldServer;
+        this.server = server;
+        this.firstServer = firstServer;
+    }
+
     public PlayerData(String name, UUID id) {
-        this(name, id, null);
+        this(name, id, null, false);
     }
 
     @Override
     public void write(DataOutputStream out) throws IOException {
+
         out.writeUTF(this.name);
         out.writeLong(this.id.getMostSignificantBits());
         out.writeLong(this.id.getLeastSignificantBits());
@@ -39,7 +51,11 @@ public class PlayerData implements Serializable {
 
         ByteMask mask = new ByteMask();
         mask.setBit(0, vanished);
+        mask.setBit(1, oldServer != null);
+        mask.setBit(2, firstServer);
         mask.write(out);
+
+        if(oldServer != null) out.writeUTF(oldServer);
     }
 
     @Override
@@ -52,6 +68,8 @@ public class PlayerData implements Serializable {
         ByteMask mask = new ByteMask();
         mask.read(in);
         this.vanished = mask.getBit(0);
+        if(mask.getBit(1)) this.oldServer = in.readUTF();
+        this.firstServer = mask.getBit(2);
     }
 
     public String getName() {
@@ -71,6 +89,14 @@ public class PlayerData implements Serializable {
         return this;
     }
 
+    public String getOldServer() {
+        return oldServer;
+    }
+
+    public void setOldServer(String oldServer) {
+        this.oldServer = oldServer;
+    }
+
     public boolean isVanished() {
         return vanished;
     }
@@ -80,12 +106,22 @@ public class PlayerData implements Serializable {
         return this;
     }
 
+    public boolean isFirstServer() {
+        return firstServer;
+    }
+
+    public void setFirstServer(boolean firstServer) {
+        this.firstServer = firstServer;
+    }
+
     @Override
     public String toString() {
         return "PlayerData{" +
                 "name='" + name + '\'' +
                 ", id=" + id +
+                ", oldServer='" + oldServer + '\'' +
                 ", server='" + server + '\'' +
+                ", firstServer=" + firstServer +
                 ", vanished=" + vanished +
                 '}';
     }

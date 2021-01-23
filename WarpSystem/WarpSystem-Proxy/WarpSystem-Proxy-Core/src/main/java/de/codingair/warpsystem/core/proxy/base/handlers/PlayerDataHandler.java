@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class PlayerDataHandler {
+    private final Cache<String, Server<?>> lastSwitch = CacheBuilder.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES).build();
     private final Cache<String, String> abbreviations = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.MINUTES).build();
     private final ConcurrentHashMap<String, PlayerData> cached = new ConcurrentHashMap<>();
 
@@ -70,7 +71,13 @@ public class PlayerDataHandler {
     }
 
     protected void connectPlayer(Player player, Server<?> server) {
-        if (this.cached.putIfAbsent(player.getName().toLowerCase(), new PlayerData(player.getName(), player.getUniqueId(), server.getName())) == null) {
+        String name = player.getName().toLowerCase();
+        
+        Server<?> lastSwitch = this.lastSwitch.getIfPresent(name);
+        this.lastSwitch.invalidate(name);
+        String lastServer = lastSwitch == null ? null : lastSwitch.getName();
+
+        if (this.cached.putIfAbsent(name, new PlayerData(player.getName(), player.getUniqueId(), server.getName(), lastServer, true)) == null) {
             Core.getServerManager().getOnlineServer().forEach(s -> Core.getPlugin().dataHandler().send(new PlayerJoinPacket(player.getName(), server.getName(), player.getUniqueId()), s, Direction.DOWN));
             Core.getPlugin().dataHandler().send(new PlayerJoinPacket(player.getName(), server.getName(), player.getUniqueId()), null, Direction.UP);
         }
@@ -83,22 +90,29 @@ public class PlayerDataHandler {
         }
     }
 
-    protected void onSwitch(Player player, Server<?> server) {
-        PlayerData cached = this.cached.get(player.getName().toLowerCase());
+    protected void onSwitch(@NotNull Player player, @NotNull Server<?> from, @NotNull Server<?> to) {
+        String name = player.getName().toLowerCase();
+        PlayerData cached = this.cached.get(name);
         if (cached == null) return;
+
+        cached.setFirstServer(false);
+
+        lastSwitch.put(name, from);
 
         UpdatePlayerDataPacket packet = new UpdatePlayerDataPacket(player.getName());
 
-        if(cached.isVanished()) {
+        if (cached.isVanished()) {
             cached.setVanished(false);
             packet.setVanished(false);
         }
 
-        if(!cached.getServer().equals(server.getName())) {
-            cached.setServer(server.getName());
-            packet.setServer(server.getName());
+        if (!cached.getServer().equals(to.getName())) {
+            cached.setServer(to.getName());
+            cached.setOldServer(from.getName());
+            packet.setServer(to.getName(), from.getName());
         }
 
+        if(to.getOnlineCount() == 0) Core.getPlugin().schedule(() -> Core.getPlugin().dataHandler().send(packet, to, Direction.DOWN), 500, 0, TimeUnit.MILLISECONDS);
         Core.getServerManager().getOnlineServer().forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
         Core.getPlugin().dataHandler().send(packet, null, Direction.UP);
     }
@@ -113,7 +127,7 @@ public class PlayerDataHandler {
         PlayerData data = this.cached.get(packet.getName().toLowerCase());
         if (data == null) return;
 
-        if(!packet.update(data)) return;
+        if (!packet.update(data)) return;
         Core.getServerManager().getOnlineServer().filter(s -> !s.equals(info)).forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
         Core.getPlugin().dataHandler().send(packet, null, Direction.UP);
     }
@@ -123,7 +137,7 @@ public class PlayerDataHandler {
         PlayerData data = this.cached.get(packet.getName().toLowerCase());
         if (data == null) return;
 
-        if(!packet.update(data)) return;
+        if (!packet.update(data)) return;
         Core.getServerManager().getOnlineServer().forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
     }
 
@@ -138,7 +152,7 @@ public class PlayerDataHandler {
 
     //redis
     public void connectPlayer(PlayerJoinPacket packet) {
-        this.cached.putIfAbsent(packet.getPlayer().toLowerCase(), new PlayerData(packet.getPlayer(), packet.getId(), packet.getServer()));
+        this.cached.putIfAbsent(packet.getPlayer().toLowerCase(), new PlayerData(packet.getPlayer(), packet.getId(), packet.getServer(), true));
         Core.getServerManager().getOnlineServer().forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
     }
 

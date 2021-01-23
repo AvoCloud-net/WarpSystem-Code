@@ -1,6 +1,7 @@
 package de.codingair.warpsystem.spigot.base.utils.teleport.destinations;
 
 import de.codingair.codingapi.tools.Callback;
+import de.codingair.codingapi.tools.Location;
 import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
 import de.codingair.codingapi.utils.ImprovedDouble;
@@ -153,7 +154,7 @@ public class Destination implements Serializable {
         }
     }
 
-    public org.bukkit.Location buildLocation() {
+    public Location buildLocation() {
         if (offsetX != 0 || offsetY != 0 || offsetZ != 0) {
             return adapter.buildLocation(id).add(buildRandomOffset());
         } else return adapter.buildLocation(id);

@@ -35,7 +35,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
     @Override
     public void back(Player player) {
         if (WarpSystem.cooldown().checkPlayer(player, Origin.TeleportCommand)) return;
-        if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(player)) player.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
+        if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(player, false)) player.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
         else WarpSystem.cooldown().register(player, Origin.TeleportCommand);
     }
 
@@ -55,7 +55,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
                 return;
             }
 
-            if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(p)) sender.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
+            if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(p, false)) sender.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
             else {
                 WarpSystem.cooldown().register(p, Origin.TeleportCommand);
                 sender.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", p.getName()).replace("%warp%", Lang.get("Last_Position")));

@@ -13,6 +13,7 @@ public class UpdatePlayerDataPacket implements Packet {
     private final ByteMask values = new ByteMask();
     private String name;
     private String server;
+    private String oldServer;
 
     public UpdatePlayerDataPacket() {
     }
@@ -27,7 +28,10 @@ public class UpdatePlayerDataPacket implements Packet {
         this.updated.write(out);
         this.values.write(out);
 
-        if (this.updated.getBit(1)) out.writeUTF(this.server);
+        if (this.updated.getBit(1)) {
+            out.writeUTF(this.server);
+            out.writeUTF(this.oldServer);
+        }
     }
 
     @Override
@@ -36,7 +40,10 @@ public class UpdatePlayerDataPacket implements Packet {
         this.updated.read(in);
         this.values.read(in);
 
-        if (this.updated.getBit(1)) this.server = in.readUTF();
+        if (this.updated.getBit(1)) {
+            this.server = in.readUTF();
+            this.oldServer = in.readUTF();
+        }
     }
 
     public UpdatePlayerDataPacket setVanished(boolean vanished) {
@@ -45,15 +52,19 @@ public class UpdatePlayerDataPacket implements Packet {
         return this;
     }
 
-    public UpdatePlayerDataPacket setServer(String server) {
+    public UpdatePlayerDataPacket setServer(String server, String from) {
         this.updated.setBit(1, true);
         this.server = server;
+        this.oldServer = from;
         return this;
     }
 
     public boolean update(PlayerData data) {
         if (updated.getBit(0)) data.setVanished(this.values.getBit(0));
-        if (updated.getBit(1)) data.setServer(this.server);
+        if (updated.getBit(1)) {
+            data.setServer(this.server);
+            data.setOldServer(this.oldServer);
+        }
         return updated.getByte() != 0;
     }
 

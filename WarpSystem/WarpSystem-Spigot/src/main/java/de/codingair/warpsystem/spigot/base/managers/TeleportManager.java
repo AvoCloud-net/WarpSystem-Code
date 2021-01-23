@@ -42,9 +42,8 @@ public class TeleportManager implements ITeleportManager {
      * Have to be launched after the IconManager (see WarpSign.class - fromJSONString method - need warps and categories)
      */
     public boolean load() {
-        boolean success = true;
         this.teleports = CacheBuilder.newBuilder().expireAfterAccess(WarpSystem.opt().getTeleportDelay() + 5, TimeUnit.SECONDS).build();
-        return success;
+        return true;
     }
 
     public void save() {

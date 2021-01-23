@@ -36,6 +36,7 @@ public class BungeeBukkitListener implements Listener {
     public void onQuit(PlayerQuitEvent e) {
         if (Bukkit.getOnlinePlayers().size() <= 1 && WarpSystem.getInstance().isOnProxy()) {
             WarpSystem.getInstance().setOnBungeeCord(false, null);
+            WarpSystem.getInstance().getPlayerDataManager().quit(e.getPlayer().getName());
         }
     }
 
