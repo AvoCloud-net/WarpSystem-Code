@@ -30,7 +30,7 @@ public enum FeatureType {
     SHORTCUTS(ShortcutManager.class, Priority.LOW, "Shortcuts"),
     SIMPLE_WARPS(SimpleWarpManager.class, Priority.HIGH, "SimpleWarps"),
     RANDOM_TELEPORTS(RandomTeleportManager.class, Priority.HIGH, "RandomTeleports", VKey.RandomTeleportHandler),
-    TELEPORT_COMMAND(TeleportCommandManager.class, Priority.HIGH, "TeleportCommand"),
+    TELEPORT_COMMAND(TeleportCommandManager.class, Priority.HIGH, "TeleportCommand", VKey.TeleportCommandManager),
     ANIMATION_EDITOR(AnimationManager.class, Priority.ALWAYS_ON, "AnimationEditor"),
     PLAYER_WARS(PlayerWarpManager.class, Priority.LOW, "PlayerWarps", VKey.PlayerWarpHandler),
     METRICS(MetricsManager.class, Priority.LOWEST, "bStats"),

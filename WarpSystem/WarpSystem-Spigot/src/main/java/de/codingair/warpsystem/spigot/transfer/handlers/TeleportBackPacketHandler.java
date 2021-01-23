@@ -2,6 +2,7 @@ package de.codingair.warpsystem.spigot.transfer.handlers;
 
 import de.codingair.packetmanagement.handlers.ResponsiblePacketHandler;
 import de.codingair.packetmanagement.packets.impl.BooleanPacket;
+import de.codingair.packetmanagement.packets.impl.BytePacket;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.core.transfer.packets.general.TeleportBackPacket;
@@ -15,19 +16,19 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-public class TeleportBackPacketHandler implements ResponsiblePacketHandler<TeleportBackPacket, BooleanPacket> {
+public class TeleportBackPacketHandler implements ResponsiblePacketHandler<TeleportBackPacket, BytePacket> {
     @Override
-    public @NotNull CompletableFuture<BooleanPacket> response(@NotNull TeleportBackPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
+    public @NotNull CompletableFuture<BytePacket> response(@NotNull TeleportBackPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         Player player = Bukkit.getPlayer(packet.getName());
 
-        if (TeleportCommandManager.getInstance() == null || player == null) return CompletableFuture.completedFuture(new BooleanPacket(false));
+        if (TeleportCommandManager.getInstance() == null || player == null) return CompletableFuture.completedFuture(new BytePacket(TeleportBackPacket.Result.PLAYER_NOT_AVAILABLE.id()));
         else {
             if (!packet.isBypassCooldownCheck() && WarpSystem.cooldown().checkPlayer(player, Origin.TeleportCommand)) return CompletableFuture.completedFuture(new BooleanPacket(false));
 
-            if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(player)) return CompletableFuture.completedFuture(new BooleanPacket(false));
+            if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(player, packet.isSwitching())) return CompletableFuture.completedFuture(new BytePacket(TeleportBackPacket.Result.NO_LAST_POSITION.id()));
             else {
                 WarpSystem.cooldown().register(player, Origin.TeleportCommand);
-                return CompletableFuture.completedFuture(new BooleanPacket(true));
+                return CompletableFuture.completedFuture(new BytePacket(TeleportBackPacket.Result.SUCCESS.id()));
             }
         }
     }

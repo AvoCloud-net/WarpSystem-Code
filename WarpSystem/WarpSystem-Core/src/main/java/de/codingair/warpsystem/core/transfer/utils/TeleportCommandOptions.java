@@ -2,13 +2,31 @@ package de.codingair.warpsystem.core.transfer.utils;
 
 import de.codingair.packetmanagement.utils.ByteMask;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 public class TeleportCommandOptions extends ByteMask {
+    private int backPositions;
 
     public TeleportCommandOptions() {
     }
 
-    public TeleportCommandOptions(int options) {
+    public TeleportCommandOptions(int options, int backPositions) {
         super((byte) options);
+        this.backPositions = backPositions;
+    }
+
+    @Override
+    public void write(DataOutputStream out) throws IOException {
+        super.write(out);
+        out.writeByte(this.backPositions);
+    }
+
+    @Override
+    public void read(DataInputStream in) throws IOException {
+        super.read(in);
+        this.backPositions = in.readUnsignedByte();
     }
 
     public boolean isBack() {
@@ -41,6 +59,10 @@ public class TeleportCommandOptions extends ByteMask {
 
     public boolean isTpaToggle() {
         return getBit(7);
+    }
+
+    public int getBackPositions() {
+        return backPositions;
     }
 
     @Override

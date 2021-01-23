@@ -32,6 +32,6 @@ public class PlayerDataManager extends PlayerDataHandler implements Listener {
 
     @EventHandler
     public void onSwitch(ServerSwitchEvent e) {
-        super.onSwitch(new BungeePlayer(e.getPlayer()), new BungeeServer(e.getPlayer().getServer().getInfo()));
+        super.onSwitch(new BungeePlayer(e.getPlayer()), new BungeeServer(e.getFrom()), new BungeeServer(e.getPlayer().getServer().getInfo()));
     }
 }

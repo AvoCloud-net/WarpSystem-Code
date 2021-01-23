@@ -10,6 +10,7 @@ import de.codingair.warpsystem.core.transfer.utils.serializeable.ServerOptions;
 import de.codingair.warpsystem.core.proxy.Core;
 import de.codingair.warpsystem.core.proxy.utils.Player;
 import de.codingair.warpsystem.core.proxy.utils.Server;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,8 +26,7 @@ public abstract class ServerHandler {
     private final HashMap<Server<?>, List<Callback<Server<?>>>> waiting = new HashMap<>();
     private boolean running = false;
 
-    public static void sendPlayerTo(Server<?> server, Player player, Callback<Server<?>> c) {
-        //TODO: SERVER MIGHT BE UNREACHABLE -> RUNNING INTO VOID
+    public static void sendPlayerTo(Server<?> server, Player player, @NotNull Callback<Server<?>> c) {
         Preconditions.checkNotNull(server);
         Preconditions.checkNotNull(player);
 
@@ -35,8 +35,18 @@ public abstract class ServerHandler {
         } else {
             if (server.isEmpty()) addCallbackTo(server, c);
             else c.accept(server);
-            player.connect(server);
+            player.connect(server).whenComplete((suc, t) -> {
+                if(t != null || suc != null && !suc) {
+                    removeCallback(server, c);
+                    c.accept(server);
+                }
+            });
         }
+    }
+
+    private static void removeCallback(Server<?> s, Callback<Server<?>> c) {
+        List<Callback<Server<?>>> l = Core.getServerManager().waiting.get(s);
+        if(l != null) l.remove(c);
     }
 
     private static void addCallbackTo(Server<?> info, Callback<Server<?>> c) {

@@ -23,6 +23,7 @@ public enum VKey {
     WarpGUI(VFac.HANDLERS),
     PlayerWarpHandler(VFac.HANDLERS),
     RandomTeleportHandler(VFac.HANDLERS),
+    TeleportCommandManager(VFac.HANDLERS),
 
     Portal(VFac.FEATURE_OBJECTS),
     Shortcut(VFac.FEATURE_OBJECTS),

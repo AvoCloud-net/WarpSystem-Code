@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import de.codingair.warpsystem.core.transfer.packets.general.UpdatePlayerDataPacket;
 import de.codingair.warpsystem.core.transfer.utils.PlayerData;
+import de.codingair.warpsystem.spigot.api.events.PlayerDataUpdateEvent;
 import de.codingair.warpsystem.spigot.api.events.PlayerFinalJoinEvent;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import org.bukkit.Bukkit;
@@ -13,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Locale;
@@ -30,7 +32,7 @@ public class PlayerDataManager implements Listener {
     }
 
     public void join(String name, String server, UUID id) {
-        cached.put(name.toLowerCase(), new PlayerData(name, id, server));
+        cached.put(name.toLowerCase(), new PlayerData(name, id, server, true));
     }
 
     public void quit(String name) {
@@ -44,9 +46,7 @@ public class PlayerDataManager implements Listener {
         } else return cached.values().stream();
     }
 
-    public PlayerData getCache(Player player) {
-        if (player == null) return null;
-
+    public @NotNull PlayerData getCache(@NotNull Player player) {
         if (WarpSystem.getInstance().isOnProxy()) return cached.get(player.getName().toLowerCase());
         else return new PlayerData(player.getName(), player.getUniqueId());
     }
@@ -116,11 +116,11 @@ public class PlayerDataManager implements Listener {
         }
 
         if (response != null) WarpSystem.getDataHandler().send(response, connection);
+        Bukkit.getPluginManager().callEvent(new PlayerDataUpdateEvent(player, data));
     }
 
-    public void updateVisibility(Player player, boolean vanished) {
+    public void updateVisibility(@NotNull Player player, boolean vanished) {
         PlayerData data = getCache(player);
-        if (data == null) return;
 
         if (data.isVanished() != vanished) {
             data.setVanished(vanished);
@@ -137,7 +137,7 @@ public class PlayerDataManager implements Listener {
             cached.put(entry.getName().toLowerCase(), entry);
 
             Player p = Bukkit.getPlayerExact(entry.getName());
-            if(p != null) updatePlayer(connection, entry, p);
+            if (p != null) updatePlayer(connection, entry, p);
         });
     }
 
