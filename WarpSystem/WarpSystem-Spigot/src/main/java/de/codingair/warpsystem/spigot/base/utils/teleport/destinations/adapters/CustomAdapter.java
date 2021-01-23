@@ -9,6 +9,8 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destinati
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import java.util.concurrent.CompletableFuture;
+
 public class CustomAdapter extends DestinationAdapter {
     private final IDestination destination;
 
@@ -17,7 +19,7 @@ public class CustomAdapter extends DestinationAdapter {
     }
 
     @Override
-    public boolean teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback) {
+    public CompletableFuture<Boolean> teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback) {
         this.destination.teleport(player, id, randomOffset, displayName, checkPermission, message, costs).whenComplete((suc, err) -> {
             if (callback == null) return;
 
@@ -28,7 +30,7 @@ public class CustomAdapter extends DestinationAdapter {
                 } else throw new IllegalStateException("Completed a teleport with nothing via the API!");
             } else callback.accept(suc);
         });
-        return true;
+        return CompletableFuture.completedFuture(true);
     }
 
     @Override

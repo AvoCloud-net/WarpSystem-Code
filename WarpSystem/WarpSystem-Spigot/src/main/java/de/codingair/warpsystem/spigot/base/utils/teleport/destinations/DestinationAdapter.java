@@ -8,10 +8,12 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import java.util.concurrent.CompletableFuture;
+
 public abstract class DestinationAdapter {
     Destination destination;
 
-    public abstract boolean teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback);
+    public abstract CompletableFuture<Boolean> teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback);
 
     public abstract SimulatedTeleportResult simulate(Player player, String id, boolean checkPermission);
 
@@ -24,8 +26,8 @@ public abstract class DestinationAdapter {
         return this;
     }
 
-    public org.bukkit.Location prepare(Player player, org.bukkit.Location location) {
-        if (location == null) return null;
+    public CompletableFuture<org.bukkit.Location> prepare(Player player, org.bukkit.Location location) {
+        if (location == null) return CompletableFuture.completedFuture(null);
         if (destination != null) destination.adjustLocation(player, location);
         return TeleportUtils.prepareLocation(location, player);
     }

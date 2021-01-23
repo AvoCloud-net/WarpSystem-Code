@@ -19,7 +19,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
@@ -176,23 +175,6 @@ public abstract class RandomLocationCalculator implements Runnable {
     }
 
     public abstract boolean correct(Location location, boolean safety);
-
-    protected boolean isSafe(Location location) {
-        Block b = location.getBlock();
-
-        List<String> unsafe = new ArrayList<>();
-
-        unsafe.add("VOID");
-        unsafe.add("LAVA");
-        unsafe.add("FIRE");
-        unsafe.add("MAGMA");
-
-        for (String s : unsafe) {
-            if (b.getType().name().toUpperCase().contains(s)) return false;
-        }
-
-        return true;
-    }
 
     protected CompletableFuture<Boolean> isProtected(Location location) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();

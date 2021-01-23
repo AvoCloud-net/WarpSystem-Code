@@ -15,6 +15,8 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.SimulatedTeleportResul
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import java.util.concurrent.CompletableFuture;
+
 public class ServerAdapter extends CloneableAdapter implements Serializable, Usable, IdAdapter {
     private boolean keepPosition = false;
     private String server = null;
@@ -28,15 +30,15 @@ public class ServerAdapter extends CloneableAdapter implements Serializable, Usa
     }
 
     @Override
-    public boolean teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback) {
+    public CompletableFuture<Boolean> teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback) {
         if (!WarpSystem.getInstance().isOnProxy()) {
             if (callback != null) callback.accept(Result.NO_CONNECTED_PROXY);
-            return false;
+            return CompletableFuture.completedFuture(false);
         }
 
         if (WarpSystem.getInstance().getCurrentServer().equalsIgnoreCase(server)) {
             player.sendMessage(Lang.getPrefix() + Lang.get("Player_Is_Already_On_Target_Server"));
-            return false;
+            return CompletableFuture.completedFuture(false);
         }
 
         if (keepPosition) {
@@ -63,7 +65,7 @@ public class ServerAdapter extends CloneableAdapter implements Serializable, Usa
                 if (result == 2) player.sendMessage(Lang.getPrefix() + Lang.get("Player_Is_Already_On_Target_Server"));
             });
         }
-        return false;
+        return CompletableFuture.completedFuture(false);
     }
 
     @Override

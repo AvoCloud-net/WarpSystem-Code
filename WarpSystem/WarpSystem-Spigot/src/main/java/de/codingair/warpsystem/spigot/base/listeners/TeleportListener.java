@@ -73,7 +73,7 @@ public class TeleportListener implements Listener {
 
         if (options != null) {
             teleport.invalidate(e.getPlayer().getName().toLowerCase());
-            org.bukkit.Location l = TeleportUtils.prepareLocation(options.buildLocation(), e.getPlayer());
+            org.bukkit.Location l = TeleportUtils.prepareLocation(options.buildLocation(), e.getPlayer(), true).join();
 
             if (l == null || l.getWorld() == null) {
                 String world = l instanceof Location ? ((Location) l).getWorldName() : null;

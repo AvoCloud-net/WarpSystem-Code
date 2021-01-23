@@ -13,8 +13,10 @@ import io.papermc.lib.PaperLib;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 
 public class LocationAdapter extends CloneableAdapter implements Serializable, Usable, IdAdapter {
     protected Location location;
@@ -36,31 +38,57 @@ public class LocationAdapter extends CloneableAdapter implements Serializable, U
     }
 
     @Override
-    public boolean teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback) {
+    public CompletableFuture<Boolean> teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback) {
         Location location = buildLocation(id);
 
         if (location == null) {
             player.sendMessage(Lang.getPrefix() + Lang.get("WARP_DOES_NOT_EXISTS"));
             if (callback != null) callback.accept(Result.DESTINATION_DOES_NOT_EXIST);
-            return false;
+            return CompletableFuture.completedFuture(false);
         }
 
         if (location.getWorld() == null) {
             player.sendMessage(Lang.getPrefix() + Lang.get("World_Not_Exists"));
             if (callback != null) callback.accept(Result.WORLD_DOES_NOT_EXIST);
-            return false;
+            return CompletableFuture.completedFuture(false);
         } else {
-            org.bukkit.Location finalLoc = prepare(player, location.clone());
-            if (silent) TeleportListener.TELEPORTS.put(player, finalLoc);
+            CompletableFuture<Boolean> future = new CompletableFuture<>();
 
-            CompletableFuture<Boolean> f = PaperLib.teleportAsync(player, finalLoc, PlayerTeleportEvent.TeleportCause.PLUGIN);
-            if (callback != null) f.whenComplete((b, t) -> {
-                if(t != null) t.printStackTrace();
-                else if (b) callback.accept(Result.SUCCESS);
-                else callback.accept(Result.ERROR);
-            });
-            return true;
+            teleport(player, silent, callback, location, future);
+
+            return future;
         }
+    }
+
+    protected void teleport(Player player, boolean silent, Callback<Result> callback, Location location, CompletableFuture<Boolean> future) {
+        prepare(player, location.clone()).whenComplete(handleLocation(player, silent, callback, future));
+    }
+
+    @NotNull
+    public static BiConsumer<org.bukkit.Location, Throwable> handleLocation(Player player, boolean silent, Callback<Result> callback, CompletableFuture<Boolean> future) {
+        return (l, t) -> {
+
+            if (t != null) t.printStackTrace();
+            if (l == null) {
+                future.complete(false);
+            } else {
+                if (silent) TeleportListener.TELEPORTS.put(player, l);
+
+                PaperLib.teleportAsync(player, l, PlayerTeleportEvent.TeleportCause.PLUGIN).whenComplete((b, t2) -> {
+                    if (t2 != null) {
+                        t2.printStackTrace();
+                        if (callback != null) callback.accept(Result.ERROR);
+                        future.complete(false);
+                    } else if (b) {
+                        if (callback != null) callback.accept(Result.SUCCESS);
+                        future.complete(true);
+                    } else {
+                        if (callback != null) callback.accept(Result.ERROR);
+                        future.complete(false);
+                    }
+                });
+            }
+        };
     }
 
     @Override

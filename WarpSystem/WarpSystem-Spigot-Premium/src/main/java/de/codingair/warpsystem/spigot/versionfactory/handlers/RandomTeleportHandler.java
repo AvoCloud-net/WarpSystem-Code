@@ -10,6 +10,7 @@ import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.warpsystem.core.transfer.packets.spigot.QueueRTPUsagePacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
+import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportUtils;
 import de.codingair.warpsystem.spigot.features.randomteleports.commands.CRandomTp;
 import de.codingair.warpsystem.spigot.features.randomteleports.listeners.SpawnListener;
 import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
@@ -169,7 +170,7 @@ public class RandomTeleportHandler extends RandomTeleportManager {
                 Location below = location.clone();
                 below.setY(below.getY() - 1);
 
-                return isEnoughSpace(location) && isSafe(above) && isSafe(location) && isSafe(below);
+                return isEnoughSpace(location) && TeleportUtils.isSafe(above.getBlock()) && TeleportUtils.isSafe(location.getBlock()) && TeleportUtils.isSafe(below.getBlock());
             } else return true;
         }
 

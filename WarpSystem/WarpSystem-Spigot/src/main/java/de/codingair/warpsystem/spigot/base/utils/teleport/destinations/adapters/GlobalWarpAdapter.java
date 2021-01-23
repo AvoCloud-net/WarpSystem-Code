@@ -12,9 +12,11 @@ import de.codingair.warpsystem.spigot.features.globalwarps.managers.GlobalWarpMa
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import java.util.concurrent.CompletableFuture;
+
 public class GlobalWarpAdapter extends DestinationAdapter {
     @Override
-    public boolean teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback) {
+    public CompletableFuture<Boolean> teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback) {
         GlobalWarpManager.getInstance().teleport(player, id, randomOffset, displayName, message, costs, new Callback<GlobalWarpTeleportPacket.Result>() {
             @Override
             public void accept(GlobalWarpTeleportPacket.Result result) {
@@ -60,7 +62,7 @@ public class GlobalWarpAdapter extends DestinationAdapter {
             }
         });
 
-        return false;
+        return CompletableFuture.completedFuture(true);
     }
 
     @Override

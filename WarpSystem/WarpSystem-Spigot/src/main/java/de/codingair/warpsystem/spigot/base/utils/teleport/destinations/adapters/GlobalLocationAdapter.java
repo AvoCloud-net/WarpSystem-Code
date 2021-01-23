@@ -7,13 +7,10 @@ import de.codingair.codingapi.tools.io.utils.Serializable;
 import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.core.transfer.packets.general.PrepareCoordinationTeleportPacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.listeners.TeleportListener;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.SimulatedTeleportResult;
-import io.papermc.lib.PaperLib;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.util.Vector;
 
 import java.util.concurrent.CompletableFuture;
@@ -49,11 +46,11 @@ public class GlobalLocationAdapter extends LocationAdapter implements Serializab
     }
 
     @Override
-    public boolean teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback) {
+    public CompletableFuture<Boolean> teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback) {
         if (location == null) {
             player.sendMessage(Lang.getPrefix() + Lang.get("WARP_DOES_NOT_EXISTS"));
             if (callback != null) callback.accept(Result.DESTINATION_DOES_NOT_EXIST);
-            return false;
+            return CompletableFuture.completedFuture(false);
         }
 
         Location location = this.location.clone();
@@ -62,17 +59,11 @@ public class GlobalLocationAdapter extends LocationAdapter implements Serializab
             if (location.getWorld() == null) {
                 player.sendMessage(Lang.getPrefix() + Lang.get("World_Not_Exists"));
                 if (callback != null) callback.accept(Result.WORLD_DOES_NOT_EXIST);
-                return false;
+                return CompletableFuture.completedFuture(false);
             } else {
-                org.bukkit.Location finalLoc = prepare(player, location.clone());
-                if (silent) TeleportListener.TELEPORTS.put(player, finalLoc);
-
-                CompletableFuture<Boolean> f = PaperLib.teleportAsync(player, finalLoc, PlayerTeleportEvent.TeleportCause.PLUGIN);
-                if (callback != null) f.thenAccept(b -> {
-                    if (b) callback.accept(Result.SUCCESS);
-                    else callback.accept(Result.ERROR);
-                });
-                return true;
+                CompletableFuture<Boolean> future = new CompletableFuture<>();
+                super.teleport(player, silent, callback, location, future);
+                return future;
             }
         } else {
             PrepareCoordinationTeleportPacket packet = new PrepareCoordinationTeleportPacket(player.getName(), server, location.getWorldName(), displayName, message,
@@ -80,7 +71,7 @@ public class GlobalLocationAdapter extends LocationAdapter implements Serializab
                     costs, player.hasPermission(Permissions.PERMISSION_ByPass_Teleport_Max_Players));
 
             coordinationTeleportPacket(player, callback, packet);
-            return true;
+            return CompletableFuture.completedFuture(true);
         }
     }
 

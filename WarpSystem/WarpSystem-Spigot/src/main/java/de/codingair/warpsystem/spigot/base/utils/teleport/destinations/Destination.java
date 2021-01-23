@@ -20,6 +20,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 public class Destination implements Serializable {
     private final Options customOptions;
@@ -112,8 +113,8 @@ public class Destination implements Serializable {
         } else return null;
     }
 
-    public boolean teleport(Player player, String message, String displayName, boolean checkPermission, boolean silent, double costs, Callback<Result> callback) {
-        if (adapter == null) return false;
+    public CompletableFuture<Boolean> teleport(Player player, String message, String displayName, boolean checkPermission, boolean silent, double costs, Callback<Result> callback) {
+        if (adapter == null) return CompletableFuture.completedFuture(false);
         player.setFallDistance(0F);
 
         message = this.customOptions.buildMessage(message);
