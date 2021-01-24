@@ -17,7 +17,6 @@ jobs:
         java-version: 1.8
     - name: Build dependencies
       run: |
-        cd ./lib
         mvn install:install-file -Dfile=./lib/GemsEconomy-4.8.3.jar -DgroupId=me.xanium -DartifactId=GemsEconomy -Dversion=4.8.3 -Dpackaging=jar
         mvn install:install-file -Dfile=./lib/PlayerPoints.jar -DgroupId=org.black_ixx -DartifactId=PlayerPoints -Dversion=2.1.4 -Dpackaging=jar
     - name: Build with Maven
