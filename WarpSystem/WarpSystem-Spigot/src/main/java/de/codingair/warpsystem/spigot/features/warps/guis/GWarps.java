@@ -57,14 +57,17 @@ public class GWarps extends GUI {
         this(p, page, editing, (Class<? extends Icon>[]) null);
     }
 
+    @SafeVarargs
     public GWarps(Player p, Icon page, boolean editing, Class<? extends Icon>... without) {
         this(p, page, editing, true, without);
     }
 
+    @SafeVarargs
     public GWarps(Player p, Icon page, boolean editing, boolean canEdit, Class<? extends Icon>... without) {
         this(p, page, editing, canEdit, p.getLocation().getWorld().getName(), without);
     }
 
+    @SafeVarargs
     public GWarps(Player p, Icon page, boolean editing, boolean canEdit, String world, Class<? extends Icon>... without) {
         super(p, getTitle(page, p), getSize(p), WarpSystem.getInstance(), false);
         this.page = page;
@@ -266,7 +269,7 @@ public class GWarps extends GUI {
 
         List<Icon> icons = manager.getIcons(page);
         for (Icon icon : icons) {
-            if (icon.isPage() || (!icon.hasPermission() && (hideAll(p) || hideAll(p, "Warp")) && !editing)) continue;
+            if (icon.isPage() || !icon.hasPermission() && (hideAll(p) || hideAll(p, "Warp")) && !editing) continue;
             processIcon(p, icon);
         }
 
@@ -299,10 +302,11 @@ public class GWarps extends GUI {
 
     private void processIcon(Player p, Icon icon) {
         BoundAction bound = icon.getAction(Action.BOUND_TO_WORLD);
-
         if (((bound == null && world == null) || (bound != null && world != null && world.equals(bound.getValue())))
-                && (editing || (!icon.hasPermission() || p.hasPermission(icon.getPermission())))
-                && this.cursorIcon != icon) addToGUI(p, icon);
+                && (editing || (!icon.hasPermission() || IconManager.getInstance().isShowWithoutPermission() || p.hasPermission(icon.getPermission())))
+                && this.cursorIcon != icon) {
+            addToGUI(p, icon);
+        }
     }
 
     private void addToGUI(Player p, Icon icon) {
@@ -317,41 +321,44 @@ public class GWarps extends GUI {
         ItemButtonOption option = new StandardButtonOption();
         SoundData s = option.getClickSound2();
 
-        if (editing || (!icon.hasPermission() || p.hasPermission(icon.getPermission()))) {
-            addButton(new SyncButton(icon.getSlot()) {
+        addButton(new SyncButton(icon.getSlot()) {
 
-                @Override
-                public ItemStack craftItem() {
-                    ItemBuilder iconBuilder = icon.getItemBuilderWithPlaceholders(getPlayer());
+            @Override
+            public ItemStack craftItem() {
+                ItemBuilder iconBuilder = icon.getItemBuilderWithPlaceholders(getPlayer());
 
-                    if (editing) HANDLER.modifyEditingIconBuilder(iconBuilder, icon);
+                if (editing) HANDLER.modifyEditingIconBuilder(iconBuilder, icon);
 
-                    return iconBuilder.getItem();
-                }
+                return iconBuilder.getItem();
+            }
 
-                @Override
-                public boolean canClick(ClickType click) {
-                    return editing || ((!icon.getActions().isEmpty() || icon.isPage()) && click == ClickType.LEFT);
-                }
+            @Override
+            public boolean canClick(ClickType click) {
+                return editing || (!icon.getActions().isEmpty() || icon.isPage()) && click == ClickType.LEFT;
+            }
 
-                @Override
-                public void onClick(InventoryClickEvent e, Player player) {
-                    if (editing) {
-                        HANDLER.onEditingIconClick(e, player, this, icon, s, GWarps.this);
-                    } else if (e.isLeftClick()) {
-                        if (!icon.hasAction(Action.SOUND)) s.play(player);
-
-                        if (icon.isPage()) {
-                            GWarps.this.page = icon;
-                            reinitialize();
-                            setTitle(getTitle(GWarps.this.page, getPlayer()));
-                        }
-
-                        icon.perform(p);
+            @Override
+            public void onClick(InventoryClickEvent e, Player player) {
+                if (editing) {
+                    HANDLER.onEditingIconClick(e, player, this, icon, s, GWarps.this);
+                } else if (e.isLeftClick()) {
+                    if(icon.hasPermission() && !p.hasPermission(icon.getPermission())) {
+                        p.sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));
+                        return;
                     }
+
+                    if (!icon.hasAction(Action.SOUND)) s.play(player);
+
+                    if (icon.isPage()) {
+                        GWarps.this.page = icon;
+                        reinitialize();
+                        setTitle(getTitle(GWarps.this.page, getPlayer()));
+                    }
+
+                    icon.perform(p);
                 }
-            }.setOption(option).setClickSound2(null));
-        }
+            }
+        }.setOption(option).setClickSound2(null));
     }
 
     public void setMoving(boolean moving, int slot) {
