@@ -134,7 +134,7 @@
             <dependency>
                 <groupId>com.github.TaglineTech</groupId>
                 <artifactId>Trevor</artifactId>
-                <version>master-SNAPSHOT</version>
+                <version>master-d32606d677-1</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
