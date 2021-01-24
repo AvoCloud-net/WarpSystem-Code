@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 @Function (name = "Proxy", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.Proxy", clazz = Boolean.class)
 @Function (name = "Teleport requests costs", defaultValue = "0", configPath = "WarpSystem.TeleportCommands.TeleportRequests.Teleport_Costs", clazz = Double.class)
 @Function (name = "Teleport requests expire delay (seconds)", defaultValue = "30", configPath = "WarpSystem.TeleportCommands.TeleportRequests.ExpireDelay", clazz = Integer.class)
-@Function (name = "Back", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.Back.Enabled", clazz = Boolean.class)
+@Function (name = "Back", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.Back", clazz = Boolean.class)
 @Function (name = "Tp", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.Tp", clazz = Boolean.class)
 @Function (name = "TpAll", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.TpAll", clazz = Boolean.class)
 @Function (name = "TpToggle", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.TpToggle", clazz = Boolean.class)
