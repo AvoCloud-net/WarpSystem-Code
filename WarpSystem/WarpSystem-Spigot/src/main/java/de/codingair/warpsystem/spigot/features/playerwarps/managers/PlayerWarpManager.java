@@ -58,7 +58,7 @@ import java.util.regex.Pattern;
 @Function (name = "Standard time value", defaultValue = "1h", configPath = "PlayerWarps.Time.Standard_Value", clazz = String.class)
 @Function (name = "Min. time value", defaultValue = "0d, 0h, 5m", configPath = "PlayerWarps.Time.Min_Time", clazz = String.class)
 @Function (name = "Max. time value", defaultValue = "30d, 0h, 0m", configPath = "PlayerWarps.Time.Max_Time", clazz = String.class)
-@Function (name = "Default list page", defaultValue = "OWN_WARPS", description = "Values: OWN_WARPS, ALL_WARPS, ALL_PLAYERS, CLASSES §8(§cCASE-SENSITIVE!§8)", configPath = "PlayerWarps.General.Default_GUI_Page", clazz = String.class)
+@Function (name = "Default list page", since = "v5.0.0", defaultValue = "OWN_WARPS", description = "Values: OWN_WARPS, ALL_WARPS, ALL_PLAYERS, CLASSES §8(§cCASE-SENSITIVE!§8)", configPath = "PlayerWarps.General.Default_GUI_Page", clazz = String.class)
 public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature, Collectible {
     protected final HashMap<UUID, List<PlayerWarp>> warps = new HashMap<>();
     protected final HashMap<String, UUID> names = new HashMap<>();

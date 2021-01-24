@@ -62,6 +62,8 @@ WarpSystem:
       Title:
         Standard: '&c&nWarps&r'
         In_Category: '&c&nWarps&r &c@%PAGE%'
+    # If true players will see all icons even when they don't have their permissions (they still can't use them).
+    Show_Without_Permission: false
 
   Economy:
     Enabled: true

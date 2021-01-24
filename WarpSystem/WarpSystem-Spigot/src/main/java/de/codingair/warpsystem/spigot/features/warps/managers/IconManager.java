@@ -10,8 +10,6 @@ import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableForSetupAssistant;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
-import de.codingair.warpsystem.spigot.base.utils.Lang;
-import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types.WarpAction;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.DestinationType;
@@ -25,21 +23,11 @@ import de.codingair.warpsystem.spigot.features.warps.importfilter.WarpData;
 import de.codingair.warpsystem.spigot.features.warps.nextlevel.exceptions.IconReadException;
 import de.codingair.warpsystem.spigot.features.warps.nextlevel.utils.Icon;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @AvailableForSetupAssistant (type = "WarpGUI", config = "Config")
@@ -47,9 +35,11 @@ import java.util.stream.Stream;
 @Function (name = "Teleport message", defaultValue = "true", configPath = "WarpSystem.Send.Teleport_Message.WarpGUI", clazz = Boolean.class)
 @Function (name = "Different GUI for each world", defaultValue = "false", configPath = "WarpSystem.GUI.Bound_to_world", clazz = Boolean.class)
 @Function (name = "Use /warp for WarpGUI", defaultValue = "false", configPath = "WarpSystem.Commands.Warp.GUI", clazz = Boolean.class)
+@Function (name = "Show_Without_Permission", since = "v5.0.0", description = "§7If true players will §esee all icons §7even when they don't have their permissions §8(they still §ccan't use them§8)§7.", defaultValue = "false", configPath = "WarpSystem.GUI.Show_Without_Permission", clazz = Boolean.class)
 public class IconManager implements Manager {
     private final Set<Icon> icons = new HashSet<>();
     private ItemStack background = null;
+    private boolean showWithoutPermission = false;
 
     private static ItemBuilder STANDARD_ITEM() {
         return new ItemBuilder(Material.GRASS);
@@ -88,9 +78,9 @@ public class IconManager implements Manager {
         this.icons.clear();
 
         List<?> l = file.getConfig().getList("Pages");
-        if(l != null) {
+        if (l != null) {
             for (Object o : l) {
-                if(o instanceof Map) {
+                if (o instanceof Map) {
                     success = buildIcon(success, (Map<?, ?>) o);
                 }
             }
@@ -120,9 +110,14 @@ public class IconManager implements Manager {
             }
 
         new CWarps().register();
-        if (WarpSystem.getInstance().getFileManager().getFile("Config").getConfig().getBoolean("WarpSystem.Commands.Warp.GUI", false) && !FeatureType.SIMPLE_WARPS.isActive()) {
+
+        ConfigFile configfile = WarpSystem.getInstance().getFileManager().getFile("Config");
+
+        if (configfile.getConfig().getBoolean("WarpSystem.Commands.Warp.GUI", false) && !FeatureType.SIMPLE_WARPS.isActive()){
             new CWarp().register();
         }
+
+        this.showWithoutPermission = configfile.getConfig().getBoolean("WarpSystem.GUI.Show_Without_Permission", false);
 
         int icons = this.icons.size();
         clean(null);
@@ -400,5 +395,9 @@ public class IconManager implements Manager {
         if (background == null) background = new ItemStack(Material.AIR);
         new ItemBuilder(background).removeLore().setName(null).setHideName(true).setHideStandardLore(true).setHideEnchantments(true);
         this.background = background;
+    }
+
+    public boolean isShowWithoutPermission() {
+        return showWithoutPermission;
     }
 }
