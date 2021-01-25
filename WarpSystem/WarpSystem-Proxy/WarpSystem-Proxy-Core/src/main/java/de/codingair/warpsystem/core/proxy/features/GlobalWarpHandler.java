@@ -77,7 +77,7 @@ public abstract class GlobalWarpHandler implements Manager {
         });
     }
 
-    public void synchronize(Server server) {
+    public void synchronize(Server<?> server) {
         if (this.globalWarps.isEmpty()) return;
 
         List<HashMap<String, String>> list = new ArrayList<>();
