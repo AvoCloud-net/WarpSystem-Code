@@ -1,8 +1,11 @@
-name: Hotfix deployment
+name: Discord CI
 
 on:
-  push:
+  pull_request:
     branches: [ hotfix ]
+  release:
+    types:
+      - created
 
 jobs:
   build:
@@ -26,9 +29,9 @@ jobs:
         cd ../
     - name: Deploy
       run: |
-        rank="<@&764165009651138592>"
-        milestone=35
-        hook="https://discord.com/api/webhooks/763503753491906570/Z2ew7sO7mcLTwq_Kj40va6SgVFO4LLB5UIN7kllJC2gUiAeNTrFrbjbxl5XHwQJqDd8l"
+        rank="<@&793495281387700234>"
+        milestone=36
+        hook=${{ secrets.DISCORD_WEBHOOK }}
         
         upload() {
             file=$(find "./WarpSystem/WarpSystem-Bundle-$1/target" -type f -name "WarpSystem_v*.jar" | head -n 1)
