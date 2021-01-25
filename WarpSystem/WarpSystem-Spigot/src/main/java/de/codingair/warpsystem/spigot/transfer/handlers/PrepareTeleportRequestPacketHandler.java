@@ -17,12 +17,14 @@ public class PrepareTeleportRequestPacketHandler implements ResponsiblePacketHan
     public @NotNull CompletableFuture<LongPacket> response(@NotNull PrepareTeleportRequestPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         CompletableFuture<LongPacket> future = new CompletableFuture<>();
 
-        TeleportCommandManager.getInstance().invite(packet.getSender(), packet.isTpToSender(), new Callback<Long>() {
-            @Override
-            public void accept(Long result) {
-                future.complete(new LongPacket(result));
-            }
-        }, packet.getRecipient(), true);
+        if(TeleportCommandManager.getInstance() != null) {
+            TeleportCommandManager.getInstance().invite(packet.getSender(), packet.isTpToSender(), new Callback<Long>() {
+                @Override
+                public void accept(Long result) {
+                    future.complete(new LongPacket(result));
+                }
+            }, packet.getRecipient(), true);
+        } else future.complete(new LongPacket(0));
 
         return future;
     }
