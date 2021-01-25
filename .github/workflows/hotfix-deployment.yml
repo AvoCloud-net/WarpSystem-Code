@@ -2,10 +2,10 @@ name: Discord CI
 
 on:
   pull_request:
-    branches: [ hotfix ]
-  release:
-    types:
-      - created
+    types: [synchronize]
+    branches:
+      - master
+      - hotfix
 
 jobs:
   build:
