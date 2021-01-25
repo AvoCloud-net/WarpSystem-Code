@@ -25,20 +25,30 @@ jobs:
         mvn clean package
     - name: Deploy
       run: |
-        file=$(find "./WarpSystem-Bundle-Premium/target" -type f -name "WarpSystem_v*.jar" | head -n 1)
-        name=${file[@]//.jar/}
-        name=${name:25}
-        info=${name##*_}
-        version=${name:11}
-        version=${version[@]//_$info/}
-        if [ "$info" = "$version" ]; then
-        	info="New release**__   -   __**"
-        else
-        	info=${info[@]//-/ }
-        	info="$info**__   -   __**"
-        fi
-        NOW="$(LC_ALL=en_GB.utf8 date --universal)"
+        rank="<@&764165009651138592>"
         milestone=35
         hook="https://discord.com/api/webhooks/763503753491906570/Z2ew7sO7mcLTwq_Kj40va6SgVFO4LLB5UIN7kllJC2gUiAeNTrFrbjbxl5XHwQJqDd8l"
-        echo "Sending '$file' to 'DevBuilds' channel, this may take a while..."
-        curl -i -H 'Expect: application/json' -F file=@"$file" -F "payload_json={ \"wait\": true, \"avatar_url\":\"https://i.imgur.com/ZoSmsVs.png\", \"content\": \"@WarpSystem\n__**$info$version**__   [$NOW]\n\n**Changelog:**\n<https://github.com/CodingAir/WarpSystem-IssueTracker/milestone/$milestone?closed=1>\", \"username\": \"WarpSystem CI\" }" $hook
+        
+        upload() {
+            file=$(find "./WarpSystem-Bundle-$1/target" -type f -name "WarpSystem_v*.jar" | head -n 1)
+            name=${file##*/}
+            name=${name[@]//.jar/}
+            info=${name##*_}
+            version=${name:11}
+            version=${version[@]//_$info/}
+            
+            if [ "$info" = "$version" ]
+            then
+                info="New release**__   -   __**"
+            else
+                info=${info[@]//-/ }
+                info="$info**__   -   __**"
+            fi
+            
+            NOW="$(LC_ALL=en_GB.utf8 date --universal)"
+            echo "Sending '$file' to 'DevBuilds' channel, this may take a while..." 
+            curl -i -H 'Expect: application/json' -F file=@"$file" -F "payload_json={ \"wait\": true, \"avatar_url\":\"https://i.imgur.com/ZoSmsVs.png\", \"content\": \"$rank\n__**$info$version**__   [$NOW]\n\n**Changelog:**\n<https://github.com/CodingAir/WarpSystem-IssueTracker/milestone/$milestone?closed=1>\", \"username\": \"WarpSystem CI\" }" $hook
+        }
+        
+        upload "Premium"
+        upload "Free"
