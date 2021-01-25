@@ -23,7 +23,9 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class TeleportListener implements Listener {
     public static final HashMap<Player, org.bukkit.Location> TELEPORTS = new HashMap<>();
@@ -69,32 +71,36 @@ public class TeleportListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onSpawn(PlayerSpawnLocationEvent e) {
-        TeleportOptions options = teleport.getIfPresent(e.getPlayer().getName().toLowerCase());
+        try {
+            TeleportOptions options = teleport.getIfPresent(e.getPlayer().getName().toLowerCase());
 
-        if (options != null) {
-            teleport.invalidate(e.getPlayer().getName().toLowerCase());
-            org.bukkit.Location l = TeleportUtils.prepareLocation(options.buildLocation(), e.getPlayer(), true).join();
+            if (options != null) {
+                teleport.invalidate(e.getPlayer().getName().toLowerCase());
+                org.bukkit.Location l = TeleportUtils.prepareLocation(options.buildLocation(), e.getPlayer(), true).get(1, TimeUnit.SECONDS);
 
-            if (l == null || l.getWorld() == null) {
-                String world = l instanceof Location ? ((Location) l).getWorldName() : null;
-                Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> e.getPlayer().sendMessage(new String[] {" ", Lang.getPrefix() + "§4World " + (world == null ? "" : "'" + world + "' ") + "is missing. Please contact an admin!", " "}), 2L);
-                return;
+                if (l == null || l.getWorld() == null) {
+                    String world = l instanceof Location ? ((Location) l).getWorldName() : null;
+                    Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> e.getPlayer().sendMessage(new String[] {" ", Lang.getPrefix() + "§4World " + (world == null ? "" : "'" + world + "' ") + "is missing. Please contact an admin!", " "}), 2L);
+                    return;
+                }
+
+                if (l.getYaw() == -420 && l.getPitch() == -420) {
+                    org.bukkit.Location p = e.getPlayer().getLocation();
+                    l.setYaw(p.getYaw());
+                    l.setPitch(p.getPitch());
+                }
+
+                e.setSpawnLocation(l);
+
+                options.setCanMove(true);
+                options.setSilent(true);
+                options.setSkip(true);
+                options.setDestination(new Destination(new EmptyAdapter()));
+
+                Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> WarpSystem.getInstance().getTeleportManager().teleport(e.getPlayer(), options), 2L);
             }
-
-            if (l.getYaw() == -420 && l.getPitch() == -420) {
-                org.bukkit.Location p = e.getPlayer().getLocation();
-                l.setYaw(p.getYaw());
-                l.setPitch(p.getPitch());
-            }
-
-            e.setSpawnLocation(l);
-
-            options.setCanMove(true);
-            options.setSilent(true);
-            options.setSkip(true);
-            options.setDestination(new Destination(new EmptyAdapter()));
-
-            Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> WarpSystem.getInstance().getTeleportManager().teleport(e.getPlayer(), options), 2L);
+        } catch (InterruptedException | ExecutionException | TimeoutException ex) {
+            ex.printStackTrace();
         }
     }
 
