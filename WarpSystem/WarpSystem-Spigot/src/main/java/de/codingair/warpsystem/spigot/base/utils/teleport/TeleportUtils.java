@@ -51,7 +51,7 @@ public class TeleportUtils {
 
         CompletableFuture<A> future = new CompletableFuture<>();
         if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-            searchSafe(l, player, false).whenComplete((safe, t) -> {
+            searchSafe(l, player, sync).whenComplete((safe, t) -> {
                 if (t != null) t.printStackTrace();
                 if (safe != null) {
                     l.setX(safe.getX());
@@ -79,6 +79,7 @@ public class TeleportUtils {
 
     public static CompletableFuture<Location> searchSafe(@NotNull Location location, @Nullable HumanEntity e, boolean sync) {
         CompletableFuture<Location> future = new CompletableFuture<>();
+
         if (isSafe(location, e)) {
             future.complete(location);
             return future;
@@ -100,8 +101,8 @@ public class TeleportUtils {
                                     copy.setZ(location.getZ() + z * vZ);
 
                                     if (isSafe(copy, e)) {
-                                        if (!sync) Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> future.complete(copy));
-                                        else future.complete(copy);
+                                        if (sync) future.complete(copy);
+                                        else Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> future.complete(copy));
                                         return;
                                     }
                                 }
@@ -111,8 +112,8 @@ public class TeleportUtils {
                 }
             }
 
-            if (!sync) Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> future.complete(null));
-            else future.complete(null);
+            if (sync) future.complete(null);
+            else Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> future.complete(null));
         };
 
         if (sync) runnable.run();
