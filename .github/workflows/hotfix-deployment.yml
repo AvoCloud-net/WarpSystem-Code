@@ -23,6 +23,7 @@ jobs:
       run: |
         cd ./WarpSystem
         mvn clean package
+        cd ../
     - name: Deploy
       run: |
         rank="<@&764165009651138592>"
@@ -30,7 +31,7 @@ jobs:
         hook="https://discord.com/api/webhooks/763503753491906570/Z2ew7sO7mcLTwq_Kj40va6SgVFO4LLB5UIN7kllJC2gUiAeNTrFrbjbxl5XHwQJqDd8l"
         
         upload() {
-            file=$(find "./WarpSystem-Bundle-$1/target" -type f -name "WarpSystem_v*.jar" | head -n 1)
+            file=$(find "./WarpSystem/WarpSystem-Bundle-$1/target" -type f -name "WarpSystem_v*.jar" | head -n 1)
             name=${file##*/}
             name=${name[@]//.jar/}
             info=${name##*_}
