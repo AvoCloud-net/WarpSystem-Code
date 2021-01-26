@@ -1,21 +1,20 @@
 package de.codingair.warpsystem.core.proxy.base.handlers;
 
 import com.google.common.base.Preconditions;
-import de.codingair.codingapi.tools.Callback;
 import de.codingair.packetmanagement.utils.Direction;
+import de.codingair.warpsystem.core.proxy.Core;
+import de.codingair.warpsystem.core.proxy.utils.Player;
+import de.codingair.warpsystem.core.proxy.utils.Server;
 import de.codingair.warpsystem.core.transfer.packets.proxy.InitialPacket;
 import de.codingair.warpsystem.core.transfer.packets.proxy.SendServerPropertiesPacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.utils.ServerPing;
 import de.codingair.warpsystem.core.transfer.utils.serializeable.ServerOptions;
-import de.codingair.warpsystem.core.proxy.Core;
-import de.codingair.warpsystem.core.proxy.utils.Player;
-import de.codingair.warpsystem.core.proxy.utils.Server;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
@@ -23,35 +22,52 @@ import java.util.stream.Stream;
 public abstract class ServerHandler {
     private final HashMap<Server<?>, ServerOptions> options = new HashMap<>();
     private final ConcurrentHashMap<Server<?>, ServerPing> cachedPing = new ConcurrentHashMap<>();
-    private final HashMap<Server<?>, List<Callback<Server<?>>>> waiting = new HashMap<>();
+    private final HashMap<Server<?>, Set<CompletableFuture<Void>>> waiting = new HashMap<>();
     private boolean running = false;
 
-    public static void sendPlayerTo(Server<?> server, Player player, @NotNull Callback<Server<?>> c) {
+    public static CompletableFuture<SwitchResult> sendPlayerTo(Player player, Server<?> server) {
         Preconditions.checkNotNull(server);
         Preconditions.checkNotNull(player);
 
         if (player.getServer().equals(server)) {
-            c.accept(server);
-        } else {
-            if (server.isEmpty()) addCallbackTo(server, c);
-            else c.accept(server);
-            player.connect(server).whenComplete((suc, t) -> {
-                if(t != null || suc != null && !suc) {
-                    removeCallback(server, c);
-                    c.accept(server);
+            return CompletableFuture.completedFuture(SwitchResult.ALREADY_CONNECTED);
+        } else if (server.getOnlineCount() == 0) {
+            ServerHandler handler = Core.getServerManager();
+
+            //function redirect
+            CompletableFuture<SwitchResult> redirect = new CompletableFuture<>();
+
+            //waiting instance
+            CompletableFuture<Void> future = new CompletableFuture<>();
+            handler.waiting.computeIfAbsent(server, (s) -> new HashSet<>()).add(future);
+
+            player.connect(server).whenComplete((res, t) -> {
+                if (t != null) {
+                    //error -> return
+                    t.printStackTrace();
+                    removeFuture(server, future);
+                    redirect.completeExceptionally(t);
+                } else if (res == null || !res.isConnected()) {
+                    //failure -> return
+                    removeFuture(server, future);
+                    redirect.complete(res);
+                } else {
+                    future.thenAccept(v -> {
+                        //wait for instantiation
+                        redirect.complete(res);
+                    });
                 }
             });
+
+            return redirect;
+        } else {
+            return player.connect(server);
         }
     }
 
-    private static void removeCallback(Server<?> s, Callback<Server<?>> c) {
-        List<Callback<Server<?>>> l = Core.getServerManager().waiting.get(s);
-        if(l != null) l.remove(c);
-    }
-
-    private static void addCallbackTo(Server<?> info, Callback<Server<?>> c) {
-        List<Callback<Server<?>>> l = Core.getServerManager().waiting.computeIfAbsent(info, k -> new ArrayList<>());
-        l.add(c);
+    private static synchronized void removeFuture(Server<?> server, CompletableFuture<Void> future) {
+        Set<CompletableFuture<Void>> set = Core.getServerManager().waiting.get(server);
+        if (set != null) set.remove(future);
     }
 
     public Stream<Server<?>> getOnlineServer() {
@@ -104,10 +120,12 @@ public abstract class ServerHandler {
         Core.getPlugin().dataHandler().send(new InitialPacket(Core.getPlugin().getVersion(), server.getName()), server, Direction.DOWN);
         triggerServerInitializeEvent(server);
 
-        List<Callback<Server<?>>> l = Core.getServerManager().waiting.remove(server);
+        Set<CompletableFuture<Void>> l = Core.getServerManager().waiting.remove(server);
         if (l != null) {
-            l.forEach(c -> c.accept(server));
-            l.clear();
+            l.removeIf(future -> {
+                future.complete(null);
+                return true;
+            });
         }
     }
 
@@ -125,5 +143,24 @@ public abstract class ServerHandler {
 
     public void applyOptions(Server<?> info, ServerOptions options) {
         this.options.putIfAbsent(info, options);
+    }
+
+    public enum SwitchResult {
+        SUCCESS(true),
+        FAIL(false),
+        CANCELLED(false),
+        ALREADY_CONNECTED(true),
+        ALREADY_CONNECTING(true),
+        ;
+
+        private final boolean connected;
+
+        SwitchResult(boolean connected) {
+            this.connected = connected;
+        }
+
+        public boolean isConnected() {
+            return connected;
+        }
     }
 }

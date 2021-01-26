@@ -1,6 +1,5 @@
 package de.codingair.warpsystem.core.proxy.transfer.handlers;
 
-import de.codingair.codingapi.tools.Callback;
 import de.codingair.packetmanagement.handlers.ResponsiblePacketHandler;
 import de.codingair.packetmanagement.packets.impl.IntegerPacket;
 import de.codingair.packetmanagement.utils.Direction;
@@ -35,12 +34,15 @@ public class PrepareServerSwitchPacketHandler implements ResponsiblePacketHandle
                     if (packet.isIgnoreLimit() || info.getOnlineCount() < ping.getMaxPlayers()) {
                         CompletableFuture<IntegerPacket> future = new CompletableFuture<>();
 
-                        ServerHandler.sendPlayerTo(info, pp, new Callback<Server<?>>() {
-                            @Override
-                            public void accept(Server<?> object) {
+                        ServerHandler.sendPlayerTo(pp, info).whenComplete((res, t) -> {
+                            if(t != null) t.printStackTrace();
+                            else if(res.isConnected()) {
                                 Core.getPlugin().dataHandler().send(new PrepareLoginMessagePacket(pp.getName(), packet.getMessage()), info, Direction.DOWN);
                                 future.complete(new IntegerPacket(0));
+                                return;
                             }
+
+                            future.complete(new IntegerPacket(1));
                         });
 
                         return future;

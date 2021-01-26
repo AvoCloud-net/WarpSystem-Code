@@ -1,19 +1,18 @@
 package de.codingair.warpsystem.core.proxy.transfer.handlers;
 
-import de.codingair.codingapi.tools.Callback;
 import de.codingair.packetmanagement.handlers.ResponsiblePacketHandler;
 import de.codingair.packetmanagement.packets.impl.IntegerPacket;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
+import de.codingair.warpsystem.core.proxy.Core;
 import de.codingair.warpsystem.core.proxy.base.handlers.ServerHandler;
+import de.codingair.warpsystem.core.proxy.features.GlobalWarpHandler;
+import de.codingair.warpsystem.core.proxy.utils.Player;
+import de.codingair.warpsystem.core.proxy.utils.Server;
 import de.codingair.warpsystem.core.transfer.packets.general.PrepareCoordinationTeleportPacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.GlobalWarpTeleportPacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.utils.ServerPing;
 import de.codingair.warpsystem.core.transfer.utils.serializeable.SGlobalWarp;
-import de.codingair.warpsystem.core.proxy.Core;
-import de.codingair.warpsystem.core.proxy.features.GlobalWarpHandler;
-import de.codingair.warpsystem.core.proxy.utils.Player;
-import de.codingair.warpsystem.core.proxy.utils.Server;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -52,12 +51,15 @@ public class GlobalWarpTeleportPacketHandler implements ResponsiblePacketHandler
                 else {
                     if (packet.isIgnoreLimit() || otherServer.getOnlineCount() < ping.getMaxPlayers()) {
                         CompletableFuture<IntegerPacket> future = new CompletableFuture<>();
-                        ServerHandler.sendPlayerTo(otherServer, p, new Callback<Server<?>>() {
-                            @Override
-                            public void accept(Server<?> object) {
+                        ServerHandler.sendPlayerTo(p, otherServer).whenComplete((res, t) -> {
+                            if(t != null) t.printStackTrace();
+                            else if(res.isConnected()) {
                                 Core.getPlugin().dataHandler().send(out.noFuture(), otherServer, Direction.DOWN);
                                 future.complete(new IntegerPacket(0));
+                                return;
                             }
+
+                            future.complete(new IntegerPacket(GlobalWarpTeleportPacket.Result.SERVER_NOT_AVAILABLE.getId()));
                         });
                         return future;
                     } else return CompletableFuture.completedFuture(new IntegerPacket(GlobalWarpTeleportPacket.Result.SERVER_IS_FULL.getId()));

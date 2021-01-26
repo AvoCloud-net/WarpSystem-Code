@@ -2,6 +2,7 @@ package de.codingair.warpsystem.velocity.utils;
 
 import com.velocitypowered.api.proxy.ConnectionRequestBuilder;
 import com.velocitypowered.api.proxy.ServerConnection;
+import de.codingair.warpsystem.core.proxy.base.handlers.ServerHandler;
 import de.codingair.warpsystem.core.proxy.utils.Player;
 import de.codingair.warpsystem.core.proxy.utils.Server;
 import net.kyori.adventure.text.Component;
@@ -29,21 +30,44 @@ public class VelocityPlayer implements Player {
     }
 
     @Override
-    public VelocityServer getServer() {
+    public Server<?> getServer() {
         ServerConnection server = player.getCurrentServer().orElse(null);
         if (server != null) return new VelocityServer(server.getServer());
         else return null;
     }
 
     @Override
-    public CompletableFuture<Boolean> connect(Server server) {
+    public CompletableFuture<ServerHandler.SwitchResult> connect(Server<?> server) {
         if (server instanceof VelocityServer) {
-            CompletableFuture<Boolean> future = new CompletableFuture<>();
+            CompletableFuture<ServerHandler.SwitchResult> future = new CompletableFuture<>();
 
             ConnectionRequestBuilder builder = player.createConnectionRequest(((VelocityServer) server).getServer());
             builder.connect().whenComplete((b, t) -> {
                 if (t != null) future.completeExceptionally(t);
-                else future.complete(b.isSuccessful());
+                else {
+                    switch (b.getStatus()) {
+                        case SUCCESS:
+                            future.complete(ServerHandler.SwitchResult.SUCCESS);
+                            break;
+
+                        case ALREADY_CONNECTED:
+                            future.complete(ServerHandler.SwitchResult.ALREADY_CONNECTED);
+                            break;
+
+                        case CONNECTION_IN_PROGRESS:
+                            future.complete(ServerHandler.SwitchResult.ALREADY_CONNECTING);
+                            break;
+
+                        case CONNECTION_CANCELLED:
+                            future.complete(ServerHandler.SwitchResult.CANCELLED);
+                            break;
+
+                        case SERVER_DISCONNECTED:
+                        default:
+                            future.complete(ServerHandler.SwitchResult.FAIL);
+                            break;
+                    }
+                }
             });
 
             return future;

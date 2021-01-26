@@ -1,15 +1,14 @@
 package de.codingair.warpsystem.core.proxy.transfer.handlers;
 
-import de.codingair.codingapi.tools.Callback;
 import de.codingair.packetmanagement.handlers.ResponsiblePacketHandler;
 import de.codingair.packetmanagement.packets.impl.BooleanPacket;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
-import de.codingair.warpsystem.core.proxy.base.handlers.ServerHandler;
-import de.codingair.warpsystem.core.transfer.packets.spigot.RandomTPPacket;
 import de.codingair.warpsystem.core.proxy.Core;
+import de.codingair.warpsystem.core.proxy.base.handlers.ServerHandler;
 import de.codingair.warpsystem.core.proxy.utils.Player;
 import de.codingair.warpsystem.core.proxy.utils.Server;
+import de.codingair.warpsystem.core.transfer.packets.spigot.RandomTPPacket;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -24,14 +23,21 @@ public class RandomTPPacketHandler implements ResponsiblePacketHandler<RandomTPP
 
         if (pp != null) {
             packet.setServer(((Server<?>) connection).getName());
-            ServerHandler.sendPlayerTo(target, pp, new Callback<Server<?>>() {
-                @Override
-                public void accept(Server<?> server) {
-                    Core.getPlugin().dataHandler().send(packet, server, Direction.DOWN);
+
+            CompletableFuture<BooleanPacket> future = new CompletableFuture<>();
+
+            ServerHandler.sendPlayerTo(pp, target).whenComplete((res, t) -> {
+                if(t != null) t.printStackTrace();
+                else if(res.isConnected()) {
+                    Core.getPlugin().dataHandler().send(packet, target, Direction.DOWN);
+                    future.complete(new BooleanPacket(true));
+                    return;
                 }
+
+                future.complete(new BooleanPacket(false));
             });
 
-            return CompletableFuture.completedFuture(new BooleanPacket(true));
+            return future;
         } else return CompletableFuture.completedFuture(new BooleanPacket(false));
     }
 }

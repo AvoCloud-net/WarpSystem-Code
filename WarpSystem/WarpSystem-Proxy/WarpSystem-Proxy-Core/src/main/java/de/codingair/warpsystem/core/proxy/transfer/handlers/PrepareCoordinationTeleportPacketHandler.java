@@ -4,11 +4,12 @@ import de.codingair.packetmanagement.handlers.ResponsiblePacketHandler;
 import de.codingair.packetmanagement.packets.impl.IntegerPacket;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
-import de.codingair.warpsystem.core.transfer.packets.general.PrepareCoordinationTeleportPacket;
-import de.codingair.warpsystem.core.transfer.packets.spigot.utils.ServerPing;
 import de.codingair.warpsystem.core.proxy.Core;
+import de.codingair.warpsystem.core.proxy.base.handlers.ServerHandler;
 import de.codingair.warpsystem.core.proxy.utils.Player;
 import de.codingair.warpsystem.core.proxy.utils.Server;
+import de.codingair.warpsystem.core.transfer.packets.general.PrepareCoordinationTeleportPacket;
+import de.codingair.warpsystem.core.transfer.packets.spigot.utils.ServerPing;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,14 +26,17 @@ public class PrepareCoordinationTeleportPacketHandler implements ResponsiblePack
                 //switch and teleport
                 CompletableFuture<IntegerPacket> future = new CompletableFuture<>();
 
-                p.connect(target).whenComplete((connected, throwable) -> {
-                    if (connected) {
+                ServerHandler.sendPlayerTo(p, target).whenComplete((res, t) -> {
+                    if(t != null) t.printStackTrace();
+                    else if(res.isConnected()) {
                         PrepareCoordinationTeleportPacket finalCall = packet.clone();
                         finalCall.setServer(null);
                         Core.getPlugin().dataHandler().send(finalCall.noFuture(), target, Direction.DOWN);
-
                         future.complete(new IntegerPacket(0));
-                    } else future.complete(new IntegerPacket(1));
+                        return;
+                    }
+
+                    future.complete(new IntegerPacket(1));
                 });
 
                 return future;
