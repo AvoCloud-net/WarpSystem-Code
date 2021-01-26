@@ -1,6 +1,5 @@
 package de.codingair.warpsystem.core.proxy.transfer.handlers;
 
-import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.utils.Value;
 import de.codingair.packetmanagement.exceptions.Escalation;
 import de.codingair.packetmanagement.exceptions.NoConnectionException;
@@ -130,9 +129,11 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
                 //auto deny
                 return CompletableFuture.completedFuture(new LongPacket(1L << 32));
             } else {
-                ServerHandler.sendPlayerTo(target, player, new Callback<Server<?>>() {
-                    @Override
-                    public void accept(Server<?> target) {
+                CompletableFuture<LongPacket> future = new CompletableFuture<>();
+
+                ServerHandler.sendPlayerTo(player, target).whenComplete((res, t) -> {
+                    if(t != null) t.printStackTrace();
+                    else if(res.isConnected()) {
                         if (packet.isCoordsPacket()) {
                             TeleportPlayerToCoordsPacket ptcPacket = new TeleportPlayerToCoordsPacket(
                                     packet.getSender(), player.getName(), null, 0,
@@ -146,10 +147,15 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
                             TeleportPlayerToPlayerPacket ptpPacket = new TeleportPlayerToPlayerPacket(packet.getSender(), player.getName(), targetName, true);
                             Core.getPlugin().dataHandler().send(ptpPacket, target, Direction.DOWN);
                         }
+
+                        future.complete(new LongPacket(PrepareTeleportPacket.Result.SUCCESS.ordinal()));
+                        return;
                     }
+
+                    future.complete(new LongPacket(PrepareTeleportPacket.Result.SERVER_NOT_ONLINE.ordinal()));
                 });
 
-                return CompletableFuture.completedFuture(new LongPacket(PrepareTeleportPacket.Result.SUCCESS.ordinal()));
+                return future;
             }
         }
     }

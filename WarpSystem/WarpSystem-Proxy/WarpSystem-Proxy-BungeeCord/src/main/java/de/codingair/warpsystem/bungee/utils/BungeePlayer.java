@@ -1,10 +1,13 @@
 package de.codingair.warpsystem.bungee.utils;
 
+import de.codingair.warpsystem.core.proxy.base.handlers.ServerHandler;
 import de.codingair.warpsystem.core.proxy.utils.Player;
 import de.codingair.warpsystem.core.proxy.utils.Server;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ServerConnectRequest;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.ServerConnectEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -28,20 +31,48 @@ public class BungeePlayer implements Player {
     }
 
     @Override
-    public Server getServer() {
+    public Server<?> getServer() {
         return new BungeeServer(player.getServer().getInfo());
     }
 
     @Override
-    public CompletableFuture<Boolean> connect(Server server) {
+    public CompletableFuture<ServerHandler.SwitchResult> connect(Server<?> server) {
         if (server instanceof BungeeServer) {
-            CompletableFuture<Boolean> future = new CompletableFuture<>();
+            CompletableFuture<ServerHandler.SwitchResult> future = new CompletableFuture<>();
 
-            player.connect(((BungeeServer) server).getServer(), (b, t) -> {
-                if (t != null) future.completeExceptionally(t);
-                else future.complete(b);
-            });
+            ServerConnectRequest request = ServerConnectRequest.builder()
+                    .callback((result, t) -> {
+                        if (t != null) future.completeExceptionally(t);
+                        else {
+                            switch (result) {
+                                case SUCCESS:
+                                    future.complete(ServerHandler.SwitchResult.SUCCESS);
+                                    break;
 
+                                case ALREADY_CONNECTED:
+                                    future.complete(ServerHandler.SwitchResult.ALREADY_CONNECTED);
+                                    break;
+
+                                case ALREADY_CONNECTING:
+                                    future.complete(ServerHandler.SwitchResult.ALREADY_CONNECTING);
+                                    break;
+
+                                case EVENT_CANCEL:
+                                    future.complete(ServerHandler.SwitchResult.CANCELLED);
+                                    break;
+
+                                case FAIL:
+                                default:
+                                    future.complete(ServerHandler.SwitchResult.FAIL);
+                                    break;
+                            }
+                        }
+                    })
+                    .reason(ServerConnectEvent.Reason.PLUGIN)
+                    .target(((BungeeServer) server).getServer())
+                    .build();
+
+            player.connect(request);
             return future;
         } else return null;
     }

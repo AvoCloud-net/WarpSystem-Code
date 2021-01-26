@@ -1,6 +1,5 @@
 package de.codingair.warpsystem.core.proxy.transfer.handlers;
 
-import de.codingair.codingapi.tools.Callback;
 import de.codingair.packetmanagement.exceptions.Escalation;
 import de.codingair.packetmanagement.handlers.ResponsibleMultiLayerPacketHandler;
 import de.codingair.packetmanagement.packets.impl.BytePacket;
@@ -43,14 +42,18 @@ public class TeleportBackPacketHandler implements ResponsibleMultiLayerPacketHan
                 if(server == null) return CompletableFuture.completedFuture(new BytePacket(TeleportBackPacket.Result.SERVER_NOT_AVAILABLE.id()));
 
                 CompletableFuture<BytePacket> future = new CompletableFuture<>();
-                ServerHandler.sendPlayerTo(server, player, new Callback<Server<?>>() {
-                    @Override
-                    public void accept(Server<?> server) {
-                        Core.getPlugin().dataHandler().send(packet, player.getServer(), Direction.DOWN).whenComplete((p, t) -> {
-                            if(t != null) future.completeExceptionally(t);
+
+                ServerHandler.sendPlayerTo(player, server).whenComplete((res, t) -> {
+                    if(t != null) t.printStackTrace();
+                    else if(res.isConnected()) {
+                        Core.getPlugin().dataHandler().send(packet, player.getServer(), Direction.DOWN).whenComplete((p, t2) -> {
+                            if(t2 != null) future.completeExceptionally(t2);
                             else future.complete(p);
                         });
+                        return;
                     }
+
+                    future.complete(new BytePacket(TeleportBackPacket.Result.PLAYER_NOT_AVAILABLE.id()));
                 });
 
                 return future;

@@ -102,6 +102,8 @@ public class TeleportPlayerToCoordsPacket implements Packet {
 
         this.gate = in.readUTF();
         if(mask.getBit(0)) this.player = in.readUTF();
+        else this.player = this.gate;
+
         if(mask.getBit(1)) this.costs = in.readDouble();
         if(mask.getBit(2)) this.destinationName = in.readUTF();
         if(mask.getBit(3)) {

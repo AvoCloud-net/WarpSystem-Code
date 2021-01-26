@@ -41,7 +41,9 @@ public class TeleportListener implements Listener {
         if (player != null && player.isOnline()) {
             //teleport
             AsyncCatcher.runSync(WarpSystem.getInstance(), () -> WarpSystem.getInstance().getTeleportManager().teleport(player, options, true));
-        } else teleport.put(name.toLowerCase(), options);
+        } else {
+            teleport.put(name.toLowerCase(), options);
+        }
     }
 
     @EventHandler (priority = EventPriority.MONITOR)

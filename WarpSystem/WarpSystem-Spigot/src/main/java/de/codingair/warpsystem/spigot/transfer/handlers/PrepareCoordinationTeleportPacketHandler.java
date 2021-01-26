@@ -28,7 +28,7 @@ public class PrepareCoordinationTeleportPacketHandler implements ResponsiblePack
 
     @Override
     public @NotNull CompletableFuture<IntegerPacket> response(@NotNull PrepareCoordinationTeleportPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
-        process(packet, proxy, connection, direction);
+        this.process(packet, proxy, connection, direction);
         return CompletableFuture.completedFuture(new IntegerPacket(0));
     }
 }

@@ -45,6 +45,7 @@ public class ServerAdapter extends CloneableAdapter implements Serializable, Usa
             if(message == null) message = PrepareCoordinationTeleportPacket.NO_MESSAGE;
 
             org.bukkit.Location location = player.getLocation();
+            player.sendMessage(location.toString());
             PrepareCoordinationTeleportPacket packet = new PrepareCoordinationTeleportPacket(player.getName(), server, player.getWorld().getName(), displayName, message,
                     location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch(),
                     costs, player.hasPermission(Permissions.PERMISSION_ByPass_Teleport_Max_Players));

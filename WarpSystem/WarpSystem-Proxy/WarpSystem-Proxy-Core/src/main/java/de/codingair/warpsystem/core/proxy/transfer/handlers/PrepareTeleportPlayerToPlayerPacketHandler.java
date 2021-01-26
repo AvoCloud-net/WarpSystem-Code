@@ -1,6 +1,5 @@
 package de.codingair.warpsystem.core.proxy.transfer.handlers;
 
-import de.codingair.codingapi.tools.Callback;
 import de.codingair.packetmanagement.exceptions.Escalation;
 import de.codingair.packetmanagement.handlers.ResponsibleMultiLayerPacketHandler;
 import de.codingair.packetmanagement.packets.impl.IntegerPacket;
@@ -48,12 +47,15 @@ public class PrepareTeleportPlayerToPlayerPacketHandler implements ResponsibleMu
         CompletableFuture<IntegerPacket> future = new CompletableFuture<>();
         
         if (!player.getServer().equals(targetServer)) {
-            ServerHandler.sendPlayerTo(targetServer, player, new Callback<Server<?>>() {
-                @Override
-                public void accept(Server<?> object) {
+            ServerHandler.sendPlayerTo(player, targetServer).whenComplete((res, t) -> {
+                if(t != null) t.printStackTrace();
+                else if(res.isConnected()) {
                     future.complete(new IntegerPacket(0));
                     Core.getPlugin().dataHandler().send(tpPacket, targetServer, Direction.DOWN);
+                    return;
                 }
+
+                future.complete(new IntegerPacket(1));
             });
         } else {
             Core.getPlugin().dataHandler().send(tpPacket, targetServer, Direction.DOWN);

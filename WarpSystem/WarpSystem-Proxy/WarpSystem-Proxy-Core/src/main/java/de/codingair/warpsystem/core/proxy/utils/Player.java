@@ -1,5 +1,6 @@
 package de.codingair.warpsystem.core.proxy.utils;
 
+import de.codingair.warpsystem.core.proxy.base.handlers.ServerHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -10,9 +11,9 @@ public interface Player {
 
     @NotNull UUID getUniqueId();
 
-    Server getServer();
+    Server<?> getServer();
 
-    CompletableFuture<Boolean> connect(Server server);
+    CompletableFuture<ServerHandler.SwitchResult> connect(Server<?> server);
 
     void sendGrayMessage(String message);
 }
