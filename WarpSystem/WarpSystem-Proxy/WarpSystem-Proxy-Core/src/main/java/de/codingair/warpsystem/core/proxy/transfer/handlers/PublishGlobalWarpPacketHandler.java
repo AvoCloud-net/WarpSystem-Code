@@ -4,10 +4,12 @@ import de.codingair.packetmanagement.handlers.ResponsiblePacketHandler;
 import de.codingair.packetmanagement.packets.impl.BooleanPacket;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
-import de.codingair.warpsystem.core.transfer.packets.spigot.PublishGlobalWarpPacket;
-import de.codingair.warpsystem.core.transfer.utils.serializeable.SGlobalWarp;
 import de.codingair.warpsystem.core.proxy.Core;
 import de.codingair.warpsystem.core.proxy.features.GlobalWarpHandler;
+import de.codingair.warpsystem.core.proxy.utils.Server;
+import de.codingair.warpsystem.core.transfer.packets.proxy.UpdateGlobalWarpPacket;
+import de.codingair.warpsystem.core.transfer.packets.spigot.PublishGlobalWarpPacket;
+import de.codingair.warpsystem.core.transfer.utils.serializeable.SGlobalWarp;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,30 +19,42 @@ public class PublishGlobalWarpPacketHandler implements ResponsiblePacketHandler<
 
     @Override
     public @NotNull CompletableFuture<BooleanPacket> response(@NotNull PublishGlobalWarpPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
-        GlobalWarpHandler handler = Core.getPlugin().getHandler(GlobalWarpHandler.class);
-        boolean overwrite = packet.isOverwrite();
+        if(direction == Direction.DOWN && connection instanceof Server<?>) {
+            Server<?> server = (Server<?>) connection;
 
-        if (overwrite) {
-            SGlobalWarp warp = handler.get(packet.warp.getName());
-            if (warp != null) {
-                //Changed
-                warp.setLoc(packet.warp.getLoc());
-                warp.setServer(packet.warp.getServer());
-                handler.synchronize(packet.warp);
-                return CompletableFuture.completedFuture(new BooleanPacket(true));
+            GlobalWarpHandler handler = Core.getPlugin().getHandler(GlobalWarpHandler.class);
+            boolean overwrite = packet.isOverwrite();
+
+            if (overwrite) {
+                SGlobalWarp warp = handler.get(packet.warp.getName());
+                if (warp != null) {
+                    //Changed
+                    warp.setLoc(packet.warp.getLoc());
+                    warp.setServer(server.getName());
+                    handler.synchronize(warp, UpdateGlobalWarpPacket.Action.UPDATE_POSITION);
+                    return CompletableFuture.completedFuture(new BooleanPacket(true));
+                } else {
+                    //Name does not exist -> create
+                    if (handler.add(packet.warp)) {
+                        //Added
+                        packet.warp.setServer(server.getName());
+                        handler.synchronize(packet.warp, UpdateGlobalWarpPacket.Action.ADD);
+                        return CompletableFuture.completedFuture(new BooleanPacket(true));
+                    }
+
+                    return CompletableFuture.completedFuture(new BooleanPacket(false));
+                }
             } else {
-                //Name already exists
-                return CompletableFuture.completedFuture(new BooleanPacket(false));
+                if (handler.add(packet.warp)) {
+                    //Added
+                    packet.warp.setServer(server.getName());
+                    handler.synchronize(packet.warp, UpdateGlobalWarpPacket.Action.ADD);
+                    return CompletableFuture.completedFuture(new BooleanPacket(true));
+                } else {
+                    //Name already exists
+                    return CompletableFuture.completedFuture(new BooleanPacket(false));
+                }
             }
-        } else {
-            if (handler.add(packet.warp)) {
-                //Added
-                handler.synchronize(packet.warp);
-                return CompletableFuture.completedFuture(new BooleanPacket(true));
-            } else {
-                //Name already exists
-                return CompletableFuture.completedFuture(new BooleanPacket(false));
-            }
-        }
+        } else return CompletableFuture.completedFuture(new BooleanPacket(false));
     }
 }

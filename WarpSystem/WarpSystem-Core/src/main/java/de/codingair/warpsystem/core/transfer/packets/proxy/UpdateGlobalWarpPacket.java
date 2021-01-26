@@ -51,7 +51,7 @@ public class UpdateGlobalWarpPacket implements Packet {
         DELETE(1),
         UPDATE_POSITION(2);
 
-        private int id;
+        private final int id;
 
         Action(int id) {
             this.id = id;

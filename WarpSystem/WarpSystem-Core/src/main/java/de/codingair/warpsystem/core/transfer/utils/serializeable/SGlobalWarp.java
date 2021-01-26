@@ -19,12 +19,6 @@ public class SGlobalWarp implements Serializable {
         this.loc = loc;
     }
 
-    public SGlobalWarp(String name, String server, SLocation loc) {
-        this.name = name;
-        this.server = server;
-        this.loc = loc;
-    }
-
     @Override
     public void write(DataOutputStream out) throws IOException {
         out.writeUTF(this.name);

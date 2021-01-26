@@ -5,6 +5,7 @@ import de.codingair.packetmanagement.packets.impl.BooleanPacket;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.core.proxy.Core;
+import de.codingair.warpsystem.core.transfer.packets.proxy.UpdateGlobalWarpPacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.DeleteGlobalWarpPacket;
 import de.codingair.warpsystem.core.transfer.utils.serializeable.SGlobalWarp;
 import de.codingair.warpsystem.core.proxy.features.GlobalWarpHandler;
@@ -23,7 +24,7 @@ public class DeleteGlobalWarpPacketHandler implements ResponsiblePacketHandler<D
         if (warp == null) return CompletableFuture.completedFuture(new BooleanPacket(false));
         else {
             handler.remove(warp.getName());
-            handler.synchronize(warp);
+            handler.synchronize(warp, UpdateGlobalWarpPacket.Action.DELETE);
             return CompletableFuture.completedFuture(new BooleanPacket(true));
         }
     }
