@@ -9,6 +9,7 @@ import de.codingair.warpsystem.core.transfer.packets.proxy.UpdateGlobalWarpPacke
 import de.codingair.warpsystem.core.transfer.utils.serializeable.SGlobalWarp;
 import de.codingair.warpsystem.core.transfer.utils.serializeable.SLocation;
 import de.codingair.warpsystem.core.utils.Manager;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -66,15 +67,9 @@ public abstract class GlobalWarpHandler implements Manager {
         mask.put(warp.getName() + ".Location.Pitch", warp.getLoc().getPitch());
     }
 
-    public void synchronize(SGlobalWarp warp) {
-        Core.getServerManager().getOnlineServer().forEach(server -> {
-            int id;
-            if (get(warp.getName()) == null) id = UpdateGlobalWarpPacket.Action.DELETE.getId();
-            else if (get(warp.getName()).equals(warp)) id = UpdateGlobalWarpPacket.Action.ADD.getId();
-            else id = UpdateGlobalWarpPacket.Action.UPDATE_POSITION.getId();
-
-            Core.getPlugin().dataHandler().send(new UpdateGlobalWarpPacket(id, warp.getName(), warp.getServer()), server, Direction.DOWN);
-        });
+    public void synchronize(SGlobalWarp warp, @NotNull UpdateGlobalWarpPacket.Action action) {
+        int id = action.getId();
+        Core.getServerManager().getOnlineServer().forEach(server -> Core.getPlugin().dataHandler().send(new UpdateGlobalWarpPacket(id, warp.getName(), warp.getServer()), server, Direction.DOWN));
     }
 
     public void synchronize(Server<?> server) {
