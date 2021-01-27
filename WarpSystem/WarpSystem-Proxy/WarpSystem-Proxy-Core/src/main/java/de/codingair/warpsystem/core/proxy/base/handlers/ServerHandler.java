@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 public abstract class ServerHandler {
     private final HashMap<Server<?>, ServerOptions> options = new HashMap<>();
     private final ConcurrentHashMap<Server<?>, ServerPing> cachedPing = new ConcurrentHashMap<>();
-    private final HashMap<Server<?>, Set<CompletableFuture<Void>>> waiting = new HashMap<>();
+    private final ConcurrentHashMap<Server<?>, Set<CompletableFuture<Void>>> waiting = new ConcurrentHashMap<>();
     private boolean running = false;
 
     public static CompletableFuture<SwitchResult> sendPlayerTo(Player player, Server<?> server) {

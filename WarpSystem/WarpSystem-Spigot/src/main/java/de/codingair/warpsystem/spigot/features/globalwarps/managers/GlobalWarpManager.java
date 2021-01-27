@@ -45,10 +45,6 @@ public class GlobalWarpManager implements Manager, ProxyFeature {
         return WarpSystem.getDataHandler().send(new DeleteGlobalWarpPacket(warpName), player);
     }
 
-    public HashMap<String, String> getGlobalWarps() {
-        return globalWarps;
-    }
-
     public String getCaseCorrectlyName(String name) {
         for (String warp : this.globalWarps.keySet()) {
             if (warp.equalsIgnoreCase(name)) return warp;
@@ -112,11 +108,19 @@ public class GlobalWarpManager implements Manager, ProxyFeature {
     }
 
     @Override
+    public void onInitiate(Player connection) {
+        WarpSystem.getDataHandler().send(new RequestGlobalWarpNamesPacket(), connection);
+    }
+
+    @Override
     public void onConnect(Player connection) {
-        if (getGlobalWarps().isEmpty()) WarpSystem.getDataHandler().send(new RequestGlobalWarpNamesPacket(), connection);
     }
 
     @Override
     public void onDisconnect() {
+    }
+
+    public HashMap<String, String> getGlobalWarps() {
+        return globalWarps;
     }
 }

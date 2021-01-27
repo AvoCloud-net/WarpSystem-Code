@@ -13,7 +13,6 @@ public class GlobalWarpManager extends GlobalWarpHandler {
         WarpSystem.getInstance().getFileManager().loadFile("GlobalWarps", "/");
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("GlobalWarps");
 
-        WarpSystem.getInstance().getProxy().getPluginManager().registerListener(WarpSystem.getInstance(), new GlobalWarpListener());
         return super.load(loader, new BungeeConfigMask(file));
     }
 
