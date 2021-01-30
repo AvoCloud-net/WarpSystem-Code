@@ -47,7 +47,8 @@ public class PlayerDataManager implements Listener {
     }
 
     public @NotNull PlayerData getCache(@NotNull Player player) {
-        if (WarpSystem.getInstance().isOnProxy()) return cached.get(player.getName().toLowerCase());
+        if (WarpSystem.getInstance().isOnProxy()) return cached.computeIfAbsent(player.getName().toLowerCase(),
+                key -> new PlayerData(player.getName(), player.getUniqueId()));
         else return new PlayerData(player.getName(), player.getUniqueId());
     }
 
