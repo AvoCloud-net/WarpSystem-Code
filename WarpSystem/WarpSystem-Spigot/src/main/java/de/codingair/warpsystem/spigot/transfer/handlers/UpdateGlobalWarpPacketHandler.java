@@ -31,9 +31,12 @@ public class UpdateGlobalWarpPacketHandler implements PacketHandler<UpdateGlobal
                 ((GlobalWarpManager) WarpSystem.getInstance().getDataManager().getManager(FeatureType.GLOBAL_WARPS)).getGlobalWarps().remove(packet.getName());
                 for (Icon warpIcon : IconManager.getInstance().getIcons()) {
                     if (warpIcon.getAction(Action.WARP) != null) {
-                        if (warpIcon.getAction(WarpAction.class).getValue().getType() == DestinationType.GlobalWarp &&
-                                warpIcon.getAction(WarpAction.class).getValue().getId().equalsIgnoreCase(packet.getName()))
-                            warpIcon.getAction(WarpAction.class).setValue(null);
+                        WarpAction action = warpIcon.getAction(WarpAction.class);
+                        if (action.getValue() != null) {
+                            if (action.getValue().getType() == DestinationType.GlobalWarp &&
+                                    action.getValue().getId().equalsIgnoreCase(packet.getName()))
+                                action.setValue(null);
+                        }
                     }
                 }
                 break;
