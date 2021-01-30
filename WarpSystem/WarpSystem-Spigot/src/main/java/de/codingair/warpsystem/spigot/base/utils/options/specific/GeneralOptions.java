@@ -2,13 +2,17 @@ package de.codingair.warpsystem.spigot.base.utils.options.specific;
 
 import de.codingair.warpsystem.core.transfer.packets.spigot.utils.ServerPing;
 import de.codingair.warpsystem.spigot.api.StringFormatter;
+import de.codingair.warpsystem.spigot.api.WorldGuardHelper;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.options.Option;
 import de.codingair.warpsystem.spigot.base.utils.options.Options;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.v2.TeleportDelay;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.IntPredicate;
 
 public class GeneralOptions extends Options {
@@ -32,6 +36,7 @@ public class GeneralOptions extends Options {
     private Option<String> placeholderColorsOffline = new Option<>("WarpSystem.Proxy.Placeholder.Colors.Offline", "&c");
     private Option<String> placeholderColorsFull = new Option<>("WarpSystem.Proxy.Placeholder.Colors.Full", "&c");
     private Option<String> placeholderColorsNotFull = new Option<>("WarpSystem.Proxy.Placeholder.Colors.Not_Full", "&a");
+    private Option<List<String>> forbiddenRegions = new Option<>("WarpSystem.Teleport.Forbidden_Regions", new ArrayList<String>());
 
     public GeneralOptions() {
         super("Config");
@@ -64,6 +69,7 @@ public class GeneralOptions extends Options {
         set(placeholderColorsOffline);
         set(placeholderColorsFull);
         set(placeholderColorsNotFull);
+        set(forbiddenRegions);
         save();
     }
 
@@ -89,6 +95,7 @@ public class GeneralOptions extends Options {
         get(placeholderColorsOffline);
         get(placeholderColorsFull);
         get(placeholderColorsNotFull);
+        get(forbiddenRegions);
 
         if (fetchUpdates.getValue() < 0 || fetchUpdates.getValue() > 2) fetchUpdates.setValue(1);
         if (System.getProperty("os.name").toLowerCase().contains("win") || System.getProperty("os.name").toLowerCase().contains("mac"))
@@ -147,6 +154,7 @@ public class GeneralOptions extends Options {
             this.placeholderColorsOffline = o.placeholderColorsOffline.clone();
             this.placeholderColorsFull = o.placeholderColorsFull.clone();
             this.placeholderColorsNotFull = o.placeholderColorsNotFull.clone();
+            this.forbiddenRegions = o.forbiddenRegions.clone();
         }
     }
 
@@ -293,5 +301,12 @@ public class GeneralOptions extends Options {
         }
 
         return de.codingair.codingapi.utils.ChatColor.translateAll('&', prepareServerColorString(ping, s));
+    }
+
+    public boolean forbiddenRegion(Location location) {
+        String current = WorldGuardHelper.getRegion(location);
+
+        if(current == null) return false;
+        return forbiddenRegions.getValue().contains(current);
     }
 }
