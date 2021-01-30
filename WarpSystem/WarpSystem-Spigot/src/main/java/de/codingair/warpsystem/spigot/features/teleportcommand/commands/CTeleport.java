@@ -141,16 +141,15 @@ public class CTeleport extends WSCommandBuilder {
 
         if (args.length - 1 >= 1) {
             String other = args[1].replace("~", "");
-            if (other.isEmpty() || isNumeric(args[1])) {
-                //coordinate
-                other = null;
-            }
-
-            PlayerData otherData = WarpSystem.getInstance().getPlayerDataManager().getCache(other);
-
-            if (otherData != null) {
-                TeleportCommandManager.handler().tp(p, data, otherData);
-                return true;
+            if(!other.isEmpty() && !isNumeric(args[1])) {
+                //name
+                PlayerData otherData = WarpSystem.getInstance().getPlayerDataManager().getCache(other);
+                
+                if (otherData != null) {
+                    //player name
+                    TeleportCommandManager.handler().tp(p, data, otherData);
+                    return true;
+                }
             }
         }
 
@@ -165,41 +164,19 @@ public class CTeleport extends WSCommandBuilder {
 
         if (args.length - 1 >= i) {
             //x
-            if (args[i].contains("~")) {
-                x = p.getLocation().getX();
-                args[i] = args[i].replace("~", "");
-            }
-
-            if (isNumeric(args[i])) {
-                if (x == null) x = parse(args[i]);
-                else x += parse(args[i]);
-            }
+            x = parseDeep(args[i], p.getLocation().getX());
 
             if (x != null) {
                 //y
                 if (args.length - 1 >= i + 1) {
-                    if (args[i + 1].contains("~")) {
-                        y = p.getLocation().getY();
-                        args[i + 1] = args[i + 1].replace("~", "");
-                    }
-
-                    if (isNumeric(args[i + 1])) {
-                        if (y == null) y = parse(args[i + 1]);
-                        else y += parse(args[i + 1]);
-                    } else if (!args[i + 1].isEmpty()) return false;
+                    y = parseDeep(args[i + 1], p.getLocation().getY());
+                    if (y == null) return false;
                 } else return false;
 
                 //z
                 if (args.length - 1 >= i + 2) {
-                    if (args[i + 2].contains("~")) {
-                        z = p.getLocation().getZ();
-                        args[i + 2] = args[i + 2].replace("~", "");
-                    }
-
-                    if (isNumeric(args[i + 2])) {
-                        if (z == null) z = parse(args[i + 2]);
-                        else z += parse(args[i + 2]);
-                    } else if (!args[i + 2].isEmpty()) {
+                    z = parseDeep(args[i + 2], p.getLocation().getZ());
+                    if (z == null) {
                         //x and y might be yaw and pitch
                         x = null;
                         y = null;
@@ -224,34 +201,20 @@ public class CTeleport extends WSCommandBuilder {
 
         //yaw
         if (args.length - 1 >= i) {
-            if (args[i].contains("~")) {
-                yaw = p.getLocation().getYaw();
-                args[i] = args[i].replace("~", "");
-            }
-
-            if (isNumeric(args[i])) {
-                if (yaw == null) yaw = (float) parse(args[i]);
-                else yaw += (float) parse(args[i]);
-
-                if(yaw > 180) yaw = 180F;
-                else if(yaw < -180) yaw = -180F;
-            }
+            yaw = parseDeep(args[i], p.getLocation().getYaw());
 
             if (yaw != null) {
+                if (yaw > 180) yaw = 180F;
+                else if(yaw < -180) yaw = -180F;
+
                 //pitch
                 if (args.length - 1 >= i + 1) {
-                    if (args[i + 1].contains("~")) {
-                        pitch = p.getLocation().getPitch();
-                        args[i + 1] = args[i + 1].replace("~", "");
-                    }
+                    pitch = parseDeep(args[i + 1], p.getLocation().getPitch());
 
-                    if (isNumeric(args[i + 1])) {
-                        if (pitch == null) pitch = (float) parse(args[i + 1]);
-                        else pitch += (float) parse(args[i + 1]);
-
+                    if (pitch != null) {
                         if(pitch > 90) pitch = 90F;
                         else if(pitch < -90) pitch = -90F;
-                    } else if (!args[i + 1].isEmpty()) return false;
+                    } else return false;
                 } else return false;
             }
         }
@@ -273,10 +236,16 @@ public class CTeleport extends WSCommandBuilder {
             server = args[i];
             world = args[i + 1];
 
-            if (WarpSystem.getInstance().getServerManager().getProperties(server) == null) {
+            boolean noServer = WarpSystem.getInstance().getServerManager().getProperties(server) == null;
+            boolean noWorld = !WarpSystem.getInstance().getServerManager().getWorlds(server).contains(world);
+
+            if (noServer && noWorld) {
+                p.sendMessage(Lang.getPrefix() + Lang.get("Player_Server_Or_World_Not_Available"));
+                return true;
+            } else if (noServer) {
                 p.sendMessage(Lang.getPrefix() + Lang.get("Server_Is_Not_Online"));
                 return true;
-            } else if (!WarpSystem.getInstance().getServerManager().getWorlds(server).contains(world)) {
+            } else if (noWorld) {
                 p.sendMessage(Lang.getPrefix() + Lang.get("World_Not_Exists"));
                 return true;
             }
@@ -312,5 +281,51 @@ public class CTeleport extends WSCommandBuilder {
         } catch (NumberFormatException ex) {
             return 0;
         }
+    }
+
+    private static float parseFloat(String s) {
+        if (s.isEmpty()) return 0;
+        s = s.replace(",", ".");
+
+        try {
+            if (s.contains(".")) return Float.parseFloat(s);
+            else return Integer.parseInt(s);
+        } catch (NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    private static Double parseDeep(String s, double current) {
+        if (s.isEmpty()) return null;
+        Double result = null;
+
+        if (s.contains("~")) {
+            result = current;
+            s = s.replace("~", "");
+        }
+
+        if (isNumeric(s)) {
+            if (result == null) result = parse(s);
+            else result += parse(s);
+        } else if (!s.isEmpty()) return null;
+
+        return result;
+    }
+
+    private static Float parseDeep(String s, float current) {
+        if (s.isEmpty()) return null;
+        Float result = null;
+
+        if (s.contains("~")) {
+            result = current;
+            s = s.replace("~", "");
+        }
+
+        if (isNumeric(s)) {
+            if (result == null) result = parseFloat(s);
+            else result += parseFloat(s);
+        } else if (!s.isEmpty()) return null;
+
+        return result;
     }
 }
