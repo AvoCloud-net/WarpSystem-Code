@@ -39,7 +39,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
     @Override
     public void back(Player player) {
         if (WarpSystem.cooldown().checkPlayer(player, Origin.TeleportCommand)) return;
-        if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(player, false)) player.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
+        if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(player, false, false)) player.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
         else WarpSystem.cooldown().register(player, Origin.TeleportCommand);
     }
 
@@ -83,7 +83,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
                 }
             });
         } else {
-            if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(p, false)) sender.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
+            if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(p, false, false)) sender.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
             else {
                 WarpSystem.cooldown().register(p, Origin.TeleportCommand);
                 sender.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", playerData.getName()).replace("%warp%", Lang.get("Last_Position")));
@@ -368,6 +368,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
 
                 if (handled == 0) player.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
                 else if (handled == -1) player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_denied_sender").replace("%PLAYER%", ChatColor.stripColor(data.getName())));
+                else if (handled == -2) player.sendMessage(Lang.getPrefix() + Lang.get("Player_Protected_Area"));
                 else if (sent == 0) player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_already_sent"));
                 else player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_sent").replace("%PLAYER%", ChatColor.stripColor(data.getName())));
             }

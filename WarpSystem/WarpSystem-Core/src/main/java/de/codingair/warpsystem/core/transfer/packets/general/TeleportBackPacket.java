@@ -12,6 +12,7 @@ public class TeleportBackPacket implements RequestPacket<BytePacket> {
     private String name;
     private boolean bypassCooldownCheck;
     private boolean switching;
+    private boolean force;
 
     public TeleportBackPacket() {
     }
@@ -21,10 +22,11 @@ public class TeleportBackPacket implements RequestPacket<BytePacket> {
         this.bypassCooldownCheck = bypassCooldownCheck;
     }
 
-    public TeleportBackPacket(String name, boolean bypassCooldownCheck, boolean switching) {
+    public TeleportBackPacket(String name, boolean bypassCooldownCheck, boolean switching, boolean force) {
         this.name = name;
         this.bypassCooldownCheck = bypassCooldownCheck;
         this.switching = switching;
+        this.force = force;
     }
 
     @Override
@@ -34,6 +36,7 @@ public class TeleportBackPacket implements RequestPacket<BytePacket> {
         ByteMask mask = new ByteMask();
         mask.setBit(0, this.bypassCooldownCheck);
         mask.setBit(1, this.switching);
+        mask.setBit(2, this.force);
         mask.write(out);
     }
 
@@ -46,6 +49,7 @@ public class TeleportBackPacket implements RequestPacket<BytePacket> {
 
         this.bypassCooldownCheck = mask.getBit(0);
         this.switching = mask.getBit(1);
+        this.force = mask.getBit(2);
     }
 
     public String getName() {
@@ -58,6 +62,10 @@ public class TeleportBackPacket implements RequestPacket<BytePacket> {
 
     public boolean isSwitching() {
         return switching;
+    }
+
+    public boolean isForce() {
+        return force;
     }
 
     public enum Result {

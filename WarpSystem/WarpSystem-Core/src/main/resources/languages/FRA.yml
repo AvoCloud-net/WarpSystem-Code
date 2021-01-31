@@ -549,3 +549,4 @@ Keep_Position: "Keep position"
 Not_Available_In_World: "&7%SUBJECT% are &cnot available &7in this world."
 Player_Server_Or_World_Not_Available: "&7The requested &eplayer&7, &eserver &7or &eworld &7does &cnot exist&7."
 Other_Is_Already_On_Target_Server: '&7The player &e%PLAYER% &7is &calready &7on this server.'
+Player_Protected_Area: '&7You or your target is in a &cprotected area&7.'
