@@ -37,10 +37,20 @@ import java.net.InetSocketAddress;
 import java.util.*;
 
 public class PermissionPlayer_v1_9 implements Player {
-    private Player player;
+    private final Player player;
 
-    public PermissionPlayer_v1_9(Player player) {
+    public PermissionPlayer_v1_9(@NotNull Player player) {
         this.player = player;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return player.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return player.hashCode();
     }
 
     public void sendRawMessage(@Nullable UUID uuid, @NotNull String s) {
@@ -1245,11 +1255,11 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public Location getLocation() {
-        return this.player.getCompassTarget();
+        return this.player.getLocation();
     }
 
     public Location getLocation(Location location) {
-        return this.player.getCompassTarget();
+        return this.player.getLocation(location);
     }
 
     public Vector getVelocity() {

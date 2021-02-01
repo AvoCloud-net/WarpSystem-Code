@@ -20,6 +20,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
 import java.util.*;
@@ -27,8 +28,18 @@ import java.util.*;
 public class PermissionPlayer_v1_8 implements Player {
     private final Player player;
 
-    public PermissionPlayer_v1_8(Player player) {
+    public PermissionPlayer_v1_8(@NotNull Player player) {
         this.player = player;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return player.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return player.hashCode();
     }
 
     public void sendBlockChange(Location location, int i, byte b) {
