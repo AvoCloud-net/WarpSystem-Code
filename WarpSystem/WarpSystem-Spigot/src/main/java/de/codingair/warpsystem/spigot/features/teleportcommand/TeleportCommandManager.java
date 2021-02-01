@@ -190,9 +190,14 @@ public abstract class TeleportCommandManager implements Manager, ProxyFeature, C
     }
 
     protected void teleportBack(Player player, Location l, boolean force) {
+        if (!force && WarpSystem.opt().forbiddenRegion(l)) {
+            player.sendMessage(Lang.getPrefix() + Lang.get("Target_Protected_Area"));
+            return;
+        }
+
         TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(l)), Lang.get("Last_Position"));
 
-        if (force) options.setMessage(Lang.getPrefix() + Lang.get("Player_Protected_Area"));
+        if (force) options.setMessage(Lang.getPrefix() + Lang.get("Target_Protected_Area"));
 
         options.addCallback(new Callback<Result>() {
             @Override
