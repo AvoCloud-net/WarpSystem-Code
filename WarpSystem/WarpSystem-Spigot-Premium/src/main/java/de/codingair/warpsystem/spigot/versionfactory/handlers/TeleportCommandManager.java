@@ -29,19 +29,19 @@ public class TeleportCommandManager extends de.codingair.warpsystem.spigot.featu
             if (l == null) return false;
 
             if (!force && WarpSystem.opt().forbiddenRegion(l)) {
-                proxyBack(player, true);
+                proxyBackPacket(player, true);
                 return false;
             }
         } else {
             l = this.backPosition.remove(player.getName());
-            if (l == null) return proxyBack(player, false);
+            if (l == null) return proxyBack(player);
         }
 
         teleportBack(player, l, force);
         return true;
     }
 
-    private boolean proxyBack(Player player, boolean force) {
+    private boolean proxyBack(Player player) {
         PlayerData data = WarpSystem.getInstance().getPlayerDataManager().getCache(player);
         if (data.getOldServer() != null) {
             //switch server
@@ -52,27 +52,7 @@ public class TeleportCommandManager extends de.codingair.warpsystem.spigot.featu
                 @Override
                 public void accept(Result result) {
                     if (result == Result.SUCCESS) {
-                        WarpSystem.getDataHandler().send(new TeleportBackPacket(player.getName(), false, true, force), player).whenComplete((success, t) -> {
-                            TeleportBackPacket.Result res = TeleportBackPacket.Result.fromId(success.getByte());
-                            if (res == null) return;
-
-                            switch (res) {
-                                case SUCCESS:
-                                    break;
-
-                                case SERVER_NOT_AVAILABLE:
-                                    player.sendMessage(Lang.getPrefix() + Lang.get("Server_Is_Not_Online"));
-                                    break;
-
-                                case PLAYER_NOT_AVAILABLE:
-                                    player.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
-                                    break;
-
-                                case NO_LAST_POSITION:
-                                    player.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
-                                    break;
-                            }
-                        });
+                        proxyBackPacket(player, false);
                     }
                 }
             });
@@ -80,5 +60,29 @@ public class TeleportCommandManager extends de.codingair.warpsystem.spigot.featu
             TeleportManager.getInstance().teleport(player, options);
             return true;
         } else return false;
+    }
+
+    private void proxyBackPacket(Player player, boolean force) {
+        WarpSystem.getDataHandler().send(new TeleportBackPacket(player.getName(), false, true, force), player).whenComplete((success, t) -> {
+            TeleportBackPacket.Result res = TeleportBackPacket.Result.fromId(success.getByte());
+            if (res == null) return;
+
+            switch (res) {
+                case SUCCESS:
+                    break;
+
+                case SERVER_NOT_AVAILABLE:
+                    player.sendMessage(Lang.getPrefix() + Lang.get("Server_Is_Not_Online"));
+                    break;
+
+                case PLAYER_NOT_AVAILABLE:
+                    player.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
+                    break;
+
+                case NO_LAST_POSITION:
+                    player.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
+                    break;
+            }
+        });
     }
 }
