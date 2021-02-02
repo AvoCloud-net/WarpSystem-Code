@@ -10,6 +10,7 @@ import de.codingair.codingapi.utils.Value;
 import de.codingair.warpsystem.spigot.api.players.PermissionPlayer_v1_8;
 import de.codingair.warpsystem.spigot.api.players.PermissionPlayer_v1_9;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
 import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
@@ -179,13 +180,14 @@ public abstract class RandomLocationCalculator implements Runnable {
     protected CompletableFuture<Boolean> isProtected(Location location) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
-        Value<BlockBreakEvent> eventValue = new Value<>(null);
-        Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> {
-            BlockBreakEvent event = new BlockBreakEvent(location.getBlock(), this.check); //check is a bukkit/Player instance
-            eventValue.setValue(event);
-            Bukkit.getPluginManager().callEvent(event);
-            future.complete(event.isCancelled());
-        });
+        if (WarpSystem.opt().forbiddenRegion(location)) future.complete(true);
+        else {
+            Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> {
+                BlockBreakEvent event = new BlockBreakEvent(location.getBlock(), this.check); //check is a bukkit/Player instance
+                Bukkit.getPluginManager().callEvent(event);
+                future.complete(event.isCancelled());
+            });
+        }
 
         return future;
     }

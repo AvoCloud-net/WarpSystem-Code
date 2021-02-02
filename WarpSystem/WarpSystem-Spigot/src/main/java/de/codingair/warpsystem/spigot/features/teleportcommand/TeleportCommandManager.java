@@ -181,16 +181,24 @@ public abstract class TeleportCommandManager implements Manager, ProxyFeature, C
         else this.backPosition.put(player.getName(), location);
     }
 
-    public boolean teleportToLastBackLocation(Player player, boolean proxy) {
+    public boolean teleportToLastBackLocation(Player player, boolean proxy, boolean force) {
         Location l = this.backPosition.remove(player.getName());
         if (l == null) return false;
 
-        teleportBack(player, l);
+        teleportBack(player, l, false);
         return true;
     }
 
-    protected void teleportBack(Player player, Location l) {
+    protected void teleportBack(Player player, Location l, boolean force) {
+        if (!force && WarpSystem.opt().forbiddenRegion(l)) {
+            player.sendMessage(Lang.getPrefix() + Lang.get("Target_Protected_Area"));
+            return;
+        }
+
         TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(l)), Lang.get("Last_Position"));
+
+        if (force) options.setMessage(Lang.getPrefix() + Lang.get("Target_Protected_Area"));
+
         options.addCallback(new Callback<Result>() {
             @Override
             public void accept(Result result) {

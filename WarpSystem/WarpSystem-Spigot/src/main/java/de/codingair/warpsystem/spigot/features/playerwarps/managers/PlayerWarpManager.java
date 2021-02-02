@@ -134,7 +134,9 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     }
 
     public static boolean isProtected(Player player) {
-        if(isWorldBlocked(player.getWorld().getName())) return true;
+        if (isWorldBlocked(player.getWorld().getName())) return true;
+        if (WarpSystem.opt().forbiddenRegion(player.getLocation())) return true;
+
         if (!getManager().isProtectedRegions()) return false;
 
         Player check;

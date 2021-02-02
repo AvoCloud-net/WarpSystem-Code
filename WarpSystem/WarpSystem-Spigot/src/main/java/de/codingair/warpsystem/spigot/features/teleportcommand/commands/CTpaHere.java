@@ -50,6 +50,12 @@ public class CTpaHere extends WSCommandBuilder {
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 Player p = (Player) sender;
+
+                if(WarpSystem.opt().forbiddenRegion(p.getLocation())) {
+                    p.sendMessage(Lang.getPrefix() + Lang.get("Player_Protected_Area"));
+                    return true;
+                }
+
                 Player other = Bukkit.getPlayer(argument);
                 if (other != null && !p.canSee(other)) {
                     p.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));

@@ -86,6 +86,9 @@ WarpSystem:
     Allow_Move: false
     #Values: ACTION_BAR, TITLE (separate lines with '\n')
     Delay_Display: ACTION_BAR
+    #A list of forbidden WorldGuard regions.
+    #All types of user based teleportations are included: /back, /tpa, /tpahere, PlayerWarps, random locations
+    Forbidden_Regions: []
 
   #PREMIUM
   #ByPass: warpsystem.bypass.cooldown

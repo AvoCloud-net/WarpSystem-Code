@@ -199,7 +199,8 @@ public class Invitation {
                 sendInvitation(player.getName(), new Callback<Long>() {
                     @Override
                     public void accept(Long result) {
-                        handled.setValue(handled.getValue() + (int) (result >> 32));
+                        boolean success = ((int) (result >> 32)) == 1;
+                        if(success) handled.setValue(handled.getValue() + 1);
                         sent.setValue(sent.getValue() + result.intValue());
                     }
                 });
@@ -234,7 +235,12 @@ public class Invitation {
         if (recipient != null) {
             //on bukkit
             if (TeleportCommandManager.getInstance().deniesTpaRequests(recipient.getName())) {
-                callback.accept((((long) 1) << 32));
+                callback.accept((((long) -1) << 32));
+                return;
+            }
+
+            if (WarpSystem.opt().forbiddenRegion(recipient.getLocation())) {
+                callback.accept((((long) -2) << 32));
                 return;
             }
 

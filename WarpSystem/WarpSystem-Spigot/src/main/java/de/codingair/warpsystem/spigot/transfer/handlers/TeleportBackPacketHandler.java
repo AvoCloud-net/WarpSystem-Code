@@ -25,7 +25,7 @@ public class TeleportBackPacketHandler implements ResponsiblePacketHandler<Telep
         else {
             if (!packet.isBypassCooldownCheck() && WarpSystem.cooldown().checkPlayer(player, Origin.TeleportCommand)) return CompletableFuture.completedFuture(new BooleanPacket(false));
 
-            if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(player, packet.isSwitching())) return CompletableFuture.completedFuture(new BytePacket(TeleportBackPacket.Result.NO_LAST_POSITION.id()));
+            if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(player, packet.isSwitching(), packet.isForce())) return CompletableFuture.completedFuture(new BytePacket(TeleportBackPacket.Result.NO_LAST_POSITION.id()));
             else {
                 WarpSystem.cooldown().register(player, Origin.TeleportCommand);
                 return CompletableFuture.completedFuture(new BytePacket(TeleportBackPacket.Result.SUCCESS.id()));
