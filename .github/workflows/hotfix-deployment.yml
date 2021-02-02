@@ -30,7 +30,6 @@ jobs:
       run: |
         rank="<@&793495281387700234>"
         milestone=36
-        hook=${{ secrets.DISCORD_WEBHOOK }}
         
         upload() {
             file=$(find "./WarpSystem/WarpSystem-Bundle-$1/target" -type f -name "WarpSystem_v*.jar" | head -n 1)
@@ -49,9 +48,9 @@ jobs:
             fi
             
             NOW="$(LC_ALL=en_GB.utf8 date --universal)"
-            echo "Sending '$file' to 'DevBuilds' channel, this may take a while..." 
-            curl -i -H 'Expect: application/json' -F file=@"$file" -F "payload_json={ \"wait\": true, \"avatar_url\":\"https://i.imgur.com/ZoSmsVs.png\", \"content\": \"$rank\n__**$info$version**__   [$NOW]\n\n**Changelog:**\n<https://github.com/CodingAir/WarpSystem-IssueTracker/milestone/$milestone?closed=1>\", \"username\": \"WarpSystem CI\" }" $hook
+            echo "Sending '$file' to 'DevBuilds' ($1) channel, this may take a while..." 
+            curl -i -H 'Expect: application/json' -F file=@"$file" -F "payload_json={ \"wait\": true, \"avatar_url\":\"https://i.imgur.com/ZoSmsVs.png\", \"content\": \"$rank\n__**$info$version**__   [$NOW]\n\n**Changelog:**\n<https://github.com/CodingAir/WarpSystem-IssueTracker/milestone/$milestone?closed=1>\", \"username\": \"WarpSystem CI\" }" $2
         }
         
-        upload "Premium"
-        upload "Free"
+        upload "Premium" ${{ secrets.DISCORD_WEBHOOK_PREMIUM }}
+        upload "Free" ${{ secrets.DISCORD_WEBHOOK_FREE }}
