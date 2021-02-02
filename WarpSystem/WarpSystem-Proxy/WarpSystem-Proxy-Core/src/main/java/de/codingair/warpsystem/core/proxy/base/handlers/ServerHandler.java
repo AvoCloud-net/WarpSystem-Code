@@ -1,6 +1,7 @@
 package de.codingair.warpsystem.core.proxy.base.handlers;
 
 import com.google.common.base.Preconditions;
+import de.codingair.packetmanagement.packets.Packet;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.warpsystem.core.proxy.Core;
 import de.codingair.warpsystem.core.proxy.utils.Player;
@@ -9,6 +10,7 @@ import de.codingair.warpsystem.core.transfer.packets.proxy.InitialPacket;
 import de.codingair.warpsystem.core.transfer.packets.proxy.SendServerPropertiesPacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.utils.ServerPing;
 import de.codingair.warpsystem.core.transfer.utils.serializeable.ServerOptions;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,14 +34,11 @@ public abstract class ServerHandler {
         if (player.getServer().equals(server)) {
             return CompletableFuture.completedFuture(SwitchResult.ALREADY_CONNECTED);
         } else if (server.getOnlineCount() == 0) {
-            ServerHandler handler = Core.getServerManager();
-
             //function redirect
             CompletableFuture<SwitchResult> redirect = new CompletableFuture<>();
 
             //waiting instance
-            CompletableFuture<Void> future = new CompletableFuture<>();
-            handler.waiting.computeIfAbsent(server, (s) -> new HashSet<>()).add(future);
+            CompletableFuture<Void> future = wait(server);
 
             player.connect(server).whenComplete((res, t) -> {
                 if (t != null) {
@@ -65,6 +64,22 @@ public abstract class ServerHandler {
         }
     }
 
+    public static synchronized CompletableFuture<Void> wait(Server<?> server) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+
+        if (!server.isEmpty()) {
+            future.complete(null);
+            return future;
+        }
+
+        Core.getServerManager().waiting.computeIfAbsent(server, (s) -> new HashSet<>()).add(future);
+        return future;
+    }
+
+    public static synchronized void wait(Server<?> server, Packet packet) {
+        wait(server).thenAccept(v -> Core.getPlugin().dataHandler().send(packet, server, Direction.DOWN));
+    }
+
     private static synchronized void removeFuture(Server<?> server, CompletableFuture<Void> future) {
         Set<CompletableFuture<Void>> set = Core.getServerManager().waiting.get(server);
         if (set != null) set.remove(future);
@@ -72,6 +87,10 @@ public abstract class ServerHandler {
 
     public Stream<Server<?>> getOnlineServer() {
         return cachedPing.entrySet().stream().filter((e) -> e.getValue() != null && e.getValue().getStatus()).map(Map.Entry::getKey);
+    }
+
+    public Stream<Server<?>> getOnlineServer(@NotNull Server<?> except) {
+        return getOnlineServer().filter(s -> !s.equals(except));
     }
 
     public boolean isOnline(Server<?> info) {

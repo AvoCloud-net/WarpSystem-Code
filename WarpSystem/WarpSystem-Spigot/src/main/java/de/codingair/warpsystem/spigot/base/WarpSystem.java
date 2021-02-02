@@ -68,7 +68,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     private CooldownManager cooldownManager;
     private OptionBundle options;
     private GeneralOptions generalOptions;
-    private boolean onBungeeCord = false;
+    private boolean onProxy = false;
     private String bungeePluginVersion = null;
     private String server = null;
     private DataManager dataManager;
@@ -316,7 +316,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
         //Disable all functions
         activated = false;
-        onBungeeCord = false;
+        onProxy = false;
         server = null;
         updateAvailable = false;
         old = false;
@@ -508,15 +508,15 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     }
 
     public boolean isOnProxy() {
-        return onBungeeCord;
+        return onProxy;
     }
 
-    public synchronized void setOnBungeeCord(boolean onBungeeCord, Player connection) {
-        if (onBungeeCord) this.proxyFeatureList.forEach(proxyFeature -> proxyFeature.onInitiate(connection));
-        if (this.onBungeeCord == onBungeeCord) return;
+    public synchronized void setOnProxy(boolean onProxy, Player connection) {
+        if (onProxy) this.proxyFeatureList.forEach(proxyFeature -> proxyFeature.onInitiate(connection));
+        if (this.onProxy == onProxy) return;
 
-        this.onBungeeCord = onBungeeCord;
-        if (onBungeeCord) {
+        this.onProxy = onProxy;
+        if (onProxy) {
             this.proxyFeatureList.forEach(proxyFeature -> proxyFeature.onConnect(connection));
         } else {
             this.proxyFeatureList.forEach(ProxyFeature::onDisconnect);

@@ -39,7 +39,7 @@ public class InitialPacketHandler implements PacketHandler<InitialPacket> {
                 }
 
                 listener.updateNotice((String[]) null);
-                Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> WarpSystem.getInstance().setOnBungeeCord(true, (Player) connection), 2L);
+                Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> WarpSystem.getInstance().setOnProxy(true, (Player) connection), 2L);
                 WarpSystem.getDataHandler().send(new SendOptionsPacket(new ServerOptions(WarpSystem.getInstance().getDescription().getVersion(), WarpSystem.opt().getFetchUpdateOption())), (Player) connection);
             } else if (WarpSystem.getInstance().getBungeePluginVersion() == null || WarpSystem.getInstance().getBungeePluginVersion().equals(WarpSystem.getInstance().getDescription().getVersion())) {
                 listener.updateNotice("",

@@ -78,7 +78,10 @@ public class PlayerDataHandler {
         String lastServer = lastSwitch == null ? null : lastSwitch.getName();
 
         if (this.cached.putIfAbsent(name, new PlayerData(player.getName(), player.getUniqueId(), server.getName(), lastServer, true)) == null) {
-            Core.getServerManager().getOnlineServer().forEach(s -> Core.getPlugin().dataHandler().send(new PlayerJoinPacket(player.getName(), server.getName(), player.getUniqueId()), s, Direction.DOWN));
+            PlayerJoinPacket packet = new PlayerJoinPacket(player.getName(), server.getName(), player.getUniqueId());
+
+            ServerHandler.wait(server, packet);
+            Core.getServerManager().getOnlineServer(server).forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
             Core.getPlugin().dataHandler().send(new PlayerJoinPacket(player.getName(), server.getName(), player.getUniqueId()), null, Direction.UP);
         }
     }
@@ -112,8 +115,8 @@ public class PlayerDataHandler {
             packet.setServer(to.getName(), from.getName());
         }
 
-        if(to.getOnlineCount() == 0) Core.getPlugin().schedule(() -> Core.getPlugin().dataHandler().send(packet, to, Direction.DOWN), 500, 0, TimeUnit.MILLISECONDS);
-        Core.getServerManager().getOnlineServer().forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
+        ServerHandler.wait(to, packet);
+        Core.getServerManager().getOnlineServer(to).forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
         Core.getPlugin().dataHandler().send(packet, null, Direction.UP);
     }
 
@@ -128,7 +131,7 @@ public class PlayerDataHandler {
         if (data == null) return;
 
         if (!packet.update(data)) return;
-        Core.getServerManager().getOnlineServer().filter(s -> !s.equals(info)).forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
+        Core.getServerManager().getOnlineServer(info).forEach(s -> Core.getPlugin().dataHandler().send(packet, s, Direction.DOWN));
         Core.getPlugin().dataHandler().send(packet, null, Direction.UP);
     }
 
