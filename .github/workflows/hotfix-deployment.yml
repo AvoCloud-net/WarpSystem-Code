@@ -39,10 +39,18 @@ jobs:
             version=${name:11}
             version=${version[@]//_$info/}
             
-            if [ "$info" = "$version" ]
+            if [ $info == $version ]
             then
                 info="New release**__   -   __**"
             else
+                old=$info
+                info=${info[@]//-free/}
+                
+                if [ $old != $info ]
+                then
+                    version="$version-free"
+                fi
+                
                 info=${info[@]//-/ }
                 info="$info**__   -   __**"
             fi
