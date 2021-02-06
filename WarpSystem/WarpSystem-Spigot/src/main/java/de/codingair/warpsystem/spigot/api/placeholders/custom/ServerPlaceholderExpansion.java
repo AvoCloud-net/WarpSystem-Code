@@ -1,26 +1,20 @@
-package de.codingair.warpsystem.spigot.api.placeholders;
+package de.codingair.warpsystem.spigot.api.placeholders.custom;
 
 import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.core.transfer.packets.spigot.utils.ServerPing;
+import de.codingair.warpsystem.spigot.api.placeholders.IPlaceholder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.utils.Lang;
-import de.codingair.warpsystem.spigot.base.utils.placeholderapi.WarpSystemPlaceholderExpansion;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-class ServerPlaceholderExpansion extends WarpSystemPlaceholderExpansion {
-    ServerPlaceholderExpansion() {
-        super(null);
+public class ServerPlaceholderExpansion implements IPlaceholder {
+    @Override
+    public String getIdentifier() {
+        return "s";
     }
 
     @Override
-    public String onRequest(Player player, String id) {
-        if (player == null) return null;
-        id = id.toLowerCase();
-        if (!id.startsWith("s_")) return null;
-        id = id.replace("s_", "");
-
-        String[] args = id.split("_", -1);
-
+    public String onRequest(@NotNull Player player, @NotNull String @NotNull [] args) {
         if (args.length == 2) {
             String server = args[0];
 
