@@ -214,6 +214,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             log("__________________________________________________________");
             log(" ");
 
+            PAPI.register();
             PaperLib.suggestPaper(this);
 
             activated = true;
@@ -299,7 +300,6 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         Bukkit.getScheduler().runTaskLater(this, () -> {
             //update command dispatcher for players to synchronize CommandList
             Bukkit.getScheduler().runTask(this, WarpSystem::updateCommandList);
-            PAPI.register();
         }, 1);
     }
 

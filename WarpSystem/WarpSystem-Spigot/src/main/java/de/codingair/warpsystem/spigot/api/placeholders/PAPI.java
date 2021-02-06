@@ -1,6 +1,5 @@
 package de.codingair.warpsystem.spigot.api.placeholders;
 
-import de.codingair.warpsystem.spigot.features.playerwarps.utils.PlayerWarpPlaceholderExpansion;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -22,9 +21,6 @@ public class PAPI {
     }
 
     public static void register() {
-        if (papi()) {
-            new PlayerWarpPlaceholderExpansion().register();
-            new ServerPlaceholderExpansion().register();
-        }
+        if (papi()) new WarpSystemPlaceholderExpansion().register();
     }
 }
