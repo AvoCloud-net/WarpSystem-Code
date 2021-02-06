@@ -13,11 +13,8 @@ public class UpdateReader {
             WarpSystem.updateAvailable = WarpSystem.getInstance().getUpdateNotifier().read();
 
             if (WarpSystem.updateAvailable) {
-                String v = WarpSystem.getInstance().getUpdateNotifier().getVersion();
-                if (!v.startsWith("v")) v = "v" + v;
-
                 WarpSystem.log("-----< WarpSystem >-----");
-                WarpSystem.log("New update available [" + v + " - " + WarpSystem.getInstance().getUpdateNotifier().getUpdateInfo() + "].");
+                WarpSystem.log("New update available [" + WarpSystem.getInstance().getUpdateNotifier().getUpdateInfo() + "].");
                 WarpSystem.log("Download it on\n\n" + WarpSystem.getInstance().getUpdateNotifier().getDownload() + "\n");
                 WarpSystem.log("------------------------");
 
@@ -26,6 +23,6 @@ public class UpdateReader {
             }
         };
 
-        task.setValue(Bukkit.getScheduler().runTaskTimerAsynchronously(WarpSystem.getInstance(), runnable, 20L * 5, 5 * 60 * 20L));
+        task.setValue(Bukkit.getScheduler().runTaskTimerAsynchronously(WarpSystem.getInstance(), runnable, 20L * 60 * 2, 20L * 60 * 60)); //check every hour on GitHub
     }
 }

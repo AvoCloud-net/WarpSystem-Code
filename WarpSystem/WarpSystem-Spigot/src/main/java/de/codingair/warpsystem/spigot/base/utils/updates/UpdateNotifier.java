@@ -1,30 +1,75 @@
 package de.codingair.warpsystem.spigot.base.utils.updates;
 
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.versionfactory.VFac;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Scanner;
 
 public class UpdateNotifier {
-    private final static String premium = "https://github.com/CodingAir/WarpSystem-IssueTracker/releases/latest";
-    private final static String free = "https://www.spigotmc.org/resources/warps-portals-and-more-warp-teleport-system-1-8-1-13.29595/updates";
-    private final UpdateCheckerAdapter adapter;
+    private final static String URL = "https://api.github.com/repos/CodingAir/WarpSystem-IssueTracker/releases/latest";
+    private final static String URL_DOWNLOAD = "https://www.spigotmc.org/resources/%s/update?update=%s";
+    private final static int ID_FREE = 29595;
+    private final static int ID_PREMIUM = 66035;
+
     private String version = null;
     private String download = null;
     private String updateInfo = null;
-    private boolean needsUpdate = false;
-
-    public UpdateNotifier() {
-        this.adapter = VFac.isAvailable("Indicator") ? new FreeUpdateChecker() : new PremiumUpdateChecker();
-    }
 
     public boolean read() {
-        return adapter.read();
+        String body = readBody();
+
+        if (body == null) return false;
+
+        try {
+            JSONObject json = (JSONObject) new JSONParser().parse(body);
+
+            String version = (String) json.get("tag_name");
+            String name = (String) json.get("name");
+
+            if (!name.startsWith(version)) return false; //may be unstable
+
+            name = name.replace(version + " - ", "");
+            version = version.substring(1); //remove 'v'
+
+            String content = ((String) json.get("body")).trim();
+            int idx = content.lastIndexOf(' ');
+            String downloadId = content.substring(idx + 1);
+
+            String plugin = WarpSystem.getInstance().getDescription().getVersion();
+            if (plugin.endsWith("-free")) download = String.format(URL_DOWNLOAD, ID_FREE, downloadId);
+            else download = String.format(URL_DOWNLOAD, ID_PREMIUM, downloadId);
+
+            this.version = version;
+            this.updateInfo = name;
+
+            return !WarpSystem.getInstance().getDescription().getVersion().startsWith(version);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public String readBody() {
+        try (InputStream inputStream = new URL(URL).openStream(); Scanner scanner = new Scanner(inputStream)) {
+            StringBuilder builder = new StringBuilder();
+
+            while (scanner.hasNextLine()) {
+                builder.append(scanner.nextLine());
+            }
+
+            String s = builder.toString();
+            if (!s.isEmpty()) return s;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
     }
 
     public String getDownload() {
@@ -37,169 +82,5 @@ public class UpdateNotifier {
 
     public String getUpdateInfo() {
         return updateInfo;
-    }
-
-    private String decodeNumericEntities(String s) {
-        StringBuffer sb = new StringBuffer();
-        Matcher m = Pattern.compile("\\&#(\\d+);").matcher(s);
-
-        while (m.find()) {
-            int uc = Integer.parseInt(m.group(1));
-            m.appendReplacement(sb, "");
-            sb.appendCodePoint(uc);
-        }
-
-        m.appendTail(sb);
-        return sb.toString().replace("&amp;", "&");
-    }
-
-    private interface UpdateCheckerAdapter {
-        boolean read();
-    }
-
-    private class PremiumUpdateChecker implements UpdateCheckerAdapter {
-        @Override
-        public boolean read() {
-            version = null;
-            updateInfo = null;
-            download = null;
-
-            try {
-                URLConnection con = new URL(premium).openConnection();
-                con.setRequestProperty("User-Agent", "Mozilla/5.0");
-                con.setConnectTimeout(5000);
-                con.connect();
-
-                BufferedReader input = new BufferedReader(new InputStreamReader(con.getInputStream()));
-
-                String line;
-                while ((line = input.readLine()) != null) {
-                    line = decodeNumericEntities(line);
-
-                    if (version == null) {
-                        if (line.contains("<a href=\"/CodingAir/WarpSystem-IssueTracker/tree/") && version == null) {
-                            version = line.split("/tree/")[1].split("\"")[0];
-                        }
-                    } else if (updateInfo == null) {
-                        if (line.contains("<a href=\"/CodingAir/WarpSystem-IssueTracker/releases/tag/" + version + "\">")) {
-                            updateInfo = line.split(">")[1].split("<")[0];
-                        }
-                    } else {
-                        if (line.contains("Download id: ")) {
-                            download = "https://www.spigotmc.org/resources/premium-warps-portals-and-more-warp-teleport-system-1-8-1-13.66035/update?update=" + line.split(": ")[1].split("<")[0];
-                            break;
-                        }
-                    }
-                }
-
-                if (version == null) return false;
-            } catch (Exception ex) {
-                return false;
-            }
-
-            String current = WarpSystem.getInstance().getDescription().getVersion().replaceAll("_Hotfix.*", "");
-            if (current.startsWith("v")) current = current.replaceFirst("v", "");
-            String newV = version.startsWith("v") ? version.replaceFirst("v", "") : version;
-
-            needsUpdate = !current.equals(newV);
-            return needsUpdate && !notStable();
-        }
-
-        boolean notStable() {
-            if (version == null) {
-                read();
-                return notStable();
-            } else return updateInfo.toLowerCase().startsWith("not stable");
-        }
-    }
-
-    private class FreeUpdateChecker implements UpdateCheckerAdapter {
-
-        @Override
-        public boolean read() {
-            version = null;
-            download = null;
-
-            try {
-                URLConnection con = new URL(free.replace("/updates", "/history")).openConnection();
-                con.setRequestProperty("User-Agent", "Mozilla/5.0");
-                con.setConnectTimeout(5000);
-                con.connect();
-
-                BufferedReader input = new BufferedReader(new InputStreamReader(con.getInputStream()));
-
-                String line;
-                while ((line = input.readLine()) != null) {
-                    line = decodeNumericEntities(line);
-
-                    if (version != null && download != null) break;
-
-                    if (line.contains("<td class=\"version\">") && version == null) {
-                        version = line.split(">")[1].split("<")[0];
-                    }
-                }
-
-                if (version == null) return false;
-            } catch (Exception ex) {
-                return false;
-            }
-
-            String current = WarpSystem.getInstance().getDescription().getVersion().replaceAll("_Hotfix.*", "");
-            if (current.startsWith("v")) current = current.replaceFirst("v", "");
-
-            needsUpdate = !current.equals(version);
-            if (needsUpdate) checkUpdateInfo();
-            return needsUpdate && !notStable();
-        }
-
-        public boolean notStable() {
-            if (updateInfo == null) {
-                checkUpdateInfo();
-                return notStable();
-            } else return updateInfo.toLowerCase().startsWith("not stable");
-        }
-
-        public String checkUpdateInfo() {
-            if (!needsUpdate) return null;
-            if (updateInfo != null) return updateInfo.toLowerCase().startsWith("not stable") ? null : updateInfo;
-
-            try {
-                URLConnection con = new URL(free).openConnection();
-                con.setRequestProperty("User-Agent", "Mozilla/5.0");
-                con.setConnectTimeout(5000);
-                con.connect();
-
-                BufferedReader input = new BufferedReader(new InputStreamReader(con.getInputStream()));
-
-                updateInfo = null;
-                boolean atUpdates = false;
-                boolean atInfo = false;
-
-                String line;
-                while ((line = input.readLine()) != null) {
-                    line = decodeNumericEntities(line);
-
-                    if (atUpdates) {
-                        if (atInfo) {
-                            download = "https://www.spigotmc.org/" + line.substring(9, line.indexOf('>') - 1);
-
-                            line = line.replace("</a>", "");
-                            line = line.substring(line.lastIndexOf(">") + 1);
-                            updateInfo = line;
-                            break;
-                        }
-
-                        if (line.contains("textHeading")) atInfo = true;
-                    }
-
-                    if (line.contains("updateContainer")) atUpdates = true;
-                }
-
-                if (updateInfo.toLowerCase().startsWith("not stable")) return null;
-                return updateInfo;
-            } catch (Exception ex) {
-                return null;
-            }
-        }
     }
 }

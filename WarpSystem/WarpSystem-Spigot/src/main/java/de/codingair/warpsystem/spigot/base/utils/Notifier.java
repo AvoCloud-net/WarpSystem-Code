@@ -17,9 +17,6 @@ public class Notifier {
             }
         } else {
             if (player.hasPermission(Permissions.PERMISSION_NOTIFY) && WarpSystem.updateAvailable) {
-                String v = WarpSystem.getInstance().getUpdateNotifier().getVersion();
-                if (!v.startsWith("v")) v = "v" + v;
-
                 TextComponent tc0 = new TextComponent(Lang.getPrefix() + "§7A new update is available §8[§b" + WarpSystem.getInstance().getUpdateNotifier().getUpdateInfo() + "§8]§7. Download it §7»");
                 TextComponent click = new TextComponent("§chere");
                 TextComponent tc1 = new TextComponent("§7«!");
@@ -38,7 +35,7 @@ public class Notifier {
             }
 
             ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("Config");
-            if (!file.getConfig().getString("Do_Not_Edit.Last_Version").equals(WarpSystem.getInstance().getDescription().getVersion())) {
+            if (!file.getConfig().getString("Do_Not_Edit.Last_Version", "").equals(WarpSystem.getInstance().getDescription().getVersion())) {
                 file.getConfig().set("Do_Not_Edit.Last_Version", WarpSystem.getInstance().getDescription().getVersion());
                 file.saveConfig();
             }
