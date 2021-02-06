@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UpdateNotifier {
     private final static String URL = "https://api.github.com/repos/CodingAir/WarpSystem-IssueTracker/releases/latest";
@@ -35,14 +37,22 @@ public class UpdateNotifier {
 
             name = name.replace(version + " - ", "");
             version = version.substring(1); //remove 'v'
-
-            String content = ((String) json.get("body")).trim();
-            int idx = content.lastIndexOf(' ');
-            String downloadId = content.substring(idx + 1);
+            String content = (String) json.get("body");
 
             String plugin = WarpSystem.getInstance().getDescription().getVersion();
-            if (plugin.endsWith("-free")) download = String.format(URL_DOWNLOAD, ID_FREE, downloadId);
-            else download = String.format(URL_DOWNLOAD, ID_PREMIUM, downloadId);
+            if (plugin.endsWith("-free")) {
+                Pattern pattern = Pattern.compile("Free: \\d*");
+                Matcher matcher = pattern.matcher(content);
+
+                if(matcher.find()) download = String.format(URL_DOWNLOAD, ID_FREE, matcher.group().replaceAll("\\D*", ""));
+                else return false;
+            } else {
+                Pattern pattern = Pattern.compile("Premium: \\d*");
+                Matcher matcher = pattern.matcher(content);
+
+                if(matcher.find()) download = String.format(URL_DOWNLOAD, ID_PREMIUM, matcher.group().replaceAll("\\D*", ""));
+                else return false;
+            }
 
             this.version = version;
             this.updateInfo = name;
