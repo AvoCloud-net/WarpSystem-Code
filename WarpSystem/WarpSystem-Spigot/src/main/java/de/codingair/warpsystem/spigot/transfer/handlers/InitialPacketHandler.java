@@ -6,6 +6,7 @@ import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.core.transfer.packets.proxy.InitialPacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.SendOptionsPacket;
 import de.codingair.warpsystem.core.transfer.utils.serializeable.ServerOptions;
+import de.codingair.warpsystem.spigot.api.SpigotAPI;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.listeners.BungeeBukkitListener;
 import org.bukkit.Bukkit;
@@ -27,11 +28,10 @@ public class InitialPacketHandler implements PacketHandler<InitialPacket> {
         WarpSystem.getInstance().setCurrentServer(packet.getServerName());
 
         String version = packet.getVersion();
-        if (!WarpSystem.getInstance().getServer().spigot().getConfig().getBoolean("settings.bungeecord")) {
+        if (!SpigotAPI.bungeeCord()) {
+            listener.updateNotice("§8[§cWarpSystem§8] §fFound a §eproxy §fbut it's §cdisabled in your spigot.yml§f! Please set §lbungeecord§f to true to use proxy-features!");
 
-            listener.updateNotice("§8[§cWarpSystem§8] §fFound a §eproxy §fbut it's §cdisabled in your spigot.yml§f! Please §nenable§f this option to use proxy-features!");
-
-            WarpSystem.getInstance().getLogger().log(Level.WARNING, "Found a proxy but it's disabled in your spigot.yml! Please enable this option to use proxy-features!");
+            WarpSystem.getInstance().getLogger().log(Level.WARNING, "Found a proxy but it's disabled in your spigot.yml! Please set bungeecord to true to use proxy-features!");
         } else {
             if (version.equals(WarpSystem.getInstance().getDescription().getVersion())) {
                 if (WarpSystem.getInstance().getBungeePluginVersion() == null || !WarpSystem.getInstance().getBungeePluginVersion().equals(version)) {
