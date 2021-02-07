@@ -308,7 +308,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         if (Version.type() == Type.BUKKIT) return;
 
         API.getInstance().onDisable(this);
-        SpigotAPI.getInstance().onDisable(this);
+        SpigotAPI.getInstance().onDisable();
 
         save(false);
         teleportManager.getTeleports().forEach(t -> t.cancel(Result.CANCELLED_BY_SYSTEM));
