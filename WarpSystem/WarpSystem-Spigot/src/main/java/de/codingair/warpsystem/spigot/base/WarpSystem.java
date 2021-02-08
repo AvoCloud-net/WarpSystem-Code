@@ -61,7 +61,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     private final SetupAssistantManager setupAssistantManager = new SetupAssistantManager();
     private final Timer timer = new Timer();
     private final SpigotHandler dataHandler = new SpigotHandler(this);
-    private final PlayerDataManager playerDataManager = new PlayerDataManager();
+    private PlayerDataManager playerDataManager;
     private CooldownManager cooldownManager;
     private OptionBundle options;
     private GeneralOptions generalOptions;
@@ -142,6 +142,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             log(" ");
 
             this.fileManager.loadFile("Config", "/");
+            this.playerDataManager = new PlayerDataManager();
             this.serverManager = new ServerManager();
 
             this.dataManager = new DataManager();
