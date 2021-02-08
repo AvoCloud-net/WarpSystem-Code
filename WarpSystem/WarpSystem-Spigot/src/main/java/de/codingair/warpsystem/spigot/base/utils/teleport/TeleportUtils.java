@@ -1,6 +1,7 @@
 package de.codingair.warpsystem.spigot.base.utils.teleport;
 
 import de.codingair.codingapi.server.Environment;
+import de.codingair.codingapi.server.specification.Version;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -18,6 +19,11 @@ import java.util.concurrent.CompletableFuture;
 
 public class TeleportUtils {
     private TeleportUtils() {
+    }
+
+    private static double getHeight(HumanEntity e) {
+        if (Version.get().isBiggerThan(11)) return e.getHeight();
+        else return 2D;
     }
 
     public static <A extends Location> CompletableFuture<A> prepareLocation(@Nullable A l, Player player) {
@@ -123,7 +129,7 @@ public class TeleportUtils {
     }
 
     public static boolean isSafe(@NotNull Location location, @Nullable HumanEntity e) {
-        int size = e == null ? 2 : (int) Math.ceil(e.getHeight());
+        int size = e == null ? 2 : (int) Math.ceil(getHeight(e));
 
         Location copy = location.clone();
 
