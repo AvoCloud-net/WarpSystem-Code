@@ -34,14 +34,14 @@ public class InitialPacketHandler implements PacketHandler<InitialPacket> {
             WarpSystem.getInstance().getLogger().log(Level.WARNING, "Found a proxy but it's disabled in your spigot.yml! Please set bungeecord to true to use proxy-features!");
         } else {
             if (version.equals(WarpSystem.getInstance().getDescription().getVersion())) {
-                if (WarpSystem.getInstance().getBungeePluginVersion() == null || !WarpSystem.getInstance().getBungeePluginVersion().equals(version)) {
+                if (WarpSystem.getInstance().getProxyPluginVersion() == null || !WarpSystem.getInstance().getProxyPluginVersion().equals(version)) {
                     WarpSystem.getInstance().getLogger().log(Level.INFO, "Found a valid proxy > Init proxy-features (Server: '" + WarpSystem.getInstance().getCurrentServer() + "')");
                 }
 
                 listener.updateNotice((String[]) null);
                 Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> WarpSystem.getInstance().setOnProxy(true, (Player) connection), 2L);
                 WarpSystem.getDataHandler().send(new SendOptionsPacket(new ServerOptions(WarpSystem.getInstance().getDescription().getVersion(), WarpSystem.opt().getFetchUpdateOption())), (Player) connection);
-            } else if (WarpSystem.getInstance().getBungeePluginVersion() == null || WarpSystem.getInstance().getBungeePluginVersion().equals(WarpSystem.getInstance().getDescription().getVersion())) {
+            } else if (WarpSystem.getInstance().getProxyPluginVersion() == null || WarpSystem.getInstance().getProxyPluginVersion().equals(WarpSystem.getInstance().getDescription().getVersion())) {
                 listener.updateNotice("",
                         "§c§l§nWarpSystem",
                         "",
@@ -52,7 +52,7 @@ public class InitialPacketHandler implements PacketHandler<InitialPacket> {
                 WarpSystem.getInstance().getLogger().log(Level.INFO, "Please update the WarpSystem on your proxy (" + version + ") and on this server (" + WarpSystem.getInstance().getDescription().getVersion() + ")");
             }
 
-            WarpSystem.getInstance().setBungeePluginVersion(version);
+            WarpSystem.getInstance().setProxyPluginVersion(version);
         }
     }
 }
