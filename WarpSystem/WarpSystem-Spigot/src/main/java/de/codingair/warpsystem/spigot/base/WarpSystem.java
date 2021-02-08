@@ -47,17 +47,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 public class WarpSystem extends JavaPlugin implements Proxy {
     public static boolean activated = false;
     public static boolean updateAvailable = false;
     private static WarpSystem instance;
-    private final List<ProxyFeature> proxyFeatureList = new ArrayList<>();
+    private final Set<ProxyFeature> proxyFeatureList = new HashSet<>();
     private final TeleportManager teleportManager = TeleportManager.getInstance();
     private final FileManager fileManager = new FileManager(this);
     private final HeadManager headManager = new HeadManager();
@@ -69,7 +66,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     private OptionBundle options;
     private GeneralOptions generalOptions;
     private boolean onProxy = false;
-    private String bungeePluginVersion = null;
+    private String proxyPluginVersion = null;
     private String server = null;
     private DataManager dataManager;
     private ServerManager serverManager;
@@ -551,15 +548,15 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         return playerDataManager;
     }
 
-    public String getBungeePluginVersion() {
-        return bungeePluginVersion;
+    public String getProxyPluginVersion() {
+        return proxyPluginVersion;
     }
 
-    public void setBungeePluginVersion(String bungeePluginVersion) {
-        this.bungeePluginVersion = bungeePluginVersion;
+    public void setProxyPluginVersion(String proxyPluginVersion) {
+        this.proxyPluginVersion = proxyPluginVersion;
     }
 
-    public List<ProxyFeature> getProxyFeatureList() {
+    public Set<ProxyFeature> getProxyFeatureList() {
         return proxyFeatureList;
     }
 

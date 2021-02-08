@@ -7,6 +7,7 @@ import de.codingair.warpsystem.core.transfer.utils.PlayerData;
 import de.codingair.warpsystem.spigot.api.events.PlayerDataUpdateEvent;
 import de.codingair.warpsystem.spigot.api.events.PlayerFinalJoinEvent;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
+import de.codingair.warpsystem.spigot.base.utils.ProxyFeature;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -23,9 +24,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-public class PlayerDataManager implements Listener {
+public class PlayerDataManager implements Listener, ProxyFeature {
     private final Cache<String, String> abbreviations = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.MINUTES).build();
     private final ConcurrentHashMap<String, PlayerData> cached = new ConcurrentHashMap<>();
+
+    public PlayerDataManager() {
+        WarpSystem.getInstance().getProxyFeatureList().add(this);
+    }
 
     public UUID get(Player player) {
         return player.getUniqueId();
@@ -146,5 +151,10 @@ public class PlayerDataManager implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         UUID id = get(e.getPlayer());
         if (id != null) Bukkit.getPluginManager().callEvent(new PlayerFinalJoinEvent(e.getPlayer(), id, true));
+    }
+
+    @Override
+    public void onDisconnect() {
+        cached.clear();
     }
 }
