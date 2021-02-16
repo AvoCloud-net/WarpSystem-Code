@@ -32,32 +32,50 @@ public class TeleportBackPacketHandler implements ResponsibleMultiLayerPacketHan
 
         if (player == null) throw new Escalation(this, Direction.UP, packet, err -> new BytePacket(TeleportBackPacket.Result.PLAYER_NOT_AVAILABLE.id()));
         else {
-            if(packet.isSwitching()) {
+            if (packet.isSwitching()) {
+                //Teleporting as player
                 PlayerData data = Core.getPlugin().getPlayerData().getCacheExact(packet.getName());
 
                 String to = data.getOldServer();
-                if(to == null) return CompletableFuture.completedFuture(new BytePacket(TeleportBackPacket.Result.SERVER_NOT_AVAILABLE.id()));
+                if (to == null) return CompletableFuture.completedFuture(new BytePacket(TeleportBackPacket.Result.SERVER_NOT_AVAILABLE.id()));
 
                 Server<?> server = Core.getPlugin().getServer(to);
-                if(server == null) return CompletableFuture.completedFuture(new BytePacket(TeleportBackPacket.Result.SERVER_NOT_AVAILABLE.id()));
+                if (server == null) return CompletableFuture.completedFuture(new BytePacket(TeleportBackPacket.Result.SERVER_NOT_AVAILABLE.id()));
 
+                CompletableFuture<Void> after = new CompletableFuture<>();
                 CompletableFuture<BytePacket> future = new CompletableFuture<>();
 
-                ServerHandler.sendPlayerTo(player, server).whenComplete((res, t) -> {
-                    if(t != null) t.printStackTrace();
-                    else if(res.isConnected()) {
-                        Core.getPlugin().dataHandler().send(packet, player.getServer(), Direction.DOWN).whenComplete((p, t2) -> {
-                            if(t2 != null) future.completeExceptionally(t2);
+                after.thenAccept(v -> ServerHandler.sendPlayer(player, server).whenComplete((res, t) -> {
+                    if (res.isConnected()) {
+                        Core.getPlugin().dataHandler().send(packet, server, Direction.DOWN).whenComplete((p, t2) -> {
+                            if (t2 != null) future.completeExceptionally(t2);
                             else future.complete(p);
                         });
-                        return;
-                    }
 
-                    future.complete(new BytePacket(TeleportBackPacket.Result.PLAYER_NOT_AVAILABLE.id()));
-                });
+                        res.getResult().thenAccept(sr -> {
+                            if (!sr.isConnected()) future.complete(new BytePacket(TeleportBackPacket.Result.SERVER_NOT_AVAILABLE.id()));
+                        });
+                    } else future.complete(new BytePacket(TeleportBackPacket.Result.SERVER_NOT_AVAILABLE.id()));
+                }));
+
+                if (server.getOnlineCount() >= 1) {
+                    //simulate first to avoid double server switching
+                    Core.getPlugin().dataHandler().send(packet.simulate(), server, Direction.DOWN).whenComplete((reply, t) -> {
+                        if (t != null) future.completeExceptionally(t);
+                        else {
+                            TeleportBackPacket.Result result = TeleportBackPacket.Result.fromId(reply.getByte());
+
+                            if (result == TeleportBackPacket.Result.SUCCESS) after.complete(null); //fire switch
+                            else future.complete(reply); //return exception
+                        }
+                    });
+                } else after.complete(null);
 
                 return future;
-            } else return Core.getPlugin().dataHandler().send(packet, player.getServer(), Direction.DOWN);
+            } else {
+                //teleporting other players
+                return Core.getPlugin().dataHandler().send(packet, player.getServer(), Direction.DOWN);
+            }
         }
     }
 }

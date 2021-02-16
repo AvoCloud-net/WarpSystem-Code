@@ -2,6 +2,7 @@ package de.codingair.warpsystem.spigot.versionfactory.handlers;
 
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.utils.ChatColor;
+import de.codingair.warpsystem.core.transfer.packets.general.TeleportBackPacket;
 import de.codingair.warpsystem.core.transfer.utils.PlayerData;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
@@ -35,8 +36,12 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
     @Override
     public void back(Player player) {
         if (WarpSystem.cooldown().checkPlayer(player, Origin.TeleportCommand)) return;
-        if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(player, false, false)) player.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
-        else WarpSystem.cooldown().register(player, Origin.TeleportCommand);
+
+        TeleportCommandManager.getInstance().teleportToLastBackLocation(player, false, false, false).thenAccept(result -> {
+            if (result == TeleportBackPacket.Result.NO_LAST_POSITION) player.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
+            else if (result == TeleportBackPacket.Result.PROTECTED_REGION) player.sendMessage(Lang.getPrefix() + Lang.get("Target_Protected_Area"));
+            else WarpSystem.cooldown().register(player, Origin.TeleportCommand);
+        });
     }
 
     @Override
@@ -55,11 +60,14 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
                 return;
             }
 
-            if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(p, false, false)) sender.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
-            else {
-                WarpSystem.cooldown().register(p, Origin.TeleportCommand);
-                sender.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", p.getName()).replace("%warp%", Lang.get("Last_Position")));
-            }
+            TeleportCommandManager.getInstance().teleportToLastBackLocation(p, false, false, false).thenAccept(result -> {
+                if (result == TeleportBackPacket.Result.NO_LAST_POSITION) sender.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
+                else if (result == TeleportBackPacket.Result.PROTECTED_REGION) sender.sendMessage(Lang.getPrefix() + Lang.get("Target_Protected_Area"));
+                else {
+                    WarpSystem.cooldown().register(p, Origin.TeleportCommand);
+                    sender.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", p.getName()).replace("%warp%", Lang.get("Last_Position")));
+                }
+            });
         }
     }
 

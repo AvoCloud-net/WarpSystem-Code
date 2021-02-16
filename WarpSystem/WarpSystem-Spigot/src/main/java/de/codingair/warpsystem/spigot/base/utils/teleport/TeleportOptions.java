@@ -81,7 +81,7 @@ public class TeleportOptions {
         this.silent = false;
         this.teleportSound = null;
         this.cancelSound = new SoundData(Sound.ENTITY_ITEM_BREAK, 0.7F, 1F);
-        this.afterEffects = destination.getCustomOptions().getParticles();
+        if (destination != null) this.afterEffects = destination.getCustomOptions().getParticles();
         this.publicAnimations = WarpSystem.opt().isPublicAnimations();
     }
 

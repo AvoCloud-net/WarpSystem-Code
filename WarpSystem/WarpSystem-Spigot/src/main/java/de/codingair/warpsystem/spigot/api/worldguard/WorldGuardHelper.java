@@ -5,10 +5,12 @@ import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.stream.Stream;
+
 public class WorldGuardHelper {
     private static final boolean enabled = Bukkit.getPluginManager().isPluginEnabled("WorldGuard");
 
-    public static @Nullable String getRegion(@NotNull Location location) {
+    public static @Nullable Stream<String> getRegion(@NotNull Location location) {
         if (!enabled) return null;
 
         return WorldGuardAdapter.getRegion(location);

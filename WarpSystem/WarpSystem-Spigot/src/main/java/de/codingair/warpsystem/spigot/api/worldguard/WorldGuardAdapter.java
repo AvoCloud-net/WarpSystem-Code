@@ -12,9 +12,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class WorldGuardAdapter {
-    public static @Nullable String getRegion(@NotNull Location location) {
+    public static @Nullable Stream<String> getRegion(@NotNull Location location) {
         World w = location.getWorld();
         if (w == null) throw new IllegalArgumentException("The location '" + location.toString() + "' does not provide a world!");
 
@@ -25,7 +26,6 @@ public class WorldGuardAdapter {
         Set<ProtectedRegion> regions = set.getRegions();
 
         if (regions.isEmpty()) return null;
-        ProtectedRegion region = regions.stream().findFirst().orElse(null);
-        return region.getId();
+        return regions.stream().map(ProtectedRegion::getId);
     }
 }

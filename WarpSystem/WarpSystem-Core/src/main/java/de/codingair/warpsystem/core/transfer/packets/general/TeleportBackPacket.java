@@ -13,6 +13,7 @@ public class TeleportBackPacket implements RequestPacket<BytePacket> {
     private boolean bypassCooldownCheck;
     private boolean switching;
     private boolean force;
+    private boolean simulate;
 
     public TeleportBackPacket() {
     }
@@ -22,11 +23,12 @@ public class TeleportBackPacket implements RequestPacket<BytePacket> {
         this.bypassCooldownCheck = bypassCooldownCheck;
     }
 
-    public TeleportBackPacket(String name, boolean bypassCooldownCheck, boolean switching, boolean force) {
+    public TeleportBackPacket(String name, boolean bypassCooldownCheck, boolean switching, boolean force, boolean simulate) {
         this.name = name;
         this.bypassCooldownCheck = bypassCooldownCheck;
         this.switching = switching;
         this.force = force;
+        this.simulate = simulate;
     }
 
     @Override
@@ -37,6 +39,7 @@ public class TeleportBackPacket implements RequestPacket<BytePacket> {
         mask.setBit(0, this.bypassCooldownCheck);
         mask.setBit(1, this.switching);
         mask.setBit(2, this.force);
+        mask.setBit(3, this.simulate);
         mask.write(out);
     }
 
@@ -50,6 +53,7 @@ public class TeleportBackPacket implements RequestPacket<BytePacket> {
         this.bypassCooldownCheck = mask.getBit(0);
         this.switching = mask.getBit(1);
         this.force = mask.getBit(2);
+        this.simulate = mask.getBit(3);
     }
 
     public String getName() {
@@ -68,11 +72,20 @@ public class TeleportBackPacket implements RequestPacket<BytePacket> {
         return force;
     }
 
+    public boolean isSimulate() {
+        return simulate;
+    }
+
+    public TeleportBackPacket simulate() {
+        return new TeleportBackPacket(name, bypassCooldownCheck, switching, force, true);
+    }
+
     public enum Result {
         SUCCESS,
         SERVER_NOT_AVAILABLE,
         PLAYER_NOT_AVAILABLE,
-        NO_LAST_POSITION;
+        NO_LAST_POSITION,
+        PROTECTED_REGION;
 
         public static Result fromId(byte id) {
             if (id < 0) return null;

@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntPredicate;
+import java.util.stream.Stream;
 
 public class GeneralOptions extends Options {
     private Option<String> lang = new Option<>("WarpSystem.Language", "ENG");
@@ -289,24 +290,22 @@ public class GeneralOptions extends Options {
                     .replace(".mp.", ping.getMaxPlayers() + "")
                     .replace(".s.", WarpSystem.opt().getStatus(ping))
                     .replace(".m.", ping.getMotd() == null ? "" : de.codingair.codingapi.utils.ChatColor.translateAll('&', ping.getMotd()))
-                    .replace(".ci.", WarpSystem.opt().getPlaceholderCountInfo(ping))
-            ;
+                    .replace(".ci.", WarpSystem.opt().getPlaceholderCountInfo(ping));
         } else {
             s = s.replace(".p.", "0")
                     .replace(".mp.", "0")
                     .replace(".s.", getPlaceholderOffline())
                     .replace(".m.", "")
-                    .replace(".ci.", WarpSystem.opt().getPlaceholderCountInfo(null))
-            ;
+                    .replace(".ci.", WarpSystem.opt().getPlaceholderCountInfo(null));
         }
 
         return de.codingair.codingapi.utils.ChatColor.translateAll('&', prepareServerColorString(ping, s));
     }
 
     public boolean forbiddenRegion(Location location) {
-        String current = WorldGuardHelper.getRegion(location);
+        Stream<String> regions = WorldGuardHelper.getRegion(location);
 
-        if(current == null) return false;
-        return forbiddenRegions.getValue().contains(current);
+        if (regions == null) return false;
+        return regions.anyMatch(s -> forbiddenRegions.getValue().contains(s));
     }
 }

@@ -39,8 +39,14 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
     @Override
     public void back(Player player) {
         if (WarpSystem.cooldown().checkPlayer(player, Origin.TeleportCommand)) return;
-        if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(player, false, false)) player.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
-        else WarpSystem.cooldown().register(player, Origin.TeleportCommand);
+
+        TeleportCommandManager.getInstance().teleportToLastBackLocation(player, false, false, false).thenAccept(result -> {
+            if (result == TeleportBackPacket.Result.NO_LAST_POSITION) player.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
+            else if (result == TeleportBackPacket.Result.PROTECTED_REGION) player.sendMessage(Lang.getPrefix() + Lang.get("Target_Protected_Area"));
+            else if (result == TeleportBackPacket.Result.SERVER_NOT_AVAILABLE) player.sendMessage(Lang.getPrefix() + Lang.get("Server_Is_Not_Online"));
+            else if (result == TeleportBackPacket.Result.PLAYER_NOT_AVAILABLE) player.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
+            else if(result != null) WarpSystem.cooldown().register(player, Origin.TeleportCommand);
+        });
     }
 
     @Override
@@ -79,15 +85,22 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
                         case NO_LAST_POSITION:
                             sender.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
                             break;
+
+                        case PROTECTED_REGION:
+                            sender.sendMessage(Lang.getPrefix() + Lang.get("Target_Protected_Area"));
+                            break;
                     }
                 }
             });
         } else {
-            if (!TeleportCommandManager.getInstance().teleportToLastBackLocation(p, false, false)) sender.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
-            else {
-                WarpSystem.cooldown().register(p, Origin.TeleportCommand);
-                sender.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", playerData.getName()).replace("%warp%", Lang.get("Last_Position")));
-            }
+            TeleportCommandManager.getInstance().teleportToLastBackLocation(p, false, false, sender instanceof Player).thenAccept(result -> {
+                if (result == TeleportBackPacket.Result.NO_LAST_POSITION) sender.sendMessage(Lang.getPrefix() + Lang.get("No_last_position_found"));
+                else if (result == TeleportBackPacket.Result.PROTECTED_REGION) sender.sendMessage(Lang.getPrefix() + Lang.get("Target_Protected_Area"));
+                else {
+                    WarpSystem.cooldown().register(p, Origin.TeleportCommand);
+                    sender.sendMessage(Lang.getPrefix() + Lang.get("Teleported_Player_Info").replace("%player%", p.getName()).replace("%warp%", Lang.get("Last_Position")));
+                }
+            });
         }
     }
 
