@@ -27,6 +27,43 @@ public abstract class ServerHandler {
     private final ConcurrentHashMap<Server<?>, Set<CompletableFuture<Void>>> waiting = new ConcurrentHashMap<>();
     private boolean running = false;
 
+    public static CompletableFuture<SwitchRequest> sendPlayer(Player player, Server<?> server) {
+        Preconditions.checkNotNull(server);
+        Preconditions.checkNotNull(player);
+
+        if (player.getServer().equals(server)) {
+            return CompletableFuture.completedFuture(new SwitchRequest(true, SwitchResult.ALREADY_CONNECTED));
+        } else if (server.getOnlineCount() == 0) {
+            //function redirect
+            CompletableFuture<SwitchRequest> redirect = new CompletableFuture<>();
+
+            //waiting instance
+            CompletableFuture<Void> future = wait(server);
+
+            player.connect(server).whenComplete((res, t) -> {
+                if (t != null) {
+                    //error -> return
+                    t.printStackTrace();
+                    removeFuture(server, future);
+                    redirect.completeExceptionally(t);
+                } else if (res == null || !res.isConnected()) {
+                    //failure -> return
+                    removeFuture(server, future);
+                    redirect.complete(new SwitchRequest(false, res));
+                } else {
+                    future.thenAccept(v -> {
+                        //wait for instantiation
+                        redirect.complete(new SwitchRequest(true, res));
+                    });
+                }
+            });
+
+            return redirect;
+        } else {
+            return CompletableFuture.completedFuture(new SwitchRequest(true, player.connect(server)));
+        }
+    }
+
     public static CompletableFuture<SwitchResult> sendPlayerTo(Player player, Server<?> server) {
         Preconditions.checkNotNull(server);
         Preconditions.checkNotNull(player);
@@ -180,6 +217,28 @@ public abstract class ServerHandler {
 
         public boolean isConnected() {
             return connected;
+        }
+    }
+
+    public static class SwitchRequest {
+        private final boolean connected;
+        private final CompletableFuture<SwitchResult> result;
+
+        public SwitchRequest(boolean connected, CompletableFuture<SwitchResult> result) {
+            this.connected = connected;
+            this.result = result;
+        }
+
+        public SwitchRequest(boolean connected, SwitchResult result) {
+            this(connected, CompletableFuture.completedFuture(result));
+        }
+
+        public boolean isConnected() {
+            return connected;
+        }
+
+        public CompletableFuture<SwitchResult> getResult() {
+            return result;
         }
     }
 }

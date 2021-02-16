@@ -23,16 +23,17 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class TeleportListener implements Listener {
     public static final HashMap<Player, org.bukkit.Location> TELEPORTS = new HashMap<>();
-    private static final Cache<String, TeleportOptions> teleport = CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.SECONDS).build();
+    private static final Cache<String, TeleportData> teleport = CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.SECONDS).build();
 
-    public static void setSpawnPositionOrTeleport(String name, TeleportOptions options) {
-        if (options == null) return;
+    public static CompletableFuture<org.bukkit.Location> setSpawnPositionOrTeleport(String name, TeleportOptions options) {
+        if (options == null) return CompletableFuture.completedFuture(null);
         options.setSkip(true);
         Player player = Bukkit.getPlayer(name);
 
@@ -40,9 +41,13 @@ public class TeleportListener implements Listener {
 
         if (player != null && player.isOnline()) {
             //teleport
+            org.bukkit.Location l = player.getLocation();
             AsyncCatcher.runSync(WarpSystem.getInstance(), () -> WarpSystem.getInstance().getTeleportManager().teleport(player, options, true));
+            return CompletableFuture.completedFuture(l);
         } else {
-            teleport.put(name.toLowerCase(), options);
+            TeleportData data = new TeleportData(options);
+            teleport.put(name.toLowerCase(), data);
+            return data.getSpawnPosition();
         }
     }
 
@@ -58,10 +63,11 @@ public class TeleportListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onSpawn(PlayerJoinEvent e) {
-        TeleportOptions options = teleport.getIfPresent(e.getPlayer().getName().toLowerCase());
+        TeleportData data = teleport.getIfPresent(e.getPlayer().getName().toLowerCase());
 
-        if (options != null) {
+        if (data != null) {
             teleport.invalidate(e.getPlayer().getName().toLowerCase());
+            TeleportOptions options = data.getOptions();
 
             options.setCanMove(true);
             options.setSilent(true);
@@ -74,10 +80,11 @@ public class TeleportListener implements Listener {
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onSpawn(PlayerSpawnLocationEvent e) {
         try {
-            TeleportOptions options = teleport.getIfPresent(e.getPlayer().getName().toLowerCase());
+            TeleportData data = teleport.getIfPresent(e.getPlayer().getName().toLowerCase());
 
-            if (options != null) {
+            if (data != null) {
                 teleport.invalidate(e.getPlayer().getName().toLowerCase());
+                TeleportOptions options = data.getOptions();
                 org.bukkit.Location l = TeleportUtils.prepareLocation(options.buildLocation(), e.getPlayer(), true).get(1, TimeUnit.SECONDS);
 
                 if (l == null || l.getWorld() == null) {
@@ -117,5 +124,22 @@ public class TeleportListener implements Listener {
         double diffY = Math.abs(e.getFrom().getY() - e.getTo().getY());
 
         if (diff > 0.01 || diffY >= 0.11) WarpSystem.getInstance().getTeleportManager().cancelTeleport(p);
+    }
+
+    private static class TeleportData {
+        private final TeleportOptions options;
+        private final CompletableFuture<org.bukkit.Location> spawnPosition = new CompletableFuture<>();
+
+        public TeleportData(TeleportOptions options) {
+            this.options = options;
+        }
+
+        public TeleportOptions getOptions() {
+            return options;
+        }
+
+        public CompletableFuture<org.bukkit.Location> getSpawnPosition() {
+            return spawnPosition;
+        }
     }
 }

@@ -6,6 +6,7 @@ import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.codingapi.player.chat.ChatButtonManager;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.warpsystem.api.Result;
+import de.codingair.warpsystem.core.transfer.packets.general.TeleportBackPacket;
 import de.codingair.warpsystem.core.transfer.packets.general.TeleportCommandOptionsPacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.ToggleForceTeleportsPacket;
 import de.codingair.warpsystem.core.transfer.utils.TeleportCommandOptions;
@@ -15,6 +16,7 @@ import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableF
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.ProxyFeature;
+import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.LocationAdapter;
@@ -31,6 +33,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 @AvailableForSetupAssistant (type = "TeleportCommands", config = "Config")
@@ -181,32 +184,50 @@ public abstract class TeleportCommandManager implements Manager, ProxyFeature, C
         else this.backPosition.put(player.getName(), location);
     }
 
-    public boolean teleportToLastBackLocation(Player player, boolean proxy, boolean force) {
-        Location l = this.backPosition.remove(player.getName());
-        if (l == null) return false;
-
-        teleportBack(player, l, false);
-        return true;
+    public Location getQuitPosition(String player) {
+        return null;
     }
 
-    protected void teleportBack(Player player, Location l, boolean force) {
+    public CompletableFuture<TeleportBackPacket.Result> teleportToLastBackLocation(Player player, boolean proxy, boolean force, boolean skip) {
+        return teleportToLastBackLocation(player.getName(), proxy, force, skip);
+    }
+
+    public CompletableFuture<TeleportBackPacket.Result> teleportToLastBackLocation(String player, boolean proxy, boolean force, boolean skip) {
+        Location l = this.backPosition.remove(player);
+        if (l == null) return CompletableFuture.completedFuture(TeleportBackPacket.Result.NO_LAST_POSITION);
+
+        return CompletableFuture.completedFuture(teleportBack(player, l, false, skip, proxy));
+    }
+
+    protected TeleportBackPacket.Result teleportBack(String player, Location l, boolean force, boolean skip, boolean proxy) {
         if (!force && WarpSystem.opt().forbiddenRegion(l)) {
-            player.sendMessage(Lang.getPrefix() + Lang.get("Target_Protected_Area"));
-            return;
+            Player p = Bukkit.getPlayer(player);
+            if (p != null) p.sendMessage(Lang.getPrefix() + Lang.get("Target_Protected_Area"));
+            return TeleportBackPacket.Result.PROTECTED_REGION;
         }
 
-        TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(l)), Lang.get("Last_Position"));
+        de.codingair.warpsystem.spigot.base.listeners.TeleportListener.setSpawnPositionOrTeleport(player, buildTeleport(player, l, force, skip, proxy));
+        return TeleportBackPacket.Result.SUCCESS;
+    }
 
+    public TeleportOptions buildTeleport(String player, Location l, boolean force, boolean skip, boolean proxy) {
+        TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(l)), Lang.get("Last_Position"), Origin.TeleportCommand);
+
+        if (skip) options.setSkip(true);
         if (force) options.setMessage(Lang.getPrefix() + Lang.get("Target_Protected_Area"));
 
         options.addCallback(new Callback<Result>() {
             @Override
             public void accept(Result result) {
-                if (result != Result.SUCCESS) backPosition.put(player.getName(), l);
+                if (result != Result.SUCCESS && !proxy) {
+                    backPosition.put(player, l);
+                } else {
+                    Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> backPosition.remove(player), 5);
+                }
             }
         });
 
-        WarpSystem.getInstance().getTeleportManager().teleport(player, options);
+        return options;
     }
 
     public boolean deniesTpaRequests(String player) {
