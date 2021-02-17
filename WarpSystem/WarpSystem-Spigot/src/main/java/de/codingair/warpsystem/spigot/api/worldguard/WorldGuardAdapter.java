@@ -11,21 +11,40 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.util.stream.Stream;
 
 public class WorldGuardAdapter {
-    public static @Nullable Stream<String> getRegion(@NotNull Location location) {
+    public WorldGuardAdapter() throws ClassNotFoundException {
+        test();
+    }
+
+    protected void test() throws ClassNotFoundException {
+        Class.forName("com.sk89q.worldguard.WorldGuard");
+    }
+
+    public @Nullable Stream<String> getRegion(@NotNull Location location) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         World w = location.getWorld();
         if (w == null) throw new IllegalArgumentException("The location '" + location.toString() + "' does not provide a world!");
 
         RegionManager man = WorldGuard.getInstance().getPlatform().getRegionContainer().get(new BukkitWorld(w));
+        return getRegions(location, man);
+    }
+
+    @Nullable
+    protected Stream<String> getRegions(@NotNull Location location, RegionManager man) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         if (man == null) return null;
 
-        ApplicableRegionSet set = man.getApplicableRegions(BlockVector3.at(location.getX(), location.getY(), location.getZ()));
+        ApplicableRegionSet set = getProtectedRegions(location, man);
         Set<ProtectedRegion> regions = set.getRegions();
 
         if (regions.isEmpty()) return null;
         return regions.stream().map(ProtectedRegion::getId);
+    }
+
+    @NotNull
+    protected ApplicableRegionSet getProtectedRegions(@NotNull Location location, RegionManager man) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        return (ApplicableRegionSet) man.getClass().getMethod("getApplicableRegions", BlockVector3.class).invoke(man, BlockVector3.at(location.getX(), location.getY(), location.getZ()));
     }
 }
