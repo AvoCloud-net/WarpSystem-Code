@@ -15,6 +15,8 @@ public class DataManager {
             if (value == FeatureType.Priority.DISABLED) continue;
 
             for (FeatureType ft : FeatureType.values(value)) {
+                if (!ft.isActive()) continue;
+
                 try {
                     this.managers.put(ft, ft.createInstance());
                 } catch (InstantiationException | IllegalAccessException e) {
