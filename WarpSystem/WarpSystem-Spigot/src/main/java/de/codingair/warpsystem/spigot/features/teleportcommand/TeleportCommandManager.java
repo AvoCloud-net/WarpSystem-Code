@@ -221,7 +221,7 @@ public abstract class TeleportCommandManager implements Manager, ProxyFeature, C
             public void accept(Result result) {
                 if (result != Result.SUCCESS && !proxy) {
                     backPosition.put(player, l);
-                } else {
+                } else if (proxy) {
                     Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> backPosition.remove(player), 5);
                 }
             }
