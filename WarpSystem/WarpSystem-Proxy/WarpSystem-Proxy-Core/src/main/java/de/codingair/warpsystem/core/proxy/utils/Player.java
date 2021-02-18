@@ -1,5 +1,6 @@
 package de.codingair.warpsystem.core.proxy.utils;
 
+import de.codingair.warpsystem.core.proxy.Core;
 import de.codingair.warpsystem.core.proxy.base.handlers.ServerHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,4 +17,12 @@ public interface Player {
     CompletableFuture<ServerHandler.SwitchResult> connect(Server<?> server);
 
     void sendGrayMessage(String message);
+
+    /**
+     * @param command The command line that should be executed.
+     * @return true if the command is existing and has been executed.
+     */
+    default CompletableFuture<Boolean> performCommand(@NotNull String command) {
+        return Core.getPlugin().performCommand(this, command);
+    }
 }

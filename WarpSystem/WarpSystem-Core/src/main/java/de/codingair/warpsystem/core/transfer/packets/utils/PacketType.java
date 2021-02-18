@@ -22,7 +22,7 @@ public enum PacketType {
     SendGlobalWarpNamesPacket(de.codingair.warpsystem.core.transfer.packets.proxy.SendGlobalWarpNamesPacket.class),
     UpdateGlobalWarpPacket(de.codingair.warpsystem.core.transfer.packets.proxy.UpdateGlobalWarpPacket.class),
     PerformCommandOnSpigotPacket(de.codingair.warpsystem.core.transfer.packets.proxy.PerformCommandOnSpigotPacket.class),
-    PerformCommandOnBungeePacket(PerformCommandOnBungeePacket.class),
+    PerformCommandOnProxyPacket(PerformCommandOnProxyPacket.class),
     TeleportPlayerToPlayerPacket(TeleportPlayerToPlayerPacket.class),
     TeleportPlayerToCoordsPacket(TeleportPlayerToCoordsPacket.class),
     PrepareServerSwitchPacket(PrepareServerSwitchPacket.class),

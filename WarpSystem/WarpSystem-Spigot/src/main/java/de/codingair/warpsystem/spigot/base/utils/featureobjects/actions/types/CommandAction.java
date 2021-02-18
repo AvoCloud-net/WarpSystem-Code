@@ -2,7 +2,7 @@ package de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types;
 
 import de.codingair.codingapi.server.commands.builder.CommandBuilder;
 import de.codingair.codingapi.tools.io.utils.DataMask;
-import de.codingair.warpsystem.core.transfer.packets.spigot.PerformCommandOnBungeePacket;
+import de.codingair.warpsystem.core.transfer.packets.spigot.PerformCommandOnProxyPacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
@@ -53,7 +53,7 @@ public class CommandAction extends ActionObject<List<String>> {
             Command cmd = CommandBuilder.getCommand(tag);
 
             if (WarpSystem.getInstance().isOnProxy() && cmd == null) {
-                WarpSystem.getDataHandler().send(new PerformCommandOnBungeePacket(player.getName(), command), player).thenAccept(packet -> {
+                WarpSystem.getDataHandler().send(new PerformCommandOnProxyPacket(player.getName(), command), player).thenAccept(packet -> {
                     if (!packet.getBoolean()) player.sendMessage(Lang.getPrefix() + Lang.get("Unknown_Command"));
                 });
             } else {
