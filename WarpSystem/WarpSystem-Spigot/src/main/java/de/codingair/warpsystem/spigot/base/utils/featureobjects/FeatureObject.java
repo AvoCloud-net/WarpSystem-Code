@@ -180,11 +180,24 @@ public abstract class FeatureObject implements Serializable {
             }
         }));
 
-        //invalidating purpose
+        //invalidating
         options.addCallback(new Callback<Result>() {
             @Override
             public void accept(Result result) {
                 TeleportManager.getInstance().invalidate(player);
+            }
+        });
+
+        //actions
+        options.addCallback(new Callback<Result>() {
+            @Override
+            public void accept(Result result) {
+                if (result == Result.SUCCESS) {
+                    for (ActionObject<?> action : actions) {
+                        if (action.getType() == Action.WARP || action.getType() == Action.COSTS) continue;
+                        action.perform(player);
+                    }
+                }
             }
         });
 
@@ -210,11 +223,6 @@ public abstract class FeatureObject implements Serializable {
                             payment.setValue(null);
 
                             if (result == Result.SUCCESS) {
-                                for (ActionObject<?> action : actions) {
-                                    if (action.getType() == Action.WARP || action.getType() == Action.COSTS) continue;
-                                    action.perform(player);
-                                }
-
                                 player.sendMessage(Lang.getPrefix() + Lang.get("Money_Paid_Use").replace("%AMOUNT%", new ImprovedDouble(getAction(CostsAction.class).getValue()).toString()));
                             } else if (result == Result.NOT_ENOUGH_MONEY) {
                                 player.sendMessage(Lang.getPrefix() + Lang.get("Not_Enough_Money").replace("%AMOUNT%", options.getFinalCosts(player).toString()));
@@ -227,14 +235,7 @@ public abstract class FeatureObject implements Serializable {
                     }));
                 }
             }));
-        } else {
-            for (ActionObject<?> action : this.actions) {
-                if (action.getType() == Action.WARP || action.getType() == Action.COSTS) continue;
-                action.perform(player);
-            }
-
-            options.fireCallbacks(Result.SUCCESS);
-        }
+        } else options.fireCallbacks(Result.SUCCESS);
         return this;
     }
 
