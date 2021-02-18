@@ -37,6 +37,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -325,5 +326,10 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
     @Override
     public WorldHandler getWorldManager() {
         return this.worldManager;
+    }
+
+    @Override
+    public CompletableFuture<Boolean> performCommand(@NotNull Player player, @NotNull String command) {
+        return CompletableFuture.completedFuture(getProxy().getPluginManager().dispatchCommand(((BungeePlayer) player).getPlayer(), command));
     }
 }

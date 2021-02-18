@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -41,4 +42,11 @@ public interface ProxyPlugin extends Proxy {
     PlayerDataHandler getPlayerData();
 
     WorldHandler getWorldManager();
+
+    /**
+     * @param player  The player who should executed the command line.
+     * @param command The command line that should be executed.
+     * @return true if the command is existing and has been executed.
+     */
+    CompletableFuture<Boolean> performCommand(@NotNull Player player, @NotNull String command);
 }

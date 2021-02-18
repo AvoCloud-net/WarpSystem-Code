@@ -62,6 +62,7 @@ public abstract class CoreDataHandler<C> extends DataHandler<Server<C>> {
         registerHandler(PlayerQuitPacket.class, new PlayerQuitPacketHandler());
         registerHandler(SendWorldNamesPacket.class, new SendWorldNamesPacketHandler());
         registerHandler(ProxyAwarenessPacket.class, new ProxyAwarenessPacketHandler());
+        registerHandler(PerformCommandOnProxyPacket.class, new PerformCommandOnProxyPacketHandler());
     }
 
     public void onEnable() {
