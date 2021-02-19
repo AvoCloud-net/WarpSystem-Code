@@ -185,9 +185,14 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
             gate.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
             return true;
         } else if (Bukkit.getPlayer(data.getName()) == null) {
-            TextComponent tc = new TextComponent(Lang.getPrefix() + "§7Teleporting on your entire BungeeCord is a §6premium feature§7!");
-            tc.setColor(net.md_5.bungee.api.ChatColor.GRAY);
-            Lang.PREMIUM_CHAT(tc, gate, true);
+            //Proxy
+            if (Permissions.hasPermission(gate, Permissions.PERMISSION_USE_TELEPORT_COMMAND_TP)) {
+                TextComponent tc = new TextComponent(Lang.getPrefix() + "§7Teleporting on your entire proxy is a §6premium feature§7!");
+                tc.setColor(net.md_5.bungee.api.ChatColor.GRAY);
+                Lang.PREMIUM_CHAT(tc, gate, true);
+            } else {
+                gate.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
+            }
             return true;
         } else return false;
     }
@@ -246,6 +251,18 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
         }
 
         suggestions.removeIf(s -> !s.toLowerCase().startsWith(last));
+        return suggestions;
+    }
+
+    @Override
+    public List<String> suggestTpTo(String[] args, List<String> suggestions) {
+        if (args.length == 1) {
+            WarpSystem.getInstance().getPlayerDataManager().getCached().forEach(e -> suggestions.add(e.getName()));
+
+            String name = args[0].toLowerCase();
+            suggestions.removeIf(s -> !s.toLowerCase().startsWith(name));
+        }
+
         return suggestions;
     }
 

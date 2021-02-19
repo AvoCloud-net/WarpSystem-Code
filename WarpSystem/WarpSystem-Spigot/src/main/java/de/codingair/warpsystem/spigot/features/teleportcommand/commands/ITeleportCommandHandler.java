@@ -20,6 +20,8 @@ public interface ITeleportCommandHandler {
 
     List<String> suggestTp(String[] args, List<String> suggestions);
 
+    List<String> suggestTpTo(String[] args, List<String> suggestions);
+
     List<String> suggestTpHere(CommandSender sender, String[] args, List<String> suggestions);
 
     void tpAll(Player player, int alreadyHandled, int alreadySent);

@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 
 public class CTeleport extends WSCommandBuilder {
     public CTeleport() {
-        super("Teleport", new BaseComponent(Permissions.PERMISSION_USE_TELEPORT_COMMAND_TP) {
+        super("Teleport", new BaseComponent() {
             @Override
             public void noPermission(CommandSender sender, String label, CommandComponent child) {
                 sender.sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));
@@ -40,88 +40,109 @@ public class CTeleport extends WSCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                if (!(sender instanceof Player)) return false;
-
                 Player p = (Player) sender;
 
-                if (!process(p, args)) {
-                    String bracket = WarpSystem.opt().cmdSug();
-                    String arg = WarpSystem.opt().cmdArg();
+                if (Permissions.hasPermission(p, Permissions.PERMISSION_USE_TELEPORT_COMMAND_TP)) {
+                    if (!process(p, args)) {
+                        String bracket = WarpSystem.opt().cmdSug();
+                        String arg = WarpSystem.opt().cmdArg();
 
-                    // /tp [player] [<player> | [<x> <y> <z>] [<yaw> <pitch>] [<server> [world] | <world>]
+                        // /tp [player] [<player> | [<x> <y> <z>] [<yaw> <pitch>] [<server> [world] | <world>]
 
-                    TextComponent help = new TextComponent(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": " + bracket + "/tp <");
+                        TextComponent help = new TextComponent(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": " + bracket + "/tp <");
 
-                    TextComponent add = new TextComponent(bracket + "[" + arg + "player" + bracket + "]");
-                    add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[] {
-                            new TextComponent(bracket + "/tp <" + arg + "player" + bracket + ">")
-                    }));
+                        TextComponent add = new TextComponent(bracket + "[" + arg + "player" + bracket + "]");
+                        add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[] {
+                                new TextComponent(bracket + "/tp <" + arg + "player" + bracket + ">")
+                        }));
 
-                    help.addExtra(add);
-                    help.addExtra(bracket + " [");
+                        help.addExtra(add);
+                        help.addExtra(bracket + " [");
 
-                    add = new TextComponent(bracket + "<" + arg + "player" + bracket + ">");
-                    add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[] {
-                            new TextComponent(bracket + "/tp <" + arg + "player" + bracket + "> <" + arg + "player" + bracket + ">")
-                    }));
+                        add = new TextComponent(bracket + "<" + arg + "player" + bracket + ">");
+                        add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[] {
+                                new TextComponent(bracket + "/tp <" + arg + "player" + bracket + "> <" + arg + "player" + bracket + ">")
+                        }));
 
-                    help.addExtra(add);
-                    help.addExtra(bracket + " | [");
+                        help.addExtra(add);
+                        help.addExtra(bracket + " | [");
 
-                    add = new TextComponent(bracket + "<" + arg + "x" + bracket + "> <" + arg + "y" + bracket + "> <" + arg + "z" + bracket + ">");
-                    add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[] {
-                            new TextComponent(bracket + "/tp [" + arg + "player" + bracket + "] <" + arg + "x" + bracket + "> <" + arg + "y" + bracket + "> <" + arg + "z" + bracket + ">")
-                    }));
+                        add = new TextComponent(bracket + "<" + arg + "x" + bracket + "> <" + arg + "y" + bracket + "> <" + arg + "z" + bracket + ">");
+                        add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[] {
+                                new TextComponent(bracket + "/tp [" + arg + "player" + bracket + "] <" + arg + "x" + bracket + "> <" + arg + "y" + bracket + "> <" + arg + "z" + bracket + ">")
+                        }));
 
-                    help.addExtra(add);
-                    help.addExtra(bracket + "] [");
+                        help.addExtra(add);
+                        help.addExtra(bracket + "] [");
 
-                    add = new TextComponent(bracket + "<" + arg + "yaw" + bracket + "> <" + arg + "pitch" + bracket + ">");
-                    add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[] {
-                            new TextComponent(bracket + "/tp [" + arg + "player" + bracket + "] [<" + arg + "x" + bracket + "> <" + arg + "y" + bracket + "> <" + arg + "z" + bracket + ">] <" + arg + "yaw" + bracket + "> <" + arg + "pitch" + bracket + ">")
-                    }));
+                        add = new TextComponent(bracket + "<" + arg + "yaw" + bracket + "> <" + arg + "pitch" + bracket + ">");
+                        add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[] {
+                                new TextComponent(bracket + "/tp [" + arg + "player" + bracket + "] [<" + arg + "x" + bracket + "> <" + arg + "y" + bracket + "> <" + arg + "z" + bracket + ">] <" + arg + "yaw" + bracket + "> <" + arg + "pitch" + bracket + ">")
+                        }));
 
-                    help.addExtra(add);
-                    help.addExtra(bracket + "] [");
+                        help.addExtra(add);
+                        help.addExtra(bracket + "] [");
 
-                    add = new TextComponent(bracket + "<" + arg + "server" + bracket + "> [" + arg + "world" + bracket + "]");
-                    add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[] {
-                            new TextComponent(bracket + "/tp [" + arg + "player" + bracket + "] [<" + arg + "x" + bracket + "> <" + arg + "y" + bracket + "> <" + arg + "z" + bracket + ">] [<" + arg + "yaw" + bracket + "> <" + arg + "pitch" + bracket + ">] <" + arg + "server" + bracket + "> [" + arg + "world" + bracket + "]")
-                    }));
+                        add = new TextComponent(bracket + "<" + arg + "server" + bracket + "> [" + arg + "world" + bracket + "]");
+                        add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[] {
+                                new TextComponent(bracket + "/tp [" + arg + "player" + bracket + "] [<" + arg + "x" + bracket + "> <" + arg + "y" + bracket + "> <" + arg + "z" + bracket + ">] [<" + arg + "yaw" + bracket + "> <" + arg + "pitch" + bracket + ">] <" + arg + "server" + bracket + "> [" + arg + "world" + bracket + "]")
+                        }));
 
-                    help.addExtra(add);
-                    help.addExtra(bracket + " | ");
+                        help.addExtra(add);
+                        help.addExtra(bracket + " | ");
 
-                    add = new TextComponent(bracket + "<" + arg + "world" + bracket + ">");
-                    add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[] {
-                            new TextComponent(bracket + "/tp [" + arg + "player" + bracket + "] [<" + arg + "x" + bracket + "> <" + arg + "y" + bracket + "> <" + arg + "z" + bracket + ">] [<" + arg + "yaw" + bracket + "> <" + arg + "pitch" + bracket + ">] <" + arg + "world" + bracket + ">")
-                    }));
+                        add = new TextComponent(bracket + "<" + arg + "world" + bracket + ">");
+                        add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[] {
+                                new TextComponent(bracket + "/tp [" + arg + "player" + bracket + "] [<" + arg + "x" + bracket + "> <" + arg + "y" + bracket + "> <" + arg + "z" + bracket + ">] [<" + arg + "yaw" + bracket + "> <" + arg + "pitch" + bracket + ">] <" + arg + "world" + bracket + ">")
+                        }));
 
-                    help.addExtra(add);
-                    help.addExtra(bracket + "]]");
+                        help.addExtra(add);
+                        help.addExtra(bracket + "]]");
 
-                    p.spigot().sendMessage(help);
-                }
+                        p.spigot().sendMessage(help);
+                    }
+                } else if (Permissions.hasPermission(p, Permissions.PERMISSION_USE_TELEPORT_COMMAND_TPTO)) {
+                    if (!processTpTo(p, args)) {
+                        p.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /tp <" + WarpSystem.opt().cmdArg() + "player" + WarpSystem.opt().cmdSug() + ">");
+                    }
+                } else noPermission(p, label, this);
+
                 return true;
             }
         }.setOnlyPlayers(true), true);
 
         setMergeSpaceArguments(false);
         setOwnTabCompleter((commandSender, command, s, args) -> {
-            if (!Permissions.hasPermission(commandSender, Permissions.PERMISSION_USE_TELEPORT_COMMAND_TP)) {
-                return new ArrayList<>();
-            }
-
-            if (commandSender instanceof Player) {
-                Player p = (Player) commandSender;
-                Block b = p.getTargetBlock(null, 10);
-                if (b.getType() == XMaterial.COMMAND_BLOCK.parseMaterial()) {
-                    return new ArrayList<>();
+            if (Permissions.hasPermission(commandSender, Permissions.PERMISSION_USE_TELEPORT_COMMAND_TP)) {
+                if (commandSender instanceof Player) {
+                    Player p = (Player) commandSender;
+                    Block b = p.getTargetBlock(null, 10);
+                    if (b.getType() == XMaterial.COMMAND_BLOCK.parseMaterial()) {
+                        return new ArrayList<>();
+                    }
                 }
-            }
 
-            return TeleportCommandManager.handler().suggestTp(args, new ArrayList<>());
+                return TeleportCommandManager.handler().suggestTp(args, new ArrayList<>());
+            } else if (Permissions.hasPermission(commandSender, Permissions.PERMISSION_USE_TELEPORT_COMMAND_TPTO)) {
+                if (commandSender instanceof Player) {
+                    Player p = (Player) commandSender;
+                    Block b = p.getTargetBlock(null, 10);
+                    if (b.getType() == XMaterial.COMMAND_BLOCK.parseMaterial()) {
+                        return new ArrayList<>();
+                    }
+                }
+
+                return TeleportCommandManager.handler().suggestTpTo(args, new ArrayList<>());
+            } else return new ArrayList<>();
+
         });
+    }
+
+    private static boolean processTpTo(Player p, String[] args) {
+        if (args.length == 0) return false;
+        PlayerData data = WarpSystem.getInstance().getPlayerDataManager().getCache(args[0]);
+        TeleportCommandManager.handler().tp(p, WarpSystem.getInstance().getPlayerDataManager().getCache(p), data);
+        return true;
     }
 
     private static boolean process(Player p, String[] args) {
@@ -141,10 +162,10 @@ public class CTeleport extends WSCommandBuilder {
 
         if (args.length - 1 >= 1) {
             String other = args[1].replace("~", "");
-            if(!other.isEmpty() && !isNumeric(args[1])) {
+            if (!other.isEmpty() && !isNumeric(args[1])) {
                 //name
                 PlayerData otherData = WarpSystem.getInstance().getPlayerDataManager().getCache(other);
-                
+
                 if (otherData != null) {
                     //player name
                     TeleportCommandManager.handler().tp(p, data, otherData);
@@ -205,15 +226,15 @@ public class CTeleport extends WSCommandBuilder {
 
             if (yaw != null) {
                 if (yaw > 180) yaw = 180F;
-                else if(yaw < -180) yaw = -180F;
+                else if (yaw < -180) yaw = -180F;
 
                 //pitch
                 if (args.length - 1 >= i + 1) {
                     pitch = parseDeep(args[i + 1], p.getLocation().getPitch());
 
                     if (pitch != null) {
-                        if(pitch > 90) pitch = 90F;
-                        else if(pitch < -90) pitch = -90F;
+                        if (pitch > 90) pitch = 90F;
+                        else if (pitch < -90) pitch = -90F;
                     } else return false;
                 } else return false;
             }
