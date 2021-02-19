@@ -121,7 +121,7 @@ public class Editor<C> extends SimpleGUI {
         initControllButtons();
     }
 
-    public void updateControllButtons() {
+    public void updateControlButtons() {
         if (getButtonAt(8) == null) {
             initControllButtons();
             return;

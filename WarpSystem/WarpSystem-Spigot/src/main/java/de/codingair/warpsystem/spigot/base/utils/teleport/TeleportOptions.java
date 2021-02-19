@@ -17,6 +17,8 @@ import de.codingair.warpsystem.spigot.features.animations.AnimationManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -53,19 +55,19 @@ public class TeleportOptions {
         this((Destination) null, null);
     }
 
-    public TeleportOptions(Location location, String displayName) {
+    public TeleportOptions(@NotNull Location location, @Nullable String displayName) {
         this(location, displayName, Origin.Custom);
     }
 
-    public TeleportOptions(Location location, String displayName, Origin origin) {
+    public TeleportOptions(@NotNull Location location, @Nullable String displayName, Origin origin) {
         this(new Destination(new LocationAdapter(location)), displayName, origin);
     }
 
-    public TeleportOptions(Destination destination, String displayName) {
+    public TeleportOptions(@Nullable Destination destination, @Nullable String displayName) {
         this(destination, displayName, Origin.Custom);
     }
 
-    public TeleportOptions(Destination destination, String displayName, Origin origin) {
+    public TeleportOptions(@Nullable Destination destination, @Nullable String displayName, @NotNull Origin origin) {
         this.origin = origin;
         this.destination = destination;
         setDisplayName(displayName);

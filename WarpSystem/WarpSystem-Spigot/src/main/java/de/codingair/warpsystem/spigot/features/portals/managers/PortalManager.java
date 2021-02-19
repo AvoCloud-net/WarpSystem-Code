@@ -31,9 +31,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @AvailableForSetupAssistant (type = "Portals", config = "Config")
 @Function (name = "Enabled", defaultValue = "true", configPath = "WarpSystem.Functions.Portals", clazz = Boolean.class)
@@ -41,8 +39,8 @@ import java.util.Map;
 @Function (name = "Particle distance", defaultValue = "64", configPath = "WarpSystem.Portals.ParticleDistance", clazz = Integer.class)
 @Function (name = "Hologram update interval", defaultValue = "1m", configPath = "WarpSystem.Portals.HologramUpdateInterval", clazz = String.class)
 public class PortalManager implements Manager {
-    private final List<Portal> portals = new ArrayList<>();
-    private final List<Player> noTeleport = new ArrayList<>();
+    private final Set<Portal> portals = new HashSet<>();
+    private final Set<Player> noTeleport = new HashSet<>();
     private final TimeList<String> goingToDelete = new TimeList<>();
     private final TimeList<String> goingToEdit = new TimeList<>();
 
@@ -254,7 +252,7 @@ public class PortalManager implements Manager {
         }
     }
 
-    public List<Portal> getPortals() {
+    public Set<Portal> getPortals() {
         return portals;
     }
 
@@ -281,7 +279,7 @@ public class PortalManager implements Manager {
         return getEditor(player) != null;
     }
 
-    public List<Player> getNoTeleport() {
+    public Set<Player> getNoTeleport() {
         return noTeleport;
     }
 

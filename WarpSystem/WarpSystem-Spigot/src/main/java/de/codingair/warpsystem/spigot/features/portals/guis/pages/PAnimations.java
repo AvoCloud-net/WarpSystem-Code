@@ -82,6 +82,7 @@ public class PAnimations extends PageItem {
                             runnable = null;
 
                             getLast().updatePage();
+                            getLast().updateControlButtons();
                         } else {
                             runnable = new BukkitRunnable() {
                                 @Override
@@ -127,7 +128,7 @@ public class PAnimations extends PageItem {
                     Animation anim = new Animation(new ParticlePart(AnimationType.CIRCLE, Particle.FLAME, 1, 1, CustomAnimation.MAX_SPEED), new Location(player.getLocation()));
 
                     clone.getAnimations().add(anim);
-                    getLast().updateControllButtons();
+                    getLast().updateControlButtons();
                     new AnimationHotBarEditor(player, (PortalEditor) getLast(), anim).open(false);
                 }
 

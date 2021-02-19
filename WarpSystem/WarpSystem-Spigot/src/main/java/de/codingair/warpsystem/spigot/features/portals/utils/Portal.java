@@ -14,11 +14,11 @@ import de.codingair.warpsystem.spigot.base.utils.featureobjects.FeatureObject;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types.WarpAction;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
-import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -90,7 +90,7 @@ public class Portal extends FeatureObject {
 
         this.displayName = d.getString("name");
         String teleportName = d.getString("displayname", "§§");
-        if(!teleportName.equals("§§")) {
+        if (!teleportName.equals("§§")) {
             getDestination().getCustomOptions().setDisplayName(teleportName);
         }
 
@@ -573,5 +573,29 @@ public class Portal extends FeatureObject {
 
     public void setEditing(Portal editing) {
         this.editing = editing;
+    }
+
+    public @Nullable org.bukkit.Location getAbsoluteMid() {
+        Location l = null;
+        double additions = 0;
+
+        //blocks
+        if (getCachedEdges() != null) {
+            for (Location cachedEdge : getCachedEdges()) {
+                if (l == null) l = cachedEdge.clone();
+                else l.add(cachedEdge);
+                additions++;
+            }
+        }
+
+        //animations
+        for (Animation animation : animations) {
+            if (l == null) l = animation.getLocation().clone();
+            else l.add(animation.getLocation());
+            additions++;
+        }
+
+        if (l == null) return null;
+        return l.multiply(1 / additions);
     }
 }

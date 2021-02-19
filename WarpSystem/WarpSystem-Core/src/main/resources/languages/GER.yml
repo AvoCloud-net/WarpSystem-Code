@@ -550,3 +550,4 @@ Player_Server_Or_World_Not_Available: "&7Der angeforderte &eSpieler&7, &eServer 
 Other_Is_Already_On_Target_Server: '&7Der Spieler &e%PLAYER% &7ist &cbereits &7auf diesem Server.'
 Player_Protected_Area: '&7Du bist in einem &cgeschützten Bereich&7.'
 Target_Protected_Area: '&7Dein Ziel ist in einem &cgeschützten Bereich&7.'
+Portal_Does_Not_Exist: '&7Dieses Portal &cexistiert nicht&7.'
