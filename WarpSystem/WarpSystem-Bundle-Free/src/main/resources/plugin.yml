@@ -5,3 +5,161 @@ description: WarpSystem
 main: de.codingair.warpsystem.spigot.base.WarpSystem
 softdepend: [ Multiverse-Core, Vault, Essentials, MultiWorld, PlaceholderAPI, PlayerPoints, GemsEconomy, WorldGuard ]
 api-version: "1.13"
+
+permissions:
+  warpsystem.notify:
+    default: op
+  warpsystem.modify:
+    default: op
+
+  warpsystem.modify.*:
+    children:
+      warpsystem.modify.warpgui: true
+      warpsystem.modify.shortcuts: true
+      warpsystem.modify.warpsigns: true
+      warpsystem.modify.globalwarps: true
+      warpsystem.modify.simplewarps: true
+      warpsystem.modify.portals: true
+      warpsystem.modify.randomteleporters: true
+      warpsystem.modify.playerwarps: true
+      warpsystem.modify.spawn: true
+  warpsystem.modify.warpgui:
+    default: op
+  warpsystem.modify.shortcuts:
+    default: op
+  warpsystem.modify.warpsigns:
+    default: op
+  warpsystem.modify.globalwarps:
+    default: op
+  warpsystem.modify.simplewarps:
+    default: op
+  warpsystem.modify.portals:
+    default: op
+  warpsystem.modify.randomteleporters:
+    default: op
+  warpsystem.modify.playerwarps:
+    default: op
+  warpsystem.modify.spawn:
+    default: op
+
+  warpsystem.warpgui.other:
+    default: op
+
+  warpsystem.simplewarp.directteleport:
+    default: op
+
+  warpsystem.globalwarp.directteleport:
+    default: op
+
+  warpsystem.randomteleporters.*:
+    children:
+      warpsystem.randomteleporters.free.*: true
+      warpsystem.randomteleporters.max.*: true
+      warpsystem.randomteleporters.selection.*: true
+  warpsystem.randomteleporters.selection.*:
+    children:
+      warpsystem.randomteleporters.selection: true
+      warpsystem.randomteleporters.selection.other: true
+  warpsystem.randomteleporters.free.*:
+    default: op
+  warpsystem.randomteleporters.max.*:
+    default: op
+  warpsystem.randomteleporters.selection:
+    default: op
+  warpsystem.randomteleporters.selection.other:
+    default: op
+
+  warpsystem.bypass.*:
+    children:
+      warpsystem.bypass.teleport.*: true
+      warpsystem.bypass.cooldown: true
+  warpsystem.bypass.teleport.*:
+    children:
+      warpsysystem.bypass.teleport.costs: true
+      warpsysystem.bypass.teleport.delay: true
+      warpsysystem.bypass.teleport.maxplayers: true
+  warpsystem.bypass.teleport.costs:
+    default: op
+  warpsystem.bypass.teleport.delay:
+    default: op
+  warpsystem.bypass.teleport.maxplayers:
+    default: op
+  warpsystem.bypass.cooldown:
+    default: op
+
+  warpsystem.use.*:
+    children:
+      warpsystem.use.teleportcommand.*: true
+      warpsystem.use.warpgui: true
+      warpsystem.use.shortcuts: true
+      warpsystem.use.warpsigns: true
+      warpsystem.use.globalwarps: true
+      warpsystem.use.simplewarps: true
+      warpsystem.use.portals: true
+      warpsystem.use.randomteleporters: true
+      warpsystem.use.playerwarps: true
+      warpsystem.use.spawn: true
+  warpsystem.use.teleportcommand.*:
+    children:
+      warpsystem.use.teleportCommand.tp: true
+      warpsystem.use.teleportCommand.tphere: true
+      warpsystem.use.teleportCommand.tpto: true
+      warpsystem.use.teleportCommand.tptoggle: true
+      warpsystem.use.teleportCommand.tpall: true
+      warpsystem.use.teleportCommand.tpaall: true
+      warpsystem.use.teleportCommand.tpaccept: true
+      warpsystem.use.teleportCommand.tpdeny: true
+      warpsystem.use.teleportCommand.tpatoggle: true
+      warpsystem.use.teleportCommand.tpahere: true
+  warpsystem.use.teleportcommand.tp:
+    default: op
+  warpsystem.use.teleportcommand.tphere:
+    default: op
+  warpsystem.use.teleportcommand.tpto:
+    default: op
+  warpsystem.use.teleportcommand.tptoggle:
+    default: op
+  warpsystem.use.teleportcommand.tpall:
+    default: op
+  warpsystem.use.teleportcommand.tpaall:
+    default: op
+  warpsystem.use.teleportCommand.tpa:
+    default: op
+  warpsystem.use.teleportCommand.tpaccept:
+    default: op
+  warpsystem.use.teleportCommand.tpdeny:
+    default: op
+  warpsystem.use.teleportCommand.tpatoggle:
+    default: op
+  warpsystem.use.teleportCommand.tpahere:
+    default: op
+  warpsystem.use.warpgui:
+    default: op
+  warpsystem.use.warpsigns:
+    default: op
+  warpsystem.use.globalwarps:
+    default: op
+  warpsystem.use.simplewarps:
+    default: op
+  warpsystem.use.playerwarps:
+    default: op
+  warpsystem.use.portals:
+    default: op
+  warpsystem.use.randomteleporters:
+    default: op
+  warpsystem.use.randomteleporters.go:
+    default: op
+  warpsystem.use.spawn:
+    default: op
+
+  warpystem.*:
+    children:
+      warpsystem.notify: true
+      warpsystem.modify: true
+      warpsystem.modify.*: true
+      warpsystem.warpgui.other: true
+      warpsystem.simplewarp.directteleport: true
+      warpsystem.globalwarp.directteleport: true
+      warpsystem.randomteleporters.*: true
+      warpsystem.bypass.*: true
+      warpsystem.use.*: true

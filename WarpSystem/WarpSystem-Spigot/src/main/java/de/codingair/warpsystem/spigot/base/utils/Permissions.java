@@ -19,32 +19,39 @@ public class Permissions {
     public static final String PERMISSION_MODIFY_RANDOM_TELEPORTER = "warpsystem.modify.randomteleporters";
     public static final String PERMISSION_MODIFY_PLAYER_WARPS = "warpsystem.modify.playerwarps";
     public static final String PERMISSION_MODIFY_SPAWN = "warpsystem.modify.spawn";
-    public static final String PERMISSION_USE_TELEPORT_COMMAND = "warpsystem.use.teleportCommand";
+
+    private static final String PERMISSION_USE_TELEPORT_COMMAND = "warpsystem.use.teleportCommand";
     public static final String PERMISSION_USE_TELEPORT_COMMAND_TP = PERMISSION_USE_TELEPORT_COMMAND + ".tp";
     public static final String PERMISSION_USE_TELEPORT_COMMAND_TPHERE = PERMISSION_USE_TELEPORT_COMMAND + ".tphere";
     public static final String PERMISSION_USE_TELEPORT_COMMAND_TPTO = PERMISSION_USE_TELEPORT_COMMAND + ".tpto";
     public static final String PERMISSION_USE_TELEPORT_COMMAND_TP_TOGGLE = PERMISSION_USE_TELEPORT_COMMAND + ".tptoggle";
     public static final String PERMISSION_USE_TELEPORT_COMMAND_TPALL = PERMISSION_USE_TELEPORT_COMMAND + ".tpall";
     public static final String PERMISSION_USE_TELEPORT_COMMAND_TPA_ALL = PERMISSION_USE_TELEPORT_COMMAND + ".tpaall";
+
     public static final String PERMISSION_WARP_GUI_OTHER = "warpsystem.warpgui.other";
     public static final String PERMISSION_HIDE_ALL_ICONS = "warpgui.hideall";
+
     public static final String PERMISSION_SIMPLE_WARPS_DIRECT_TELEPORT = "warpsystem.simplewarp.directteleport";
     public static final String PERMISSION_GLOBAL_WARPS_DIRECT_TELEPORT = "warpsystem.globalwarp.directteleport";
+
     public static final String PERMISSION_RANDOM_TELEPORT_SELECTION_SELF = "warpsystem.randomteleporters.selection";
     public static final String PERMISSION_RANDOM_TELEPORT_SELECTION_OTHER = "warpsystem.randomteleporters.selection.other";
+
     public static final String PERMISSION_ByPass_Teleport_Costs = "warpsystem.bypass.teleport.costs";
     public static final String PERMISSION_ByPass_Teleport_Delay = "warpsystem.bypass.teleport.delay";
     public static final String PERMISSION_ByPass_Teleport_Max_Players = "warpsystem.bypass.teleport.maxplayers";
     public static final String PERMISSION_ByPass_Teleport_Cooldown = "warpsystem.bypass.cooldown";
-    public static String PERMISSION_ADMIN = "warpsystem.admin"; //will be set after removing all non-final permission (if permissions are disabled)
+
     public static String PERMISSION_USE_TELEPORT_COMMAND_BACK = PERMISSION_USE_TELEPORT_COMMAND + ".back";
     public static final String PERMISSION_USE_TELEPORT_COMMAND_BACK_OTHER = PERMISSION_USE_TELEPORT_COMMAND_BACK + ".other";
     public static String PERMISSION_USE_TELEPORT_COMMAND_BACK_DETECT_DEATHS = PERMISSION_USE_TELEPORT_COMMAND_BACK + ".deaths";
+
     public static String PERMISSION_USE_TELEPORT_COMMAND_TPA = PERMISSION_USE_TELEPORT_COMMAND + ".tpa";
     public static String PERMISSION_USE_TELEPORT_COMMAND_TP_ACCEPT = PERMISSION_USE_TELEPORT_COMMAND + ".tpaccept";
     public static String PERMISSION_USE_TELEPORT_COMMAND_TP_DENY = PERMISSION_USE_TELEPORT_COMMAND + ".tpdeny";
     public static String PERMISSION_USE_TELEPORT_COMMAND_TPA_TOGGLE = PERMISSION_USE_TELEPORT_COMMAND + ".tpatoggle";
     public static String PERMISSION_USE_TELEPORT_COMMAND_TPA_HERE = PERMISSION_USE_TELEPORT_COMMAND + ".tpahere";
+
     public static String PERMISSION_USE_WARP_GUI = "warpsystem.use.warpgui";
     public static String PERMISSION_USE_WARP_SIGNS = "warpsystem.use.warpsigns";
     public static String PERMISSION_USE_GLOBAL_WARPS = "warpsystem.use.globalwarps";

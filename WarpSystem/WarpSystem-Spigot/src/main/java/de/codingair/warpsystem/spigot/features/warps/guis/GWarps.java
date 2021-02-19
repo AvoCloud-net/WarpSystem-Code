@@ -190,7 +190,7 @@ public class GWarps extends GUI {
 
     public static String getTitle(Icon page, Player player) {
         FileConfiguration config = WarpSystem.getInstance().getFileManager().getFile("Config").getConfig();
-        String key = player.hasPermission(Permissions.PERMISSION_ADMIN) ? "Admin" : "User";
+        String key = player.hasPermission(Permissions.PERMISSION_MODIFY) ? "Admin" : "User";
 
         return ChatColor.translateAlternateColorCodes('&', (page == null || page.getName() == null ?
                 config.getString("WarpSystem.GUI." + key + ".Title.Standard", "&c&nWarps&r") :
@@ -198,7 +198,7 @@ public class GWarps extends GUI {
     }
 
     private static int getSize(Player player) {
-        return player.hasPermission(Permissions.PERMISSION_ADMIN) ? WarpSystem.getOptions(WarpGUIOptions.class).getAdminSize().getValue() : WarpSystem.getOptions(WarpGUIOptions.class).getUserSize().getValue();
+        return player.hasPermission(Permissions.PERMISSION_MODIFY) ? WarpSystem.getOptions(WarpGUIOptions.class).getAdminSize().getValue() : WarpSystem.getOptions(WarpGUIOptions.class).getUserSize().getValue();
     }
 
     public void initialize(Player p) {

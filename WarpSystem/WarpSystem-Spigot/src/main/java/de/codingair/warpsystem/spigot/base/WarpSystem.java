@@ -163,7 +163,6 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
             //check permission before loading features
             Permissions.checkPermissions();
-            Permissions.PERMISSION_ADMIN = this.fileManager.getFile("Config").getConfig().getString("WarpSystem.Admin.Permission", "WarpSystem.Admin");
 
             new PostWorldManager();
 
