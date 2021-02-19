@@ -262,10 +262,10 @@ public abstract class TeleportCommandManager implements Manager, ProxyFeature, C
         }
     }
 
-    public void setDenyForceTps(Player player, boolean deny) {
+    public void setDenyForceTps(String player, boolean deny) {
         if (deny) {
-            this.denyForceTps.add(player.getName());
-        } else this.denyForceTps.remove(player.getName());
+            this.denyForceTps.add(player);
+        } else this.denyForceTps.remove(player);
     }
 
     public boolean isInvitedBy(String sender, String recipient) {
