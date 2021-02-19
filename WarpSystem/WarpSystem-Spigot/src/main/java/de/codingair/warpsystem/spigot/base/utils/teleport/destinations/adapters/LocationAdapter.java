@@ -24,11 +24,11 @@ public class LocationAdapter extends CloneableAdapter implements Serializable, U
     public LocationAdapter() {
     }
 
-    public LocationAdapter(Location location) {
+    public LocationAdapter(@NotNull Location location) {
         this.location = location;
     }
 
-    public LocationAdapter(org.bukkit.Location location) {
+    public LocationAdapter(@NotNull org.bukkit.Location location) {
         this.location = new Location(location);
     }
 

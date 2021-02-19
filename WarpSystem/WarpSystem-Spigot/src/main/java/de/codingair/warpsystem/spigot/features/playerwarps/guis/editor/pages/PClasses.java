@@ -125,7 +125,7 @@ public class PClasses extends PageItem {
 
                     getLast().updatePage();
                     updateIcon();
-                    getLast().updateControllButtons();
+                    getLast().updateControlButtons();
                 }
 
                 @Override

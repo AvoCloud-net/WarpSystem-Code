@@ -127,7 +127,7 @@ public class PortalEditor extends Editor<Portal> {
 
         portal.setEditing(clone);
         this.clone = clone;
-        updateControllButtons();
+        updateControlButtons();
     }
 
     public static String getMainTitle() {
