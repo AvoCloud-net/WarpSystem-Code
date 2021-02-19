@@ -45,7 +45,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
             else if (result == TeleportBackPacket.Result.PROTECTED_REGION) player.sendMessage(Lang.getPrefix() + Lang.get("Target_Protected_Area"));
             else if (result == TeleportBackPacket.Result.SERVER_NOT_AVAILABLE) player.sendMessage(Lang.getPrefix() + Lang.get("Server_Is_Not_Online"));
             else if (result == TeleportBackPacket.Result.PLAYER_NOT_AVAILABLE) player.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
-            else if(result != null) WarpSystem.cooldown().register(player, Origin.TeleportCommand);
+            else if (result != null) WarpSystem.cooldown().register(player, Origin.TeleportCommand);
         });
     }
 
@@ -67,7 +67,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
                 if (err != null) err.printStackTrace();
                 else {
                     TeleportBackPacket.Result result = TeleportBackPacket.Result.fromId(success.getByte());
-                    if(result == null) return;
+                    if (result == null) return;
 
                     switch (result) {
                         case SUCCESS:
@@ -171,7 +171,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
                 return true;
             }
 
-            if(w.equals(p.getWorld()) && allNull(x, y, z, yaw, pitch) || !w.equals(p.getWorld())) {
+            if (w.equals(p.getWorld()) && allNull(x, y, z, yaw, pitch) || !w.equals(p.getWorld())) {
                 destination.append(w.getName());
             }
         } else w = gate.getWorld();
@@ -185,7 +185,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
 
             if (destination.length() > 0) destination.append(", ");
             destination.append("x: ").append(cut(x)).append(", y: ").append(cut(y)).append(", z: ").append(cut(z));
-        } else if(yaw != null && pitch != null) {
+        } else if (yaw != null && pitch != null) {
             l = p.getLocation(l);
             l.setWorld(w);
         } else {
@@ -320,6 +320,17 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
         else if (deep == 6 + name) suggestions.addAll(WarpSystem.getInstance().getServerManager().getWorlds(args[5 + name]));
 
         suggestions.removeIf(s -> !s.toLowerCase().startsWith(last));
+        return suggestions;
+    }
+
+    @Override
+    public List<String> suggestTpTo(String[] args, List<String> suggestions) {
+        if (args.length == 1) {
+            WarpSystem.getInstance().getPlayerDataManager().getCached().filter(suggestTpPredicate()).forEach(e -> suggestions.add(e.getName()));
+
+            String name = args[0].toLowerCase();
+            suggestions.removeIf(s -> !s.toLowerCase().startsWith(name));
+        }
         return suggestions;
     }
 

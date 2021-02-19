@@ -110,7 +110,7 @@ public abstract class TeleportCommandManager implements Manager, ProxyFeature, C
 
             if (file.getConfig().getBoolean("WarpSystem.TeleportCommands.Tp", true)) {
                 (tp = new CTeleport()).register();
-                (tpHere = new CTpHere(tp)).register();
+                (tpHere = new CTpHere()).register();
             }
 
             if (file.getConfig().getBoolean("WarpSystem.TeleportCommands.TpToggle", true)) (tpToggle = new CTpToggle()).register();

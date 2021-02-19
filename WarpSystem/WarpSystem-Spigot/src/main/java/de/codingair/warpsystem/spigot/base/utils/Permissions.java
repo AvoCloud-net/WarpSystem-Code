@@ -21,6 +21,8 @@ public class Permissions {
     public static final String PERMISSION_MODIFY_SPAWN = "warpsystem.modify.spawn";
     public static final String PERMISSION_USE_TELEPORT_COMMAND = "warpsystem.use.teleportCommand";
     public static final String PERMISSION_USE_TELEPORT_COMMAND_TP = PERMISSION_USE_TELEPORT_COMMAND + ".tp";
+    public static final String PERMISSION_USE_TELEPORT_COMMAND_TPHERE = PERMISSION_USE_TELEPORT_COMMAND + ".tphere";
+    public static final String PERMISSION_USE_TELEPORT_COMMAND_TPTO = PERMISSION_USE_TELEPORT_COMMAND + ".tpto";
     public static final String PERMISSION_USE_TELEPORT_COMMAND_TP_TOGGLE = PERMISSION_USE_TELEPORT_COMMAND + ".tptoggle";
     public static final String PERMISSION_USE_TELEPORT_COMMAND_TPALL = PERMISSION_USE_TELEPORT_COMMAND + ".tpall";
     public static final String PERMISSION_USE_TELEPORT_COMMAND_TPA_ALL = PERMISSION_USE_TELEPORT_COMMAND + ".tpaall";
