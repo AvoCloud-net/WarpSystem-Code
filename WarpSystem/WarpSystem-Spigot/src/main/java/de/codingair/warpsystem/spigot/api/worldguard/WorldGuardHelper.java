@@ -11,19 +11,23 @@ import java.util.logging.Level;
 import java.util.stream.Stream;
 
 public class WorldGuardHelper {
-    private static final boolean enabled = Bukkit.getPluginManager().isPluginEnabled("WorldGuard");
+    private static final boolean enabled;
     private static WorldGuardAdapter adapter;
 
     static {
-        try {
-            adapter = new WorldGuardAdapter();
-        } catch (ClassNotFoundException e) {
+        enabled = Bukkit.getPluginManager().isPluginEnabled("WorldGuard");
+        if (enabled) {
             try {
-                adapter = new WorldGuardAdapter_12();
-            } catch (ClassNotFoundException e1) {
-                WarpSystem.getInstance().getLogger().log(Level.WARNING, "Could not hook into WorldGuard. Please contact the author!");
+                adapter = new WorldGuardAdapter();
+            } catch (ClassNotFoundException | NoClassDefFoundError e) {
+                try {
+                    adapter = new WorldGuardAdapter_12();
+                } catch (ClassNotFoundException | NoClassDefFoundError e1) {
+                    WarpSystem.getInstance().getLogger().log(Level.WARNING, "Could not hook into WorldGuard. Please contact the author!");
+                }
             }
         }
+
     }
 
     public static @Nullable Stream<String> getRegion(@NotNull Location location) {

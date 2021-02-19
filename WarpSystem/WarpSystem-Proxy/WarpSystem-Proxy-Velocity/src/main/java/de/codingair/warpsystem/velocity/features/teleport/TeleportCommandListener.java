@@ -6,6 +6,7 @@ import com.velocitypowered.api.event.player.ServerConnectedEvent;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.warpsystem.core.transfer.packets.spigot.ToggleForceTeleportsPacket;
 import de.codingair.warpsystem.velocity.base.WarpSystem;
+import de.codingair.warpsystem.velocity.base.events.ServerProvideOptionsEvent;
 import de.codingair.warpsystem.velocity.utils.VelocityPlayer;
 import de.codingair.warpsystem.velocity.utils.VelocityServer;
 
@@ -21,8 +22,17 @@ public class TeleportCommandListener {
     @Subscribe
     public void onSwitch(ServerConnectedEvent e) {
         VelocityPlayer p = new VelocityPlayer(e.getPlayer());
+        sendToggleInfo(p, new VelocityServer(e.getServer()));
+    }
+
+    @Subscribe
+    public void onProvideOptions(ServerProvideOptionsEvent e) {
+        e.getServer().getOnlinePlayers().forEach(p -> sendToggleInfo((VelocityPlayer) p, e.getServer()));
+    }
+
+    protected void sendToggleInfo(VelocityPlayer p, VelocityServer server) {
         boolean tp, tpa;
         if ((tp = TeleportManager.getInstance().deniesForceTps(p)) | (tpa = TeleportManager.getInstance().deniesForceTpRequests(p)))
-            WarpSystem.getInstance().getDataHandler().send(new ToggleForceTeleportsPacket(e.getPlayer().getUsername(), tp, tpa), new VelocityServer(e.getServer()), Direction.DOWN);
+            WarpSystem.getInstance().getDataHandler().send(new ToggleForceTeleportsPacket(p.getName(), tp, tpa), server, Direction.DOWN);
     }
 }

@@ -31,7 +31,7 @@ public class BungeePlayer implements Player {
     }
 
     @Override
-    public Server<?> getServer() {
+    public BungeeServer getServer() {
         return new BungeeServer(player.getServer().getInfo());
     }
 
@@ -86,5 +86,18 @@ public class BungeePlayer implements Player {
         TextComponent tc = new TextComponent(message);
         tc.setColor(ChatColor.GRAY);
         player.sendMessage(tc);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BungeePlayer that = (BungeePlayer) o;
+        return player.equals(that.player);
+    }
+
+    @Override
+    public int hashCode() {
+        return player.hashCode();
     }
 }

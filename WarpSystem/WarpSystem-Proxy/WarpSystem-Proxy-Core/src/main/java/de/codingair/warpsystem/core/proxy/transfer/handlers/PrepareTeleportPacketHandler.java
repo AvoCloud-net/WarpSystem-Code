@@ -120,14 +120,17 @@ public class PrepareTeleportPacketHandler implements ResponsibleMultiLayerPacket
 
             if (player == null) {
                 //redis
-                if (direction == Direction.DOWN) throw new Escalation(this, Direction.UP, packet, err -> new LongPacket(0));
-                else return CompletableFuture.completedFuture(new LongPacket(0));
+                if (direction == Direction.DOWN) throw new Escalation(this, Direction.UP, packet, err -> new LongPacket(PrepareTeleportPacket.Result.PLAYER_NOT_ONLINE.ordinal()));
+                else {
+                    //we'll never get here
+                    throw new IllegalStateException();
+                }
             } else if (!handler.isAccessible(player.getServer())) {
                 //not online/accessible
-                return CompletableFuture.completedFuture(new LongPacket(0));
+                return CompletableFuture.completedFuture(new LongPacket(PrepareTeleportPacket.Result.PLAYER_NOT_ONLINE.ordinal()));
             } else if (handler.deniesForceTps(player) && !player.equals(sender)) {
                 //auto deny
-                return CompletableFuture.completedFuture(new LongPacket(1L << 32));
+                return CompletableFuture.completedFuture(new LongPacket(PrepareTeleportPacket.Result.TELEPORT_DENIED.ordinal()));
             } else {
                 CompletableFuture<LongPacket> future = new CompletableFuture<>();
 

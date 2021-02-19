@@ -2,7 +2,6 @@ package de.codingair.warpsystem.velocity.utils;
 
 import com.velocitypowered.api.proxy.ConnectionRequestBuilder;
 import com.velocitypowered.api.proxy.ServerConnection;
-import de.codingair.warpsystem.core.proxy.Core;
 import de.codingair.warpsystem.core.proxy.base.handlers.ServerHandler;
 import de.codingair.warpsystem.core.proxy.utils.Player;
 import de.codingair.warpsystem.core.proxy.utils.Server;
@@ -31,7 +30,7 @@ public class VelocityPlayer implements Player {
     }
 
     @Override
-    public Server<?> getServer() {
+    public VelocityServer getServer() {
         ServerConnection server = player.getCurrentServer().orElse(null);
         if (server != null) return new VelocityServer(server.getServer());
         else return null;
@@ -82,5 +81,18 @@ public class VelocityPlayer implements Player {
     @Override
     public void sendGrayMessage(String message) {
         player.sendMessage(Component.text(message).color(TextColor.color(171, 171, 171)));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VelocityPlayer that = (VelocityPlayer) o;
+        return player.equals(that.player);
+    }
+
+    @Override
+    public int hashCode() {
+        return player.hashCode();
     }
 }
