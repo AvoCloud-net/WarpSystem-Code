@@ -2,7 +2,6 @@ package de.codingair.warpsystem.spigot.features.playerwarps.managers;
 
 import de.codingair.codingapi.API;
 import de.codingair.codingapi.files.ConfigFile;
-import de.codingair.codingapi.server.specification.Version;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.codingapi.utils.Ticker;
@@ -13,8 +12,7 @@ import de.codingair.warpsystem.core.transfer.packets.spigot.utils.PlayerWarpData
 import de.codingair.warpsystem.core.transfer.packets.spigot.utils.PlayerWarpUpdate;
 import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.spigot.api.StringFormatter;
-import de.codingair.warpsystem.spigot.api.players.PermissionPlayer_v1_8;
-import de.codingair.warpsystem.spigot.api.players.PermissionPlayer_v1_9;
+import de.codingair.warpsystem.spigot.api.events.FakeBlockBreakEvent;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableForSetupAssistant;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
@@ -34,7 +32,6 @@ import de.codingair.warpsystem.spigot.features.playerwarps.utils.PlayerWarp;
 import de.codingair.warpsystem.spigot.features.playerwarps.utils.forwardcompatibility.PlayerWarpTagConverter_v4_2_2;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -139,13 +136,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
 
         if (!getManager().isProtectedRegions()) return false;
 
-        Player check;
-        if (Version.get().isBiggerThan(8)) check = new PermissionPlayer_v1_9(player);
-        else check = new PermissionPlayer_v1_8(player);
-
-        BlockBreakEvent event = new BlockBreakEvent(player.getLocation().getBlock(), check);
-        Bukkit.getPluginManager().callEvent(event);
-        return event.isCancelled();
+        return FakeBlockBreakEvent.tryFake(player);
     }
 
     public abstract boolean hasPermission(Player player);

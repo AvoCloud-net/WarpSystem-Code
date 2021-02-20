@@ -2,15 +2,11 @@ package de.codingair.warpsystem.spigot.features.randomteleports.utils;
 
 import de.codingair.codingapi.server.Environment;
 import de.codingair.codingapi.server.reflections.IReflection;
-import de.codingair.codingapi.server.specification.Version;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.Location;
 import de.codingair.codingapi.utils.Node;
-import de.codingair.codingapi.utils.Value;
-import de.codingair.warpsystem.spigot.api.players.PermissionPlayer_v1_8;
-import de.codingair.warpsystem.spigot.api.players.PermissionPlayer_v1_9;
+import de.codingair.warpsystem.spigot.api.events.FakeBlockBreakEvent;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
 import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
@@ -18,7 +14,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
 
 import java.util.List;
 import java.util.Random;
@@ -37,8 +32,7 @@ public abstract class RandomLocationCalculator implements Runnable {
     private Location result = null;
 
     public RandomLocationCalculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<RandomLocationCalculator> callback) {
-        if (Version.get().isBiggerThan(8)) check = new PermissionPlayer_v1_9(player);
-        else check = new PermissionPlayer_v1_8(player);
+        check = FakeBlockBreakEvent.buildFake(player);
         this.player = player;
 
         this.callback = callback;
@@ -182,11 +176,8 @@ public abstract class RandomLocationCalculator implements Runnable {
 
         if (WarpSystem.opt().forbiddenRegion(location)) future.complete(true);
         else {
-            Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> {
-                BlockBreakEvent event = new BlockBreakEvent(location.getBlock(), this.check); //check is a bukkit/Player instance
-                Bukkit.getPluginManager().callEvent(event);
-                future.complete(event.isCancelled());
-            });
+            //events can only be triggered synchronously
+            Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> future.complete(FakeBlockBreakEvent.tryWithFake(this.check, location)));
         }
 
         return future;
