@@ -92,6 +92,8 @@ public class PlayerWarp extends FeatureObject {
             @Override
             public void accept(Result res) {
                 if (res == Result.SUCCESS) {
+                    if (isOwner(player) || isTrusted(player)) performed--;
+
                     PlayerWarpTeleportProcessPacket packet = PlayerWarpManager.getManager().checkBungeeCord() ? new PlayerWarpTeleportProcessPacket(name, owner.getId()) : null;
                     if (packet != null && !isOwner(player) && !isTrusted(player)) packet.setIncreasePerformed(true);
 
@@ -111,11 +113,7 @@ public class PlayerWarp extends FeatureObject {
         });
 
         if (this.teleportMessage != null) options.setMessage(Lang.getPrefix() + ChatColor.translateAlternateColorCodes('&', this.teleportMessage));
-
-        if (isOwner(player) || isTrusted(player)) performed--;
-        else {
-            options.setCosts(this.teleportCosts);
-        }
+        if (!isOwner(player) && !isTrusted(player)) options.setCosts(this.teleportCosts);
 
         return super.perform(player, options);
     }
