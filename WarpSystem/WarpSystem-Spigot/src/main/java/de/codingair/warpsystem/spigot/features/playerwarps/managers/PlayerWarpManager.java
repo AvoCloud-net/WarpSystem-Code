@@ -386,7 +386,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
             }
         }
 
-        Pattern p = Pattern.compile("[A-Za-z0-9\\p{Blank}_\\-'§]*");
+        Pattern p = Pattern.compile("[\\p{L}0-9\\p{Blank}_\\-'§]*");
 
         for (char c : modifiedName.toCharArray()) {
             Matcher m = p.matcher(c + "");
