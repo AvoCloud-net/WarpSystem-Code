@@ -215,7 +215,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             PaperLib.suggestPaper(this);
 
             activated = true;
-            UpdateReader.start();
+            if (fileManager.getFile("Config").getConfig().getBoolean("WarpSystem.Update_Notifier", true)) UpdateReader.start();
 
             this.ERROR = false;
 

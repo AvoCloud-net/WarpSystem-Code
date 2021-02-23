@@ -6,6 +6,7 @@ WarpSystem:
   Command_Suggestions:
     Color: '&7'
     Argument: '&e'
+  Update_Notifier: true
 
   #The beta area is there to make updates as easy as possible.
   #Here you decide whether you want to participate in beta functions and help to test new features.
