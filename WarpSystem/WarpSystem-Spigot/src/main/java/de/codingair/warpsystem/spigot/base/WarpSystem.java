@@ -47,7 +47,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class WarpSystem extends JavaPlugin implements Proxy {
@@ -65,6 +68,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     private CooldownManager cooldownManager;
     private OptionBundle options;
     private GeneralOptions generalOptions;
+    private boolean useProxy = false;
     private boolean onProxy = false;
     private String proxyPluginVersion = null;
     private String server = null;
@@ -141,7 +145,8 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             log("MC-Version: " + Version.get().fullVersion());
             log(" ");
 
-            this.fileManager.loadFile("Config", "/");
+            ConfigFile config = this.fileManager.loadFile("Config", "/");
+            this.useProxy = config.getConfig().getBoolean("WarpSystem.Proxy.Enabled", true);
             this.playerDataManager = new PlayerDataManager();
             this.serverManager = new ServerManager();
 
@@ -223,7 +228,6 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             BungeeBukkitListener packetListener = new BungeeBukkitListener();
             Bukkit.getPluginManager().registerEvents(packetListener, this);
 
-            ConfigFile config = fileManager.getFile("Config");
             if (config.getConfig().getBoolean("WarpSystem.Functions.CommandBlocks", true))
                 Bukkit.getPluginManager().registerEvents(new CommandBlockListener(), this);
         } catch (Throwable ex) {
@@ -578,5 +582,9 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
     public ServerManager getServerManager() {
         return serverManager;
+    }
+
+    public boolean isUseProxy() {
+        return useProxy;
     }
 }

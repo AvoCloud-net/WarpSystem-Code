@@ -6,7 +6,7 @@
 
     <groupId>de.codingair</groupId>
     <artifactId>WarpSystem</artifactId>
-    <version>5.0.1_Hotfix-8</version>
+    <version>5.0.1_Hotfix-9</version>
     <packaging>pom</packaging>
 
     <modules>
