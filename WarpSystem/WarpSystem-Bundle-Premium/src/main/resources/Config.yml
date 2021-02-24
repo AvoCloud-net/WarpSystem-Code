@@ -18,6 +18,9 @@ WarpSystem:
       Teleport_Interceptions: false
 
   Proxy:
+    # Must be enabled to establish a valid connection to the BungeeCord/Velocity server
+    Enabled: true
+
     #If your proxy has a newer jar than your Spigot, there is an option to deliver this jar directly to your Spigot without FTP access.
     #  Does not work on Windows or Mac.
     #  Works only if a player is on your target Spigot server.
