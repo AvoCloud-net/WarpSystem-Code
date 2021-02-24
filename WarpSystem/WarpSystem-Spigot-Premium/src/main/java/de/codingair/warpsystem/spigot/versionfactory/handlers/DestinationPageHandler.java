@@ -660,6 +660,115 @@ public class DestinationPageHandler {
                     }
                 }.setOption(option));
             }
+
+            page.addButton(new SyncAnvilGUIButton(slot++, 2, ClickType.LEFT) {
+                @Override
+                public ItemStack craftItem() {
+                    String name = null;
+                    ServerAdapter serverAdapter = null;
+
+                    if (page.getDestination().getType() == DestinationType.Server) {
+                        serverAdapter = (ServerAdapter) page.getDestination().getAdapter();
+                        name = serverAdapter.getServer();
+                    }
+
+                    if (!Objects.equals(server, name)) {
+                        server = name;
+                        if (server != null) {
+                            pinging = true;
+                            WarpSystem.getDataHandler().send(new RequestServerStatusPacket(server), p).thenAccept(booleanPacket -> {
+                                pinging = false;
+                                online = booleanPacket.getBoolean();
+                                update();
+                            });
+                        }
+                    }
+
+                    ItemBuilder builder = new ItemBuilder(XMaterial.ENDER_CHEST).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Server"));
+
+                    builder.setLore("§3" + Lang.get("Current") + ": " + (name == null ? "§c" + Lang.get("Not_Set") : "§7'§f" + ChatColor.translateAlternateColorCodes('&', name) + "§7'"));
+
+                    if (serverAdapter != null && serverAdapter.getServer() != null) {
+                        builder.addLore("§3" + Lang.get("Status") + ": " + (pinging ? "§7" + Lang.get("Pinging") + "..." : (online ? "§a" + Lang.get("Online") : "§c" + Lang.get("Offline"))));
+                        builder.addLore("§3" + Lang.get("Keep_Position") + ": " + (serverAdapter.isKeepPosition() ? "§a" + Lang.get("Yes") : "§c" + Lang.get("No")));
+                    }
+
+                    builder.addLore("", "§3" + Lang.get("Leftclick") + ": §a" + (name == null ? Lang.get("Set") : Lang.get("Toggle")));
+
+                    if (name != null) {
+                        builder.addLore("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"),
+                                "",
+                                "§3" + Lang.get("Shift_Leftclick") + ": §b" + Lang.get("Refresh"));
+                    }
+
+                    return builder.getItem();
+                }
+
+                @Override
+                public void onClick(AnvilClickEvent e) {
+                    if (!e.getSlot().equals(AnvilSlot.OUTPUT)) return;
+
+                    String input = e.getInput();
+
+                    if (input == null) {
+                        e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Enter_Name"));
+                        return;
+                    }
+
+                    page.getDestination().setType(DestinationType.Server);
+                    page.getDestination().setAdapter(DestinationType.Server.getInstance());
+                    ServerAdapter serverAdapter = (ServerAdapter) page.getDestination().getAdapter();
+                    serverAdapter.setServer(input);
+
+                    page.updateDestinationButtons();
+                    e.setClose(true);
+                }
+
+                @Override
+                public boolean canTrigger(InventoryClickEvent e, ClickType trigger, Player player) {
+                    if (page.getDestination().getType() == DestinationType.Server) {
+                        ServerAdapter serverAdapter = (ServerAdapter) page.getDestination().getAdapter();
+                        if (serverAdapter.getServer() == null) return true;
+
+                        serverAdapter.setKeepPosition(!serverAdapter.isKeepPosition());
+                        update();
+                        return false;
+                    } else return true;
+                }
+
+                @Override
+                public void onClose(AnvilCloseEvent e) {
+                }
+
+                @Override
+                public ItemStack craftAnvilItem(ClickType trigger) {
+                    String name = null;
+                    if (page.getDestination().getType() == DestinationType.Server) name = page.getDestination().getId();
+
+                    return new ItemBuilder(XMaterial.PAPER).setName(name != null ? name : (Lang.get("Server") + "...")).getItem();
+                }
+
+                @Override
+                public void onOtherClick(InventoryClickEvent e) {
+                    if (e.isRightClick()) {
+                        page.getDestination().setId(null);
+                        page.getDestination().setAdapter(null);
+                        page.getDestination().setType(null);
+
+                        page.updateDestinationButtons();
+                    } else if (e.isShiftClick() && e.isLeftClick()) {
+                        if (server != null && !pinging) {
+                            pinging = true;
+                            update();
+                            WarpSystem.getDataHandler().send(new RequestServerStatusPacket(server), p).thenAccept(booleanPacket -> {
+                                pinging = false;
+                                online = booleanPacket.getBoolean();
+                                if (page.getLast().getCurrent() == page) update();
+                            });
+                        }
+                    }
+                }
+            }.setOption(option));
         }
     }
 }

@@ -7,7 +7,6 @@ import de.codingair.codingapi.player.gui.hotbar.HotbarGUI;
 import de.codingair.codingapi.player.gui.hotbar.ItemListener;
 import de.codingair.codingapi.player.gui.hotbar.components.ItemComponent;
 import de.codingair.codingapi.player.gui.hotbar.components.SyncItemComponent;
-import de.codingair.codingapi.player.gui.inventory.gui.Skull;
 import de.codingair.codingapi.server.reflections.IReflection;
 import de.codingair.codingapi.server.specification.Version;
 import de.codingair.codingapi.tools.Location;
@@ -17,6 +16,7 @@ import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.spigot.api.chatinput.ChatInputEvent;
 import de.codingair.warpsystem.spigot.api.chatinput.ChatInputGUI;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
+import de.codingair.warpsystem.spigot.base.guis.editor.hotbar.BackItem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.portals.guis.PortalEditor;
 import de.codingair.warpsystem.spigot.features.portals.guis.subgui.animationseditor.AnimationHotBarEditor;
@@ -147,33 +147,15 @@ public class HologramEditor extends HotbarGUI {
 
     @Override
     public void initialize() {
-        setItem(0, new ItemComponent(new ItemBuilder(Skull.ArrowLeft).setName("§7» §c" + Lang.get("Back") + "§7 «").getItem(), new ItemListener() {
-            @Override
-            public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                close(false);
+        setItem(0, new BackItem(fallBack, player -> {
+            if (alignRunnable != null) {
+                alignRunnable.cancel();
+                alignRunnable = null;
 
-                if (alignRunnable != null) {
-                    alignRunnable.cancel();
-                    alignRunnable = null;
-
-                    for (Location l : alignTo) {
-                        sendBlockChange(player, l.getBlock());
-                    }
-                    alignTo.clear();
+                for (Location l : alignTo) {
+                    sendBlockChange(player, l.getBlock());
                 }
-
-                fallBack.updatePage();
-                fallBack.open();
-            }
-
-            @Override
-            public void onHover(HotbarGUI gui, ItemComponent old, ItemComponent current, Player player) {
-
-            }
-
-            @Override
-            public void onUnhover(HotbarGUI gui, ItemComponent current, ItemComponent newItem, Player player) {
-
+                alignTo.clear();
             }
         }));
         setItem(1, new ItemComponent(new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE).setHideName(true).getItem()));

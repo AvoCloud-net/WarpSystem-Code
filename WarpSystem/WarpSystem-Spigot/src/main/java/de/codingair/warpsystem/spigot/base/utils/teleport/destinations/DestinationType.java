@@ -13,6 +13,7 @@ public enum DestinationType {
     Location(6, LocationAdapter.class),
     GlobalLocation(7, true, GlobalLocationAdapter.class),
     Portal(8, PortalDestinationAdapter.class),
+    Velocity(9, VelocityAdapter.class),
     ;
 
     private final int id;
