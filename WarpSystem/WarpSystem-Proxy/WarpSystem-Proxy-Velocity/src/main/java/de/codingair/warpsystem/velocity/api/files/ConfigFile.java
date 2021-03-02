@@ -78,7 +78,7 @@ public class ConfigFile {
         }
 
         URL in = plugin.getResource(srcPath + this.name + ".yml");
-        ConfigurationNode defaults = null;
+        ConfigurationNode config;
         if (in != null) {
             this.loader = YAMLConfigurationLoader.builder()
                     .setURL(in)
@@ -86,10 +86,8 @@ public class ConfigFile {
                     .setIndent(2)
                     .setHeaderMode(HeaderMode.PRESERVE)
                     .build();
-            defaults = loader.load();
-        }
-
-        this.config = defaults == null ? YAMLConfigurationLoader.builder().build().createEmptyNode() : defaults;
+            config = loader.load();
+        } else config = YAMLConfigurationLoader.builder().build().createEmptyNode();
 
         this.loader = YAMLConfigurationLoader.builder()
                 .setFile(file)
@@ -97,7 +95,8 @@ public class ConfigFile {
                 .setIndent(2)
                 .setHeaderMode(HeaderMode.PRESERVE)
                 .build();
-        ConfigurationNode config = loader.load();
+
+        this.config = loader.load();
         this.config.mergeValuesFrom(config);
     }
 

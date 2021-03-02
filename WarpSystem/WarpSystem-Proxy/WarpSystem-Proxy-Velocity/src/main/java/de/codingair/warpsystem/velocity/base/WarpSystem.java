@@ -41,8 +41,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-import static de.codingair.codingapi.bungeecord.BungeeAPI.getProxy;
-
 public class WarpSystem extends VelocityPlugin {
     private static WarpSystem instance;
     private final ProxyServer proxy;
@@ -98,9 +96,9 @@ public class WarpSystem extends VelocityPlugin {
         log("Status:");
         log(" ");
 
-        log("Initialize SpigotConnector");
-
+        this.fileManager.getFile("Config", "/", "proxy/");
         this.dataHandler = new VelocityHandler(this);
+
         checkRedis();
 
         Core.setServerManager(new ServerManager());
@@ -109,6 +107,7 @@ public class WarpSystem extends VelocityPlugin {
         dataManager = new DataManager();
         dataManager.preLoad();
 
+        log("Initialize SpigotConnector");
         this.dataHandler.onEnable();
 
         proxy.getEventManager().register(this, new MainListener());
@@ -116,7 +115,6 @@ public class WarpSystem extends VelocityPlugin {
         proxy.getEventManager().register(this, cooldownManager = new CooldownManager());
         proxy.getEventManager().register(this, playerDataManager = new PlayerDataManager());
         proxy.getEventManager().register(this, new SetupAssistantListener());
-
 
         new ChatInputManager();
         getDataFolder().mkdir();
@@ -133,6 +131,8 @@ public class WarpSystem extends VelocityPlugin {
             log("Backup successfully created");
         }
 
+        startAutoSaver();
+
         log(" ");
         log("Done (" + t.result() + ")");
         log(" ");
@@ -143,13 +143,25 @@ public class WarpSystem extends VelocityPlugin {
     @Subscribe
     public void onDisable(ProxyShutdownEvent e) {
         this.dataHandler.onDisable();
-        save(true);
+        save(false);
+    }
+
+    private void startAutoSaver() {
+        log("Starting AutoSaver");
+        proxy.getScheduler().buildTask(this, () -> save(true)).delay(10, TimeUnit.MINUTES).repeat(10, TimeUnit.MINUTES).schedule();
     }
 
     private void checkRedis() {
-        if (proxy.getPluginManager().getPlugin("trevor").isPresent()) {
+        String name = "-";
+
+        boolean enabled = fileManager.getFile("Config").getSimpleConfig().getBoolean("WarpSystem.Redis", true);
+        if (!enabled) {
+            name = "Disabled";
+        } else if (proxy.getPluginManager().getPlugin("trevor").isPresent()) {
             RedisCore.core().setHandler(new TrevorHandler());
         }
+
+        log("Redis hook: " + name);
     }
 
     private void save(boolean saver) {

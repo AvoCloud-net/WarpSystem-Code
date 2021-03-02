@@ -148,7 +148,10 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
     private void checkRedis() {
         String name = "-";
 
-        if (getProxy().getPluginManager().getPlugin("Trevor") != null) {
+        boolean enabled = fileManager.getFile("Config").getConfig().getBoolean("WarpSystem.Redis", true);
+        if (!enabled) {
+            name = "Disabled";
+        } else if (getProxy().getPluginManager().getPlugin("Trevor") != null) {
             RedisCore.core().setHandler(new TrevorHandler());
             name = "Trevor";
         } else if (getProxy().getPluginManager().getPlugin("RedisBungee") != null) {
