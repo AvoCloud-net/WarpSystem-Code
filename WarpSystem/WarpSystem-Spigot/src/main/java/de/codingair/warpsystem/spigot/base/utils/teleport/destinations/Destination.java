@@ -8,7 +8,6 @@ import de.codingair.codingapi.utils.ImprovedDouble;
 import de.codingair.warpsystem.api.IDestination;
 import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.spigot.api.placeholders.PAPI;
-import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.SimulatedTeleportResult;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.*;
@@ -19,7 +18,6 @@ import org.bukkit.util.Vector;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public class Destination implements Serializable {
@@ -300,8 +298,8 @@ public class Destination implements Serializable {
         this.offsetZ = offsetZ;
     }
 
-    public boolean isProxy() {
-        return type != null && type.isBungee() && (!(adapter instanceof GlobalLocationAdapter) || (((GlobalLocationAdapter) adapter).getServer() != null && !Objects.equals(((GlobalLocationAdapter) adapter).getServer(), WarpSystem.getInstance().getCurrentServer())));
+    public boolean usesBukkitTeleportation() {
+        return adapter != null && adapter.usesBukkitTeleportation();
     }
 
     public Options getCustomOptions() {

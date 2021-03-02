@@ -14,7 +14,7 @@ public class AfterEffects extends TeleportStage {
 
     @Override
     public void start() {
-        if (!options.isAfterEffects() || !player.isOnline() || options.getDestination().isProxy()) {
+        if (!options.isAfterEffects() || !player.isOnline() || !options.getDestination().usesBukkitTeleportation()) {
             end();
             return;
         }

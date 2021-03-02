@@ -36,7 +36,7 @@ public abstract class PageItem extends Page {
     }
 
     @Override
-    public Editor getLast() {
-        return (Editor) super.getLast();
+    public Editor<?> getLast() {
+        return (Editor<?>) super.getLast();
     }
 }

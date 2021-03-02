@@ -131,4 +131,9 @@ public class GlobalLocationAdapter extends LocationAdapter implements Serializab
     public void setServer(String server) {
         this.server = server;
     }
+
+    @Override
+    public boolean usesBukkitTeleportation() {
+        return server == null || server.equals(WarpSystem.getInstance().getCurrentServer());
+    }
 }

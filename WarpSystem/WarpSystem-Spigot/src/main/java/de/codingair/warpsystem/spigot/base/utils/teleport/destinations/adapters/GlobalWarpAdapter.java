@@ -79,4 +79,9 @@ public class GlobalWarpAdapter extends DestinationAdapter {
     public Location buildLocation(String id) {
         return null;
     }
+
+    @Override
+    public boolean usesBukkitTeleportation() {
+        return false;
+    }
 }

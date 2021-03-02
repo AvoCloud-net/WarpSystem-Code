@@ -551,3 +551,6 @@ Other_Is_Already_On_Target_Server: '&7Der Spieler &e%PLAYER% &7ist &cbereits &7a
 Player_Protected_Area: '&7Du bist in einem &cgeschützten Bereich&7.'
 Target_Protected_Area: '&7Dein Ziel ist in einem &cgeschützten Bereich&7.'
 Portal_Does_Not_Exist: '&7Dieses Portal &cexistiert nicht&7.'
+Velocity: "Velocity"
+Power: "Kraft"
+Try: "Testen"

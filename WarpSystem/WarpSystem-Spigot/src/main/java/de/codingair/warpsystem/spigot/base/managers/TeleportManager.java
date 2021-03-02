@@ -113,6 +113,7 @@ public class TeleportManager implements ITeleportManager {
     public void cancelTeleport(Player player) {
         if (!isTeleporting(player)) return;
         Teleport teleport = getTeleport(player);
+
         teleport.cancel(Result.CANCELLED_BY_SYSTEM);
         invalidate(player);
 

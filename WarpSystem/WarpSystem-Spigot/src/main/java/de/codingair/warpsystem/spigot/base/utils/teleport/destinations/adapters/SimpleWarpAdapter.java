@@ -71,4 +71,9 @@ public class SimpleWarpAdapter extends DestinationAdapter {
         SimpleWarp warp = SimpleWarpManager.getInstance().getWarp(id);
         return warp == null ? null : warp.getLocation().clone();
     }
+
+    @Override
+    public boolean usesBukkitTeleportation() {
+        return true;
+    }
 }

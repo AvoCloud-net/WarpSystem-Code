@@ -16,6 +16,4 @@
         <module>WarpSystem-Proxy-Core</module>
         <module>WarpSystem-Proxy-Velocity</module>
     </modules>
-
-
 </project>

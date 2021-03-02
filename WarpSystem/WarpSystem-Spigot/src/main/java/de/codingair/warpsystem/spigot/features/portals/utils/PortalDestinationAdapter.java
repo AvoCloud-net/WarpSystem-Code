@@ -52,4 +52,9 @@ public class PortalDestinationAdapter extends DestinationAdapter {
 
         return p.getSpawn();
     }
+
+    @Override
+    public boolean usesBukkitTeleportation() {
+        return true;
+    }
 }

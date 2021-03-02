@@ -142,4 +142,9 @@ public class LocationAdapter extends CloneableAdapter implements Serializable, U
     public String getId() {
         return location.toJSONString(2);
     }
+
+    @Override
+    public boolean usesBukkitTeleportation() {
+        return true;
+    }
 }

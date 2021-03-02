@@ -10,7 +10,6 @@ import de.codingair.warpsystem.spigot.api.events.PlayerTeleportAcceptEvent;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -43,12 +42,12 @@ public class PlayerTeleport extends TeleportStage {
 
         String message = options.getFinalMessage(player);
         if (message != null) {
-            message = message.replace("%AMOUNT%", new ImprovedDouble(options.getCosts(player)) + "").replace("%warp%", ChatColor.translateAlternateColorCodes('&', options.getDisplayName()));
+            message = message.replace("%AMOUNT%", new ImprovedDouble(options.getCosts(player)) + "");
         }
 
         String finalMessage = message;
 
-        if (!options.getDestination().isProxy()) {
+        if (options.getDestination().usesBukkitTeleportation()) {
             Bukkit.getPluginManager().registerEvents(listener = new Listener() {
                 @EventHandler (priority = EventPriority.MONITOR)
                 public void onTeleport(PlayerTeleportEvent e) {
@@ -111,7 +110,7 @@ public class PlayerTeleport extends TeleportStage {
             public void accept(Result res) {
                 if (res == Result.SERVER_NOT_AVAILABLE) player.sendMessage(options.getServerNotOnline());
 
-                if (options.getDestination().isProxy()) {
+                if (!options.getDestination().usesBukkitTeleportation()) {
                     if (res == Result.SUCCESS) end();
                     else cancel(res);
                 }

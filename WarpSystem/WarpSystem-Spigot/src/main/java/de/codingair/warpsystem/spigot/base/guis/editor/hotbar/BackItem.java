@@ -7,6 +7,7 @@ import de.codingair.codingapi.player.gui.hotbar.components.ItemComponent;
 import de.codingair.codingapi.player.gui.inventory.gui.Skull;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.warpsystem.spigot.base.guis.editor.Editor;
+import de.codingair.warpsystem.spigot.base.guis.editor.PageItem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -15,10 +16,18 @@ import java.util.function.Consumer;
 
 public class BackItem extends ItemComponent {
     public BackItem(Editor<?> fallback) {
-        this(fallback, null);
+        this(fallback, null, null);
+    }
+
+    public BackItem(PageItem fallback) {
+        this(null, fallback, null);
     }
 
     public BackItem(Editor<?> fallback, @Nullable Consumer<Player> runnable) {
+        this(fallback, null, runnable);
+    }
+
+    private BackItem(Editor<?> fallback, PageItem fallbackPage, @Nullable Consumer<Player> runnable) {
         super(new ItemBuilder(Skull.ArrowLeft).setName("§7» §c" + Lang.get("Back") + "§7 «").getItem(), new ItemListener() {
             @Override
             public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
@@ -26,8 +35,13 @@ public class BackItem extends ItemComponent {
 
                 if (runnable != null) runnable.accept(player);
 
-                fallback.updatePage();
-                fallback.open();
+                if (fallbackPage != null) {
+                    fallbackPage.getLast().updatePage();
+                    fallbackPage.getLast().open();
+                } else {
+                    fallback.updatePage();
+                    fallback.open();
+                }
             }
 
             @Override
