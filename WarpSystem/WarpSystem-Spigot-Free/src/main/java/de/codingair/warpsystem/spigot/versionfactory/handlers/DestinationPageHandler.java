@@ -6,14 +6,15 @@ import de.codingair.codingapi.player.gui.inventory.gui.simple.SyncButton;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.codingapi.utils.TextAlignment;
-import de.codingair.warpsystem.spigot.api.placeholders.PAPI;
 import de.codingair.warpsystem.spigot.api.chatinput.ChatInputEvent;
 import de.codingair.warpsystem.spigot.api.chatinput.SyncChatInputGUIButton;
+import de.codingair.warpsystem.spigot.api.placeholders.PAPI;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.guis.editor.Editor;
 import de.codingair.warpsystem.spigot.base.guis.editor.StandardButtonOption;
 import de.codingair.warpsystem.spigot.base.guis.editor.pages.DestinationPage;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.DestinationType;
 import de.codingair.warpsystem.spigot.features.globalwarps.guis.GGlobalWarpList;
 import de.codingair.warpsystem.spigot.features.simplewarps.SimpleWarp;
@@ -369,6 +370,29 @@ public class DestinationPageHandler {
                                 .setLore("§3" + Lang.get("Current") + ": " + "§c" + Lang.get("Not_Set"))
                                 .addLore("", "§3" + Lang.get("Leftclick") + ": §a" + (Lang.get("Set")))
                                 .getItem();
+                    }
+
+                    @Override
+                    public void onClick(InventoryClickEvent e, Player player) {
+                        Lang.PREMIUM_CHAT(player);
+                    }
+                }.setOption(option));
+
+                page.addButton(new SyncButton(slot++, 2) {
+                    @Override
+                    public ItemStack craftItem() {
+                        Destination current = page.getDestination();
+                        boolean active = current.getType() == DestinationType.Velocity;
+
+                        ItemBuilder builder = new ItemBuilder(XMaterial.BLAZE_POWDER).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Velocity") + Lang.PREMIUM_LORE);
+
+                        String name = "§c" + Lang.get("Not_Set");
+                        builder.addLore("§3" + Lang.get("Current") + ": " + name);
+
+                        builder.addLore("", "§3" + Lang.get("Leftclick") + ": §a" + Lang.get("Edit"));
+                        if (active) builder.addLore("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
+
+                        return builder.getItem();
                     }
 
                     @Override

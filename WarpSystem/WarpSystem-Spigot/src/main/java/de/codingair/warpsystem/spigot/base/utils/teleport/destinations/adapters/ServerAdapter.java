@@ -131,4 +131,9 @@ public class ServerAdapter extends CloneableAdapter implements Serializable, Usa
     public String getId() {
         return server;
     }
+
+    @Override
+    public boolean usesBukkitTeleportation() {
+        return false;
+    }
 }

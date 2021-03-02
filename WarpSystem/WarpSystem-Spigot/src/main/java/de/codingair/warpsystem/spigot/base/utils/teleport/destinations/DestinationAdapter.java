@@ -31,4 +31,6 @@ public abstract class DestinationAdapter {
         if (destination != null) destination.adjustLocation(player, location);
         return TeleportUtils.prepareLocation(location, player);
     }
+
+    public abstract boolean usesBukkitTeleportation();
 }

@@ -5,20 +5,24 @@ import de.codingair.codingapi.player.gui.inventory.gui.itembutton.ItemButtonOpti
 import de.codingair.codingapi.player.gui.inventory.gui.simple.Button;
 import de.codingair.codingapi.player.gui.inventory.gui.simple.SyncAnvilGUIButton;
 import de.codingair.codingapi.player.gui.inventory.gui.simple.SyncButton;
+import de.codingair.codingapi.player.gui.inventory.gui.simple.SyncHotbarGUIButton;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
+import de.codingair.codingapi.utils.Node;
 import de.codingair.codingapi.utils.TextAlignment;
 import de.codingair.warpsystem.core.transfer.packets.spigot.RequestServerStatusPacket;
-import de.codingair.warpsystem.spigot.api.placeholders.PAPI;
 import de.codingair.warpsystem.spigot.api.chatinput.ChatInputEvent;
 import de.codingair.warpsystem.spigot.api.chatinput.SyncChatInputGUIButton;
+import de.codingair.warpsystem.spigot.api.placeholders.PAPI;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.guis.editor.Editor;
 import de.codingair.warpsystem.spigot.base.guis.editor.StandardButtonOption;
 import de.codingair.warpsystem.spigot.base.guis.editor.pages.DestinationPage;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.DestinationType;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.ServerAdapter;
+import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.VelocityAdapter;
 import de.codingair.warpsystem.spigot.features.globalwarps.guis.GGlobalWarpList;
 import de.codingair.warpsystem.spigot.features.simplewarps.SimpleWarp;
 import de.codingair.warpsystem.spigot.features.simplewarps.guis.GSimpleWarpList;
@@ -28,10 +32,12 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -660,6 +666,57 @@ public class DestinationPageHandler {
                     }
                 }.setOption(option));
             }
+
+            page.addButton(new SyncHotbarGUIButton(slot++, 2, new Node<>(ClickType.LEFT, new VelocityHotbarEditor(page, p.getPlayer()))) {
+                @Override
+                public void onFinish(Player player) {
+                    page.updateDestinationButtons();
+                }
+
+                @Override
+                public void onTrigger(InventoryClickEvent e, ClickType trigger, Player player) {
+                    super.onTrigger(e, trigger, player);
+
+                    if (trigger == ClickType.RIGHT) {
+                        Destination current = page.getDestination();
+                        boolean active = current.getType() == DestinationType.Velocity;
+
+                        if (active) {
+                            page.getDestination().setId(null);
+                            page.getDestination().setAdapter(null);
+                            page.getDestination().setType(null);
+                            page.updateDestinationButtons();
+                        }
+                    }
+                }
+
+                @Override
+                public ItemStack craftItem() {
+                    Destination current = page.getDestination();
+                    boolean active = current.getType() == DestinationType.Velocity;
+
+                    ItemBuilder builder = new ItemBuilder(XMaterial.BLAZE_POWDER).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Velocity"));
+
+                    String name;
+                    if (active) {
+                        VelocityAdapter adapter = (VelocityAdapter) current.getAdapter();
+                        Vector vector = adapter.getVector();
+                        double multiplier = adapter.getMultiplier();
+
+                        Location location = new Location(null, 0, 0, 0);
+                        location.setDirection(vector);
+                        String direction = "§8(§7→ §e" + Math.round(location.getYaw() * 100) / 100 + "° §7| ↑ §e" + Math.round(location.getPitch() * 100) / 100 + "°§8)";
+                        name = direction + "§7 • §e" + multiplier;
+                    } else name = "§c" + Lang.get("Not_Set");
+
+                    builder.addLore("§3" + Lang.get("Current") + ": " + name);
+
+                    builder.addLore("", "§3" + Lang.get("Leftclick") + ": §a" + Lang.get("Edit"));
+                    if (active) builder.addLore("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
+
+                    return builder.getItem();
+                }
+            });
         }
     }
 }

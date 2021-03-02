@@ -7,12 +7,12 @@ import de.codingair.codingapi.player.gui.hotbar.ClickType;
 import de.codingair.codingapi.player.gui.hotbar.HotbarGUI;
 import de.codingair.codingapi.player.gui.hotbar.ItemListener;
 import de.codingair.codingapi.player.gui.hotbar.components.ItemComponent;
-import de.codingair.codingapi.player.gui.inventory.gui.Skull;
 import de.codingair.codingapi.server.sounds.Sound;
 import de.codingair.codingapi.server.sounds.SoundData;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
+import de.codingair.warpsystem.spigot.base.guis.editor.hotbar.BackItem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.animations.utils.ParticlePart;
 import de.codingair.warpsystem.spigot.versionfactory.VFac;
@@ -40,22 +40,7 @@ public class ParticleOptions extends HotbarGUI {
     }
 
     public void initialize() {
-        setItem(0, new ItemComponent(new ItemBuilder(Skull.ArrowLeft).setName("§7» §c" + Lang.get("Back") + "§7 «").getItem(), new ItemListener() {
-            @Override
-            public void onClick(HotbarGUI gui, ItemComponent ic, Player player, ClickType clickType) {
-                ic.getLink().setStartSlot(-1);
-            }
-
-            @Override
-            public void onHover(HotbarGUI gui, ItemComponent old, ItemComponent current, Player player) {
-
-            }
-
-            @Override
-            public void onUnhover(HotbarGUI gui, ItemComponent current, ItemComponent newItem, Player player) {
-
-            }
-        }).setLink(this.main), false);
+        setItem(0, new BackItem(this.main), false);
         setItem(1, new ItemComponent(new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE).setHideName(true).getItem()));
 
         setItem(2, new ItemComponent(new ItemBuilder(XMaterial.BEACON).setName("§7" + Lang.get("Animation_Type") + ": '§e" + getAnimationName() + "§7'").getItem(), new ItemListener() {
