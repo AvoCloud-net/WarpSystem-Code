@@ -1,5 +1,6 @@
 WarpSystem:
   Language: ENG
+  Redis: true
   PlayerWarps:
     Inactive:
       #Time after an expiration. After that time, the PlayerWarp will be deleted.
