@@ -254,11 +254,30 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
     }
 
     private boolean checkStatusTp(Player gate, PlayerData data) {
-        if (data == null || data.getServer() != null && (!TeleportCommandManager.getInstance().isServerAccessible(data.getServer()) || !TeleportCommandManager.getInstance().getServerOptions(data.getServer()).isTp())) {
+        if (isOffline(data)) {
             //offline
             gate.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
             return true;
         } else return false;
+    }
+
+    private boolean isOffline(@Nullable PlayerData player) {
+        if (player == null) return true;
+
+        String server = player.getServer();
+        if (server != null) {
+            boolean interServerTP = !server.equals(WarpSystem.getInstance().getCurrentServer());
+
+            if (interServerTP) {
+                boolean isOnline = TeleportCommandManager.getInstance().isServerAccessible(player.getServer());
+                if (!isOnline) return true;
+
+                boolean tpEnabled = TeleportCommandManager.getInstance().getServerOptions(player.getServer()).isTp();
+                return !tpEnabled;
+            }
+        }
+
+        return false;
     }
 
     @Override
@@ -384,6 +403,22 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
             return;
         }
 
+        if (data.getServer() != null) {
+            boolean interServerTP = data.getServer().equals(WarpSystem.getInstance().getCurrentServer());
+
+            if (interServerTP) {
+                boolean offline;
+
+                if (tpToSender) offline = !isProxyTpaHereEnabled(data);
+                else  offline = !isProxyTpaEnabled(data);
+
+                if (offline) {
+                    player.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
+                    return;
+                }
+            }
+        }
+
         TeleportCommandManager.getInstance().invite(player.getName(), tpToSender, new Callback<Long>() {
             @Override
             public void accept(Long result) {
@@ -414,9 +449,13 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
             if (d.isVanished()) return false;
             if (Bukkit.getPlayer(d.getName()) != null) return true;
             if (d.getServer() == null) return false;
-            TeleportCommandOptions options = TeleportCommandManager.getInstance().getServerOptions(d.getServer());
-            return options != null && options.isTpa();
+            return isProxyTpaEnabled(d);
         };
+    }
+
+    private boolean isProxyTpaEnabled(PlayerData player) {
+        TeleportCommandOptions options = TeleportCommandManager.getInstance().getServerOptions(player.getServer());
+        return options != null && options.isTpa();
     }
 
     @NotNull
@@ -425,9 +464,13 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
             if (d.isVanished()) return false;
             if (Bukkit.getPlayer(d.getName()) != null) return true;
             if (d.getServer() == null) return false;
-            TeleportCommandOptions options = TeleportCommandManager.getInstance().getServerOptions(d.getServer());
-            return options != null && options.isTpaHere();
+            return isProxyTpaHereEnabled(d);
         };
+    }
+
+    private boolean isProxyTpaHereEnabled(PlayerData player) {
+        TeleportCommandOptions options = TeleportCommandManager.getInstance().getServerOptions(player.getServer());
+        return options != null && options.isTpaHere();
     }
 
     @Override
