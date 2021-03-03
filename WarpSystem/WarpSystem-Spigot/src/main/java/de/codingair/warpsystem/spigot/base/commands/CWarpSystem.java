@@ -30,6 +30,7 @@ import de.codingair.warpsystem.spigot.features.warps.importfilter.Result;
 import de.codingair.warpsystem.spigot.features.warps.managers.IconManager;
 import de.codingair.warpsystem.spigot.versionfactory.VFac;
 import de.codingair.warpsystem.spigot.versionfactory.VKey;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -56,17 +57,41 @@ public class CWarpSystem extends WSCommandBuilder {
 
             @Override
             public void unknownSubCommand(CommandSender sender, String label, String[] args) {
-                sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<info, reload, import, news, report, options, animations>");
+                sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<help, info, reload, import, news, report, options, animations>");
             }
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<info, reload, import, news, report, options, animations>");
-                return false;
+                sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<help, info, reload, import, news, report, options, animations>");
+                return true;
             }
         });
 
         VFac.build(VKey.CWarpSystem, getBaseComponent());
+
+        getBaseComponent().addChild(new CommandComponent("help") {
+            @Override
+            public boolean runCommand(CommandSender sender, String label, String[] args) {
+                if (sender instanceof Player) {
+                    Player p = (Player) sender;
+
+                    TextComponent tc = new TextComponent(TextComponent.fromLegacyText(Lang.getPrefix() + "§7Please check my "));
+
+                    TextComponent link = new TextComponent("§e§nwiki");
+                    link.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.BaseComponent[]{new TextComponent("§8» §eOpen §8«")}));
+                    link.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/CodingAir/WarpSystem-IssueTracker/wiki"));
+
+                    tc.addExtra(link);
+                    TextComponent addition = new TextComponent(". If you still need help after that, please contact my support.");
+                    addition.setColor(ChatColor.GRAY);
+                    tc.addExtra(addition);
+                    p.spigot().sendMessage(tc);
+                } else {
+                    sender.sendMessage(new String[]{Lang.getPrefix() + "§7Please check my §ewiki§7. If you still need help after that, please contact my support.", "https://github.com/CodingAir/WarpSystem-IssueTracker/wiki"});
+                }
+                return true;
+            }
+        });
 
         getBaseComponent().addChild(new CommandComponent("setupassistant") {
             @Override
@@ -74,11 +99,11 @@ public class CWarpSystem extends WSCommandBuilder {
                 SetupAssistant a = WarpSystem.getInstance().getSetupAssistantManager().getAssistant();
                 if (a != null) {
                     sender.sendMessage(Lang.getPrefix() + "§7The setup assistant is §calready used §7by §e" + a.getPlayer().getName() + "§7.");
-                    return false;
+                    return true;
                 }
 
                 WarpSystem.getInstance().getSetupAssistantManager().startAssistant((Player) sender, true);
-                return false;
+                return true;
             }
         }.setOnlyPlayers(true).addChild(new NavigationCommand()));
 
@@ -86,7 +111,7 @@ public class CWarpSystem extends WSCommandBuilder {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /shortcuts");
-                return false;
+                return true;
             }
         });
 
@@ -94,7 +119,7 @@ public class CWarpSystem extends WSCommandBuilder {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " animations " + WarpSystem.opt().cmdArg() + "<activate, add, edit, remove>");
-                return false;
+                return true;
             }
         });
 
@@ -102,7 +127,7 @@ public class CWarpSystem extends WSCommandBuilder {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " animations activate " + WarpSystem.opt().cmdArg() + "<name>");
-                return false;
+                return true;
             }
         });
 
@@ -120,12 +145,12 @@ public class CWarpSystem extends WSCommandBuilder {
 
                 if (animation == null) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Animation_does_not_exist"));
-                    return false;
+                    return true;
                 }
 
                 AnimationManager.getInstance().setActive(animation);
                 sender.sendMessage(Lang.getPrefix() + "§a" + Lang.get("Changes_have_been_saved"));
-                return false;
+                return true;
             }
         });
 
@@ -133,7 +158,7 @@ public class CWarpSystem extends WSCommandBuilder {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " animations add " + WarpSystem.opt().cmdArg() + "<name>");
-                return false;
+                return true;
             }
         }.setOnlyPlayers(true));
 
@@ -146,7 +171,7 @@ public class CWarpSystem extends WSCommandBuilder {
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 if (AnimationManager.getInstance().existsAnimation(argument)) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Name_Already_Exists"));
-                    return false;
+                    return true;
                 }
 
                 HotbarGUI h = API.getRemovable((Player) sender, HotbarGUI.class);
@@ -161,12 +186,14 @@ public class CWarpSystem extends WSCommandBuilder {
                     if (h instanceof Sounds) m = ((Sounds) h).getMenuGUI();
                     if (h instanceof Menu) m = (Menu) h;
 
-                    m.getAnimPlayer().setLoop(false);
-                    m.getAnimPlayer().setRunning(false);
+                    if (m != null) {
+                        m.getAnimPlayer().setLoop(false);
+                        m.getAnimPlayer().setRunning(false);
+                    }
                 }
 
                 new Menu((Player) sender, argument).open(true);
-                return false;
+                return true;
             }
         }.setOnlyPlayers(true));
 
@@ -174,7 +201,7 @@ public class CWarpSystem extends WSCommandBuilder {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " animations edit " + WarpSystem.opt().cmdArg() + "<name>");
-                return false;
+                return true;
             }
         }.setOnlyPlayers(true));
 
@@ -192,7 +219,7 @@ public class CWarpSystem extends WSCommandBuilder {
 
                 if (animation == null) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Animation_does_not_exist"));
-                    return false;
+                    return true;
                 }
 
                 HotbarGUI h = API.getRemovable((Player) sender, HotbarGUI.class);
@@ -212,7 +239,7 @@ public class CWarpSystem extends WSCommandBuilder {
                 }
 
                 new Menu((Player) sender, animation).open(true);
-                return false;
+                return true;
             }
         }.setOnlyPlayers(true));
 
@@ -220,7 +247,7 @@ public class CWarpSystem extends WSCommandBuilder {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " animations remove " + WarpSystem.opt().cmdArg() + "<name>");
-                return false;
+                return true;
             }
         });
 
@@ -238,12 +265,12 @@ public class CWarpSystem extends WSCommandBuilder {
 
                 if (animation == null) {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Animation_does_not_exist"));
-                    return false;
+                    return true;
                 }
 
                 AnimationManager.getInstance().removeAnimation(animation);
                 sender.sendMessage(Lang.getPrefix() + Lang.get("Animation_was_removed").replace("%ANIMATION%", animation.getName()));
-                return false;
+                return true;
             }
         });
 
@@ -251,7 +278,7 @@ public class CWarpSystem extends WSCommandBuilder {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 getComponent("setupassistant").runCommand(sender, label, args);
-                return false;
+                return true;
             }
         }.setOnlyPlayers(true));
 
@@ -259,7 +286,7 @@ public class CWarpSystem extends WSCommandBuilder {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 sendInfoMessage(sender);
-                return false;
+                return true;
             }
         });
 
@@ -268,7 +295,7 @@ public class CWarpSystem extends WSCommandBuilder {
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 if (WarpSystem.getInstance().getUpdateNotifier().getDownload() == null) {
                     sender.sendMessage(Lang.getPrefix() + "§cFetching data... Please try again.");
-                    return false;
+                    return true;
                 }
 
                 TextComponent tc0 = new TextComponent(Lang.getPrefix() + "§7Click »");
@@ -282,7 +309,7 @@ public class CWarpSystem extends WSCommandBuilder {
                 tc0.addExtra(tc1);
 
                 ((Player) sender).spigot().sendMessage(tc0);
-                return false;
+                return true;
             }
         });
 
@@ -290,7 +317,7 @@ public class CWarpSystem extends WSCommandBuilder {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " report " + WarpSystem.opt().cmdArg() + "<GitHub, Spigot-Forum, Direct>");
-                return false;
+                return true;
             }
         });
 
@@ -351,7 +378,7 @@ public class CWarpSystem extends WSCommandBuilder {
                         sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " report <GitHub, Spigot-Forum>");
                         break;
                 }
-                return false;
+                return true;
             }
         });
 
@@ -366,14 +393,14 @@ public class CWarpSystem extends WSCommandBuilder {
                         WarpSystem.getInstance().reload(false);
                         sender.sendMessage(Lang.getPrefix() + Lang.get("Success_Plugin_Reloaded"));
                     } catch (Throwable ex) {
-                        if (ex instanceof NoClassDefFoundError) return false;
+                        if (ex instanceof NoClassDefFoundError) return true;
                         ex.printStackTrace();
                     }
                 } else {
                     sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Unsaved_Changes"));
                     confirm.add(sender, 10);
                 }
-                return false;
+                return true;
             }
         });
 
@@ -388,7 +415,7 @@ public class CWarpSystem extends WSCommandBuilder {
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
                 if (argument == null || (!argument.equalsIgnoreCase("true") && !argument.equalsIgnoreCase("false"))) {
                     sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " reload " + WarpSystem.opt().cmdArg() + "<true, false>");
-                    return false;
+                    return true;
                 }
 
                 boolean save = Boolean.parseBoolean(argument);
@@ -398,7 +425,7 @@ public class CWarpSystem extends WSCommandBuilder {
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Success_Plugin_Reloaded"));
                 else
                     sender.sendMessage(Lang.getPrefix() + Lang.get("Success_Plugin_Reloaded_Without_Saving"));
-                return false;
+                return true;
             }
         });
 
@@ -406,7 +433,7 @@ public class CWarpSystem extends WSCommandBuilder {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
                 sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " import " + WarpSystem.opt().cmdArg() + "<CategoryWarps, Essentials> [Warp]");
-                return false;
+                return true;
             }
         });
 
@@ -447,98 +474,90 @@ public class CWarpSystem extends WSCommandBuilder {
                         sender.sendMessage(Lang.getPrefix() + Lang.get("Import_Finish_With_Errors") + " §8[" + result.name() + "]");
                     }
                 }
-                return false;
+                return true;
             }
         });
 
         getComponent("import", null).addChild(new MultiCommandComponent() {
             @Override
             public void addArguments(CommandSender sender, String[] args, List<String> suggestions) {
-                switch (args[1].toLowerCase()) {
-                    case "essentials": {
-                        List<String> l = ImportType.ESSENTIALS.loadWarpNames();
-                        suggestions.addAll(l);
-                        l.clear();
-                        break;
-                    }
+                if ("essentials".equals(args[1].toLowerCase())) {
+                    List<String> l = ImportType.ESSENTIALS.loadWarpNames();
+                    suggestions.addAll(l);
+                    l.clear();
                 }
             }
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
-                switch (args[1].toLowerCase()) {
-                    case "essentials": {
-                        SimpleWarp warp = ImportType.ESSENTIALS.loadWarp(argument);
+                if ("essentials".equals(args[1].toLowerCase())) {
+                    SimpleWarp warp = ImportType.ESSENTIALS.loadWarp(argument);
 
-                        if (warp == null) {
-                            sender.sendMessage(Lang.getPrefix() + Lang.get("Import_Could_Not_Import_Warp"));
-                            return false;
-                        }
-
-                        if (IconManager.getInstance().getIcon(warp.getName()) != null || SimpleWarpManager.getInstance().existsWarp(warp.getName())) {
-                            sender.sendMessage(Lang.getPrefix() + Lang.get("Name_Already_Exists"));
-
-                            SimpleMessage simpleMessage = new SimpleMessage(Lang.getPrefix() + Lang.get("Import_Choose_New_Name"), WarpSystem.getInstance());
-
-                            simpleMessage.replace("%YES%", new ChatButton("§a" + Lang.get("Yes"), Lang.get("Click_Hover")) {
-                                @Override
-                                public void onClick(Player player) {
-                                    AnvilGUI.openAnvil(WarpSystem.getInstance(), (Player) sender, new AnvilListener() {
-                                        @Override
-                                        public void onClick(AnvilClickEvent e) {
-                                            e.setCancelled(true);
-                                            e.setClose(false);
-
-                                            String s = e.getInput();
-                                            if (s != null && (s.isEmpty() || s.equalsIgnoreCase("none") || s.equalsIgnoreCase("-") || s.equalsIgnoreCase("null"))) s = null;
-
-                                            if (s == null) {
-                                                sender.sendMessage(Lang.getPrefix() + Lang.get("Enter_Name"));
-                                                return;
-                                            }
-
-                                            if (IconManager.getInstance().getIcon(s) != null || SimpleWarpManager.getInstance().existsWarp(s)) {
-                                                sender.sendMessage(Lang.getPrefix() + Lang.get("Name_Already_Exists"));
-                                                return;
-                                            }
-
-                                            warp.setName(s);
-                                            SimpleWarpManager.getInstance().addWarp(warp);
-                                            sender.sendMessage(Lang.getPrefix() + Lang.get("Import_Warp_Imported").replace("%WARP%", warp.getName()));
-                                            e.setClose(true);
-                                        }
-
-                                        @Override
-                                        public void onClose(AnvilCloseEvent e) {
-                                            if (e.getSubmittedText() == null)
-                                                sender.sendMessage(Lang.getPrefix() + Lang.get("Import_Could_Not_Import_Warp"));
-                                        }
-                                    }, new ItemBuilder(XMaterial.NAME_TAG).setName(Lang.get("Name") + "...").getItem());
-                                    simpleMessage.destroy();
-                                }
-                            });
-
-                            simpleMessage.replace("%NO%", new ChatButton("§c" + Lang.get("No"), Lang.get("Click_Hover")) {
-                                @Override
-                                public void onClick(Player player) {
-                                    sender.sendMessage(Lang.getPrefix() + Lang.get("Import_Could_Not_Import_Warp"));
-                                    simpleMessage.destroy();
-                                }
-                            });
-
-                            simpleMessage.send((Player) sender);
-                        } else {
-                            SimpleWarpManager.getInstance().addWarp(warp);
-                            sender.sendMessage(Lang.getPrefix() + Lang.get("Import_Warp_Imported").replace("%WARP%", warp.getName()));
-                        }
-                        break;
+                    if (warp == null) {
+                        sender.sendMessage(Lang.getPrefix() + Lang.get("Import_Could_Not_Import_Warp"));
+                        return true;
                     }
 
-                    default: {
-                        sender.sendMessage(Lang.getPrefix() + Lang.get("Single_Import_Not_Available"));
+                    if (IconManager.getInstance().getIcon(warp.getName()) != null || SimpleWarpManager.getInstance().existsWarp(warp.getName())) {
+                        sender.sendMessage(Lang.getPrefix() + Lang.get("Name_Already_Exists"));
+
+                        SimpleMessage simpleMessage = new SimpleMessage(Lang.getPrefix() + Lang.get("Import_Choose_New_Name"), WarpSystem.getInstance());
+
+                        simpleMessage.replace("%YES%", new ChatButton("§a" + Lang.get("Yes"), Lang.get("Click_Hover")) {
+                            @Override
+                            public void onClick(Player player) {
+                                AnvilGUI.openAnvil(WarpSystem.getInstance(), (Player) sender, new AnvilListener() {
+                                    @Override
+                                    public void onClick(AnvilClickEvent e) {
+                                        e.setCancelled(true);
+                                        e.setClose(false);
+
+                                        String s = e.getInput();
+                                        if (s != null && (s.isEmpty() || s.equalsIgnoreCase("none") || s.equalsIgnoreCase("-") || s.equalsIgnoreCase("null"))) s = null;
+
+                                        if (s == null) {
+                                            sender.sendMessage(Lang.getPrefix() + Lang.get("Enter_Name"));
+                                            return;
+                                        }
+
+                                        if (IconManager.getInstance().getIcon(s) != null || SimpleWarpManager.getInstance().existsWarp(s)) {
+                                            sender.sendMessage(Lang.getPrefix() + Lang.get("Name_Already_Exists"));
+                                            return;
+                                        }
+
+                                        warp.setName(s);
+                                        SimpleWarpManager.getInstance().addWarp(warp);
+                                        sender.sendMessage(Lang.getPrefix() + Lang.get("Import_Warp_Imported").replace("%WARP%", warp.getName()));
+                                        e.setClose(true);
+                                    }
+
+                                    @Override
+                                    public void onClose(AnvilCloseEvent e) {
+                                        if (e.getSubmittedText() == null)
+                                            sender.sendMessage(Lang.getPrefix() + Lang.get("Import_Could_Not_Import_Warp"));
+                                    }
+                                }, new ItemBuilder(XMaterial.NAME_TAG).setName(Lang.get("Name") + "...").getItem());
+                                simpleMessage.destroy();
+                            }
+                        });
+
+                        simpleMessage.replace("%NO%", new ChatButton("§c" + Lang.get("No"), Lang.get("Click_Hover")) {
+                            @Override
+                            public void onClick(Player player) {
+                                sender.sendMessage(Lang.getPrefix() + Lang.get("Import_Could_Not_Import_Warp"));
+                                simpleMessage.destroy();
+                            }
+                        });
+
+                        simpleMessage.send((Player) sender);
+                    } else {
+                        SimpleWarpManager.getInstance().addWarp(warp);
+                        sender.sendMessage(Lang.getPrefix() + Lang.get("Import_Warp_Imported").replace("%WARP%", warp.getName()));
                     }
+                } else {
+                    sender.sendMessage(Lang.getPrefix() + Lang.get("Single_Import_Not_Available"));
                 }
-                return false;
+                return true;
             }
         });
     }
