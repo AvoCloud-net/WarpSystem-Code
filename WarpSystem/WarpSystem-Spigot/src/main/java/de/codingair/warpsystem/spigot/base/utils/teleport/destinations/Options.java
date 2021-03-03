@@ -14,6 +14,7 @@ public class Options implements Serializable {
     private Boolean rotation;
     private String displayName;
     private Boolean particles;
+    private Boolean safeTP;
 
     public Options apply(Options options) {
         this.message = options.message;
@@ -22,6 +23,7 @@ public class Options implements Serializable {
         this.rotation = options.rotation;
         this.displayName = options.displayName;
         this.particles = options.particles;
+        this.safeTP = options.safeTP;
         return this;
     }
 
@@ -45,6 +47,10 @@ public class Options implements Serializable {
         if (i == null) particles = null;
         else particles = i == 2;
 
+        i = d.getInteger("safe", null);
+        if (i == null) safeTP = null;
+        else safeTP = i == 2;
+
         return true;
     }
 
@@ -56,6 +62,7 @@ public class Options implements Serializable {
         d.put("rotation", rotation == null ? 0 : (rotation ? 2 : 1));
         d.put("displayName", displayName);
         d.put("particles", particles == null ? 0 : (particles ? 2 : 1));
+        d.put("safe", safeTP == null ? 0 : (safeTP ? 2 : 1));
     }
 
     @Override
@@ -66,6 +73,7 @@ public class Options implements Serializable {
         rotation = null;
         displayName = null;
         particles = null;
+        safeTP = null;
     }
 
     @Override
@@ -78,12 +86,13 @@ public class Options implements Serializable {
                 Objects.equals(delay, options.delay) &&
                 Objects.equals(rotation, options.rotation) &&
                 Objects.equals(displayName, options.displayName) &&
-                Objects.equals(particles, options.particles);
+                Objects.equals(particles, options.particles) &&
+                Objects.equals(safeTP, options.safeTP);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(message, customMessage, delay, rotation, displayName, particles);
+        return Objects.hash(message, customMessage, delay, rotation, displayName, particles, safeTP);
     }
 
     public String buildMessage(String message) {
@@ -154,5 +163,20 @@ public class Options implements Serializable {
         if (particles != null && particles == WarpSystem.opt().isAfterEffects()) {
             this.particles = null;
         } else this.particles = particles;
+    }
+
+    public boolean isSafeTP() {
+        if (safeTP == null) return WarpSystem.opt().isSafeTp();
+        return safeTP;
+    }
+
+    public Boolean getSafeTP() {
+        return safeTP;
+    }
+
+    public void setSafeTP(Boolean safeTP) {
+        if (safeTP != null && safeTP == WarpSystem.opt().isSafeTp()) {
+            this.safeTP = null;
+        } else this.safeTP = safeTP;
     }
 }

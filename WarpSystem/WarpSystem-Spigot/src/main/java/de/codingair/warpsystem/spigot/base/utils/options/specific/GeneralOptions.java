@@ -37,7 +37,8 @@ public class GeneralOptions extends Options {
     private Option<String> placeholderColorsOffline = new Option<>("WarpSystem.Proxy.Placeholder.Colors.Offline", "&c");
     private Option<String> placeholderColorsFull = new Option<>("WarpSystem.Proxy.Placeholder.Colors.Full", "&c");
     private Option<String> placeholderColorsNotFull = new Option<>("WarpSystem.Proxy.Placeholder.Colors.Not_Full", "&a");
-    private Option<List<String>> forbiddenRegions = new Option<>("WarpSystem.Teleport.Forbidden_Regions", new ArrayList<String>());
+    private Option<List<String>> forbiddenRegions = new Option<>("WarpSystem.Teleport.Forbidden_Regions", new ArrayList<>());
+    private Option<Boolean> safeTp = new Option<>("WarpSystem.Teleport.Safe_TP", false);
 
     public GeneralOptions() {
         super("Config");
@@ -71,6 +72,7 @@ public class GeneralOptions extends Options {
         set(placeholderColorsFull);
         set(placeholderColorsNotFull);
         set(forbiddenRegions);
+        set(safeTp);
         save();
     }
 
@@ -97,6 +99,7 @@ public class GeneralOptions extends Options {
         get(placeholderColorsFull);
         get(placeholderColorsNotFull);
         get(forbiddenRegions);
+        get(safeTp);
 
         if (fetchUpdates.getValue() < 0 || fetchUpdates.getValue() > 2) fetchUpdates.setValue(1);
         if (System.getProperty("os.name").toLowerCase().contains("win") || System.getProperty("os.name").toLowerCase().contains("mac"))
@@ -156,6 +159,7 @@ public class GeneralOptions extends Options {
             this.placeholderColorsFull = o.placeholderColorsFull.clone();
             this.placeholderColorsNotFull = o.placeholderColorsNotFull.clone();
             this.forbiddenRegions = o.forbiddenRegions.clone();
+            this.safeTp = o.safeTp.clone();
         }
     }
 
@@ -307,5 +311,9 @@ public class GeneralOptions extends Options {
 
         if (regions == null) return false;
         return regions.anyMatch(s -> forbiddenRegions.getValue().contains(s));
+    }
+
+    public boolean isSafeTp() {
+        return safeTp.getValue();
     }
 }

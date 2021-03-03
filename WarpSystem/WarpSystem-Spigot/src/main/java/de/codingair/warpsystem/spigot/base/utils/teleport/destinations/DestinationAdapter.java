@@ -28,8 +28,12 @@ public abstract class DestinationAdapter {
 
     public CompletableFuture<org.bukkit.Location> prepare(Player player, org.bukkit.Location location) {
         if (location == null) return CompletableFuture.completedFuture(null);
-        if (destination != null) destination.adjustLocation(player, location);
-        return TeleportUtils.prepareLocation(location, player);
+        if (destination != null) {
+            destination.adjustLocation(player, location);
+            if (destination.getCustomOptions().isSafeTP()) return TeleportUtils.prepareLocation(location, player);
+        }
+
+        return CompletableFuture.completedFuture(location);
     }
 
     public abstract boolean usesBukkitTeleportation();

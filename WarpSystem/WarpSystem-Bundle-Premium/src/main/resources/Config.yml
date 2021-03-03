@@ -91,6 +91,8 @@ WarpSystem:
     #A list of forbidden WorldGuard regions.
     #All types of user based teleportations are included: /back, /tpa, /tpahere, PlayerWarps, random locations
     Forbidden_Regions: []
+    #Searches for a safe spot in a 5 blocks radius when teleporting into a danger zone in survival/adventure mode
+    Safe_TP: true
 
   #ByPass: warpsystem.bypass.cooldown
   #Time format: "0d, 0h, 0m, 0s" - Unnecessary values can be removed (examples: "1d, 5m"; "10s"; "5h")!
