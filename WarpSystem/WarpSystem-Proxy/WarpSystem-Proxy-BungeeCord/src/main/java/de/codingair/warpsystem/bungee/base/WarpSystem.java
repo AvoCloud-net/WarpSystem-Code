@@ -85,12 +85,12 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
         logMessage("Status:");
         logMessage(" ");
 
+        this.fileManager.loadFile("Config", "/", "proxy/");
         checkRedis();
 
         dataManager = new DataManager();
         dataManager.preLoad();
 
-        this.fileManager.loadFile("Config", "/", "proxy/");
         try {
             LangHandler.initPreDefinedLanguages(this);
         } catch (IOException e) {
