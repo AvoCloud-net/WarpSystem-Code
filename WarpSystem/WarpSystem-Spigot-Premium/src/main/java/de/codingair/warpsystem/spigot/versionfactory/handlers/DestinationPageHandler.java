@@ -38,6 +38,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,18 @@ public class DestinationPageHandler {
 
     private static double trim(double d) {
         return ((double) (int) (d * 100)) / 100;
+    }
+
+    @NotNull
+    private static String getBooleanDescription(boolean enabled, boolean standard) {
+        if (standard) return  "§7" + getBooleanDescription(standard) + " §8(§e" + Lang.get("Default") + "§8)";
+        return getBooleanDescription(enabled);
+    }
+
+    @NotNull
+    private static String getBooleanDescription(boolean enabled) {
+        if (enabled) return  "§a" + Lang.get("Enabled");
+        else return  "§c" + Lang.get("Disabled");
     }
 
     private static class Options {
@@ -249,9 +262,14 @@ public class DestinationPageHandler {
                 @Override
                 public ItemStack craftItem() {
                     ItemBuilder builder = new ItemBuilder(XMaterial.BLAZE_ROD).setName("§6§n" + Lang.get("Particle_Effects"));
-                    boolean b = page.getDestination().getCustomOptions().isParticles();
 
-                    builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Current") + ": " + (b ? "§a" + Lang.get("Enabled") : "§c" + Lang.get("Disabled")));
+                    de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Options options = page.getDestination().getCustomOptions();
+                    boolean enabled = options.isParticles();
+                    boolean standard = options.getParticles() == null;
+
+                    String description = getBooleanDescription(enabled, standard);
+
+                    builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Current") + ": " + description);
                     builder.addLore("", Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §7" + Lang.get("Toggle"));
                     return builder.getItem();
                 }
@@ -264,6 +282,34 @@ public class DestinationPageHandler {
                 @Override
                 public void onClick(InventoryClickEvent e, Player player) {
                     page.getDestination().getCustomOptions().setParticles(!page.getDestination().getCustomOptions().isParticles());
+                    update();
+                }
+            }.setOption(option));
+
+            page.addButton(new SyncButton(6, 2) {
+                @Override
+                public ItemStack craftItem() {
+                    ItemBuilder builder = new ItemBuilder(XMaterial.FEATHER).setName("§6§n" + Lang.get("Safe_Teleport"));
+
+                    de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Options options = page.getDestination().getCustomOptions();
+                    boolean enabled = options.isSafeTP();
+                    boolean standard = options.getSafeTP() == null;
+
+                    String description = getBooleanDescription(enabled, standard);
+
+                    builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Current") + ": " + description);
+                    builder.addLore("", Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §7" + Lang.get("Toggle"));
+                    return builder.getItem();
+                }
+
+                @Override
+                public boolean canClick(ClickType click) {
+                    return click == ClickType.LEFT;
+                }
+
+                @Override
+                public void onClick(InventoryClickEvent e, Player player) {
+                    page.getDestination().getCustomOptions().setSafeTP(!page.getDestination().getCustomOptions().isSafeTP());
                     update();
                 }
             }.setOption(option));
