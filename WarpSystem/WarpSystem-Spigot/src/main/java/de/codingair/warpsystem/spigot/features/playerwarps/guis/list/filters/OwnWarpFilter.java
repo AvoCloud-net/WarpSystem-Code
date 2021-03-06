@@ -104,7 +104,7 @@ public class OwnWarpFilter implements Filter {
         List<PlayerWarp> warps = PlayerWarpManager.getManager().getOwnWarps(player);
 
         List<Button> buttons = new ArrayList<>();
-        if (createButtonInList() && PlayerWarpManager.getManager().hasPermission(player)) maxSize--;
+        if (createButtonInList()) maxSize--;
 
         ItemButtonOption option = new ItemButtonOption();
         option.setClickSound(new SoundData(Sound.UI_BUTTON_CLICK, 0.7F, 1F));
