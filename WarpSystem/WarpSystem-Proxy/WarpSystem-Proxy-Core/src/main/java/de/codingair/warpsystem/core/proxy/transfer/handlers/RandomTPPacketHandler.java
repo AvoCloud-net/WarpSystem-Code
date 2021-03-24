@@ -29,7 +29,7 @@ public class RandomTPPacketHandler implements ResponsiblePacketHandler<RandomTPP
             ServerHandler.sendPlayerTo(pp, target).whenComplete((res, t) -> {
                 if(t != null) t.printStackTrace();
                 else if(res.isConnected()) {
-                    Core.getPlugin().dataHandler().send(packet, target, Direction.DOWN);
+                    Core.getPlugin().dataHandler().send(packet.noFuture(), target, Direction.DOWN);
                     future.complete(new BooleanPacket(true));
                     return;
                 }
