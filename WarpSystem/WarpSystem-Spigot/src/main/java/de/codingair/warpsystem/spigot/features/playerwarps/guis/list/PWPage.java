@@ -75,7 +75,8 @@ public class PWPage extends Page {
             addButton(button);
             button.setOption(new StandardButtonOption());
 
-            if (slot == 7 || slot == 16 || slot == 25 || slot == 34 || slot == 43 || slot == 52 || slot == 61) slot += 2;
+            if (slot == 7 || slot == 16) slot += 2;
+            else if (slot == 25) break;
         }
 
         if (filter.createButtonInList()) addButton(new SyncButton(slot) {
