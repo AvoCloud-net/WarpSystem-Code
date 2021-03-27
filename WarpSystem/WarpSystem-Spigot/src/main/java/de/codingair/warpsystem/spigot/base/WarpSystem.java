@@ -69,7 +69,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     private OptionBundle options;
     private GeneralOptions generalOptions;
     private boolean useProxy = false;
-    private boolean onProxy = false;
+    private boolean connectedProxy = false;
     private String proxyPluginVersion = null;
     private String server = null;
     private DataManager dataManager;
@@ -317,7 +317,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
         //Disable all functions
         activated = false;
-        onProxy = false;
+        connectedProxy = false;
         server = null;
         updateAvailable = false;
         old = false;
@@ -508,15 +508,15 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         return fileManager;
     }
 
-    public boolean isOnProxy() {
-        return onProxy;
+    public boolean isProxyConnected() {
+        return connectedProxy;
     }
 
     public synchronized void setOnProxy(boolean onProxy, Player connection) {
         if (onProxy) this.proxyFeatureList.forEach(proxyFeature -> proxyFeature.onInitiate(connection));
-        if (this.onProxy == onProxy) return;
+        if (this.connectedProxy == onProxy) return;
 
-        this.onProxy = onProxy;
+        this.connectedProxy = onProxy;
         if (onProxy) {
             this.proxyFeatureList.forEach(proxyFeature -> proxyFeature.onConnect(connection));
         } else {

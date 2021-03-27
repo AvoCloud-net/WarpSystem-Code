@@ -101,7 +101,7 @@ public class RTP_Go_Command extends NaturalCommandComponent {
                 if (processTarget(sender, player, finalPlayer, target)) return false;
             } else if (data.length == 2) {
                 //on server
-                if (!WarpSystem.getInstance().isOnProxy()) {
+                if (!WarpSystem.getInstance().isProxyConnected()) {
                     sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " go " + WarpSystem.opt().cmdArg() + "[world-1, world-2, ...] [player]");
                     return false;
                 }
@@ -164,7 +164,7 @@ public class RTP_Go_Command extends NaturalCommandComponent {
             String cmd = builder.toString();
             cmd = cmd.substring(0, cmd.length() - 1);
 
-            if (WarpSystem.getInstance().isOnProxy()) {
+            if (WarpSystem.getInstance().isProxyConnected()) {
                 applyProxySuggestions(sender, cmd, args, sug);
             } else {
                 applySuggestions(sender, cmd, sug);

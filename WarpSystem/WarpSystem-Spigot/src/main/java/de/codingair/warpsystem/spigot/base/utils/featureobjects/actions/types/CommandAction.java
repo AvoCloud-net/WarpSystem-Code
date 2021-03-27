@@ -52,7 +52,7 @@ public class CommandAction extends ActionObject<List<String>> {
 
             Command cmd = CommandBuilder.getCommand(tag);
 
-            if (WarpSystem.getInstance().isOnProxy() && cmd == null) {
+            if (WarpSystem.getInstance().isProxyConnected() && cmd == null) {
                 WarpSystem.getDataHandler().send(new PerformCommandOnProxyPacket(player.getName(), command), player).thenAccept(packet -> {
                     if (!packet.getBoolean()) player.sendMessage(Lang.getPrefix() + Lang.get("Unknown_Command"));
                 });

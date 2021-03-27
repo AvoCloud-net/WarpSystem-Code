@@ -76,6 +76,12 @@ public class VelocityHandler extends CoreDataHandler<ChannelIdentifier> {
     public void onPluginMessage(PluginMessageEvent e) {
         if (e.getIdentifier().equals(getProxyChannel())) {
             receive(e.getData(), new VelocityServer(((ServerConnection) e.getSource()).getServer()), Direction.DOWN);
+
+            //cancel here to avoid sending these packets to clients
+            e.setResult(PluginMessageEvent.ForwardResult.handled());
+        } else if (e.getIdentifier().equals(getBackendChannel())) {
+            //disallow hack clients from sending own packets through this channel
+            e.setResult(PluginMessageEvent.ForwardResult.handled());
         }
     }
 }

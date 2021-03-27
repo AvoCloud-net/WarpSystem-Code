@@ -43,13 +43,13 @@ public class SpawnListener implements Listener {
     public SpawnListener() {
         try {
             Class<?> o = IReflection.getSaveClass(IReflection.ServerPacket.MINECRAFT_PACKAGE, "PacketPlayOutChat");
-            if (o != null) forwarding.add(o);
+            forwarding.add(o);
         } catch (ClassNotFoundException ignored) {
         }
 
         try {
             Class<?> o = IReflection.getSaveClass(IReflection.ServerPacket.MINECRAFT_PACKAGE, "PacketPlayOutCustomPayload");
-            if (o != null) forwarding.add(o);
+            forwarding.add(o);
         } catch (ClassNotFoundException ignored) {
         }
 

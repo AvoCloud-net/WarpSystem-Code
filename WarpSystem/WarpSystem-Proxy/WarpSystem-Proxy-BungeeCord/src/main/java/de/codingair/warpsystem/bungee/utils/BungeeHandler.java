@@ -90,6 +90,12 @@ public class BungeeHandler extends CoreDataHandler<String> implements Listener {
     public void onPluginMessage(PluginMessageEvent e) {
         if (e.getTag().equals(getChannelProxy())) {
             receive(e.getData(), new BungeeServer(((ProxiedPlayer) e.getReceiver()).getServer().getInfo()), Direction.DOWN);
+
+            //cancel here to avoid sending these packets to clients
+            e.setCancelled(true);
+        } else if (e.getTag().equals(getChannelBackend())) {
+            //disallow hack clients from sending own packets through this channel
+            e.setCancelled(true);
         }
     }
 }

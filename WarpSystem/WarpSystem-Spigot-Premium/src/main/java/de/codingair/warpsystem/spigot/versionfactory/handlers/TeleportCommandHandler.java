@@ -222,7 +222,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
 
         if (playerP == null || targetP == null) {
             //try on proxy
-            if (WarpSystem.getInstance().isOnProxy() && TeleportCommandManager.getInstance().isProxy()) {
+            if (WarpSystem.getInstance().isProxyConnected() && TeleportCommandManager.getInstance().isProxy()) {
                 WarpSystem.getDataHandler().send(new PrepareTeleportPacket(gate.getName(), player.getName(), target.getName()), gate).thenAccept(processTeleportResponse(gate, player.getName()));
             } else gate.sendMessage(Lang.getPrefix() + Lang.get("Player_is_not_online"));
             return;
@@ -383,7 +383,7 @@ public class TeleportCommandHandler implements ITeleportCommandHandler {
 
     @Override
     public void tpAll(Player player, int alreadyHandled, int alreadySent) {
-        if (WarpSystem.getInstance().isOnProxy() && TeleportCommandManager.getInstance().isProxy()) {
+        if (WarpSystem.getInstance().isProxyConnected() && TeleportCommandManager.getInstance().isProxy()) {
             WarpSystem.getDataHandler().send(new PrepareTeleportPacket(player.getName(), null, player.getName()), player).thenAccept(packet -> {
                 long result = packet.a();
                 int handled = (int) (result >> 32);

@@ -149,7 +149,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
         if (economy) entry.put("Economy", 1);
 
         if (bungeeCord) {
-            if (WarpSystem.getInstance().isOnProxy()) entry.put("BungeeCord", 1);
+            if (WarpSystem.getInstance().isProxyConnected()) entry.put("BungeeCord", 1);
             else if (Bukkit.getOnlinePlayers().isEmpty()) entry.put("BungeeCord (empty server)", 1);
         }
 
@@ -159,7 +159,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     @Override
     public void addCustomCarts(Metrics metrics) {
         metrics.addCustomChart(new Metrics.SingleLineChart("playerwarp_usage", () -> {
-            if (!bungeeCord || WarpSystem.getInstance().isOnProxy()) {
+            if (!bungeeCord || WarpSystem.getInstance().isProxyConnected()) {
                 lastCountedPlayerWarpSize = 0;
 
                 interactWithWarps(new Callback<PlayerWarp>() {
@@ -186,7 +186,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     }
 
     public void sync(PlayerWarp old, PlayerWarp warp, Player connection) {
-        if (!bungeeCord || !WarpSystem.getInstance().isOnProxy()) return;
+        if (!bungeeCord || !WarpSystem.getInstance().isProxyConnected()) return;
 
         if (warp.isSource()) {
             warp.setSource(false);
@@ -199,7 +199,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     }
 
     public void sync(PlayerWarpData old, PlayerWarpData warp, Player connection) {
-        if (!bungeeCord || !WarpSystem.getInstance().isOnProxy()) return;
+        if (!bungeeCord || !WarpSystem.getInstance().isProxyConnected()) return;
         PlayerWarpUpdate update = warp.diff(old);
 
         if (update.isEmpty()) return;
@@ -822,7 +822,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     }
 
     public boolean checkBungeeCord() {
-        return isBungeeCord() && WarpSystem.getInstance().isOnProxy();
+        return isBungeeCord() && WarpSystem.getInstance().isProxyConnected();
     }
 
     public long getInactiveTime() {

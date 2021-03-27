@@ -50,7 +50,7 @@ public abstract class ChatInputGUI implements Removable {
     public void open() {
         API.addRemovable(this);
 
-        if (WarpSystem.getInstance().isOnProxy()) {
+        if (WarpSystem.getInstance().isProxyConnected()) {
             WarpSystem.getDataHandler().send(new ChatInputGUITogglePacket(this.player.getName(), true), player);
         }
 
@@ -101,7 +101,7 @@ public abstract class ChatInputGUI implements Removable {
             this.runnable.cancel();
             this.runnable = null;
 
-            if (WarpSystem.getInstance().isOnProxy()) {
+            if (WarpSystem.getInstance().isProxyConnected()) {
                 WarpSystem.getDataHandler().send(new ChatInputGUITogglePacket(this.player.getName(), false), player);
             }
 
