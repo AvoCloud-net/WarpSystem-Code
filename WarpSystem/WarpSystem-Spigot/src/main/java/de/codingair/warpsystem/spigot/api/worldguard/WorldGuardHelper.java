@@ -18,9 +18,11 @@ public class WorldGuardHelper {
         enabled = Bukkit.getPluginManager().isPluginEnabled("WorldGuard");
         if (enabled) {
             try {
+                WorldGuardAdapter.test();
                 adapter = new WorldGuardAdapter();
             } catch (ClassNotFoundException | NoClassDefFoundError e) {
                 try {
+                    WorldGuardAdapter_12.test();
                     adapter = new WorldGuardAdapter_12();
                 } catch (ClassNotFoundException | NoClassDefFoundError e1) {
                     WarpSystem.getInstance().getLogger().log(Level.WARNING, "Could not hook into WorldGuard. Please contact the author!");

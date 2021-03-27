@@ -16,11 +16,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 public class WorldGuardAdapter {
-    public WorldGuardAdapter() throws ClassNotFoundException {
-        test();
-    }
-
-    protected void test() throws ClassNotFoundException {
+    public static void test() throws ClassNotFoundException, NoClassDefFoundError {
         Class.forName("com.sk89q.worldguard.WorldGuard");
     }
 

@@ -13,11 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.stream.Stream;
 
 public class WorldGuardAdapter_12 extends WorldGuardAdapter {
-    public WorldGuardAdapter_12() throws ClassNotFoundException {
-        test();
-    }
-
-    protected void test() throws ClassNotFoundException {
+    public static void test() throws ClassNotFoundException, NoClassDefFoundError {
         Class.forName("com.sk89q.worldguard.bukkit.WGBukkit");
     }
 
