@@ -10,6 +10,7 @@ import de.codingair.warpsystem.core.proxy.utils.Server;
 import de.codingair.warpsystem.core.transfer.packets.general.*;
 import de.codingair.warpsystem.core.transfer.packets.proxy.*;
 import de.codingair.warpsystem.core.transfer.packets.spigot.*;
+import de.codingair.warpsystem.core.transfer.packets.spigot.utils.ConnectionPacket;
 import de.codingair.warpsystem.core.transfer.packets.utils.PacketType;
 
 public abstract class CoreDataHandler<C> extends DataHandler<Server<C>> {
@@ -63,6 +64,7 @@ public abstract class CoreDataHandler<C> extends DataHandler<Server<C>> {
         registerHandler(SendWorldNamesPacket.class, new SendWorldNamesPacketHandler());
         registerHandler(ProxyAwarenessPacket.class, new ProxyAwarenessPacketHandler());
         registerHandler(PerformCommandOnProxyPacket.class, new PerformCommandOnProxyPacketHandler());
+        registerHandler(ConnectionPacket.class, new ConnectionPacketHandler());
     }
 
     public void onEnable() {

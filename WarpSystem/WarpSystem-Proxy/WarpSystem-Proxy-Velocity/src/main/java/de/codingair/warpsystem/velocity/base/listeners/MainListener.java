@@ -4,14 +4,11 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.ServerConnectedEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
-import de.codingair.warpsystem.core.proxy.Core;
 import de.codingair.warpsystem.core.proxy.base.Permissions;
-import de.codingair.warpsystem.core.proxy.utils.Server;
 import de.codingair.warpsystem.velocity.base.WarpSystem;
 import de.codingair.warpsystem.velocity.base.events.ServerInitializeEvent;
 import de.codingair.warpsystem.velocity.base.events.ServerProvideOptionsEvent;
 import de.codingair.warpsystem.velocity.base.utils.Lang;
-import de.codingair.warpsystem.velocity.utils.VelocityServer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 
@@ -24,19 +21,6 @@ public class MainListener {
 
     @Subscribe
     public void onConnect(ServerConnectedEvent e) {
-        if (e.getServer().getPlayersConnected().size() == 0) {
-            //Update it
-
-            Server<?> server = new VelocityServer(e.getServer());
-            WarpSystem.getInstance().schedule(() -> {
-                Core.getServerManager().sendInitialPacket(server);
-                if (asking.contains(e.getServer())) {
-                    ask(e.getPlayer());
-                }
-            }, 50, 0, TimeUnit.MILLISECONDS);
-            return;
-        }
-
         if (asking.contains(e.getServer())) {
             ask(e.getPlayer());
         }

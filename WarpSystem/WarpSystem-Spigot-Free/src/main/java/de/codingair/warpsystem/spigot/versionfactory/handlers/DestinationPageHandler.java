@@ -351,7 +351,7 @@ public class DestinationPageHandler {
                 }
             }.setOption(option));
 
-            if (WarpSystem.getInstance().isOnProxy()) {
+            if (WarpSystem.getInstance().isProxyConnected()) {
                 page.addButton(new SyncButton(slot++, 2) {
                     @Override
                     public ItemStack craftItem() {

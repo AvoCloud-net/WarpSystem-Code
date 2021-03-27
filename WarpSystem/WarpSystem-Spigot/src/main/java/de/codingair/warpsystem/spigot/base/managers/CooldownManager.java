@@ -69,7 +69,7 @@ public class CooldownManager implements ICooldownManager {
         long time = System.currentTimeMillis();
 
         List<Integer> originList = new ArrayList<>();
-        if (WarpSystem.getInstance().isOnProxy()) {
+        if (WarpSystem.getInstance().isProxyConnected()) {
             //add to avoid saving them here
             originList.add(Origin.TeleportRequest.ordinal());
             originList.add(Origin.TeleportCommand.ordinal());
@@ -126,7 +126,7 @@ public class CooldownManager implements ICooldownManager {
         Cooldown cooldown = new Cooldown(WarpSystem.getInstance().getPlayerDataManager().get(player), System.currentTimeMillis() + time, origin.ordinal());
 
         addCooldown(cooldown);
-        if (WarpSystem.getInstance().isOnProxy()) {
+        if (WarpSystem.getInstance().isProxyConnected()) {
             //upload to bungee
             WarpSystem.getDataHandler().send(new CooldownPacket(cooldown), player);
         }

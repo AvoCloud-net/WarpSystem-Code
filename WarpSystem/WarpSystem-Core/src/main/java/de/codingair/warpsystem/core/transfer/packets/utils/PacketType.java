@@ -4,6 +4,7 @@ import de.codingair.packetmanagement.packets.Packet;
 import de.codingair.warpsystem.core.transfer.packets.general.*;
 import de.codingair.warpsystem.core.transfer.packets.proxy.*;
 import de.codingair.warpsystem.core.transfer.packets.spigot.*;
+import de.codingair.warpsystem.core.transfer.packets.spigot.utils.ConnectionPacket;
 
 public enum PacketType {
     InitialPacket(de.codingair.warpsystem.core.transfer.packets.proxy.InitialPacket.class),
@@ -67,6 +68,8 @@ public enum PacketType {
     SendWorldNamesPacket(SendWorldNamesPacket.class),
     SendServerWorldNamesPacket(SendServerWorldNamesPacket.class),
     ProxyAwarenessPacket(ProxyAwarenessPacket.class),
+
+    ConnectionPacket(ConnectionPacket.class),
     ;
 
     private final Class<? extends Packet> packet;

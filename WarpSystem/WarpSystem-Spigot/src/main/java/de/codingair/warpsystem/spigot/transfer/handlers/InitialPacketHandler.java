@@ -11,27 +11,31 @@ import de.codingair.warpsystem.spigot.base.listeners.BungeeBukkitListener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.logging.Level;
 
 public class InitialPacketHandler implements PacketHandler<InitialPacket> {
     private final BungeeBukkitListener listener;
+    private boolean logDisabled = true;
 
     public InitialPacketHandler(BungeeBukkitListener listener) {
         this.listener = listener;
     }
 
     @Override
-    public void process(@NotNull InitialPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
+    public void process(@NotNull InitialPacket packet, @NotNull Proxy proxy, Object connection, @NotNull Direction direction) {
         WarpSystem.getInstance().setCurrentServer(packet.getServerName());
 
         String version = packet.getVersion();
         if (!WarpSystem.getInstance().isUseProxy()) {
-            WarpSystem.getInstance().getLogger().log(Level.WARNING, "Found a proxy but it's disabled in Config.yml! Skipping.");
+            if (logDisabled) {
+                WarpSystem.getInstance().getLogger().log(Level.WARNING, "Found a proxy but it's disabled in Config.yml! Ignoring.");
+                logDisabled = false;
+            }
         } else {
+            //run even already connected -> multi proxy
             if (version.equals(WarpSystem.getInstance().getDescription().getVersion())) {
-                if (WarpSystem.getInstance().getProxyPluginVersion() == null || !WarpSystem.getInstance().getProxyPluginVersion().equals(version)) {
+                if (!WarpSystem.getInstance().isProxyConnected()) {
                     WarpSystem.getInstance().getLogger().log(Level.INFO, "Found a valid proxy > Init proxy-features (Server: '" + WarpSystem.getInstance().getCurrentServer() + "')");
                 }
 

@@ -62,7 +62,7 @@ public class Invitation {
         }
 
         handled.add(recipient);
-        if (WarpSystem.getInstance().isOnProxy() && sender == null) WarpSystem.getDataHandler().send(new TeleportRequestHandledPacket(this.sender, recipient, accepted), null);
+        if (WarpSystem.getInstance().isProxyConnected() && sender == null) WarpSystem.getDataHandler().send(new TeleportRequestHandledPacket(this.sender, recipient, accepted), null);
         TeleportCommandManager.getInstance().checkDestructionOf(this);
     }
 
@@ -206,7 +206,7 @@ public class Invitation {
                 });
             }
 
-            if (WarpSystem.getInstance().isOnProxy() && !bukkitOnly) {
+            if (WarpSystem.getInstance().isProxyConnected() && !bukkitOnly) {
                 Player p = Bukkit.getPlayer(sender);
                 WarpSystem.getDataHandler().send(new PrepareTeleportRequestPacket(sender, null, true), p).thenAccept(packet -> {
                     long result = packet.a();
@@ -267,7 +267,7 @@ public class Invitation {
             m.send(recipient);
 
             callback.accept((((long) 1) << 32) | (1 & 0xffffffffL));
-        } else if (WarpSystem.getInstance().isOnProxy() && !bukkitOnly) {
+        } else if (WarpSystem.getInstance().isProxyConnected() && !bukkitOnly) {
             //try on proxy
             Player p = Bukkit.getPlayer(sender);
             WarpSystem.getDataHandler().send(new PrepareTeleportRequestPacket(sender, this.recipient, toSender), p).thenAccept(packet -> callback.accept(packet.a()));

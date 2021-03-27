@@ -229,7 +229,7 @@ public class PlayerWarpHandler extends PlayerWarpManager {
         playerWarpsData.clearConfig();
 
         JSONArray a = null;
-        if (!bungeeCord || !WarpSystem.getInstance().isOnProxy()) {
+        if (!bungeeCord || !WarpSystem.getInstance().isProxyConnected()) {
             a = new JSONArray();
 
             for (List<PlayerWarp> data : this.warps.values()) {

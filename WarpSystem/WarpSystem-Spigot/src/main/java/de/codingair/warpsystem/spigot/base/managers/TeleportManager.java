@@ -84,7 +84,7 @@ public class TeleportManager implements ITeleportManager {
             return;
         }
 
-        if ((options.getDestination().getType() == DestinationType.GlobalWarp || options.getDestination().getType() == DestinationType.Server) && !WarpSystem.getInstance().isOnProxy()) {
+        if ((options.getDestination().getType() == DestinationType.GlobalWarp || options.getDestination().getType() == DestinationType.Server) && !WarpSystem.getInstance().isProxyConnected()) {
             options.fireCallbacks(Result.NO_CONNECTED_PROXY);
             player.sendMessage(Lang.getPrefix() + Lang.get("Server_Is_Not_Online"));
             return;

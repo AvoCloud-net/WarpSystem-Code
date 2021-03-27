@@ -52,7 +52,7 @@ public class PlayerDataManager implements Listener, ProxyFeature {
     }
 
     public @NotNull PlayerData getCache(@NotNull Player player) {
-        if (WarpSystem.getInstance().isOnProxy()) return cached.computeIfAbsent(player.getName().toLowerCase(),
+        if (WarpSystem.getInstance().isProxyConnected()) return cached.computeIfAbsent(player.getName().toLowerCase(),
                 key -> new PlayerData(player.getName(), player.getUniqueId()));
         else return new PlayerData(player.getName(), player.getUniqueId());
     }
@@ -91,7 +91,7 @@ public class PlayerDataManager implements Listener, ProxyFeature {
     public PlayerData getCacheExact(String name) {
         if (name == null) return null;
 
-        if (WarpSystem.getInstance().isOnProxy()) return cached.get(name.toLowerCase());
+        if (WarpSystem.getInstance().isProxyConnected()) return cached.get(name.toLowerCase());
         else {
             Player player = Bukkit.getPlayer(name);
             if (player == null) return null;

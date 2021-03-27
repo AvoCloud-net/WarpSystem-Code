@@ -47,7 +47,7 @@ public class CGlobalWarps extends WSCommandBuilder implements ProxyFeature {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                if (WarpSystem.getInstance().isOnProxy())
+                if (WarpSystem.getInstance().isProxyConnected())
                     sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " " + WarpSystem.opt().cmdArg() + "<create, delete, list>");
                 else sender.sendMessage(Lang.getPrefix() + Lang.get("Connect_BungeeCord"));
                 return false;

@@ -31,7 +31,7 @@ public class ServerAdapter extends CloneableAdapter implements Serializable, Usa
 
     @Override
     public CompletableFuture<Boolean> teleport(Player player, String id, Vector randomOffset, String displayName, boolean checkPermission, String message, boolean silent, double costs, Callback<Result> callback) {
-        if (!WarpSystem.getInstance().isOnProxy()) {
+        if (!WarpSystem.getInstance().isProxyConnected()) {
             if (callback != null) callback.accept(Result.NO_CONNECTED_PROXY);
             return CompletableFuture.completedFuture(false);
         }
@@ -70,7 +70,7 @@ public class ServerAdapter extends CloneableAdapter implements Serializable, Usa
 
     @Override
     public SimulatedTeleportResult simulate(Player player, String id, boolean checkPermission) {
-        if (!WarpSystem.getInstance().isOnProxy())
+        if (!WarpSystem.getInstance().isProxyConnected())
             return new SimulatedTeleportResult(null, Result.NO_CONNECTED_PROXY);
 
         if (WarpSystem.getInstance().getCurrentServer().equalsIgnoreCase(id))
