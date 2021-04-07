@@ -17,6 +17,7 @@ import java.util.logging.Level;
 public class InitialPacketHandler implements PacketHandler<InitialPacket> {
     private final BungeeBukkitListener listener;
     private boolean logDisabled = true;
+    private boolean logConnected = true;
 
     public InitialPacketHandler(BungeeBukkitListener listener) {
         this.listener = listener;
@@ -35,8 +36,9 @@ public class InitialPacketHandler implements PacketHandler<InitialPacket> {
         } else {
             //run even already connected -> multi proxy
             if (version.equals(WarpSystem.getInstance().getDescription().getVersion())) {
-                if (!WarpSystem.getInstance().isProxyConnected()) {
+                if (!WarpSystem.getInstance().isProxyConnected() && logConnected) {
                     WarpSystem.getInstance().getLogger().log(Level.INFO, "Found a valid proxy > Init proxy-features (Server: '" + WarpSystem.getInstance().getCurrentServer() + "')");
+                    logConnected = false;
                 }
 
                 listener.updateNotice((String[]) null);
