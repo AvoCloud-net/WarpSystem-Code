@@ -1,7 +1,9 @@
 package de.codingair.warpsystem.spigot.features.spawn.utils;
 
 import de.codingair.codingapi.server.Environment;
+import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.io.utils.DataMask;
+import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.core.transfer.packets.general.TeleportSpawnPacket;
 import de.codingair.warpsystem.spigot.api.placeholders.PAPI;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
@@ -11,6 +13,7 @@ import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.types.WarpAction;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
+import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.EmptyAdapter;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.LocationAdapter;
 import de.codingair.warpsystem.spigot.features.spawn.managers.SpawnManager;
 import org.bukkit.*;
@@ -174,8 +177,16 @@ public class Spawn extends FeatureObject {
     public FeatureObject perform(Player player, TeleportOptions options) {
         if (switchServer()) {
             //switch
-            WarpSystem.getDataHandler().send(new TeleportSpawnPacket(player.getName(), false), player);
-            return this;
+            options.setDestination(new Destination(new EmptyAdapter()));
+            options.setMessage(null);
+            options.addCallback(new Callback<Result>() {
+                @Override
+                public void accept(Result result) {
+                    if (result == Result.SUCCESS) {
+                        WarpSystem.getDataHandler().send(new TeleportSpawnPacket(player.getName(), false), player);
+                    }
+                }
+            });
         }
 
         return super.perform(player, options);

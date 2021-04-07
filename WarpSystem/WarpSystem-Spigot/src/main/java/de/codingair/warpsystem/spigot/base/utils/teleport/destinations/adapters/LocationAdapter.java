@@ -5,11 +5,13 @@ import de.codingair.codingapi.tools.Location;
 import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
 import de.codingair.warpsystem.api.Result;
+import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.listeners.TeleportListener;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Usable;
 import de.codingair.warpsystem.spigot.base.utils.teleport.SimulatedTeleportResult;
 import io.papermc.lib.PaperLib;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.util.Vector;
@@ -74,7 +76,7 @@ public class LocationAdapter extends CloneableAdapter implements Serializable, U
             } else {
                 if (silent) TeleportListener.TELEPORTS.put(player, l);
 
-                PaperLib.teleportAsync(player, l, PlayerTeleportEvent.TeleportCause.PLUGIN).whenComplete((b, t2) -> {
+                Bukkit.getScheduler().runTask(WarpSystem.getInstance(),  () -> PaperLib.teleportAsync(player, l, PlayerTeleportEvent.TeleportCause.PLUGIN).whenComplete((b, t2) -> {
                     if (t2 != null) {
                         t2.printStackTrace();
                         if (callback != null) callback.accept(Result.ERROR);
@@ -86,7 +88,7 @@ public class LocationAdapter extends CloneableAdapter implements Serializable, U
                         if (callback != null) callback.accept(Result.ERROR);
                         future.complete(false);
                     }
-                });
+                }));
             }
         };
     }
