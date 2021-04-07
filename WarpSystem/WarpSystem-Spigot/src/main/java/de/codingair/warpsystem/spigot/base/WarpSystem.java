@@ -375,7 +375,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
     private void startAutoSaver() {
         WarpSystem.log("Starting AutoSaver");
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(WarpSystem.getInstance(), () -> save(true), 10 * 60 * 20, 10 * 60 * 20);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(WarpSystem.getInstance(), () -> save(true), 12000, 12000);
     }
 
     private void destroy() {

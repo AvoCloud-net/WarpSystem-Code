@@ -82,7 +82,7 @@ public class TeleportDelay extends TeleportStage {
             }
         };
 
-        this.runnable.runTaskTimer(WarpSystem.getInstance(), 0L, 20L);
+        this.runnable.runTaskTimerAsynchronously(WarpSystem.getInstance(), 0L, 20L);
     }
 
     @Override
