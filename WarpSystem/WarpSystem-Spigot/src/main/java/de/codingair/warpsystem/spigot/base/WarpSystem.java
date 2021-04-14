@@ -146,6 +146,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             log(" ");
 
             ConfigFile config = this.fileManager.loadFile("Config", "/");
+
             this.useProxy = config.getConfig().getBoolean("WarpSystem.Proxy.Enabled", true);
             this.playerDataManager = new PlayerDataManager();
             this.serverManager = new ServerManager();
@@ -158,9 +159,6 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             checkOldDirectory();
 
             Lang.initPreDefinedLanguages(this);
-
-            oldVersion = fileManager.getFile("Config").getConfig().getString("Do_Not_Edit.Last_Version", "0");
-            if (oldVersion == null || !oldVersion.equals(getDescription().getVersion())) createBackup();
 
             //load cooldown list
             cooldownManager = new CooldownManager();
@@ -177,20 +175,13 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             CWarpSystem cWarpSystem = new CWarpSystem();
             cWarpSystem.register();
 
-            boolean createBackup = false;
-            if (!this.dataManager.load()) createBackup = true;
+            boolean loadingFailed = !this.dataManager.load();
             log(" ");
             log("Loading TeleportManager");
-            if (!this.teleportManager.load()) createBackup = true;
+            if (!this.teleportManager.load()) loadingFailed = true;
 
-            if (createBackup) {
-                log(" ");
-                log(" ");
-                log("Loading with errors > Create backup...");
-                if (oldVersion.equals(getDescription().getVersion())) createBackup();
-                log("Backup successfully created");
-                log(" ");
-            }
+            oldVersion = config.getConfig().getString("Do_Not_Edit.Last_Version", "0");
+            checkBackup(config, loadingFailed);
 
             Bukkit.getPluginManager().registerEvents(new PlayerDataListener(), this);
             Bukkit.getPluginManager().registerEvents(new TeleportListener(), this);
@@ -220,7 +211,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             PaperLib.suggestPaper(this);
 
             activated = true;
-            if (fileManager.getFile("Config").getConfig().getBoolean("WarpSystem.Update_Notifier", true)) UpdateReader.start();
+            if (config.getConfig().getBoolean("WarpSystem.Update_Notifier", true)) UpdateReader.start();
 
             this.ERROR = false;
 
@@ -231,34 +222,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             if (config.getConfig().getBoolean("WarpSystem.Functions.CommandBlocks", true))
                 Bukkit.getPluginManager().registerEvents(new CommandBlockListener(), this);
         } catch (Throwable ex) {
-            //make error-report
-
-            if (!getDataFolder().exists()) {
-                try {
-                    getDataFolder().createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            BufferedWriter writer = null;
-            try {
-                File log = new File(getDataFolder(), "ErrorReport.txt");
-                if (log.exists()) log.delete();
-
-                writer = new BufferedWriter(new FileWriter(log));
-
-                PrintWriter printWriter = new PrintWriter(writer);
-                ex.printStackTrace(printWriter);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    writer.close();
-                } catch (Exception ignored) {
-                }
-            }
-
+            createErrorReport(ex);
 
             log(" ");
             log("__________________________________________________________");
@@ -279,29 +243,6 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             this.ERROR = true;
             Bukkit.getPluginManager().disablePlugin(this);
         }
-    }
-
-    private void preload() {
-        new ConfigTagConverter_v4_2_12();
-    }
-
-    private void copyConfig() {
-        ConfigFile file = this.fileManager.loadFile("Config", "/", false);
-
-        IReflection.FieldAccessor<Map<String, Object>> map = IReflection.getField(MemorySection.class, "map");
-        Map<String, Object> copy = new HashMap<>(map.get(file.getConfig()));
-
-        this.oldConfig = (UTFConfig) IReflection.getConstructor(UTFConfig.class).newInstance();
-        map.set(oldConfig, copy);
-
-        this.fileManager.unloadFile(file);
-    }
-
-    private void afterOnEnable() {
-        Bukkit.getScheduler().runTaskLater(this, () -> {
-            //update command dispatcher for players to synchronize CommandList
-            Bukkit.getScheduler().runTask(this, WarpSystem::updateCommandList);
-        }, 1);
     }
 
     @Override
@@ -334,6 +275,73 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         dataHandler.onDisable();
 
         destroy();
+    }
+
+    private void checkBackup(ConfigFile config, boolean createBackup) {
+        if (config.getConfig().getBoolean("WarpSystem.Backups", true)) {
+            if (oldVersion == null || !oldVersion.equals(getDescription().getVersion())) createBackup();
+            else if (createBackup) {
+                log(" ");
+                log(" ");
+                log("Loading with errors > Create backup...");
+                if (oldVersion.equals(getDescription().getVersion())) createBackup();
+                log("Backup successfully created");
+                log(" ");
+            }
+        }
+    }
+
+    private void createErrorReport(Throwable ex) {
+        //make error-report
+
+        if (!getDataFolder().exists()) {
+            try {
+                getDataFolder().createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        BufferedWriter writer = null;
+        try {
+            File log = new File(getDataFolder(), "ErrorReport.txt");
+            if (log.exists()) log.delete();
+
+            writer = new BufferedWriter(new FileWriter(log));
+
+            PrintWriter printWriter = new PrintWriter(writer);
+            ex.printStackTrace(printWriter);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                writer.close();
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    private void preload() {
+        new ConfigTagConverter_v4_2_12();
+    }
+
+    private void copyConfig() {
+        ConfigFile file = this.fileManager.loadFile("Config", "/", false);
+
+        IReflection.FieldAccessor<Map<String, Object>> map = IReflection.getField(MemorySection.class, "map");
+        Map<String, Object> copy = new HashMap<>(map.get(file.getConfig()));
+
+        this.oldConfig = (UTFConfig) IReflection.getConstructor(UTFConfig.class).newInstance();
+        map.set(oldConfig, copy);
+
+        this.fileManager.unloadFile(file);
+    }
+
+    private void afterOnEnable() {
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            //update command dispatcher for players to synchronize CommandList
+            Bukkit.getScheduler().runTask(this, WarpSystem::updateCommandList);
+        }, 1);
     }
 
     private boolean checkSpigot() {
