@@ -148,10 +148,10 @@ public class CTeleport extends WSCommandBuilder {
     private static boolean process(Player p, String[] args) {
         if (args.length == 0) return false;
 
-        String name = args[0].replace("~", "");
+        String name = args[0];
         PlayerData data = null;
 
-        if (!name.isEmpty() && !isNumeric(args[0])) {
+        if (name.length() > 1 || !name.equals("~")) {
             data = WarpSystem.getInstance().getPlayerDataManager().getCache(name);
         }
 
@@ -161,8 +161,8 @@ public class CTeleport extends WSCommandBuilder {
         }
 
         if (args.length - 1 >= 1) {
-            String other = args[1].replace("~", "");
-            if (!other.isEmpty() && !isNumeric(args[1])) {
+            String other = args[1];
+            if (other.length() > 1 || !other.equals("~")) {
                 //name
                 PlayerData otherData = WarpSystem.getInstance().getPlayerDataManager().getCache(other);
 
