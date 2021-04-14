@@ -14,6 +14,7 @@ import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.api.Result;
 import de.codingair.warpsystem.core.transfer.packets.spigot.PlayerWarpTeleportProcessPacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.utils.PlayerWarpData;
+import de.codingair.warpsystem.spigot.api.players.Head;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.guis.editor.Editor;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
@@ -341,11 +342,15 @@ public class PlayerWarp extends FeatureObject {
         this.teleportMessage = d.getString("tpmsg");
         this.item = d.getItemBuilder("item");
 
-        if (!XMaterial.isNewVersion() && XMaterial.matchXMaterial(this.item.getType()) == XMaterial.PLAYER_HEAD) {
+        if (this.item.getType() == null || !XMaterial.isNewVersion() && XMaterial.matchXMaterial(this.item.getType()) == XMaterial.PLAYER_HEAD) {
+            //save item
             ItemStack i = XMaterial.PLAYER_HEAD.parseItem();
             this.item.setType(i == null ? Material.STONE : i.getType());
             this.item.setDurability(XMaterial.PLAYER_HEAD.getData());
             this.item.setData(XMaterial.PLAYER_HEAD.getData());
+
+            Head head = WarpSystem.getInstance().getHeadManager().getHead(this.owner.getId());
+            if (head != null) this.item.setSkullId(head.getId());
         }
 
         this.isPublic = d.getBoolean("public");
