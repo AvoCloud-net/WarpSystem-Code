@@ -75,8 +75,8 @@ public class UpdateNotifier {
 
             String s = builder.toString();
             if (!s.isEmpty()) return s;
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        } catch (IOException ignored) {
+            //ignore io exception since they're just time out or access denied (too many requests) messages
         }
 
         return null;
