@@ -15,10 +15,8 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destinati
 import de.codingair.warpsystem.spigot.features.FeatureType;
 import de.codingair.warpsystem.spigot.features.shortcuts.commands.CShortcuts;
 import de.codingair.warpsystem.spigot.features.shortcuts.commands.ShortcutExecutor;
-import de.codingair.warpsystem.spigot.features.shortcuts.listeners.ShortcutListener;
 import de.codingair.warpsystem.spigot.features.shortcuts.utils.Shortcut;
 import de.codingair.warpsystem.spigot.features.shortcuts.utils.ShortcutFactory;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -104,8 +102,6 @@ public class ShortcutManager implements Manager, ProxyFeature {
             reloadCommand(s);
         }
         WarpSystem.log("    ...got " + this.shortcuts.size() + " Shortcut(s)");
-
-        Bukkit.getPluginManager().registerEvents(new ShortcutListener(), WarpSystem.getInstance());
         return true;
     }
 
