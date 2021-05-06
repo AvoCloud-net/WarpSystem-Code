@@ -213,7 +213,7 @@ public abstract class TeleportCommandManager implements Manager, ProxyFeature, C
     public TeleportOptions buildTeleport(String player, Location l, boolean force, boolean skip, boolean proxy) {
         TeleportOptions options = new TeleportOptions(new Destination(new LocationAdapter(l)), Lang.get("Last_Position"), Origin.TeleportCommand);
 
-        if (skip) options.setSkip(true);
+        options.setSkip(skip);
         if (force) options.setMessage(Lang.getPrefix() + Lang.get("Target_Protected_Area"));
 
         options.addCallback(new Callback<Result>() {

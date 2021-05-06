@@ -34,10 +34,8 @@ public class TeleportListener implements Listener {
 
     public static CompletableFuture<org.bukkit.Location> setSpawnPositionOrTeleport(String name, TeleportOptions options) {
         if (options == null) return CompletableFuture.completedFuture(null);
-        options.setSkip(true);
+        if (options.getSkip() == null) options.setSkip(true);
         Player player = Bukkit.getPlayer(name);
-
-        options.setSkip(true);
 
         if (player != null && player.isOnline()) {
             //teleport
