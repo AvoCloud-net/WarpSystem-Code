@@ -3,7 +3,7 @@
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 http://maven.apache.org/xsd/settings-1.2.0.xsd">
     <mirrors>
         <mirror>
-            <id>http-unblocker</id>
+            <id>redis-bungee</id>
             <mirrorOf>md_5-snapshots</mirrorOf>
             <name></name>
             <url>http://repo.md-5.net/content/repositories/snapshots/</url>
