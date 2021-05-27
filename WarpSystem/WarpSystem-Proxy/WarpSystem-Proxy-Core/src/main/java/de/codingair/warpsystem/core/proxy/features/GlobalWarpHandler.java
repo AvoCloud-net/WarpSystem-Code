@@ -82,7 +82,7 @@ public abstract class GlobalWarpHandler implements Manager {
         for (SGlobalWarp warp : this.globalWarps) {
             currentBytes += warp.getName().length() + warp.getServer().length();
 
-            if (currentBytes > 32700) {
+            if (currentBytes > 15000) {
                 list.add(current);
                 current = new HashMap<>();
             }

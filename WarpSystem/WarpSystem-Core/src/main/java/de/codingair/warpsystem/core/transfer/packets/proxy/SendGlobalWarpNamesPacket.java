@@ -14,11 +14,6 @@ public class SendGlobalWarpNamesPacket implements Packet {
     public SendGlobalWarpNamesPacket() {
     }
 
-    public SendGlobalWarpNamesPacket(HashMap<String, String> names) {
-        this.names = names;
-        this.start = false;
-    }
-
     public SendGlobalWarpNamesPacket(HashMap<String, String> names, boolean start) {
         this.names = names;
         this.start = start;
