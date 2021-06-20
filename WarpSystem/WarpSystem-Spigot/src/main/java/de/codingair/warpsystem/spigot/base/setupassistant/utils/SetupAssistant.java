@@ -47,10 +47,13 @@ public class SetupAssistant {
             WarpSystem.getDataHandler().send(new ToggleSetupAssistantPacket(player.getName()), player);
         }
 
-        Class<?> oPacketClass = IReflection.getClass(IReflection.ServerPacket.MINECRAFT_PACKAGE, "PacketPlayOutChat");
-        Class<?> iPacketClass = IReflection.getClass(IReflection.ServerPacket.MINECRAFT_PACKAGE, "PacketPlayInChat");
-        IReflection.FieldAccessor<BaseComponent[]> components = IReflection.getField(oPacketClass, "components");
+        Class<?> oPacketClass = IReflection.getClass(IReflection.ServerPacket.PACKETS, "PacketPlayOutChat");
+        Class<?> iPacketClass = IReflection.getClass(IReflection.ServerPacket.PACKETS, "PacketPlayInChat");
+        IReflection.FieldAccessor<?> components = IReflection.getField(oPacketClass, Version.since(17, "components", "a"));
         IReflection.FieldAccessor<String> a = IReflection.getField(iPacketClass, "a");
+        boolean newer = Version.atLeast(17);
+
+        IReflection.MethodAccessor getText = newer ? IReflection.getMethod(PacketUtils.IChatBaseComponentClass, "getText", String.class, new Class[0]) : null;
 
         reader = new PacketReader(player, "WS-SetupAssistant", WarpSystem.getInstance()) {
             @Override
@@ -68,14 +71,22 @@ public class SetupAssistant {
             @Override
             public boolean writePacket(Object packet) {
                 if (packet.getClass().equals(oPacketClass)) {
-                    BaseComponent[] c = components.get(packet);
-
-                    if (c != null && c.length == 1) {
-                        String s = c[0].toLegacyText();
+                    if (newer) {
+                        String s = (String) getText.invoke(components.get(packet));
                         if (s.startsWith("§f")) s = s.substring(2);
 
                         //identifier
                         if (s.startsWith("§§§§")) return false;
+                    } else {
+                        BaseComponent[] c = (BaseComponent[]) components.get(packet);
+
+                        if (c != null && c.length == 1) {
+                            String s = c[0].toLegacyText();
+                            if (s.startsWith("§f")) s = s.substring(2);
+
+                            //identifier
+                            if (s.startsWith("§§§§")) return false;
+                        }
                     }
 
                     //queue for later
