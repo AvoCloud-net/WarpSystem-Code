@@ -95,7 +95,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     }
 
     public static void log(String message) {
-        System.out.println(message);
+        getInstance().getLogger().info(message);
     }
 
     public static <E extends Options> E getOptions(Class<? extends E> clazz) {
