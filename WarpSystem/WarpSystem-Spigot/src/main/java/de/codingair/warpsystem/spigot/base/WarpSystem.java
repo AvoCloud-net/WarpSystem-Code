@@ -122,7 +122,6 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
     @Override
     public void onEnable() {
-        Version.load();
         if (!checkSpigot()) return;
 
         timer.start();
