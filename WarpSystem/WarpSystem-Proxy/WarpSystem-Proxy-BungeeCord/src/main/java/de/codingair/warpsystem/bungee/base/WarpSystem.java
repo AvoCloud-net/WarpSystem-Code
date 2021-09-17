@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.stream.Stream;
 
 public class WarpSystem extends Plugin implements ProxyPlugin {
@@ -122,8 +123,7 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
         this.dataHandler.onEnable();
 
         logMessage("Loading features");
-        boolean createBackup = false;
-        if (!this.dataManager.load(false)) createBackup = true;
+        boolean createBackup = !this.dataManager.load(false);
 
         if (createBackup) {
             logMessage("Loading with errors > Create backup...");
@@ -318,6 +318,11 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
     @Override
     public void log(String message) {
         logMessage(message);
+    }
+
+    @Override
+    public void log(Level level, String message) {
+        getLogger().log(level, message);
     }
 
     @Override
