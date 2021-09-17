@@ -159,7 +159,7 @@ public abstract class ServerHandler {
                 ping.setMaxPlayers(serverPing.getMaxPlayers());
                 ping.setMotd(serverPing.getMotd());
             } else {
-                boolean serverJustOffline = error.getMessage().startsWith("Connection refused: no further information");
+                boolean serverJustOffline = error.getMessage().toLowerCase().contains("connection refused");
                 if (!serverJustOffline) {
                     //unknown error -> log
                     logPingError(errors, info, error, ping);
