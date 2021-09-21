@@ -13,6 +13,7 @@ import de.codingair.warpsystem.core.transfer.packets.proxy.PlayerQuitPacket;
 import de.codingair.warpsystem.core.transfer.packets.proxy.ProvidePlayerDataPacket;
 import de.codingair.warpsystem.core.transfer.utils.PlayerData;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Locale;
@@ -34,6 +35,7 @@ public class PlayerDataHandler {
         });
     }
 
+    @Nullable
     public PlayerData getCache(String name) {
         if (name == null) return null;
 
