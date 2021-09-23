@@ -162,7 +162,7 @@ public abstract class ServerHandler {
                 boolean serverJustOffline = error.getMessage().toLowerCase().contains("connection refused");
                 if (!serverJustOffline) {
                     //unknown error -> log
-                    logPingError(errors, info, error, ping);
+                    logPingError(errors, info, error);
                 }
 
                 ping.setStatus(false);
@@ -195,14 +195,13 @@ public abstract class ServerHandler {
      * @param errors The error cache to prevent spamming the same errors
      * @param info   The current server
      * @param error  The error that was thrown
-     * @param ping   The receiving ping data. Probably null.
      */
-    private synchronized void logPingError(Cache<Server<?>, String> errors, Server<?> info, Throwable error, ServerPing ping) {
+    private synchronized void logPingError(Cache<Server<?>, String> errors, Server<?> info, Throwable error) {
         String message = errors.getIfPresent(info);
         if (message == null || !message.equals(error.getMessage())) {
             errors.put(info, error.getMessage());
 
-            Core.getPlugin().log(Level.WARNING, "Could not ping server '" + info.getName() + "' due to an error. This results in an inaccessible server. You will not be able to teleport to this server. (Null: " + (ping == null) + ")");
+            Core.getPlugin().log(Level.WARNING, "Could not ping server '" + info.getName() + "' due to an error. This results in an inaccessible server. You will not be able to teleport to this server.");
             error.printStackTrace();
         }
     }
