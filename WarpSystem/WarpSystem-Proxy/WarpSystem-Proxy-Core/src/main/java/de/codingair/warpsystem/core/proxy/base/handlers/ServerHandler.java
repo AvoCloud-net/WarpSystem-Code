@@ -33,7 +33,7 @@ public abstract class ServerHandler {
     private final boolean ignorePingErrors;
 
     public ServerHandler(DataMask config) {
-        ignorePingErrors = config.getBoolean("WarpSystem.IgnoreOfflineServers", false);
+        ignorePingErrors = config.getBoolean("WarpSystem.IgnorePingErrors", false);
     }
 
     public static CompletableFuture<SwitchRequest> sendPlayer(Player player, Server<?> server) {
