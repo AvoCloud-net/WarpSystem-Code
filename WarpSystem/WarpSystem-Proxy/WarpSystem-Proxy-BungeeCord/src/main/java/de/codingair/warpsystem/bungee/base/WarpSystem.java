@@ -54,7 +54,7 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
     private PlayerDataManager playerDataManager;
 
     public static void logMessage(String message) {
-        System.out.println(message);
+        getInstance().getLogger().info(message);
     }
 
     public static BungeeHandler getDataHandler() {
@@ -74,7 +74,6 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
         instance = this;
         timer.start();
         Core.setPlugin(this);
-        Core.setServerManager(new ServerManager());
 
         BungeeAPI.getInstance().onEnable(this);
 
@@ -87,6 +86,7 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
         logMessage(" ");
 
         this.fileManager.loadFile("Config", "/", "proxy/");
+        Core.setServerManager(new ServerManager());
 
         //initialize playerDataManager before enabling redis; we might get packets between registering redis
         playerDataManager = new PlayerDataManager();

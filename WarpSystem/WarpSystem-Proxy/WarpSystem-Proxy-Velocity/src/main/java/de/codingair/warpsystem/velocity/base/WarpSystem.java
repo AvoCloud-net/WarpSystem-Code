@@ -318,7 +318,7 @@ public class WarpSystem extends VelocityPlugin {
 
     @Override
     public void log(String message) {
-        System.out.println(message);
+        logger.info(message);
     }
 
     @Override

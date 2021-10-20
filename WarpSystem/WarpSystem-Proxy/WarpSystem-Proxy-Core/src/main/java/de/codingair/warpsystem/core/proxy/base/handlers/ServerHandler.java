@@ -3,6 +3,7 @@ package de.codingair.warpsystem.core.proxy.base.handlers;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.packetmanagement.packets.Packet;
 import de.codingair.packetmanagement.utils.Direction;
 import de.codingair.warpsystem.core.proxy.Core;
@@ -29,6 +30,11 @@ public abstract class ServerHandler {
     private final ConcurrentHashMap<Server<?>, ServerPing> cachedPing = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Server<?>, Set<CompletableFuture<Void>>> waiting = new ConcurrentHashMap<>();
     private boolean running = false;
+    private final boolean ignorePingErrors;
+
+    public ServerHandler(DataMask config) {
+        ignorePingErrors = config.getBoolean("WarpSystem.IgnoreOfflineServers", false);
+    }
 
     public static CompletableFuture<SwitchRequest> sendPlayer(Player player, Server<?> server) {
         Preconditions.checkNotNull(server);
@@ -159,16 +165,21 @@ public abstract class ServerHandler {
                 ping.setMaxPlayers(serverPing.getMaxPlayers());
                 ping.setMotd(serverPing.getMotd());
             } else {
-                boolean serverJustOffline = error.getMessage().toLowerCase().contains("connection refused");
-                if (!serverJustOffline) {
-                    //unknown error -> log
-                    logPingError(errors, info, error);
-                }
-
                 ping.setStatus(false);
                 ping.setPlayers(0);
                 ping.setMaxPlayers(0);
                 ping.setMotd(null);
+
+                boolean serverJustOffline = error.getMessage().toLowerCase().contains("connection refused");
+                if (!serverJustOffline) {
+                    if (ignorePingErrors) {
+                        //make server accessible again
+                        ping.setStatus(true);
+                    } else {
+                        //unknown error -> log
+                        logPingError(errors, info, error);
+                    }
+                }
             }
 
             return ping;
