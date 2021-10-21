@@ -5,7 +5,7 @@ import com.google.common.cache.CacheBuilder;
 import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.codingapi.player.chat.ChatButtonManager;
 import de.codingair.codingapi.tools.Callback;
-import de.codingair.warpsystem.api.Result;
+import de.codingair.warpsystem.api.destinations.utils.Result;
 import de.codingair.warpsystem.core.transfer.packets.general.TeleportBackPacket;
 import de.codingair.warpsystem.core.transfer.packets.general.TeleportCommandOptionsPacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.ToggleForceTeleportsPacket;

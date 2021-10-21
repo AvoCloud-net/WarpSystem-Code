@@ -1,12 +1,14 @@
-package de.codingair.warpsystem.spigot.base.utils.teleport.v2;
+package de.codingair.warpsystem.spigot.base.utils.teleport.process;
 
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.utils.Value;
-import de.codingair.warpsystem.api.Result;
+import de.codingair.warpsystem.api.destinations.utils.Result;
+import de.codingair.warpsystem.api.events.PlayerPreTeleportEvent;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -23,6 +25,13 @@ public class Teleport {
     }
 
     public Teleport start() {
+        PlayerPreTeleportEvent event = new PlayerPreTeleportEvent(player, options);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            options.fireCallbacks(Result.CANCELLED_BY_EXTERNAL);
+            return this;
+        }
+
         started = System.currentTimeMillis();
         Value<Location> afterEffectPosition = new Value<>(player.getLocation());
 
@@ -90,6 +99,6 @@ public class Teleport {
     }
 
     public Destination getDestination() {
-        return options.getDestination();
+        return options.getOriginalDestination();
     }
 }
