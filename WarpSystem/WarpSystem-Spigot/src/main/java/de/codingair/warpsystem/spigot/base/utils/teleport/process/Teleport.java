@@ -3,7 +3,8 @@ package de.codingair.warpsystem.spigot.base.utils.teleport.process;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.utils.Value;
 import de.codingair.warpsystem.api.destinations.utils.Result;
-import de.codingair.warpsystem.api.events.PlayerPreTeleportEvent;
+import de.codingair.warpsystem.api.events.AsyncPlayerPreTeleportEvent;
+import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
@@ -11,6 +12,8 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destinati
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 public class Teleport {
     private final Player player;
@@ -25,34 +28,42 @@ public class Teleport {
     }
 
     public Teleport start() {
-        PlayerPreTeleportEvent event = new PlayerPreTeleportEvent(player, options);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            options.fireCallbacks(Result.CANCELLED_BY_EXTERNAL);
-            return this;
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(WarpSystem.getInstance(), () -> {
+            //run event async
+            AsyncPlayerPreTeleportEvent event = new AsyncPlayerPreTeleportEvent(player, options);
+            Bukkit.getPluginManager().callEvent(event);
 
-        started = System.currentTimeMillis();
-        Value<Location> afterEffectPosition = new Value<>(player.getLocation());
-
-        options.addCallback(new Callback<Result>() {
-            @Override
-            public void accept(Result result) {
-                if (stage != null && result != Result.SUCCESS && stage.active().isBefore(ConfirmPayment.class) && Bank.adapter() != null) {
-                    //payback
-                    double costs = options.getCosts(player);
-                    if (costs > 0) Bank.adapter().deposit(player, costs);
+            //go sync again
+            Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> {
+                if (event.isCancelled()) {
+                    options.fireCallbacks(Result.CANCELLED_BY_EXTERNAL);
+                    return;
                 }
-            }
+
+                started = System.currentTimeMillis();
+                Value<Location> afterEffectPosition = new Value<>(player.getLocation());
+
+                options.addCallback(new Callback<Result>() {
+                    @Override
+                    public void accept(Result result) {
+                        if (stage != null && result != Result.SUCCESS && stage.active().isBefore(ConfirmPayment.class) && Bank.adapter() != null) {
+                            //payback
+                            double costs = options.getCosts(player);
+                            if (costs > 0) Bank.adapter().deposit(player, costs);
+                        }
+                    }
+                });
+
+                stage = new SimulateStage(Teleport.this)
+                        .then(new WaitForTeleport())
+                        .then(new ConfirmPayment())
+                        .then(new TeleportDelay())
+                        .then(new PlayerTeleport(afterEffectPosition))
+                        .then(new AfterEffects(afterEffectPosition))
+                        .begin();
+            });
         });
 
-        stage = new SimulateStage(this)
-                .then(new WaitForTeleport())
-                .then(new ConfirmPayment())
-                .then(new TeleportDelay())
-                .then(new PlayerTeleport(afterEffectPosition))
-                .then(new AfterEffects(afterEffectPosition))
-                .begin();
         return this;
     }
 
@@ -74,7 +85,8 @@ public class Teleport {
         }
 
         if (result == Result.DENIED_PAYMENT) {
-            if (options.getPaymentDeniedMessage(player) != null) player.sendMessage(options.getPaymentDeniedMessage(player));
+            String message = options.getPaymentDeniedMessage(player);
+            if (message != null) player.sendMessage(message);
         }
     }
 
