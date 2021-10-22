@@ -3,7 +3,7 @@ package de.codingair.warpsystem.spigot.base.utils.teleport.process;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.utils.Value;
 import de.codingair.warpsystem.api.destinations.utils.Result;
-import de.codingair.warpsystem.api.events.AsyncPlayerPreTeleportEvent;
+import de.codingair.warpsystem.api.events.AsyncPlayerTeleportEvent;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
@@ -30,7 +30,7 @@ public class Teleport {
     public Teleport start() {
         Bukkit.getScheduler().runTaskAsynchronously(WarpSystem.getInstance(), () -> {
             //run event async
-            AsyncPlayerPreTeleportEvent event = new AsyncPlayerPreTeleportEvent(player, options);
+            AsyncPlayerTeleportEvent event = new AsyncPlayerTeleportEvent(player, options);
             Bukkit.getPluginManager().callEvent(event);
 
             //go sync again
