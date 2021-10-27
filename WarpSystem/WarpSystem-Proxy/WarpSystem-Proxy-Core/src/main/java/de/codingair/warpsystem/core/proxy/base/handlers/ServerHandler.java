@@ -175,6 +175,7 @@ public abstract class ServerHandler {
                     if (ignorePingErrors) {
                         //make server accessible again
                         ping.setStatus(true);
+                        ping.setMaxPlayers(Integer.MAX_VALUE); //make sure this server is not full
                     } else {
                         //unknown error -> log
                         logPingError(errors, info, error);
