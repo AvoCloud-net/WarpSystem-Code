@@ -2,8 +2,8 @@ package de.codingair.warpsystem.spigot.features.portals.utils;
 
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.warpsystem.api.destinations.utils.Result;
-import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.api.destinations.utils.SimulatedTeleportResult;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.DestinationAdapter;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.LocationAdapter;
 import de.codingair.warpsystem.spigot.features.portals.managers.PortalManager;
