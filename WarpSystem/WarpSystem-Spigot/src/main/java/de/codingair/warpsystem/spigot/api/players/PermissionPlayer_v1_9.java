@@ -52,7 +52,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void sendRawMessage(@Nullable UUID uuid, @NotNull String s) {
-
     }
 
     public boolean hasDiscoveredRecipe(@NotNull NamespacedKey namespacedKey) {
@@ -72,7 +71,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setArrowCooldown(int i) {
-
     }
 
     public int getArrowsInBody() {
@@ -80,7 +78,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setArrowsInBody(int i) {
-
     }
 
     public @NotNull EntityCategory getCategory() {
@@ -92,19 +89,15 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setInvisible(boolean b) {
-
     }
 
     public void sendMessage(@Nullable UUID uuid, @NotNull String s) {
-
     }
 
     public void sendMessage(@Nullable UUID uuid, @NotNull String[] strings) {
-
     }
 
     public void sendBlockChange(Location location, int i, byte b) {
-
     }
 
     public List<Block> getLineOfSight(HashSet<Byte> hashSet, int i) {
@@ -124,15 +117,12 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void _INVALID_setLastDamage(int i) {
-
     }
 
     public void _INVALID_damage(int i) {
-
     }
 
     public void _INVALID_damage(int i, Entity entity) {
-
     }
 
     public int _INVALID_getHealth() {
@@ -140,7 +130,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void _INVALID_setHealth(int i) {
-
     }
 
     public int _INVALID_getMaxHealth() {
@@ -148,7 +137,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void _INVALID_setMaxHealth(int i) {
-
     }
 
     public String getPlayerListHeader() {
@@ -156,7 +144,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setPlayerListHeader(String s) {
-
     }
 
     public String getPlayerListFooter() {
@@ -164,54 +151,49 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setPlayerListFooter(String s) {
-
     }
 
     public void setPlayerListHeaderFooter(String s, String s1) {
-
     }
 
-    public void playSound(Location location, Sound sound, SoundCategory soundCategory, float v, float v1) {
-
+    public void playSound(@NotNull Location location, @NotNull Sound sound, @NotNull SoundCategory soundCategory, float v, float v1) {
     }
 
-    public void playSound(Location location, String s, SoundCategory soundCategory, float v, float v1) {
-
+    public void playSound(@NotNull Location location, @NotNull String s, @NotNull SoundCategory soundCategory, float v, float v1) {
     }
 
-    public void stopSound(Sound sound, SoundCategory soundCategory) {
-
+    public void stopSound(@NotNull Sound sound, SoundCategory soundCategory) {
     }
 
-    public void stopSound(String s, SoundCategory soundCategory) {
-
+    public void stopSound(@NotNull String s, SoundCategory soundCategory) {
     }
 
-    public void sendBlockChange(Location location, BlockData blockData) {
+    public void stopAllSounds() {
+        
+    }
 
+    public void sendBlockChange(@NotNull Location location, @NotNull BlockData blockData) {
     }
 
     public void sendBlockDamage(@NotNull Location location, float v) {
-
     }
 
-    public void hidePlayer(Plugin plugin, Player player) {
-
+    public void sendEquipmentChange(@NotNull LivingEntity livingEntity, @NotNull EquipmentSlot equipmentSlot, @NotNull ItemStack itemStack) {
     }
 
-    public void showPlayer(Plugin plugin, Player player) {
-
+    public void hidePlayer(@NotNull Plugin plugin, @NotNull Player player) {
     }
 
-    public void setResourcePack(String s, byte[] bytes) {
+    public void showPlayer(@NotNull Plugin plugin, @NotNull Player player) {
+    }
 
+    public void setResourcePack(@NotNull String s, byte[] bytes) {
     }
 
     public void sendTitle(String s, String s1, int i, int i1, int i2) {
-
     }
 
-    public AdvancementProgress getAdvancementProgress(Advancement advancement) {
+    public @NotNull AdvancementProgress getAdvancementProgress(@NotNull Advancement advancement) {
         return null;
     }
 
@@ -223,43 +205,46 @@ public class PermissionPlayer_v1_9 implements Player {
         return 0;
     }
 
-    public String getLocale() {
+    public @NotNull String getLocale() {
         return null;
     }
 
     public void updateCommands() {
-
     }
 
-    public void openBook(ItemStack itemStack) {
-
+    public void openBook(@NotNull ItemStack itemStack) {
     }
 
-    public InventoryView openMerchant(Merchant merchant, boolean b) {
-        return null;
+    public void showDemoScreen() {
     }
 
-    public boolean hasCooldown(Material material) {
+    public boolean isAllowingServerListings() {
         return false;
     }
 
-    public int getCooldown(Material material) {
+    public InventoryView openMerchant(@NotNull Merchant merchant, boolean b) {
+        return null;
+    }
+
+    public boolean hasCooldown(@NotNull Material material) {
+        return false;
+    }
+
+    public int getCooldown(@NotNull Material material) {
         return 0;
     }
 
-    public void setCooldown(Material material, int i) {
-
+    public void setCooldown(@NotNull Material material, int i) {
     }
 
-    public boolean sleep(Location location, boolean b) {
+    public boolean sleep(@NotNull Location location, boolean b) {
         return false;
     }
 
     public void wakeup(boolean b) {
-
     }
 
-    public Location getBedLocation() {
+    public @NotNull Location getBedLocation() {
         return null;
     }
 
@@ -272,19 +257,19 @@ public class PermissionPlayer_v1_9 implements Player {
         return null;
     }
 
-    public boolean discoverRecipe(NamespacedKey namespacedKey) {
+    public boolean discoverRecipe(@NotNull NamespacedKey namespacedKey) {
         return false;
     }
 
-    public int discoverRecipes(Collection<NamespacedKey> collection) {
+    public int discoverRecipes(@NotNull Collection<NamespacedKey> collection) {
         return 0;
     }
 
-    public boolean undiscoverRecipe(NamespacedKey namespacedKey) {
+    public boolean undiscoverRecipe(@NotNull NamespacedKey namespacedKey) {
         return false;
     }
 
-    public int undiscoverRecipes(Collection<NamespacedKey> collection) {
+    public int undiscoverRecipes(@NotNull Collection<NamespacedKey> collection) {
         return 0;
     }
 
@@ -293,7 +278,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setShoulderEntityLeft(Entity entity) {
-
     }
 
     public Entity getShoulderEntityRight() {
@@ -301,14 +285,13 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setShoulderEntityRight(Entity entity) {
-
     }
 
     public Block getTargetBlockExact(int i) {
         return null;
     }
 
-    public Block getTargetBlockExact(int i, FluidCollisionMode fluidCollisionMode) {
+    public Block getTargetBlockExact(int i, @NotNull FluidCollisionMode fluidCollisionMode) {
         return null;
     }
 
@@ -316,11 +299,11 @@ public class PermissionPlayer_v1_9 implements Player {
         return null;
     }
 
-    public RayTraceResult rayTraceBlocks(double v, FluidCollisionMode fluidCollisionMode) {
+    public RayTraceResult rayTraceBlocks(double v, @NotNull FluidCollisionMode fluidCollisionMode) {
         return null;
     }
 
-    public PotionEffect getPotionEffect(PotionEffectType potionEffectType) {
+    public PotionEffect getPotionEffect(@NotNull PotionEffectType potionEffectType) {
         return null;
     }
 
@@ -329,7 +312,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setSwimming(boolean b) {
-
     }
 
     public boolean isRiptiding() {
@@ -344,12 +326,11 @@ public class PermissionPlayer_v1_9 implements Player {
         return 0;
     }
 
-    public BoundingBox getBoundingBox() {
+    public @NotNull BoundingBox getBoundingBox() {
         return null;
     }
 
     public void setRotation(float v, float v1) {
-
     }
 
     public boolean isPersistent() {
@@ -357,18 +338,17 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setPersistent(boolean b) {
-
     }
 
-    public List<Entity> getPassengers() {
+    public @NotNull List<Entity> getPassengers() {
         return null;
     }
 
-    public boolean addPassenger(Entity entity) {
+    public boolean addPassenger(@NotNull Entity entity) {
         return false;
     }
 
-    public boolean removePassenger(Entity entity) {
+    public boolean removePassenger(@NotNull Entity entity) {
         return false;
     }
 
@@ -377,78 +357,71 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setPortalCooldown(int i) {
-
     }
 
-    public Set<String> getScoreboardTags() {
+    public @NotNull Set<String> getScoreboardTags() {
         return null;
     }
 
-    public boolean addScoreboardTag(String s) {
+    public boolean addScoreboardTag(@NotNull String s) {
         return false;
     }
 
-    public boolean removeScoreboardTag(String s) {
+    public boolean removeScoreboardTag(@NotNull String s) {
         return false;
     }
 
-    public PistonMoveReaction getPistonMoveReaction() {
+    public @NotNull PistonMoveReaction getPistonMoveReaction() {
         return null;
     }
 
-    public BlockFace getFacing() {
+    public @NotNull BlockFace getFacing() {
         return null;
     }
 
-    public Pose getPose() {
+    public @NotNull Pose getPose() {
         return null;
     }
 
-    public PersistentDataContainer getPersistentDataContainer() {
+    public @NotNull PersistentDataContainer getPersistentDataContainer() {
         return null;
     }
 
-    public String getDisplayName() {
+    public @NotNull String getDisplayName() {
         return this.player.getDisplayName();
     }
 
     public void setDisplayName(String s) {
-
     }
 
-    public String getPlayerListName() {
+    public @NotNull String getPlayerListName() {
         return this.player.getPlayerListName();
     }
 
     public void setPlayerListName(String s) {
-
     }
 
-    public Location getCompassTarget() {
+    public @NotNull Location getCompassTarget() {
         return this.player.getCompassTarget();
     }
 
-    public void setCompassTarget(Location location) {
-
+    public void setCompassTarget(@NotNull Location location) {
     }
 
     public InetSocketAddress getAddress() {
         return this.player.getAddress();
     }
 
-    public void sendRawMessage(String s) {
-
+    public void sendRawMessage(@NotNull String s) {
     }
 
     public void kickPlayer(String s) {
-
     }
 
-    public void chat(String s) {
-
+    public void chat(@NotNull String s) {
     }
 
-    public boolean performCommand(String s) {
+    public boolean performCommand(@NotNull String s) {
         return false;
     }
 
@@ -457,7 +430,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setSneaking(boolean b) {
-
     }
 
     public boolean isSprinting() {
@@ -465,15 +437,12 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setSprinting(boolean b) {
-
     }
 
     public void saveData() {
-
     }
 
     public void loadData() {
-
     }
 
     public boolean isSleepingIgnored() {
@@ -481,155 +450,126 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setSleepingIgnored(boolean b) {
-
     }
 
-    public void playNote(Location location, byte b, byte b1) {
-
+    public void playNote(@NotNull Location location, byte b, byte b1) {
     }
 
-    public void playNote(Location location, Instrument instrument, Note note) {
-
+    public void playNote(@NotNull Location location, @NotNull Instrument instrument, @NotNull Note note) {
     }
 
-    public void playSound(Location location, Sound sound, float v, float v1) {
-
+    public void playSound(@NotNull Location location, @NotNull Sound sound, float v, float v1) {
     }
 
-    public void playSound(Location location, String s, float v, float v1) {
-
+    public void playSound(@NotNull Location location, @NotNull String s, float v, float v1) {
     }
 
-    public void stopSound(Sound sound) {
-
+    public void stopSound(@NotNull Sound sound) {
     }
 
-    public void stopSound(String s) {
-
+    public void stopSound(@NotNull String s) {
     }
 
-    public void playEffect(Location location, Effect effect, int i) {
-
+    public void playEffect(@NotNull Location location, @NotNull Effect effect, int i) {
     }
 
-    public <T> void playEffect(Location location, Effect effect, T t) {
-
+    public <T> void playEffect(@NotNull Location location, @NotNull Effect effect, T t) {
     }
 
     public boolean breakBlock(@NotNull Block block) {
         return false;
     }
 
-    public void sendBlockChange(Location location, Material material, byte b) {
-
+    public void sendBlockChange(@NotNull Location location, @NotNull Material material, byte b) {
     }
 
     public boolean sendChunkChange(Location location, int i, int i1, int i2, byte[] bytes) {
         return false;
     }
 
-    public void sendSignChange(Location location, String[] strings) throws IllegalArgumentException {
-
+    public void sendSignChange(@NotNull Location location, String[] strings) throws IllegalArgumentException {
     }
 
-    public void sendSignChange(Location location, String[] strings, DyeColor dyeColor) throws IllegalArgumentException {
-
+    public void sendSignChange(@NotNull Location location, String[] strings, @NotNull DyeColor dyeColor) throws IllegalArgumentException {
     }
 
-    public void sendMap(MapView mapView) {
+    public void sendSignChange(@NotNull Location location, @Nullable String[] strings, @NotNull DyeColor dyeColor, boolean b) throws IllegalArgumentException {
+    }
 
+    public void sendMap(@NotNull MapView mapView) {
     }
 
     public void updateInventory() {
-
     }
 
     public void awardAchievement(Achievement achievement) {
-
     }
 
     public void removeAchievement(Achievement achievement) {
-
     }
 
     public boolean hasAchievement(Achievement achievement) {
         return false;
     }
 
-    public void incrementStatistic(Statistic statistic) throws IllegalArgumentException {
-
+    public void incrementStatistic(@NotNull Statistic statistic) throws IllegalArgumentException {
     }
 
-    public void decrementStatistic(Statistic statistic) throws IllegalArgumentException {
-
+    public void decrementStatistic(@NotNull Statistic statistic) throws IllegalArgumentException {
     }
 
-    public void incrementStatistic(Statistic statistic, int i) throws IllegalArgumentException {
-
+    public void incrementStatistic(@NotNull Statistic statistic, int i) throws IllegalArgumentException {
     }
 
-    public void decrementStatistic(Statistic statistic, int i) throws IllegalArgumentException {
-
+    public void decrementStatistic(@NotNull Statistic statistic, int i) throws IllegalArgumentException {
     }
 
-    public void setStatistic(Statistic statistic, int i) throws IllegalArgumentException {
-
+    public void setStatistic(@NotNull Statistic statistic, int i) throws IllegalArgumentException {
     }
 
-    public int getStatistic(Statistic statistic) throws IllegalArgumentException {
+    public int getStatistic(@NotNull Statistic statistic) throws IllegalArgumentException {
         return 0;
     }
 
-    public void incrementStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
-
+    public void incrementStatistic(@NotNull Statistic statistic, @NotNull Material material) throws IllegalArgumentException {
     }
 
-    public void decrementStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
-
+    public void decrementStatistic(@NotNull Statistic statistic, @NotNull Material material) throws IllegalArgumentException {
     }
 
-    public int getStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
+    public int getStatistic(@NotNull Statistic statistic, @NotNull Material material) throws IllegalArgumentException {
         return 0;
     }
 
-    public void incrementStatistic(Statistic statistic, Material material, int i) throws IllegalArgumentException {
-
+    public void incrementStatistic(@NotNull Statistic statistic, @NotNull Material material, int i) throws IllegalArgumentException {
     }
 
-    public void decrementStatistic(Statistic statistic, Material material, int i) throws IllegalArgumentException {
-
+    public void decrementStatistic(@NotNull Statistic statistic, @NotNull Material material, int i) throws IllegalArgumentException {
     }
 
-    public void setStatistic(Statistic statistic, Material material, int i) throws IllegalArgumentException {
-
+    public void setStatistic(@NotNull Statistic statistic, @NotNull Material material, int i) throws IllegalArgumentException {
     }
 
-    public void incrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
-
+    public void incrementStatistic(@NotNull Statistic statistic, @NotNull EntityType entityType) throws IllegalArgumentException {
     }
 
-    public void decrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
-
+    public void decrementStatistic(@NotNull Statistic statistic, @NotNull EntityType entityType) throws IllegalArgumentException {
     }
 
-    public int getStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
+    public int getStatistic(@NotNull Statistic statistic, @NotNull EntityType entityType) throws IllegalArgumentException {
         return 0;
     }
 
-    public void incrementStatistic(Statistic statistic, EntityType entityType, int i) throws IllegalArgumentException {
-
+    public void incrementStatistic(@NotNull Statistic statistic, @NotNull EntityType entityType, int i) throws IllegalArgumentException {
     }
 
-    public void decrementStatistic(Statistic statistic, EntityType entityType, int i) {
-
+    public void decrementStatistic(@NotNull Statistic statistic, @NotNull EntityType entityType, int i) {
     }
 
-    public void setStatistic(Statistic statistic, EntityType entityType, int i) {
-
+    public void setStatistic(@NotNull Statistic statistic, @NotNull EntityType entityType, int i) {
     }
 
     public void setPlayerTime(long l, boolean b) {
-
     }
 
     public long getPlayerTime() {
@@ -645,27 +585,22 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void resetPlayerTime() {
-
     }
 
     public WeatherType getPlayerWeather() {
         return this.player.getPlayerWeather();
     }
 
-    public void setPlayerWeather(WeatherType weatherType) {
-
+    public void setPlayerWeather(@NotNull WeatherType weatherType) {
     }
 
     public void resetPlayerWeather() {
-
     }
 
     public void giveExp(int i) {
-
     }
 
     public void giveExpLevels(int i) {
-
     }
 
     public float getExp() {
@@ -673,7 +608,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setExp(float v) {
-
     }
 
     public int getLevel() {
@@ -681,7 +615,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setLevel(int i) {
-
     }
 
     public int getTotalExperience() {
@@ -689,15 +622,12 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setTotalExperience(int i) {
-
     }
 
     public void sendExperienceChange(float v) {
-
     }
 
     public void sendExperienceChange(float v, int i) {
-
     }
 
     public float getExhaustion() {
@@ -705,7 +635,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setExhaustion(float v) {
-
     }
 
     public float getSaturation() {
@@ -713,7 +642,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setSaturation(float v) {
-
     }
 
     public int getFoodLevel() {
@@ -721,7 +649,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setFoodLevel(int i) {
-
     }
 
     public int getSaturatedRegenRate() {
@@ -729,7 +656,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setSaturatedRegenRate(int i) {
-
     }
 
     public int getUnsaturatedRegenRate() {
@@ -737,7 +663,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setUnsaturatedRegenRate(int i) {
-
     }
 
     public int getStarvationRate() {
@@ -745,7 +670,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setStarvationRate(int i) {
-
     }
 
     public Location getBedSpawnLocation() {
@@ -753,11 +677,9 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setBedSpawnLocation(Location location) {
-
     }
 
     public void setBedSpawnLocation(Location location, boolean b) {
-
     }
 
     public boolean getAllowFlight() {
@@ -765,19 +687,26 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setAllowFlight(boolean b) {
-
     }
 
-    public void hidePlayer(Player player) {
-
+    public void hidePlayer(@NotNull Player player) {
     }
 
-    public void showPlayer(Player player) {
-
+    public void showPlayer(@NotNull Player player) {
     }
 
-    public boolean canSee(Player player) {
+    public boolean canSee(@NotNull Player player) {
         return this.player.canSee(player);
+    }
+
+    public void hideEntity(@NotNull Plugin plugin, @NotNull Entity entity) {
+    }
+
+    public void showEntity(@NotNull Plugin plugin, @NotNull Entity entity) {
+    }
+
+    public boolean canSee(@NotNull Entity entity) {
+        return false;
     }
 
     public boolean isOnGround() {
@@ -793,7 +722,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setFlying(boolean b) {
-
     }
 
     public float getFlySpeed() {
@@ -801,7 +729,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setFlySpeed(float v) throws IllegalArgumentException {
-
     }
 
     public float getWalkSpeed() {
@@ -809,23 +736,19 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setWalkSpeed(float v) throws IllegalArgumentException {
-
     }
 
-    public void setTexturePack(String s) {
-
+    public void setTexturePack(@NotNull String s) {
     }
 
-    public void setResourcePack(String s) {
-
+    public void setResourcePack(@NotNull String s) {
     }
 
-    public Scoreboard getScoreboard() {
+    public @NotNull Scoreboard getScoreboard() {
         return this.player.getScoreboard();
     }
 
-    public void setScoreboard(Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {
-
+    public void setScoreboard(@NotNull Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {
     }
 
     public boolean isHealthScaled() {
@@ -833,7 +756,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setHealthScaled(boolean b) {
-
     }
 
     public double getHealthScale() {
@@ -841,7 +763,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setHealthScale(double v) throws IllegalArgumentException {
-
     }
 
     public Entity getSpectatorTarget() {
@@ -849,66 +770,51 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setSpectatorTarget(Entity entity) {
-
     }
 
     public void sendTitle(String s, String s1) {
-
     }
 
     public void resetTitle() {
-
     }
 
-    public void spawnParticle(Particle particle, Location location, int i) {
-
+    public void spawnParticle(@NotNull Particle particle, @NotNull Location location, int i) {
     }
 
-    public void spawnParticle(Particle particle, double v, double v1, double v2, int i) {
-
+    public void spawnParticle(@NotNull Particle particle, double v, double v1, double v2, int i) {
     }
 
-    public <T> void spawnParticle(Particle particle, Location location, int i, T t) {
-
+    public <T> void spawnParticle(@NotNull Particle particle, @NotNull Location location, int i, T t) {
     }
 
-    public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, T t) {
-
+    public <T> void spawnParticle(@NotNull Particle particle, double v, double v1, double v2, int i, T t) {
     }
 
-    public void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2) {
-
+    public void spawnParticle(@NotNull Particle particle, @NotNull Location location, int i, double v, double v1, double v2) {
     }
 
-    public void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5) {
-
+    public void spawnParticle(@NotNull Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5) {
     }
 
-    public <T> void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, T t) {
-
+    public <T> void spawnParticle(@NotNull Particle particle, @NotNull Location location, int i, double v, double v1, double v2, T t) {
     }
 
-    public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, T t) {
-
+    public <T> void spawnParticle(@NotNull Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, T t) {
     }
 
-    public void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, double v3) {
-
+    public void spawnParticle(@NotNull Particle particle, @NotNull Location location, int i, double v, double v1, double v2, double v3) {
     }
 
-    public void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6) {
-
+    public void spawnParticle(@NotNull Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6) {
     }
 
-    public <T> void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, double v3, T t) {
-
+    public <T> void spawnParticle(@NotNull Particle particle, @NotNull Location location, int i, double v, double v1, double v2, double v3, T t) {
     }
 
-    public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6, T t) {
-
+    public <T> void spawnParticle(@NotNull Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6, T t) {
     }
 
-    public Spigot spigot() {
+    public @NotNull Spigot spigot() {
         return null;
     }
 
@@ -921,7 +827,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setBanned(boolean b) {
-
     }
 
     public boolean isWhitelisted() {
@@ -929,7 +834,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setWhitelisted(boolean b) {
-
     }
 
     public Player getPlayer() {
@@ -948,7 +852,7 @@ public class PermissionPlayer_v1_9 implements Player {
         return this.player.hasPlayedBefore();
     }
 
-    public Map<String, Object> serialize() {
+    public @NotNull Map<String, Object> serialize() {
         return this.player.serialize();
     }
 
@@ -956,48 +860,45 @@ public class PermissionPlayer_v1_9 implements Player {
         return this.player.isConversing();
     }
 
-    public void acceptConversationInput(String s) {
-
+    public void acceptConversationInput(@NotNull String s) {
     }
 
-    public boolean beginConversation(Conversation conversation) {
+    public boolean beginConversation(@NotNull Conversation conversation) {
         return false;
     }
 
-    public void abandonConversation(Conversation conversation) {
-
+    public void abandonConversation(@NotNull Conversation conversation) {
     }
 
-    public void abandonConversation(Conversation conversation, ConversationAbandonedEvent conversationAbandonedEvent) {
-
+    public void abandonConversation(@NotNull Conversation conversation, @NotNull ConversationAbandonedEvent conversationAbandonedEvent) {
     }
 
-    public String getName() {
+    public @NotNull String getName() {
         return this.player.getName();
     }
 
-    public PlayerInventory getInventory() {
+    public @NotNull PlayerInventory getInventory() {
         return this.player.getInventory();
     }
 
-    public Inventory getEnderChest() {
+    public @NotNull Inventory getEnderChest() {
         return this.player.getEnderChest();
     }
 
-    public MainHand getMainHand() {
+    public @NotNull MainHand getMainHand() {
         IReflection.MethodAccessor getMainHand = IReflection.getMethod(Player.class, "getMainHand", MainHand.class, new Class[0]);
         return (MainHand) getMainHand.invoke(player);
     }
 
-    public boolean setWindowProperty(InventoryView.Property property, int i) {
+    public boolean setWindowProperty(InventoryView.@NotNull Property property, int i) {
         return false;
     }
 
-    public InventoryView getOpenInventory() {
+    public @NotNull InventoryView getOpenInventory() {
         return null;
     }
 
-    public InventoryView openInventory(Inventory inventory) {
+    public InventoryView openInventory(@NotNull Inventory inventory) {
         return null;
     }
 
@@ -1009,32 +910,28 @@ public class PermissionPlayer_v1_9 implements Player {
         return null;
     }
 
-    public void openInventory(InventoryView inventoryView) {
-
+    public void openInventory(@NotNull InventoryView inventoryView) {
     }
 
-    public InventoryView openMerchant(Villager villager, boolean b) {
+    public InventoryView openMerchant(@NotNull Villager villager, boolean b) {
         return null;
     }
 
     public void closeInventory() {
-
     }
 
-    public ItemStack getItemInHand() {
+    public @NotNull ItemStack getItemInHand() {
         return this.player.getItemInHand();
     }
 
     public void setItemInHand(ItemStack itemStack) {
-
     }
 
-    public ItemStack getItemOnCursor() {
+    public @NotNull ItemStack getItemOnCursor() {
         return this.player.getItemOnCursor();
     }
 
     public void setItemOnCursor(ItemStack itemStack) {
-
     }
 
     public boolean isSleeping() {
@@ -1049,12 +946,11 @@ public class PermissionPlayer_v1_9 implements Player {
         return 0;
     }
 
-    public GameMode getGameMode() {
+    public @NotNull GameMode getGameMode() {
         return this.player.getGameMode();
     }
 
-    public void setGameMode(GameMode gameMode) {
-
+    public void setGameMode(@NotNull GameMode gameMode) {
     }
 
     public boolean isBlocking() {
@@ -1077,19 +973,19 @@ public class PermissionPlayer_v1_9 implements Player {
         return 0;
     }
 
-    public Location getEyeLocation() {
+    public @NotNull Location getEyeLocation() {
         return this.player.getCompassTarget();
     }
 
-    public List<Block> getLineOfSight(Set<Material> set, int i) {
+    public @NotNull List<Block> getLineOfSight(Set<Material> set, int i) {
         return this.player.getLineOfSight(set, i);
     }
 
-    public Block getTargetBlock(Set<Material> set, int i) {
+    public @NotNull Block getTargetBlock(Set<Material> set, int i) {
         return this.player.getTargetBlock(set, i);
     }
 
-    public List<Block> getLastTwoTargetBlocks(Set<Material> set, int i) {
+    public @NotNull List<Block> getLastTwoTargetBlocks(Set<Material> set, int i) {
         return this.player.getLastTwoTargetBlocks(set, i);
     }
 
@@ -1110,7 +1006,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setRemainingAir(int i) {
-
     }
 
     public int getMaximumAir() {
@@ -1118,7 +1013,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setMaximumAir(int i) {
-
     }
 
     public int getMaximumNoDamageTicks() {
@@ -1126,7 +1020,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setMaximumNoDamageTicks(int i) {
-
     }
 
     public double getLastDamage() {
@@ -1134,7 +1027,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setLastDamage(double v) {
-
     }
 
     public int getNoDamageTicks() {
@@ -1142,38 +1034,36 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setNoDamageTicks(int i) {
-
     }
 
     public Player getKiller() {
         return null;
     }
 
-    public boolean addPotionEffect(PotionEffect potionEffect) {
+    public boolean addPotionEffect(@NotNull PotionEffect potionEffect) {
         return false;
     }
 
-    public boolean addPotionEffect(PotionEffect potionEffect, boolean b) {
+    public boolean addPotionEffect(@NotNull PotionEffect potionEffect, boolean b) {
         return false;
     }
 
-    public boolean addPotionEffects(Collection<PotionEffect> collection) {
+    public boolean addPotionEffects(@NotNull Collection<PotionEffect> collection) {
         return false;
     }
 
-    public boolean hasPotionEffect(PotionEffectType potionEffectType) {
+    public boolean hasPotionEffect(@NotNull PotionEffectType potionEffectType) {
         return false;
     }
 
-    public void removePotionEffect(PotionEffectType potionEffectType) {
-
+    public void removePotionEffect(@NotNull PotionEffectType potionEffectType) {
     }
 
-    public Collection<PotionEffect> getActivePotionEffects() {
+    public @NotNull Collection<PotionEffect> getActivePotionEffects() {
         return this.player.getActivePotionEffects();
     }
 
-    public boolean hasLineOfSight(Entity entity) {
+    public boolean hasLineOfSight(@NotNull Entity entity) {
         return this.player.hasLineOfSight(entity);
     }
 
@@ -1182,7 +1072,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setRemoveWhenFarAway(boolean b) {
-
     }
 
     public EntityEquipment getEquipment() {
@@ -1194,14 +1083,13 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setCanPickupItems(boolean b) {
-
     }
 
     public boolean isLeashed() {
         return this.player.isLeashed();
     }
 
-    public Entity getLeashHolder() throws IllegalStateException {
+    public @NotNull Entity getLeashHolder() throws IllegalStateException {
         return this.player.getLeashHolder();
     }
 
@@ -1214,27 +1102,22 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setGliding(boolean b) {
-
     }
 
     public void setAI(boolean b) {
-
     }
 
     public boolean hasAI() {
         return false;
     }
 
-    public void attack(Entity entity) {
-
+    public void attack(@NotNull Entity entity) {
     }
 
     public void swingMainHand() {
-
     }
 
     public void swingOffHand() {
-
     }
 
     public boolean isCollidable() {
@@ -1242,31 +1125,27 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setCollidable(boolean b) {
-
     }
 
-    public Set<UUID> getCollidableExemptions() {
+    public @NotNull Set<UUID> getCollidableExemptions() {
         return null;
     }
 
-    public <T> T getMemory(MemoryKey<T> memoryKey) {
+    public <T> T getMemory(@NotNull MemoryKey<T> memoryKey) {
         return null;
     }
 
-    public <T> void setMemory(MemoryKey<T> memoryKey, T t) {
-
+    public <T> void setMemory(@NotNull MemoryKey<T> memoryKey, T t) {
     }
 
-    public AttributeInstance getAttribute(Attribute attribute) {
+    public AttributeInstance getAttribute(@NotNull Attribute attribute) {
         return null;
     }
 
     public void damage(double v) {
-
     }
 
     public void damage(double v, Entity entity) {
-
     }
 
     public double getHealth() {
@@ -1274,7 +1153,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setHealth(double v) {
-
     }
 
     public double getAbsorptionAmount() {
@@ -1282,7 +1160,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setAbsorptionAmount(double v) {
-
     }
 
     public double getMaxHealth() {
@@ -1290,14 +1167,12 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setMaxHealth(double v) {
-
     }
 
     public void resetMaxHealth() {
-
     }
 
-    public Location getLocation() {
+    public @NotNull Location getLocation() {
         return this.player.getLocation();
     }
 
@@ -1305,35 +1180,34 @@ public class PermissionPlayer_v1_9 implements Player {
         return this.player.getLocation(location);
     }
 
-    public Vector getVelocity() {
+    public @NotNull Vector getVelocity() {
         return this.player.getVelocity();
     }
 
-    public void setVelocity(Vector vector) {
-
+    public void setVelocity(@NotNull Vector vector) {
     }
 
-    public World getWorld() {
+    public @NotNull World getWorld() {
         return this.player.getWorld();
     }
 
-    public boolean teleport(Location location) {
+    public boolean teleport(@NotNull Location location) {
         return false;
     }
 
-    public boolean teleport(Location location, PlayerTeleportEvent.TeleportCause teleportCause) {
+    public boolean teleport(@NotNull Location location, PlayerTeleportEvent.@NotNull TeleportCause teleportCause) {
         return false;
     }
 
-    public boolean teleport(Entity entity) {
+    public boolean teleport(@NotNull Entity entity) {
         return false;
     }
 
-    public boolean teleport(Entity entity, PlayerTeleportEvent.TeleportCause teleportCause) {
+    public boolean teleport(@NotNull Entity entity, PlayerTeleportEvent.@NotNull TeleportCause teleportCause) {
         return false;
     }
 
-    public List<Entity> getNearbyEntities(double v, double v1, double v2) {
+    public @NotNull List<Entity> getNearbyEntities(double v, double v1, double v2) {
         return this.player.getNearbyEntities(v, v1, v2);
     }
 
@@ -1346,11 +1220,9 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setFireTicks(int i) {
-
     }
 
     public void setVisualFire(boolean b) {
-
     }
 
     public boolean isVisualFire() {
@@ -1366,7 +1238,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setFreezeTicks(int i) {
-
     }
 
     public boolean isFrozen() {
@@ -1378,7 +1249,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void remove() {
-
     }
 
     public boolean isDead() {
@@ -1389,7 +1259,7 @@ public class PermissionPlayer_v1_9 implements Player {
         return this.player.isValid();
     }
 
-    public Server getServer() {
+    public @NotNull Server getServer() {
         return this.player.getServer();
     }
 
@@ -1397,7 +1267,7 @@ public class PermissionPlayer_v1_9 implements Player {
         return this.player.getPassenger();
     }
 
-    public boolean setPassenger(Entity entity) {
+    public boolean setPassenger(@NotNull Entity entity) {
         return false;
     }
 
@@ -1414,7 +1284,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setFallDistance(float v) {
-
     }
 
     public EntityDamageEvent getLastDamageCause() {
@@ -1422,10 +1291,9 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setLastDamageCause(EntityDamageEvent entityDamageEvent) {
-
     }
 
-    public UUID getUniqueId() {
+    public @NotNull UUID getUniqueId() {
         return this.player.getUniqueId();
     }
 
@@ -1434,14 +1302,12 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setTicksLived(int i) {
-
     }
 
-    public void playEffect(EntityEffect entityEffect) {
-
+    public void playEffect(@NotNull EntityEffect entityEffect) {
     }
 
-    public EntityType getType() {
+    public @NotNull EntityType getType() {
         return this.player.getType();
     }
 
@@ -1462,7 +1328,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setCustomName(String s) {
-
     }
 
     public boolean isCustomNameVisible() {
@@ -1470,7 +1335,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setCustomNameVisible(boolean b) {
-
     }
 
     public boolean isGlowing() {
@@ -1478,7 +1342,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setGlowing(boolean b) {
-
     }
 
     public boolean isInvulnerable() {
@@ -1486,7 +1349,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setInvulnerable(boolean b) {
-
     }
 
     public boolean isSilent() {
@@ -1494,7 +1356,6 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setSilent(boolean b) {
-
     }
 
     public boolean hasGravity() {
@@ -1502,66 +1363,61 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setGravity(boolean b) {
-
     }
 
-    public void sendMessage(String s) {
-
+    public void sendMessage(@NotNull String s) {
     }
 
     public void sendMessage(String[] strings) {
-
     }
 
-    public void setMetadata(String s, MetadataValue metadataValue) {
-
+    public void setMetadata(@NotNull String s, @NotNull MetadataValue metadataValue) {
     }
 
-    public List<MetadataValue> getMetadata(String s) {
+    public @NotNull List<MetadataValue> getMetadata(@NotNull String s) {
         return this.player.getMetadata(s);
     }
 
-    public boolean hasMetadata(String s) {
+    public boolean hasMetadata(@NotNull String s) {
         return this.player.hasMetadata(s);
     }
 
-    public void removeMetadata(String s, Plugin plugin) {
-
+    public void removeMetadata(@NotNull String s, @NotNull Plugin plugin) {
     }
 
-    public boolean isPermissionSet(String s) {
+    public boolean isPermissionSet(@NotNull String s) {
         return this.player.isPermissionSet(s);
     }
 
-    public boolean isPermissionSet(Permission permission) {
+    public boolean isPermissionSet(@NotNull Permission permission) {
         return this.player.isPermissionSet(permission);
     }
 
-    public boolean hasPermission(String s) {
+    public boolean hasPermission(@NotNull String s) {
         return this.player.hasPermission(s);
     }
 
-    public boolean hasPermission(Permission permission) {
+    public boolean hasPermission(@NotNull Permission permission) {
         return this.player.hasPermission(permission);
     }
 
-    public PermissionAttachment addAttachment(Plugin plugin, String s, boolean b) {
+    public @NotNull PermissionAttachment addAttachment(@NotNull Plugin plugin, @NotNull String s, boolean b) {
         return this.player.addAttachment(plugin, s, b);
     }
 
-    public PermissionAttachment addAttachment(Plugin plugin) {
+    public @NotNull PermissionAttachment addAttachment(@NotNull Plugin plugin) {
         return this.player.addAttachment(plugin);
     }
 
-    public PermissionAttachment addAttachment(Plugin plugin, String s, boolean b, int i) {
+    public PermissionAttachment addAttachment(@NotNull Plugin plugin, @NotNull String s, boolean b, int i) {
         return this.player.addAttachment(plugin, s, b, i);
     }
 
-    public PermissionAttachment addAttachment(Plugin plugin, int i) {
+    public PermissionAttachment addAttachment(@NotNull Plugin plugin, int i) {
         return this.player.addAttachment(plugin, i);
     }
 
-    public void removeAttachment(PermissionAttachment permissionAttachment) {
+    public void removeAttachment(@NotNull PermissionAttachment permissionAttachment) {
         this.player.removeAttachment(permissionAttachment);
     }
 
@@ -1569,7 +1425,7 @@ public class PermissionPlayer_v1_9 implements Player {
         this.player.recalculatePermissions();
     }
 
-    public Set<PermissionAttachmentInfo> getEffectivePermissions() {
+    public @NotNull Set<PermissionAttachmentInfo> getEffectivePermissions() {
         return this.player.getEffectivePermissions();
     }
 
@@ -1578,22 +1434,20 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void setOp(boolean b) {
-
     }
 
-    public void sendPluginMessage(Plugin plugin, String s, byte[] bytes) {
-
+    public void sendPluginMessage(@NotNull Plugin plugin, @NotNull String s, byte[] bytes) {
     }
 
-    public Set<String> getListeningPluginChannels() {
+    public @NotNull Set<String> getListeningPluginChannels() {
         return this.player.getListeningPluginChannels();
     }
 
-    public <T extends Projectile> T launchProjectile(Class<? extends T> aClass) {
+    public <T extends Projectile> @NotNull T launchProjectile(@NotNull Class<? extends T> aClass) {
         return null;
     }
 
-    public <T extends Projectile> T launchProjectile(Class<? extends T> aClass, Vector vector) {
+    public <T extends Projectile> @NotNull T launchProjectile(@NotNull Class<? extends T> aClass, Vector vector) {
         return null;
     }
 }

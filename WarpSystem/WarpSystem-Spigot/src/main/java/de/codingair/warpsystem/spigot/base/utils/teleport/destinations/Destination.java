@@ -127,7 +127,7 @@ public class Destination implements IDestination {
         else return adapter.teleport(player, id, buildRandomOffset(), displayName, checkPermission, message, costs, callback);
     }
 
-    public void sendMessage(@NotNull Player player, @Nullable String message, @NotNull String displayName, double costs, @NotNull Origin origin) {
+    public void sendMessage(@NotNull Player player, @Nullable String message, @Nullable String displayName, double costs, @NotNull Origin origin) {
         if (adapter == null
                 || type == DestinationType.GlobalWarp
                 || (customOptions.getMessage() == null ? !origin.sendTeleportMessage() : !customOptions.getMessage())
@@ -139,9 +139,11 @@ public class Destination implements IDestination {
         message = PAPI.convert(message, player);
         message = message
                 .replace("%AMOUNT%", new ImprovedDouble(costs).toString())
-                .replace("%warp%", ChatColor.translateAlternateColorCodes('&', customOptions.getDisplayName() == null ? displayName : customOptions.getDisplayName()))
                 .replace("%player%", player.getName())
                 .replace("%PLAYER%", player.getName());
+
+        String finalDisplayName = customOptions.getDisplayName() == null ? displayName : customOptions.getDisplayName();
+        if (finalDisplayName != null) message = message.replace("%warp%", ChatColor.translateAlternateColorCodes('&', finalDisplayName));
 
         player.sendMessage(message);
     }

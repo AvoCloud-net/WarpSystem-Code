@@ -68,7 +68,7 @@
             <dependency>
                 <groupId>com.github.CodingAir</groupId>
                 <artifactId>CodingAPI</artifactId>
-                <version>1.37</version>
+                <version>1.38</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -92,13 +92,13 @@
             <dependency>
                 <groupId>io.papermc</groupId>
                 <artifactId>paperlib</artifactId>
-                <version>1.0.6</version>
+                <version>1.0.7</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.spigotmc</groupId>
                 <artifactId>spigot-api</artifactId>
-                <version>1.17-R0.1-SNAPSHOT</version>
+                <version>1.18-R0.1-SNAPSHOT</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>

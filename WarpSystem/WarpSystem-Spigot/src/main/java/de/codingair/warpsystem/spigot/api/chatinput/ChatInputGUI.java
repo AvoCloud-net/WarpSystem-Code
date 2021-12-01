@@ -73,7 +73,7 @@ public abstract class ChatInputGUI implements Removable {
     }
 
     void onInput(String message) {
-        if (message != null) message = CharMatcher.WHITESPACE.trimFrom(message);
+        if (message != null) message = CharMatcher.whitespace().trimFrom(message);
 
         ChatInputEvent e = new ChatInputEvent(this, message);
         onEnter(e);
