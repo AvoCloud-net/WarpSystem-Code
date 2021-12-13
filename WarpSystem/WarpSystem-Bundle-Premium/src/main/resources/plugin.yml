@@ -111,6 +111,7 @@ permissions:
       warpsystem.use.teleportCommand.tpdeny: true
       warpsystem.use.teleportCommand.tpatoggle: true
       warpsystem.use.teleportCommand.tpahere: true
+      warpsystem.use.teleportCommand.back: true
   warpsystem.use.teleportcommand.tp:
     default: op
   warpsystem.use.teleportcommand.tphere:
@@ -132,6 +133,8 @@ permissions:
   warpsystem.use.teleportCommand.tpatoggle:
     default: op
   warpsystem.use.teleportCommand.tpahere:
+    default: op
+  warpsystem.use.teleportCommand.back:
     default: op
   warpsystem.use.warpgui:
     default: op
