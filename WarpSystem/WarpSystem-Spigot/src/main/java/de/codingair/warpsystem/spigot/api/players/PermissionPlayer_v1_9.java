@@ -9,6 +9,7 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.PistonMoveReaction;
+import org.bukkit.block.Sign;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
@@ -213,6 +214,9 @@ public class PermissionPlayer_v1_9 implements Player {
     }
 
     public void openBook(@NotNull ItemStack itemStack) {
+    }
+
+    public void openSign(@NotNull Sign sign) {
     }
 
     public void showDemoScreen() {
