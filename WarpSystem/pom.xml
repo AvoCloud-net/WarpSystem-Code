@@ -16,7 +16,6 @@
 
     <modules>
         <module>WarpSystem-Core</module>
-        <module>WarpSystem-Spigot-v1.8</module>
         <module>WarpSystem-Spigot</module>
         <module>WarpSystem-Spigot-Free</module>
         <module>WarpSystem-Bundle-Free</module>
