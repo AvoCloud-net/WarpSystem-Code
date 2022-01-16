@@ -75,9 +75,9 @@ permissions:
       warpsystem.bypass.cooldown: true
   warpsystem.bypass.teleport.*:
     children:
-      warpsysystem.bypass.teleport.costs: true
-      warpsysystem.bypass.teleport.delay: true
-      warpsysystem.bypass.teleport.maxplayers: true
+      warpsystem.bypass.teleport.costs: true
+      warpsystem.bypass.teleport.delay: true
+      warpsystem.bypass.teleport.maxplayers: true
   warpsystem.bypass.teleport.costs:
     default: op
   warpsystem.bypass.teleport.delay:
@@ -155,7 +155,7 @@ permissions:
   warpsystem.use.spawn:
     default: op
 
-  warpystem.*:
+  warpsystem.*:
     children:
       warpsystem.notify: true
       warpsystem.modify: true
