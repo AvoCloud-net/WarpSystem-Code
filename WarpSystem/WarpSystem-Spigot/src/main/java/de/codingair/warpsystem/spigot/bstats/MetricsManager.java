@@ -3,6 +3,7 @@ package de.codingair.warpsystem.spigot.bstats;
 import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.features.FeatureType;
+import de.codingair.warpsystem.spigot.versionfactory.VFac;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.SimplePie;
@@ -49,7 +50,7 @@ public class MetricsManager implements Manager {
             }
         }
 
-        metrics.addCustomChart(new SimplePie("type", () -> "Premium"));
+        metrics.addCustomChart(new SimplePie("type", () -> VFac.isAvailable("Indicator") ? "Free" : "Premium"));
         metrics.addCustomChart(new SimplePie("bungeecord", () -> {
             if (Bukkit.getServer().getOnlinePlayers().isEmpty()) return "Is empty";
             return WarpSystem.getInstance().isProxyConnected() ? "Yes" : "No";
