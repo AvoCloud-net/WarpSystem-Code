@@ -148,9 +148,10 @@ public abstract class RandomLocationCalculator implements Runnable {
         if (location.getWorld().getEnvironment() != World.Environment.NORMAL) loc.setY(getHighestY(loc.getWorld()));
 
         if (location.getWorld().getEnvironment() == World.Environment.NETHER) {
-            int free = 0;
+            int free = Environment.canBeEntered(loc.clone().add(0, 1, 0).getBlock()) ? 1 : 0;
             while (free < 2 && loc.getY() >= 0) {
                 if (Environment.canBeEntered(loc.getBlock().getType())) free++;
+                else free = 0;
 
                 loc.setY(loc.getY() - 1);
             }
