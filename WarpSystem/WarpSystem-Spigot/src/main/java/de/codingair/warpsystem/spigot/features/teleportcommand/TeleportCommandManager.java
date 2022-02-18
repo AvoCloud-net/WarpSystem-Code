@@ -133,7 +133,10 @@ public abstract class TeleportCommandManager implements Manager, ProxyFeature, C
         ChatButtonManager.getInstance().addListener((player, id, type) -> {
             if (type != null && type.equalsIgnoreCase("TP")) {
                 player.sendMessage(Lang.getPrefix() + Lang.get("TeleportRequest_not_valid_general"));
+                return true;
             }
+
+            return false;
         });
 
         this.handler = VFac.build(VKey.TeleportCommandHandler);
