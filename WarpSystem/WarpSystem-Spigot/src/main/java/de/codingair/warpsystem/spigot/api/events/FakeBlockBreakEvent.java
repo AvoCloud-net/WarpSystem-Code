@@ -16,7 +16,11 @@ import org.jetbrains.annotations.NotNull;
 public class FakeBlockBreakEvent extends BlockBreakEvent {
     private static final IReflection.ConstructorAccessor PLAYER;
     private static final IReflection.ConstructorAccessor PLAYER_INTERACT_MANAGER;
+    private static final IReflection.ConstructorAccessor PLAYER_CONNECTION;
+    private static final IReflection.ConstructorAccessor NETWORK_MANAGER;
+    private static final Object PROTOCOL_DIRECTION;
     private static final IReflection.FieldAccessor<PermissibleBase> PERMISSION_BASE = IReflection.getField(PacketUtils.CraftPlayerClass, PermissibleBase.class, 0);
+    private static final IReflection.FieldAccessor<?> PLAYER_CONNECTION_FIELD = IReflection.getField(PacketUtils.EntityPlayerClass, PacketUtils.PlayerConnectionClass, 0);
 
     static {
         if (Version.atLeast(17)) {
@@ -26,6 +30,12 @@ public class FakeBlockBreakEvent extends BlockBreakEvent {
             PLAYER_INTERACT_MANAGER = IReflection.getConstructor(PacketUtils.PlayerInteractManagerClass, PacketUtils.WorldServerClass);
             PLAYER = IReflection.getConstructor(PacketUtils.EntityPlayerClass, PacketUtils.MinecraftServerClass, PacketUtils.WorldServerClass, GameProfile.class, PacketUtils.PlayerInteractManagerClass);
         }
+
+        PLAYER_CONNECTION = IReflection.getConstructor(PacketUtils.PlayerConnectionClass, PacketUtils.MinecraftServerClass, PacketUtils.NetworkManagerClass, PacketUtils.EntityPlayerClass);
+
+        Class<?> protocolDirection = IReflection.getClass(IReflection.ServerPacket.PROTOCOL, "EnumProtocolDirection");
+        NETWORK_MANAGER = IReflection.getConstructor(PacketUtils.NetworkManagerClass, protocolDirection);
+        PROTOCOL_DIRECTION = protocolDirection.getEnumConstants()[1];
     }
 
     public FakeBlockBreakEvent(@NotNull Block theBlock, @NotNull Player player) {
@@ -66,12 +76,17 @@ public class FakeBlockBreakEvent extends BlockBreakEvent {
     public static Player buildFake(@NotNull Player player) {
         GameProfile profile = GameProfileUtils.getGameProfile(player);
         Object fakePlayer = createFakePlayerInstance(player, profile);
-        Object craftFakePlayer = PacketUtils.getBukkitEntity(fakePlayer);
+
+        PLAYER_CONNECTION_FIELD.set(fakePlayer, createConnectionDump(fakePlayer));
+
+        Player craftFakePlayer = (Player) PacketUtils.getBukkitEntity(fakePlayer);
+
+        craftFakePlayer.setGameMode(player.getGameMode());
 
         //apply permissible base
         PERMISSION_BASE.set(craftFakePlayer, new PermissibleBase(player));
 
-        return (Player) craftFakePlayer;
+        return craftFakePlayer;
     }
 
     private static Object createFakePlayerInstance(@NotNull Player player, GameProfile profile) {
@@ -88,5 +103,9 @@ public class FakeBlockBreakEvent extends BlockBreakEvent {
                     PacketUtils.getWorldServer(player.getWorld()),
                     profile
             );
+    }
+
+    private static Object createConnectionDump(@NotNull Object entityPlayer) {
+        return PLAYER_CONNECTION.newInstance(PacketUtils.getMinecraftServer(), NETWORK_MANAGER.newInstance(PROTOCOL_DIRECTION), entityPlayer);
     }
 }
