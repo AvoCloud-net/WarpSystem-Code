@@ -56,6 +56,6 @@ public class SetupAssistantListener implements PacketHandler<SetupAssistantStore
     public void process(@NotNull SetupAssistantStorePacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         String message = packet.getMessage();
         SetupAssistant assistant = SetupAssistantManager.getInstance().getAssistant();
-        if (assistant != null) assistant.queue(buildComponent(message));
+        if (assistant != null) assistant.getMessager().queue(buildComponent(message));
     }
 }

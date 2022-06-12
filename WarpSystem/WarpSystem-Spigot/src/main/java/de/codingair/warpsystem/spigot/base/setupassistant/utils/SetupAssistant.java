@@ -1,11 +1,6 @@
 package de.codingair.warpsystem.spigot.base.setupassistant.utils;
 
-import com.google.common.collect.EvictingQueue;
-import de.codingair.codingapi.player.chat.ChatButton;
 import de.codingair.codingapi.player.chat.SimpleMessage;
-import de.codingair.codingapi.player.data.PacketReader;
-import de.codingair.codingapi.server.reflections.IReflection;
-import de.codingair.codingapi.server.reflections.PacketUtils;
 import de.codingair.codingapi.server.specification.Version;
 import de.codingair.warpsystem.core.transfer.packets.proxy.ToggleSetupAssistantPacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
@@ -31,18 +26,20 @@ public class SetupAssistant {
     private final HashMap<String, List<Value>> hierarchy = new HashMap<>();
     private final List<String> priority = new ArrayList<>();
     private final boolean general;
-    @SuppressWarnings ("UnstableApiUsage")
-    private final EvictingQueue<Object> queue = EvictingQueue.create(17);
     private List<Value> values;
     private PluginVersion filter = null;
-    private PacketReader reader;
     private String nav = null;
     private int page = 0, typePage;
+    public static final String IDENTIFIER = "§§§W§S§§";
+    private final Messager messager;
+    private boolean quit = false;
 
     public SetupAssistant(Player player, List<Value> values, boolean general) {
         this.player = player;
         this.values = values;
         this.general = general;
+        messager = Messager.get(player, this);
+
         buildHierarchy();
 
         if (WarpSystem.getInstance().isProxyConnected()) {
@@ -50,69 +47,8 @@ public class SetupAssistant {
             WarpSystem.getDataHandler().send(new ToggleSetupAssistantPacket(player.getName()), player);
         }
 
-        Class<?> iPacketClass = IReflection.getClass(IReflection.ServerPacket.PACKETS, "PacketPlayInChat");
-        IReflection.FieldAccessor<String> inputText = IReflection.getField(iPacketClass, Version.since(17, "a", "b"));
-
-        Class<?> oPacketClass = IReflection.getClass(IReflection.ServerPacket.PACKETS, "PacketPlayOutChat");
-        IReflection.FieldAccessor<?> outputText = IReflection.getField(oPacketClass, Version.since(17, "components", "a"));
-
-        boolean newer = Version.atLeast(17);
-        IReflection.MethodAccessor getText = newer ? IReflection.getMethod(PacketUtils.IChatBaseComponentClass, Version.since(18, "getText", "a"), String.class, new Class[0]) : null;
-
-        reader = new PacketReader(player, "WS-SetupAssistant", WarpSystem.getInstance()) {
-            @Override
-            public boolean readPacket(Object packet) {
-                if (packet.getClass().equals(iPacketClass)) {
-                    String text = inputText.get(packet);
-                    if (text != null) {
-                        //forward chat button
-                        if (text.startsWith(ChatButton.PREFIX)) return false;
-
-                        onChat(text);
-                        return true;
-                    }
-                } else if (packet.getClass().equals(oPacketClass)) { //got output message from bungee
-                    //queue for later
-                    queue.add(packet);
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public boolean writePacket(Object packet) {
-                if (packet.getClass().equals(oPacketClass)) {
-                    if (newer) {
-                        String s = (String) getText.invoke(outputText.get(packet));
-                        if (s.startsWith("§f")) s = s.substring(2);
-
-                        //identifier
-                        if (s.startsWith("§§§§")) return false;
-                    } else {
-                        BaseComponent[] c = (BaseComponent[]) outputText.get(packet);
-
-                        if (c != null && c.length == 1) {
-                            String s = c[0].toLegacyText();
-                            if (s.startsWith("§f")) s = s.substring(2);
-
-                            //identifier
-                            if (s.startsWith("§§§§")) return false;
-                        }
-                    }
-
-                    //queue for later
-                    queue(packet);
-                    return true;
-                } else return false;
-            }
-        };
-        reader.inject();
-
+        messager.startBlocking();
         process("");
-    }
-
-    public void queue(Object packet) {
-        queue.add(packet);
     }
 
     private void buildHierarchy() {
@@ -147,21 +83,16 @@ public class SetupAssistant {
     }
 
     private void quit(boolean sendMessage) {
-        if (reader == null) return;
+        if (quit) return;
+        quit = true;
 
         if (WarpSystem.getInstance().isProxyConnected()) {
             //send setup assistant packet
             WarpSystem.getDataHandler().send(new ToggleSetupAssistantPacket(), player);
         }
 
-        reader.unInject();
-        reader = null;
-
-        if (sendMessage)
-            for (Object o : queue) {
-                PacketUtils.sendPacket(player, o);
-            }
-        queue.clear();
+        messager.stopBlocking();
+        if (sendMessage) messager.flushCache();
 
         if (sendMessage) {
             TextComponent base = new TextComponent("\n\n" + Lang.getPrefix() + Lang.get("SetupAssistant_Closed") + " §8[");
@@ -170,7 +101,7 @@ public class SetupAssistant {
             extra.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/warpsystem setupassistant"));
             base.addExtra(extra);
             base.addExtra(new TextComponent("§8]"));
-            player.spigot().sendMessage(base);
+            messager.sendMessage(base);
         }
 
         SetupAssistantManager.getInstance().clearAssistant();
@@ -223,8 +154,7 @@ public class SetupAssistant {
         nav = arg;
         List<Value> l = hierarchy.get(arg);
 
-        //identifier: §§§§
-        SimpleMessage m = new SimpleMessage("§§§§", WarpSystem.getInstance());
+        SimpleMessage m = new SimpleMessage(IDENTIFIER, WarpSystem.getInstance());
 
         m.add("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n§8§m                                            §r\n  §6§n§lSetup-Assistant");
         if (general) m.add("§8 - §e" + Lang.get("All"));
@@ -409,7 +339,7 @@ public class SetupAssistant {
         m.add((warning == null ? "\n" : "") + "§8§m                                            ");
         if (warning != null) m.add("\n" + warning);
 
-        m.send(player);
+        messager.sendMessage(m);
     }
 
     public Player getPlayer() {
@@ -418,5 +348,9 @@ public class SetupAssistant {
 
     public List<Value> getValues() {
         return values;
+    }
+
+    public Messager getMessager() {
+        return messager;
     }
 }
