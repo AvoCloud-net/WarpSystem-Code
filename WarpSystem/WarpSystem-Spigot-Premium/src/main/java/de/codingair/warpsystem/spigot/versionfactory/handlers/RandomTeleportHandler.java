@@ -39,7 +39,7 @@ public class RandomTeleportHandler extends RandomTeleportManager {
         }
 
         public boolean correct(Location location, boolean safety) {
-            if (RandomTeleportManager.getInstance().getBiomeList() != null && !RandomTeleportManager.getInstance().getBiomeList().contains(location.getWorld().getBiome(location.getBlockX(), location.getBlockZ())))
+            if (RandomTeleportManager.getInstance().getBiomeBlacklist() != null && RandomTeleportManager.getInstance().getBiomeBlacklist().contains(location.getBlock().getBiome()))
                 return false;
             if (RandomTeleportManager.getInstance().isProtectedRegions() && isProtected(location).join()) return false;
             if (((RandomTeleportHandler) RandomTeleportManager.getInstance()).isWorldBorder() && !isInsideOfWorldBorder(location)) return false;
@@ -54,6 +54,7 @@ public class RandomTeleportHandler extends RandomTeleportManager {
         }
 
         private boolean isInsideOfWorldBorder(Location location) {
+            assert location.getWorld() != null;
             WorldBorder border = location.getWorld().getWorldBorder();
             return Area.isInArea(location, border.getCenter(), border.getSize() / 2, false, 0);
         }

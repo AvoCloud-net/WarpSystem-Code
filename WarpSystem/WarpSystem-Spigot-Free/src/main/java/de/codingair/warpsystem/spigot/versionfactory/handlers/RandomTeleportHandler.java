@@ -20,7 +20,7 @@ public class RandomTeleportHandler extends RandomTeleportManager {
         }
 
         public boolean correct(Location location, boolean safety) {
-            if (RandomTeleportManager.getInstance().getBiomeList() != null && !RandomTeleportManager.getInstance().getBiomeList().contains(location.getWorld().getBiome(location.getBlockX(), location.getBlockZ())))
+            if (RandomTeleportManager.getInstance().getBiomeBlacklist() != null && RandomTeleportManager.getInstance().getBiomeBlacklist().contains(location.getBlock().getBiome()))
                 return false;
             if (RandomTeleportManager.getInstance().isProtectedRegions() && isProtected(location).join()) return false;
             if (safety) {

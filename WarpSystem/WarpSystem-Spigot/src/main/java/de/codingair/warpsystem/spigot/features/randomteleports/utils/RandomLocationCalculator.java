@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -127,7 +128,12 @@ public abstract class RandomLocationCalculator implements Runnable {
 
     private boolean checkY(Location location) {
         if (location.getWorld() == null) throw new IllegalArgumentException();
-        return location.getY() <= getHighestY(location.getWorld()) && location.getY() > 0;
+        return location.getY() <= getHighestY(location.getWorld()) && location.getY() > getMinHeight(location.getWorld());
+    }
+
+    private int getMinHeight(@NotNull World world) {
+        if (Version.atLeast(17)) return world.getMinHeight();
+        else return 0;
     }
 
     private int getHighestY(World w) {
@@ -137,7 +143,7 @@ public abstract class RandomLocationCalculator implements Runnable {
             case THE_END:
                 return RandomTeleportManager.getInstance().getEndHeight();
             default:
-                return 72;
+                return w.getMaxHeight();
         }
     }
 
@@ -156,7 +162,7 @@ public abstract class RandomLocationCalculator implements Runnable {
                 loc.setY(loc.getY() - 1);
             }
 
-            while (Environment.canBeEntered(loc.getBlock().getType()) && loc.getBlockY() > 0) {
+            while (Environment.canBeEntered(loc.getBlock().getType()) && loc.getBlockY() > getMinHeight(loc.getWorld())) {
                 loc.setY(loc.getY() - 1);
             }
 
@@ -173,11 +179,11 @@ public abstract class RandomLocationCalculator implements Runnable {
 
                 loc.setY(loc.getY() + 1);
             } else {
-                while (Environment.canBeEntered(loc.getBlock().getType()) && !Environment.isWaterFluid(loc.getBlock()) && loc.getBlockY() > 0) {
+                while (Environment.canBeEntered(loc.getBlock().getType()) && !Environment.isWaterFluid(loc.getBlock()) && loc.getBlockY() > getMinHeight(loc.getWorld())) {
                     loc.setY(loc.getY() - 4);
                 }
 
-                if (loc.getBlockY() > 0) {
+                if (loc.getBlockY() > getMinHeight(loc.getWorld())) {
                     while (!Environment.canBeEntered(loc.getBlock().getType())) {
                         loc.setY(loc.getY() + 1);
                     }

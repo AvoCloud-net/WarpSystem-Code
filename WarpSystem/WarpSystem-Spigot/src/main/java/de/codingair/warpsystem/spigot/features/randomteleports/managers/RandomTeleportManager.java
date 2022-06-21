@@ -31,6 +31,7 @@ import de.codingair.warpsystem.spigot.features.randomteleports.utils.RandomLocat
 import de.codingair.warpsystem.spigot.features.randomteleports.utils.WorldOption;
 import de.codingair.warpsystem.spigot.features.randomteleports.utils.forwardcompatibility.RTPTagConverter_v4_2_2;
 import de.codingair.warpsystem.spigot.features.randomteleports.utils.forwardcompatibility.RTPTagConverter_v4_2_6;
+import de.codingair.warpsystem.spigot.features.randomteleports.utils.forwardcompatibility.RTPTagConverter_v5_1_1;
 import de.codingair.warpsystem.spigot.transfer.handlers.QueueRTPUsagePacketHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -68,7 +69,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     protected boolean buyable;
     protected double costs;
     protected boolean protectedRegions;
-    protected List<Biome> biomeList;
+    protected Set<Biome> biomeBlacklist;
     protected WorldOption defValues;
     protected int netherHeight;
     protected int endHeight;
@@ -84,6 +85,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     public void preLoad() {
         new RTPTagConverter_v4_2_2();
         new RTPTagConverter_v4_2_6();
+        new RTPTagConverter_v5_1_1();
     }
 
     public abstract RandomLocationCalculator newCalculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<RandomLocationCalculator> callback);
@@ -127,22 +129,21 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
 
         this.protectedRegions = config.getBoolean("RandomTeleport.Support.ProtectedRegions", true);
         if (config.getBoolean("RandomTeleport.Support.Biome.Enabled", true)) {
-            List<String> configBiomes = config.getStringList("RandomTeleport.Support.Biome.BiomeList");
-            biomeList = new ArrayList<>();
+            List<String> configBiomes = config.getStringList("RandomTeleport.Support.Biome.Blacklist");
+            biomeBlacklist = new HashSet<>();
 
-            if (configBiomes.isEmpty()) {
-                for (Biome value : Biome.values()) {
-                    if (value.name().equalsIgnoreCase("VOID")) continue;
-                    this.biomeList.add(value);
-                }
-            } else {
+            if (!configBiomes.isEmpty()) {
                 for (String biome : configBiomes) {
+                    Biome b = null;
                     for (Biome value : Biome.values()) {
-                        if (value.name().equalsIgnoreCase(biome) && !biomeList.contains(value)) {
-                            biomeList.add(value);
+                        if (value.name().equalsIgnoreCase(biome)) {
+                            b = value;
                             break;
                         }
                     }
+
+                    if (b == null) WarpSystem.getInstance().getLogger().warning(String.format("Could not find biome '%s' from RTPConfig.", biome));
+                    else biomeBlacklist.add(b);
                 }
             }
         }
@@ -247,7 +248,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     @Override
     public void destroy() {
         this.interactBlocks.clear();
-        if (this.biomeList != null) this.biomeList.clear();
+        if (this.biomeBlacklist != null) this.biomeBlacklist.clear();
         this.materialBlackList.clear();
         HandlerList.unregisterAll(this.listener);
     }
@@ -507,8 +508,8 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
         return protectedRegions;
     }
 
-    public List<Biome> getBiomeList() {
-        return biomeList;
+    public Set<Biome> getBiomeBlacklist() {
+        return biomeBlacklist;
     }
 
     public List<Location> getInteractBlocks() {

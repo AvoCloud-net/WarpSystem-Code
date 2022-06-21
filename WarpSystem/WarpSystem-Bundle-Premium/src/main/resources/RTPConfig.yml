@@ -54,44 +54,4 @@ RandomTeleport:
     Biome:
       Enabled: false
       # Names can be found here: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html
-      BiomeList:
-        - OCEAN
-        - PLAINS
-        - DESERT
-        - EXTREME_HILLS
-        - FOREST
-        - TAIGA
-        - SWAMPLAND
-        - RIVER
-        - HELL
-        - SKY
-        - FROZEN_OCEAN
-        - FROZEN_RIVER
-        - ICE_FLATS
-        - ICE_MOUNTAINS
-        - MUSHROOM_ISLAND
-        - MUSHROOM_ISLAND_SHORE
-        - BEACHES
-        - DESERT_HILLS
-        - FOREST_HILLS
-        - TAIGA_HILLS
-        - SMALLER_EXTREME_HILLS
-        - JUNGLE
-        - JUNGLE_HILLS
-        - JUNGLE_EDGE
-        - DEEP_OCEAN
-        - STONE_BEACH
-        - COLD_BEACH
-        - BIRCH_FOREST
-        - BIRCH_FOREST_HILLS
-        - ROOFED_FOREST
-        - TAIGA_COLD
-        - TAIGA_COLD_HILLS
-        - REDWOOD_TAIGA
-        - REDWOOD_TAIGA_HILLS
-        - EXTREME_HILLS_WITH_TREES
-        - SAVANNA
-        - SAVANNA_ROCK
-        - MESA
-        - MESA_ROCK
-        - MESA_CLEAR_ROCK
+      Blacklist: []
