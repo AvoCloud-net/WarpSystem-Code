@@ -24,7 +24,7 @@ public class FakeBlockBreakEvent extends BlockBreakEvent {
 
     static {
         if (Version.atLeast(19)) {
-            Class<?> profilePublicKeyClass = IReflection.getClass("net.minecraft.world.entity.player", "ProfilePublicKey");
+            Class<?> profilePublicKeyClass = IReflection.getClass("net.minecraft.world.entity.player.", "ProfilePublicKey");
             PLAYER_INTERACT_MANAGER = null;
             PLAYER = IReflection.getConstructor(PacketUtils.EntityPlayerClass, PacketUtils.MinecraftServerClass, PacketUtils.WorldServerClass, GameProfile.class, profilePublicKeyClass);
         } else if (Version.atLeast(17)) {
