@@ -194,7 +194,7 @@ public class Portal extends FeatureObject {
         if (this.blocks != null) this.blocks.clear();
         if (this.animations != null) {
             for (Animation animation : this.animations) {
-                if (animation != null) animation.getAnimation().setRunning(false);
+                if (animation != null && animation.getAnimation() != null) animation.getAnimation().setRunning(false);
             }
             this.animations.clear();
         }
