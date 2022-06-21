@@ -46,11 +46,11 @@ RandomTeleport:
     List:
       - Water
   Support:
-    # If enabled, the player will be teleported to a random position, which is not in a protected region
+    # If enabled, the player will be teleported to a random position which is not in a protected region
     ProtectedRegions: true
-    # If enabled, the player will be teleported to a random position, which is inside the WorldBorder
+    # If enabled, the player will be teleported to a random position which is inside the WorldBorder
     WorldBorder: true
-    # If enabled, the player will be teleported to a random position, in one of the listed biomes
+    # If enabled, the player will be teleported to a random position which is not in one of the listed biomes
     Biome:
       Enabled: false
       # Names can be found here: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html
