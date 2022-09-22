@@ -13,19 +13,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class RandomLocationCalculator implements Runnable {
     private final org.bukkit.Location startLocation;
     private final Player player;
-    private final Player fakeCheck;
+    private Player fakeCheck;
     private final Callback<RandomLocationCalculator> callback;
     private final double minRange;
     private final double maxRange;
@@ -33,8 +34,8 @@ public abstract class RandomLocationCalculator implements Runnable {
     private long lastReaction = 0;
     private Location result = null;
 
-    public RandomLocationCalculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<RandomLocationCalculator> callback) {
-        fakeCheck = FakeBlockBreakEvent.buildFake(player);
+    public RandomLocationCalculator(@Nullable Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<RandomLocationCalculator> callback) {
+        applyPlayer(player);
         this.player = player;
 
         this.callback = callback;
@@ -42,6 +43,10 @@ public abstract class RandomLocationCalculator implements Runnable {
         this.minRange = minRange;
         this.maxRange = maxRange;
         this.diffRange = maxRange - minRange;
+    }
+
+    public void applyPlayer(@Nullable Player player) {
+        fakeCheck = player != null ? FakeBlockBreakEvent.buildFake(player) : null;
     }
 
     @Override
@@ -91,8 +96,18 @@ public abstract class RandomLocationCalculator implements Runnable {
 
     @NotNull
     private CompletableFuture<Chunk> getChunkAtAsync(@NotNull Location location) {
-        if (Version.get().isBiggerThan(8)) return PaperLib.getChunkAtAsync(location);
-        else {
+        Objects.requireNonNull(location.getWorld());
+        if (Version.get().isBiggerThan(8)) {
+            boolean directTeleport = fakeCheck != null;
+            if (directTeleport) {
+                return PaperLib.getChunkAtAsyncUrgently(
+                        location.getWorld(),
+                        location.getBlockX() >> 4,
+                        location.getBlockZ() >> 4,
+                        true
+                );
+            } else return PaperLib.getChunkAtAsync(location);
+        } else {
             //1.8.8 cannot handle async chunk loading
             CompletableFuture<Chunk> future = new CompletableFuture<>();
             Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> PaperLib.getChunkAtAsync(location).whenComplete((chunk, t) -> {
@@ -197,14 +212,14 @@ public abstract class RandomLocationCalculator implements Runnable {
 
     public abstract boolean correct(Location location, boolean safety);
 
-    protected CompletableFuture<Boolean> isProtected(Location location) {
+    public CompletableFuture<Boolean> isProtected(Location location) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
         if (WarpSystem.opt().forbiddenRegion(location)) future.complete(true);
-        else {
+        else if (fakeCheck != null) {
             //events can only be triggered synchronously
             Bukkit.getScheduler().runTask(WarpSystem.getInstance(), () -> future.complete(FakeBlockBreakEvent.tryWithFake(this.fakeCheck, location)));
-        }
+        } else future.complete(false);
 
         return future;
     }
@@ -213,6 +228,7 @@ public abstract class RandomLocationCalculator implements Runnable {
         return lastReaction;
     }
 
+    @Nullable
     public Player getPlayer() {
         return player;
     }

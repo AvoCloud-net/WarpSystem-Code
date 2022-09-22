@@ -41,8 +41,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @AvailableForSetupAssistant (type = "Random teleports", config = "RTPConfig")
 @Function (name = "Enabled", defaultValue = "true", config = "Config", configPath = "WarpSystem.Functions.RandomTeleports", clazz = Boolean.class)
@@ -76,6 +78,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     protected int max;
     protected int free;
     protected int concurrent;
+    private RandomLocationCache cache;
 
     public static RandomTeleportManager getInstance() {
         return WarpSystem.getInstance().getDataManager().getManager(FeatureType.RANDOM_TELEPORTS);
@@ -88,7 +91,20 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
         new RTPTagConverter_v5_1_1();
     }
 
-    public abstract RandomLocationCalculator newCalculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<RandomLocationCalculator> callback);
+    public abstract RandomLocationCalculator newCalculator(@Nullable Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<RandomLocationCalculator> callback);
+
+    protected RandomLocationCache newCache(boolean preloadingEnabled, int delay, Map<String, Integer> preloadOption) {
+        return (player, target) -> CompletableFuture.completedFuture(null);
+    }
+
+    public RandomLocationCalculator newCalculator(@Nullable Player player, World world, Callback<RandomLocationCalculator> callback) {
+        WorldOption option = getOption(world, defValues);
+
+        org.bukkit.Location start = new Location();
+        option.prepareStart(start, world);
+
+        return newCalculator(player, start, option.getMin(), option.getMax(), callback);
+    }
 
     @Override
     public boolean load(boolean hide) {
@@ -97,7 +113,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
         ConfigFile rtpFile = WarpSystem.getInstance().getFileManager().loadFile("RTPConfig", "/");
         UTFConfig config = rtpFile.getConfig();
 
-        if(!hide) WarpSystem.log("  > Loading RandomTeleporters");
+        if (!hide) WarpSystem.log("  > Loading RandomTeleporters");
 
         this.buyable = config.getBoolean("RandomTeleport.Buyable.Enabled", true);
         this.costs = config.getDouble("RandomTeleport.Buyable.Costs", 500.0);
@@ -172,7 +188,29 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
             }
         }
 
-        if(!hide) WarpSystem.log("    ...got " + this.worldOptions.size() + " WorldOption(s)");
+        if (!hide) WarpSystem.log("    ...got " + this.worldOptions.size() + " WorldOption(s)");
+
+        boolean preloadingEnabled = config.getBoolean("RandomTeleport.PreLoading.Enabled");
+        int preloadDelay = config.getInt("RandomTeleport.PreLoading.Begin_After_Startup");
+        l = config.getList("RandomTeleport.PreLoading.Worlds");
+        Map<String, Integer> preloadOptions = new HashMap<>();
+        if (l != null) {
+            for (Object data : l) {
+                try {
+                    JSON json = new JSON((Map<?, ?>) data);
+                    for (Object o : json.keySet(false)) {
+                        String worldName = o + "";
+                        int preloadNumber = json.getInteger(worldName, 0);
+                        if (preloadNumber > 0) preloadOptions.put(worldName, preloadNumber);
+                    }
+                } catch (Exception e) {
+                    success = false;
+                    e.printStackTrace();
+                }
+            }
+        }
+        cache = newCache(preloadingEnabled, preloadDelay, preloadOptions);
+        if (!hide) WarpSystem.log("    ...preloading is " + (preloadingEnabled ? "enabled" : "disabled"));
 
         ConfigFile file = WarpSystem.getInstance().getFileManager().loadFile("Teleporters", "/Memory/");
         config = file.getConfig();
@@ -200,7 +238,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
         Bukkit.getPluginManager().registerEvents(this.listener, WarpSystem.getInstance());
         new CRandomTp().register();
 
-        if(!hide) WarpSystem.log("    ...got " + this.interactBlocks.size() + " InteractBlock(s)");
+        if (!hide) WarpSystem.log("    ...got " + this.interactBlocks.size() + " InteractBlock(s)");
         WarpSystem.getInstance().getProxyFeatureList().add(this);
 
         return success;
@@ -355,43 +393,50 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
             return;
         }
 
-        org.bukkit.Location start = new Location();
-        option.prepareStart(start, target);
+        cache.getAsync(player, target).thenAccept(preloaded -> {
+            if (preloaded != null) {
+                callback.accept(preloaded);
+                return;
+            }
 
-        RandomLocationCalculator t = newCalculator(player, start, option.getMin(), option.getMax(), new Callback<RandomLocationCalculator>() {
-            @Override
-            public void accept(RandomLocationCalculator t) {
-                Location result = t.getResult();
+            org.bukkit.Location start = new Location();
+            option.prepareStart(start, target);
 
-                synchronized (running) {
-                    running.remove(t);
+            RandomLocationCalculator t = newCalculator(player, start, option.getMin(), option.getMax(), new Callback<RandomLocationCalculator>() {
+                @Override
+                public void accept(RandomLocationCalculator t) {
+                    Location result = t.getResult();
 
-                    RandomLocationCalculator next = queue.poll();
-                    if (next != null) {
-                        running.add(next);
-                        Bukkit.getScheduler().runTaskAsynchronously(WarpSystem.getInstance(), next);
+                    synchronized (running) {
+                        running.remove(t);
+
+                        RandomLocationCalculator next = queue.poll();
+                        if (next != null) {
+                            running.add(next);
+                            Bukkit.getScheduler().runTaskAsynchronously(WarpSystem.getInstance(), next);
+                        }
                     }
-                }
 
-                if (result != null) {
-                    result.setYaw(player.getLocation().getYaw());
-                    result.setPitch(player.getLocation().getPitch());
-                }
+                    if (result != null) {
+                        result.setYaw(player.getLocation().getYaw());
+                        result.setPitch(player.getLocation().getPitch());
+                    }
 
-                calculators.remove(player);
-                callback.accept(result);
+                    calculators.remove(player);
+                    callback.accept(result);
+                }
+            });
+
+            calculators.put(player, t); //register
+
+            synchronized (running) {
+                if (running.size() >= concurrent) queue.add(t);
+                else {
+                    running.add(t);
+                    Bukkit.getScheduler().runTaskAsynchronously(WarpSystem.getInstance(), t);
+                }
             }
         });
-
-        calculators.put(player, t); //register
-
-        synchronized (running) {
-            if (running.size() >= concurrent) queue.add(t);
-            else {
-                running.add(t);
-                Bukkit.getScheduler().runTaskAsynchronously(WarpSystem.getInstance(), t);
-            }
-        }
     }
 
     public void tryToTeleport(String targetPlayer, World target, boolean force, Callback<Integer> callback) {
@@ -461,7 +506,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     public void increaseTeleports(UUID uuid) {
         UTFConfig config = playData.getConfig();
         int i = config.getInt("RandomTeleporter." + uuid.toString() + ".Teleports", 0) + 1;
-        config.set("RandomTeleporter." + uuid.toString() + ".Teleports", i);
+        config.set("RandomTeleporter." + uuid + ".Teleports", i);
         playData.saveConfig();
     }
 

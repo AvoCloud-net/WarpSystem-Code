@@ -6,16 +6,17 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportUtils;
 import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
 import de.codingair.warpsystem.spigot.features.randomteleports.utils.RandomLocationCalculator;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 public class RandomTeleportHandler extends RandomTeleportManager {
 
     @Override
-    public RandomLocationCalculator newCalculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<RandomLocationCalculator> callback) {
+    public RandomLocationCalculator newCalculator(@Nullable Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<RandomLocationCalculator> callback) {
         return new Calculator(player, location, minRange, maxRange, callback);
     }
 
     public static class Calculator extends RandomLocationCalculator {
-        public Calculator(Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<RandomLocationCalculator> callback) {
+        public Calculator(@Nullable Player player, org.bukkit.Location location, double minRange, double maxRange, Callback<RandomLocationCalculator> callback) {
             super(player, location, minRange, maxRange, callback);
         }
 

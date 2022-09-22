@@ -16,6 +16,13 @@ RandomTeleport:
     Highest_Y:
       Nether: 126
       End: 80
+  PreLoading:
+    Enabled: true
+    # The number of seconds after the server start to wait before preloading random locations
+    Begin_After_Startup: 60
+    # - world_name: <number of preloaded random locations>
+    Worlds:
+      - world: 5
   Worlds:
     # Ignored values (like in "Example") will be replaced by default values
     # Ignored start values will be replaced by default values. World spawn will be used if startX=-1, startY=-1 & startZ=-1
