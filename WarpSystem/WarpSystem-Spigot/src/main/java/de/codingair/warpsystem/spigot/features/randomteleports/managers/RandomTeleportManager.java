@@ -55,6 +55,7 @@ import java.util.concurrent.CompletableFuture;
 @Function (name = "Max uses", defaultValue = "4", configPath = "RandomTeleport.Max", description = "§cONLY §rif permissions in the main §eConfig.yml §rare §cdisabled", clazz = Integer.class)
 @Function (name = "Free uses", defaultValue = "1", configPath = "RandomTeleport.Free", description = "§cONLY §rif permissions in the main §eConfig.yml §rare §cdisabled", clazz = Integer.class)
 @Function (name = "Concurrent teleports", defaultValue = "5", configPath = "RandomTeleport.Concurrent_Teleports", description = "§7Max amount of random teleports running §cconcurrently§7. Teleport will be queued when limit is reached.", clazz = Integer.class)
+@Function (name = "PreLoading", defaultValue = "false", configPath = "RandomTeleport.PreLoading.Enabled", description = "§7Pre-loading of random teleport positions. Improves RTP search time significantly.", clazz = Boolean.class, since = "v5.1.3")
 public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     protected final List<Material> materialBlackList = new ArrayList<>();
     protected final List<WorldOption> worldOptions = new ArrayList<>();
