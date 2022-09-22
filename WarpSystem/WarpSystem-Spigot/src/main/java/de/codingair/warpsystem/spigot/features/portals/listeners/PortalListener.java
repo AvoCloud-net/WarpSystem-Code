@@ -23,15 +23,12 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PortalListener implements Listener, Ticker {
     private static PortalListener instance;
-    private final HashMap<Player, Portal> waiting = new HashMap<>();
-    private final ReentrantLock lock = new ReentrantLock();
+    private final ConcurrentHashMap<Player, Portal> waiting = new ConcurrentHashMap<>();
 
     public PortalListener() {
         instance = this;
@@ -39,21 +36,11 @@ public class PortalListener implements Listener, Ticker {
     }
 
     public static void waiting(Player player, Portal portal) {
-        instance.lock.lock();
-        try {
-            instance.waiting.putIfAbsent(player, portal);
-        } finally {
-            instance.lock.unlock();
-        }
+        instance.waiting.putIfAbsent(player, portal);
     }
 
     public static void done(Player player) {
-        instance.lock.lock();
-        try {
-            instance.waiting.remove(player);
-        } finally {
-            instance.lock.unlock();
-        }
+        instance.waiting.remove(player);
     }
 
     @Override
@@ -63,20 +50,12 @@ public class PortalListener implements Listener, Ticker {
 
     @Override
     public void onSecond() {
-        try {
-            lock.tryLock(100, TimeUnit.MILLISECONDS);
-            try {
-                waiting.entrySet().removeIf(entry -> {
-                    if (entry.getValue().enteredPortal(entry.getKey(), entry.getKey().getLocation()) == 1) {
-                        entry.getValue().perform(entry.getKey());
-                        return false;
-                    } else return true;
-                });
-            } finally {
-                lock.unlock();
-            }
-        } catch (InterruptedException ignored) {
-        }
+        waiting.entrySet().removeIf(entry -> {
+            if (entry.getValue().enteredPortal(entry.getKey(), entry.getKey().getLocation()) == 1) {
+                entry.getValue().perform(entry.getKey());
+                return false;
+            } else return true;
+        });
     }
 
     @EventHandler (priority = EventPriority.LOWEST)
