@@ -71,6 +71,10 @@ public abstract class RandomLocationCalculator implements Runnable {
         if (maxTime > 5000) maxTime = 5000;
 
         do {
+            if (start + maxTime < System.currentTimeMillis()) {
+                return null;
+            }
+
             location.setY(startLocation.getY());
             lastReaction = System.currentTimeMillis();
 
@@ -79,11 +83,8 @@ public abstract class RandomLocationCalculator implements Runnable {
             location.setZ(z + offset.getValue());
 
             getChunkAtAsync(location).join();
-            if (start + maxTime < System.currentTimeMillis()) {
-                return null;
-            }
 
-            if (correct(location, false)) location.setY(calculateYCoord(location));
+            location.setY(calculateYCoord(location));
         } while (!checkY(location) || blockedMaterial(location) || !correct(location, true));
         return location;
     }
