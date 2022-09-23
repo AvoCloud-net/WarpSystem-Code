@@ -87,6 +87,7 @@ public class RandomLocationCacheImpl implements RandomLocationCache {
         RandomLocationCalculator c = RandomTeleportManager.getInstance().newCalculator(null, w, new Callback<RandomLocationCalculator>() {
             @Override
             public void accept(RandomLocationCalculator c) {
+                if (!WarpSystem.getInstance().isEnabled()) return;
                 AsyncCatcher.runSync(WarpSystem.getInstance(), () -> {
                     if (c.getResult() != null) {
                         storeLocation(w, c);
@@ -97,6 +98,7 @@ public class RandomLocationCacheImpl implements RandomLocationCache {
             }
         });
 
+        if (!WarpSystem.getInstance().isEnabled()) return;
         Bukkit.getScheduler().runTaskAsynchronously(WarpSystem.getInstance(), c);
     }
 
