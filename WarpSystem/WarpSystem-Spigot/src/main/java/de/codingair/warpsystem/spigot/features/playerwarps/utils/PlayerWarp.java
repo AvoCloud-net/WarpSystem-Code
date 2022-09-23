@@ -339,7 +339,7 @@ public class PlayerWarp extends FeatureObject {
         this.teleportMessage = d.getString("tpmsg");
         this.item = d.getItemBuilder("item");
 
-        if (this.item.getType() == null || !XMaterial.isNewVersion() && XMaterial.matchXMaterial(this.item.getType()) == XMaterial.PLAYER_HEAD) {
+        if (this.item.getType() == null || XMaterial.matchXMaterial(this.item.getType()) == XMaterial.PLAYER_HEAD) {
             //save item
             ItemStack i = XMaterial.PLAYER_HEAD.parseItem();
             this.item.setType(i == null ? Material.STONE : i.getType());
