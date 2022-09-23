@@ -21,6 +21,7 @@ public enum PluginVersion {
     v5_0_8,
     v5_1_3,
     v5_1_4,
+    v5_1_5,
     ;
 
     public static final PluginVersion[] values = values();
