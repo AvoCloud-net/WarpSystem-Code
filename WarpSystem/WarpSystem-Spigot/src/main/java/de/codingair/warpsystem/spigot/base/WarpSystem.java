@@ -251,6 +251,8 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         API.getInstance().onDisable(this);
         SpigotAPI.getInstance().onDisable();
 
+        setupAssistantManager.onDisable();
+
         save(false);
         teleportManager.getTeleports().forEach(t -> t.cancel(Result.CANCELLED_BY_SYSTEM));
         teleportManager.clear();

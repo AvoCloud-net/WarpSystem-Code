@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import de.codingair.codingapi.player.chat.ChatButton;
 import de.codingair.codingapi.player.chat.SimpleMessage;
+import de.codingair.codingapi.server.specification.Version;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableForSetupAssistant;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
@@ -114,6 +115,11 @@ public class SetupAssistantManager {
     }
 
     public void startAssistant(Player player, boolean general) {
+        if (Version.between(19, 19.1)) {
+            player.sendMessage(Lang.getPrefix() + "§7The SetupAssistant is §cnot available §7for this version §8(" + Version.get().getShortVersionName() + ")§7. Please update to §cMinecraft 1.19.2§7.");
+            return;
+        }
+
         List<Value> l = general ? cachedFunctions() : cachedNews();
         if (l.isEmpty()) return;
         if (this.assistant != null) return;
