@@ -3,6 +3,7 @@ package de.codingair.warpsystem.spigot.base.utils.teleport;
 import de.codingair.codingapi.server.sounds.Sound;
 import de.codingair.codingapi.server.sounds.SoundData;
 import de.codingair.codingapi.tools.Callback;
+import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.codingapi.utils.ImprovedDouble;
 import de.codingair.warpsystem.api.Options;
 import de.codingair.warpsystem.api.destinations.utils.IDestination;
@@ -201,7 +202,7 @@ public class TeleportOptions implements Options {
             if (destination.getCustomOptions().getDisplayName() != null) displayName = destination.getCustomOptions().getColoredDisplayName();
         }
 
-        return message == null ? null : displayName == null ? message : message.replace("%warp%", displayName);
+        return message == null ? null : displayName == null ? message : message.replace("%warp%", ChatColor.translateAll('&', displayName));
     }
 
     public @NotNull Options setMessage(@Nullable String message) {

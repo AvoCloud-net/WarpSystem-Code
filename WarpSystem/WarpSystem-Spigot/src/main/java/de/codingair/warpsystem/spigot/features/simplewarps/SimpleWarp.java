@@ -5,9 +5,9 @@ import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.io.JSON.JSONParser;
 import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
+import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.spigot.features.simplewarps.managers.SimpleWarpManager;
 import de.codingair.warpsystem.spigot.features.warps.importfilter.WarpData;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.Date;
@@ -104,11 +104,11 @@ public class SimpleWarp implements Serializable {
     }
 
     public String getFormattedName() {
-        return ChatColor.translateAlternateColorCodes('&', name);
+        return ChatColor.translateAll('&', name);
     }
 
     public String getName(boolean stripColors) {
-        return stripColors ? ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', name)) : name;
+        return stripColors ? ChatColor.stripColor(ChatColor.translateAll('&', name)) : name;
     }
 
     public String getPermission() {

@@ -11,7 +11,6 @@ import de.codingair.codingapi.tools.io.utils.Serializable;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.LivingEntity;
 
 import java.lang.reflect.InvocationTargetException;

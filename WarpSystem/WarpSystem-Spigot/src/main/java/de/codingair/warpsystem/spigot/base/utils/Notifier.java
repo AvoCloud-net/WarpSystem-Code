@@ -2,7 +2,6 @@ package de.codingair.warpsystem.spigot.base.utils;
 
 import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -26,7 +25,7 @@ public class Notifier {
 
                 tc0.addExtra(click);
                 tc0.addExtra(tc1);
-                tc0.setColor(ChatColor.GRAY);
+                tc0.setColor(net.md_5.bungee.api.ChatColor.GRAY);
 
                 player.sendMessage("");
                 player.sendMessage("");

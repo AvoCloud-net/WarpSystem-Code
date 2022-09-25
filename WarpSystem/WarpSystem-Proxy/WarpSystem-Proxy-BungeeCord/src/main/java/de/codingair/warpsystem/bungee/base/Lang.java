@@ -1,8 +1,8 @@
 package de.codingair.warpsystem.bungee.base;
 
 import de.codingair.codingapi.bungeecord.files.ConfigFile;
+import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.core.proxy.base.LangHandler;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.config.Configuration;
 
 import java.io.IOException;
@@ -35,7 +35,7 @@ public class Lang extends LangHandler {
             throw new IllegalStateException("Unknown translation key: '" + key + "' >> Check " + getCurrentLanguage() + ".yml at '" + key + "'");
         }
 
-        text = ChatColor.translateAlternateColorCodes('&', text);
+        text = ChatColor.translateAll('&', text);
         return text;
     }
 

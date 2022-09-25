@@ -4,7 +4,7 @@ import de.codingair.codingapi.tools.Location;
 import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.io.JSON.JSONParser;
 import de.codingair.codingapi.tools.io.lib.ParseException;
-import org.bukkit.ChatColor;
+import de.codingair.codingapi.utils.ChatColor;
 
 import java.util.Date;
 import java.util.UUID;
@@ -142,7 +142,7 @@ public class TempWarp {
 
     public String getIdentifier() {
         if (getName() == null) return null;
-        return ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', isPublic ? getName() : getLastKnownName() + "." + getName())).replace(" ", "_");
+        return ChatColor.stripColor(ChatColor.translateAll('&', isPublic ? getName() : getLastKnownName() + "." + getName())).replace(" ", "_");
     }
 
     public String getLastKnownName() {

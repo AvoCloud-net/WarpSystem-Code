@@ -113,7 +113,7 @@ public class PlayerWarp extends FeatureObject {
             }
         });
 
-        if (this.teleportMessage != null) options.setMessage(Lang.getPrefix() + ChatColor.translateAlternateColorCodes('&', this.teleportMessage));
+        if (this.teleportMessage != null) options.setMessage(Lang.getPrefix() + ChatColor.translateAll('&', this.teleportMessage));
         if (!isOwner(player) && !isTrusted(player)) options.setCosts(this.teleportCosts);
 
         return super.perform(player, options);
@@ -515,13 +515,13 @@ public class PlayerWarp extends FeatureObject {
 
     public String getName(boolean color) {
         if (name == null) return null;
-        String s = ChatColor.translateAlternateColorCodes('&', name);
+        String s = ChatColor.translateAll('&', name);
         return color ? s : ChatColor.stripColor(s);
     }
 
     public boolean equalsName(String name) {
         if (name == null) return false;
-        name = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', name.replace(" ", "_")));
+        name = ChatColor.stripColor(ChatColor.translateAll('&', name.replace(" ", "_")));
         return getName(false).equalsIgnoreCase(name);
     }
 

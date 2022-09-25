@@ -130,7 +130,7 @@ public class PAppearance extends PageItem {
                 return new ItemBuilder(XMaterial.NAME_TAG)
                         .setName(Editor.ITEM_TITLE_COLOR + Lang.get("Name"))
                         .setLore(PWEditor.getCostsMessage(editing && !original.getName().equals(warp.getName()) ? PlayerWarpManager.getManager().getNameChangeCosts() : 0, PAppearance.this))
-                        .addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Current") + ": " + "§7'§f" + org.bukkit.ChatColor.translateAlternateColorCodes('&', warp.getName()) + "§7'")
+                        .addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Current") + ": " + "§7'§f" + ChatColor.translateAll('&', warp.getName()) + "§7'")
                         .addLore("", Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §a" + Lang.get("Change_Name"),
                                 (warp.getName().equals(original.getName()) ? null : Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Rightclick") + ": §c" + Lang.get("Reset")))
                         .getItem();
@@ -170,7 +170,7 @@ public class PAppearance extends PageItem {
                     return;
                 }
 
-                if (!original.getName(false).equalsIgnoreCase(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', input))) && PlayerWarpManager.getManager().existsOwn(p, input)) {
+                if (!original.getName(false).equalsIgnoreCase(ChatColor.stripColor(ChatColor.translateAll('&', input))) && PlayerWarpManager.getManager().existsOwn(p, input)) {
                     e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("Name_Already_Exists"));
                     return;
                 }
@@ -300,7 +300,7 @@ public class PAppearance extends PageItem {
 
                     e.setClose(true);
 
-                    warp.addDescription(org.bukkit.ChatColor.WHITE + org.bukkit.ChatColor.translateAlternateColorCodes('&', input));
+                    warp.addDescription(org.bukkit.ChatColor.WHITE + ChatColor.translateAll('&', input));
                     updatingLore(warp.getItem());
                     update();
                 }
@@ -332,7 +332,7 @@ public class PAppearance extends PageItem {
                 public ItemStack craftItem() {
                     ItemBuilder builder = new ItemBuilder(XMaterial.ENDER_EYE).setName("§6§n" + Lang.get("Teleport_Message"));
 
-                    List<String> msg = TextAlignment.lineBreak((warp.getTeleportMessage() == null ? "§c" + Lang.get("Not_Set") : "§7\"§f" + ChatColor.translateAlternateColorCodes('&', warp.getTeleportMessage()) + "§7\""), 100);
+                    List<String> msg = TextAlignment.lineBreak((warp.getTeleportMessage() == null ? "§c" + Lang.get("Not_Set") : "§7\"§f" + ChatColor.translateAll('&', warp.getTeleportMessage()) + "§7\""), 100);
 
                     int length = (warp.getTeleportMessage() == null ? 0 : warp.getTeleportMessage().length()) - (original.getTeleportMessage() == null ? 0 : original.getTeleportMessage().length());
                     if (length < 0) builder.addLore(PWEditor.getFreeMessage(-length + " " + Lang.get("Characters"), PAppearance.this));

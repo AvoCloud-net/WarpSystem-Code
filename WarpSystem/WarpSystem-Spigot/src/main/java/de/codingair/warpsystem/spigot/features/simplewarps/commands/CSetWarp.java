@@ -6,6 +6,7 @@ import de.codingair.codingapi.server.commands.builder.BaseComponent;
 import de.codingair.codingapi.server.commands.builder.CommandComponent;
 import de.codingair.codingapi.server.commands.builder.special.MultiCommandComponent;
 import de.codingair.codingapi.tools.Location;
+import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
@@ -16,7 +17,6 @@ import de.codingair.warpsystem.spigot.features.simplewarps.managers.SimpleWarpMa
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -87,7 +87,7 @@ public class CSetWarp extends WSCommandBuilder {
                 SimpleWarp simpleWarp = new SimpleWarp((Player) sender, argument, null);
                 hManager.addWarp(simpleWarp);
 
-                sender.sendMessage(Lang.getPrefix() + Lang.get("SimpleWarp_Created").replace("%WARP%", ChatColor.translateAlternateColorCodes('&', argument)));
+                sender.sendMessage(Lang.getPrefix() + Lang.get("SimpleWarp_Created").replace("%WARP%", ChatColor.translateAll('&', argument)));
 
                 SimpleMessage message = new SimpleMessage(Lang.getPrefix() + Lang.get("Advanced_Options_Info"), WarpSystem.getInstance());
 

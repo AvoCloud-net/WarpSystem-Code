@@ -2,6 +2,7 @@ package de.codingair.warpsystem.spigot.base.setupassistant.utils;
 
 import de.codingair.codingapi.player.chat.SimpleMessage;
 import de.codingair.codingapi.server.specification.Version;
+import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.core.transfer.packets.proxy.ToggleSetupAssistantPacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.setupassistant.SetupAssistantManager;
@@ -11,7 +12,6 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

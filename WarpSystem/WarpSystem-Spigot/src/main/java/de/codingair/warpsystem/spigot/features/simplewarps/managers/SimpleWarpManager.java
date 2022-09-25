@@ -2,12 +2,12 @@ package de.codingair.warpsystem.spigot.features.simplewarps.managers;
 
 import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.codingapi.tools.io.JSON.JSON;
+import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.features.FeatureType;
 import de.codingair.warpsystem.spigot.features.simplewarps.SimpleWarp;
 import de.codingair.warpsystem.spigot.features.simplewarps.commands.*;
-import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -112,7 +112,7 @@ public class SimpleWarpManager implements Manager {
 
     public SimpleWarp getWarp(String warp) {
         if (warp == null) return null;
-        warp = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', warp));
+        warp = ChatColor.stripColor(ChatColor.translateAll('&', warp));
         return this.warps.get(warp.toLowerCase());
     }
 
@@ -121,12 +121,12 @@ public class SimpleWarpManager implements Manager {
     }
 
     public boolean existsWarp(String warp) {
-        warp = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', warp));
+        warp = ChatColor.stripColor(ChatColor.translateAll('&', warp));
         return this.warps.containsKey(warp.toLowerCase());
     }
 
     public boolean isReserved(String name) {
-        name = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', name));
+        name = ChatColor.stripColor(ChatColor.translateAll('&', name));
 
         if (existsWarp(name)) return true;
         for (String n : this.reservedNames) {

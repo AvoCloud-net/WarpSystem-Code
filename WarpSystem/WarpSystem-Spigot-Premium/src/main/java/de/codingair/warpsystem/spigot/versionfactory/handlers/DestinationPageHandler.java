@@ -8,6 +8,7 @@ import de.codingair.codingapi.player.gui.inventory.gui.simple.SyncButton;
 import de.codingair.codingapi.player.gui.inventory.gui.simple.SyncHotbarGUIButton;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
+import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.codingapi.utils.Node;
 import de.codingair.codingapi.utils.TextAlignment;
 import de.codingair.warpsystem.api.destinations.utils.IDestinationOptions;
@@ -32,7 +33,6 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -104,7 +104,7 @@ public class DestinationPageHandler {
                     if (message != null) message = PAPI.convert(message, p).replace("%player%", p.getName()).replace("%PLAYER%", p.getName());
 
 
-                    List<String> msg = TextAlignment.lineBreak(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Current") + ": " + (message == null ? "§e" + Lang.get("Default") : "§7\"§f" + de.codingair.codingapi.utils.ChatColor.translateAlternateColorCodes('&', message) + "§7\""), 100);
+                    List<String> msg = TextAlignment.lineBreak(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Current") + ": " + (message == null ? "§e" + Lang.get("Default") : "§7\"§f" + de.codingair.codingapi.utils.ChatColor.translateAll('&', message) + "§7\""), 100);
 
                     builder.addLore(msg.remove(0));
                     if (!msg.isEmpty()) builder.addLore(msg);
@@ -357,7 +357,7 @@ public class DestinationPageHandler {
                     }
 
                     ItemBuilder builder = new ItemBuilder(XMaterial.ENDER_PEARL).setName(Editor.ITEM_TITLE_COLOR + Lang.get("SimpleWarps"))
-                            .setLore("§3" + Lang.get("Current") + ": " + (name == null ? "§c" + Lang.get("Not_Set") : "§7'§f" + ChatColor.translateAlternateColorCodes('&', name.replace("_", " ")) + "§7'"))
+                            .setLore("§3" + Lang.get("Current") + ": " + (name == null ? "§c" + Lang.get("Not_Set") : "§7'§f" + ChatColor.translateAll('&', name.replace("_", " ")) + "§7'"))
                             .addLore(lore);
 
                     builder.addLore(" ");
@@ -405,7 +405,7 @@ public class DestinationPageHandler {
                                                 return;
                                             }
 
-                                            player.sendMessage(Lang.getPrefix() + Lang.get("SimpleWarp_Created").replace("%WARP%", ChatColor.translateAlternateColorCodes('&', input)));
+                                            player.sendMessage(Lang.getPrefix() + Lang.get("SimpleWarp_Created").replace("%WARP%", ChatColor.translateAll('&', input)));
                                             SimpleWarp w;
                                             SimpleWarpManager.getInstance().addWarp(w = new SimpleWarp(player, input, null));
 
@@ -562,7 +562,7 @@ public class DestinationPageHandler {
                         if (lore != null) lore.add("§3" + Lang.get("Rightclick") + ": §c" + Lang.get("Remove"));
 
                         return new ItemBuilder(XMaterial.ENDER_EYE).setName(Editor.ITEM_TITLE_COLOR + Lang.get("GlobalWarps"))
-                                .setLore("§3" + Lang.get("Current") + ": " + (name == null ? "§c" + Lang.get("Not_Set") : "§7'§f" + ChatColor.translateAlternateColorCodes('&', name) + "§7'"),
+                                .setLore("§3" + Lang.get("Current") + ": " + (name == null ? "§c" + Lang.get("Not_Set") : "§7'§f" + ChatColor.translateAll('&', name) + "§7'"),
                                         "", "§3" + Lang.get("Leftclick") + ": §a" + (name == null ? Lang.get("Set") : Lang.get("Change")))
                                 .addLore(lore)
                                 .getItem();
@@ -629,7 +629,7 @@ public class DestinationPageHandler {
 
                         ItemBuilder builder = new ItemBuilder(XMaterial.ENDER_CHEST).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Server"));
 
-                        builder.setLore("§3" + Lang.get("Current") + ": " + (name == null ? "§c" + Lang.get("Not_Set") : "§7'§f" + ChatColor.translateAlternateColorCodes('&', name) + "§7'"));
+                        builder.setLore("§3" + Lang.get("Current") + ": " + (name == null ? "§c" + Lang.get("Not_Set") : "§7'§f" + ChatColor.translateAll('&', name) + "§7'"));
 
                         if (serverAdapter != null && serverAdapter.getServer() != null) {
                             builder.addLore("§3" + Lang.get("Status") + ": " + (pinging ? "§7" + Lang.get("Pinging") + "..." : (online ? "§a" + Lang.get("Online") : "§c" + Lang.get("Offline"))));

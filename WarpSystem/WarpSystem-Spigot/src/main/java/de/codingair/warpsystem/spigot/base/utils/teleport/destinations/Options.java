@@ -2,9 +2,9 @@ package de.codingair.warpsystem.spigot.base.utils.teleport.destinations;
 
 import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
+import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.api.destinations.utils.IDestinationOptions;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
-import org.bukkit.ChatColor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -100,7 +100,7 @@ public class Options implements IDestinationOptions, Serializable {
     @Nullable
     public String buildMessage(@Nullable String message) {
         if (this.message != null && !this.message) return null;
-        else if (customMessage != null) return ChatColor.translateAlternateColorCodes('&', customMessage);
+        else if (customMessage != null) return ChatColor.translateAll('&', customMessage);
         return message;
     }
 
