@@ -16,6 +16,7 @@ import java.util.Set;
 
 public abstract class GlobalWarpHandler implements Manager {
     private final Set<SGlobalWarp> globalWarps = new HashSet<>();
+    private boolean nullWarningSent = false;
 
     protected boolean load(boolean loader, DataMask mask) {
         if (!loader) Core.getPlugin().log("  > Loading locations of GlobalWarps");
@@ -78,6 +79,14 @@ public abstract class GlobalWarpHandler implements Manager {
 
         boolean start = true;
         for (SGlobalWarp warp : this.globalWarps) {
+            if (warp.getName() == null || warp.getServer() == null) {
+                if (!nullWarningSent) {
+                    Core.getPlugin().log("Trying to send a malformed global warp! Please check your GlobalWarps.yml file.");
+                    nullWarningSent = true;
+                }
+                continue;
+            }
+
             Core.getPlugin().dataHandler().send(new SendGlobalWarpNamesPacket(warp.getName(), warp.getServer(), start), server, Direction.DOWN);
             start = false;
         }
