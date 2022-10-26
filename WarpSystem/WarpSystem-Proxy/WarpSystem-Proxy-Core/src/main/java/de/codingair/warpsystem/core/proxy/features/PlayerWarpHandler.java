@@ -189,8 +189,8 @@ public abstract class PlayerWarpHandler implements Manager {
             }
 
             for (PlayerWarpData d : list) {
-                String nameWithoutColor = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', name));
-                String dName = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', d.getName())).replace(" ", "_");
+                String nameWithoutColor = ChatColor.stripColor(ChatColor.translateAll('&', name));
+                String dName = ChatColor.stripColor(ChatColor.translateAll('&', d.getName())).replace(" ", "_");
                 if (dName.equalsIgnoreCase(nameWithoutColor)) {
                     found = true;
                     break;

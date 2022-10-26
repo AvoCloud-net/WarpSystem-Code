@@ -8,6 +8,7 @@ import de.codingair.codingapi.player.gui.inventory.gui.itembutton.ItemButtonOpti
 import de.codingair.codingapi.player.gui.inventory.gui.simple.*;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
+import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.codingapi.utils.Value;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.guis.editor.StandardButtonOption;
@@ -15,7 +16,6 @@ import de.codingair.warpsystem.spigot.base.guis.editor.buttons.NameButton;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.simplewarps.SimpleWarp;
 import de.codingair.warpsystem.spigot.features.simplewarps.managers.SimpleWarpManager;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.ItemStack;
@@ -66,7 +66,7 @@ public class GEditWarp extends SimpleGUI {
         private boolean saved = false;
 
         public GPage(Player p, SimpleWarp warp) {
-            super(p, Lang.get("SimpleWarp_Edit_Title").replace("%WARP%", ChatColor.translateAlternateColorCodes('&', warp.getName())), false);
+            super(p, Lang.get("SimpleWarp_Edit_Title").replace("%WARP%", ChatColor.translateAll('&', warp.getName())), false);
             this.warp = warp;
             this.clone = warp.clone();
             initialize(p);

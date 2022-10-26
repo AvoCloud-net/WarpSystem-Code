@@ -9,6 +9,7 @@ import de.codingair.codingapi.player.gui.inventory.gui.simple.SyncButton;
 import de.codingair.codingapi.server.sounds.Sound;
 import de.codingair.codingapi.server.sounds.SoundData;
 import de.codingair.codingapi.tools.items.ItemBuilder;
+import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.guis.editor.StandardButtonOption;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
@@ -22,7 +23,6 @@ import de.codingair.warpsystem.spigot.features.warps.nextlevel.utils.Icon;
 import de.codingair.warpsystem.spigot.versionfactory.VFac;
 import de.codingair.warpsystem.spigot.versionfactory.VKey;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -192,7 +192,7 @@ public class GWarps extends GUI {
         FileConfiguration config = WarpSystem.getInstance().getFileManager().getFile("Config").getConfig();
         String key = player.hasPermission(Permissions.PERMISSION_MODIFY) ? "Admin" : "User";
 
-        return ChatColor.translateAlternateColorCodes('&', (page == null || page.getName() == null ?
+        return ChatColor.translateAll('&', (page == null || page.getName() == null ?
                 config.getString("WarpSystem.GUI." + key + ".Title.Standard", "&c&nWarps&r") :
                 config.getString("WarpSystem.GUI." + key + ".Title.In_Category", "&c&nWarps&r &c@%PAGE%").replace("%PAGE%", page.getNameWithoutColor()).replace("%CATEGORY%", page.getNameWithoutColor())));
     }

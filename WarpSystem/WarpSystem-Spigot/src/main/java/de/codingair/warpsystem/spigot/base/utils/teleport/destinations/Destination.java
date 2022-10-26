@@ -4,6 +4,7 @@ import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.Location;
 import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
+import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.codingapi.utils.ImprovedDouble;
 import de.codingair.warpsystem.api.destinations.utils.*;
 import de.codingair.warpsystem.spigot.api.placeholders.PAPI;
@@ -13,7 +14,6 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.LocationAdapter;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.ServerAdapter;
 import de.codingair.warpsystem.spigot.features.globalwarps.managers.GlobalWarpManager;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -133,7 +133,7 @@ public class Destination implements IDestination {
                 || (customOptions.getMessage() == null ? !origin.sendTeleportMessage() : !customOptions.getMessage())
         ) return;
 
-        if (customOptions.getCustomMessage() != null) message = ChatColor.translateAlternateColorCodes('&', customOptions.getCustomMessage());
+        if (customOptions.getCustomMessage() != null) message = ChatColor.translateAll('&', customOptions.getCustomMessage());
         if (message == null) return;
 
         message = PAPI.convert(message, player);
@@ -143,7 +143,7 @@ public class Destination implements IDestination {
                 .replace("%PLAYER%", player.getName());
 
         String finalDisplayName = customOptions.getDisplayName() == null ? displayName : customOptions.getDisplayName();
-        if (finalDisplayName != null) message = message.replace("%warp%", ChatColor.translateAlternateColorCodes('&', finalDisplayName));
+        if (finalDisplayName != null) message = message.replace("%warp%", ChatColor.translateAll('&', finalDisplayName));
 
         player.sendMessage(message);
     }

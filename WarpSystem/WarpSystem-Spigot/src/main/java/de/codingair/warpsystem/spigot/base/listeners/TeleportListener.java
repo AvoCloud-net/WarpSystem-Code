@@ -121,7 +121,10 @@ public class TeleportListener implements Listener {
         double diff = Math.abs(e.getFrom().getX() - e.getTo().getX()) + Math.abs(e.getFrom().getZ() - e.getTo().getZ());
         double diffY = Math.abs(e.getFrom().getY() - e.getTo().getY());
 
-        if (diff > 0.01 || diffY >= 0.11) WarpSystem.getInstance().getTeleportManager().cancelTeleport(p);
+        boolean inLiquid = p.getLocation().getBlock().isLiquid() || p.getLocation().subtract(0, 1, 0).getBlock().isLiquid();
+        if (inLiquid) diffY = 0;
+
+        if (diff + diffY > 0.01) WarpSystem.getInstance().getTeleportManager().cancelTeleport(p);
     }
 
     @EventHandler

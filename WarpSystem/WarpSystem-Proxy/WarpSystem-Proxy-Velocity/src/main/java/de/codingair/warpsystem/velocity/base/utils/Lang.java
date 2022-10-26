@@ -36,7 +36,7 @@ public class Lang extends LangHandler {
             throw new IllegalStateException("Unknown translation key: '" + key + "' >> Check " + getCurrentLanguage() + ".yml at '" + key + "'");
         }
 
-        text = ChatColor.translateAlternateColorCodes('&', text);
+        text = ChatColor.translateAll('&', text);
         return text;
     }
 

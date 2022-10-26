@@ -6,6 +6,7 @@ import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.io.JSON.JSONParser;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
+import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableForSetupAssistant;
@@ -22,7 +23,6 @@ import de.codingair.warpsystem.spigot.features.warps.importfilter.PageData;
 import de.codingair.warpsystem.spigot.features.warps.importfilter.WarpData;
 import de.codingair.warpsystem.spigot.features.warps.nextlevel.exceptions.IconReadException;
 import de.codingair.warpsystem.spigot.features.warps.nextlevel.utils.Icon;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -338,7 +338,7 @@ public class IconManager implements Manager {
 
     public Icon getPage(String name) {
         if (name == null) return null;
-        name = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', name));
+        name = ChatColor.stripColor(ChatColor.translateAll('&', name));
 
         for (Icon icon : this.icons) {
             if (!icon.isPage()) continue;
@@ -350,7 +350,7 @@ public class IconManager implements Manager {
 
     public Icon getIcon(String name) {
         if (name == null) return null;
-        name = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', name));
+        name = ChatColor.stripColor(ChatColor.translateAll('&', name));
 
         for (Icon icon : this.icons) {
             if (icon.isPage() || icon.getName() == null) continue;

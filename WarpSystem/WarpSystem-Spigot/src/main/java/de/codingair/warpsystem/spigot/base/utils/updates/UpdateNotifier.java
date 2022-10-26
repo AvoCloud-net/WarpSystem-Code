@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UpdateNotifier {
-    private final static String URL = "https://api.github.com/repos/CodingAir/WarpSystem-IssueTracker/releases/latest";
+    private final static String URL = "https://api.github.com/repos/erikzimmermann/WarpSystem-IssueTracker/releases/latest";
     private final static String URL_DOWNLOAD = "https://www.spigotmc.org/resources/%s/update?update=%s";
     private final static int ID_FREE = 29595;
     private final static int ID_PREMIUM = 66035;

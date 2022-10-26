@@ -7,6 +7,7 @@ import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.io.JSON.JSONParser;
 import de.codingair.codingapi.tools.time.TimeList;
+import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.spigot.api.StringFormatter;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
@@ -28,7 +29,6 @@ import de.codingair.warpsystem.spigot.features.portals.old.nativeportals.NativeP
 import de.codingair.warpsystem.spigot.features.portals.utils.Portal;
 import de.codingair.warpsystem.spigot.features.portals.utils.PortalFactory;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.*;

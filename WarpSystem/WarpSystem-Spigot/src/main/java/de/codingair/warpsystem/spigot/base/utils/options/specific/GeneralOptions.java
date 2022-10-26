@@ -1,5 +1,6 @@
 package de.codingair.warpsystem.spigot.base.utils.options.specific;
 
+import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.core.transfer.packets.spigot.utils.ServerPing;
 import de.codingair.warpsystem.spigot.api.StringFormatter;
 import de.codingair.warpsystem.spigot.api.worldguard.WorldGuardHelper;
@@ -8,7 +9,6 @@ import de.codingair.warpsystem.spigot.base.utils.options.Option;
 import de.codingair.warpsystem.spigot.base.utils.options.Options;
 import de.codingair.warpsystem.spigot.base.utils.teleport.Origin;
 import de.codingair.warpsystem.spigot.base.utils.teleport.process.TeleportDelay;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
@@ -121,14 +121,14 @@ public class GeneralOptions extends Options {
         };
 
         StringBuilder sb = new StringBuilder();
-        for (int c : cmdSugColor.getValue().trim().chars().filter(test).toArray()) {
-            sb.append((char) c);
+        for (char c : cmdSugColor.getValue().trim().toCharArray()) {
+            if (test.test(c)) sb.append(c);
         }
         cmdSugColor.setValue(sb.toString());
 
         sb = new StringBuilder();
-        for (int c : cmdArgColor.getValue().trim().chars().filter(test).toArray()) {
-            sb.append((char) c);
+        for (char c : cmdArgColor.getValue().trim().toCharArray()) {
+            if (test.test(c)) sb.append(c);
         }
         cmdArgColor.setValue(sb.toString());
     }
@@ -193,11 +193,11 @@ public class GeneralOptions extends Options {
     }
 
     public String cmdSug() {
-        return ChatColor.translateAlternateColorCodes('&', cmdSugColor.getValue());
+        return ChatColor.translateAll('&', cmdSugColor.getValue());
     }
 
     public String cmdArg() {
-        return ChatColor.translateAlternateColorCodes('&', cmdArgColor.getValue());
+        return ChatColor.translateAll('&', cmdArgColor.getValue());
     }
 
     public TeleportDelay.Display getDelayDisplay() {

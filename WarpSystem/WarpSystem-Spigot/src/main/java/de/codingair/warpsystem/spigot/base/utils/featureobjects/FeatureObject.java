@@ -10,6 +10,7 @@ import de.codingair.codingapi.tools.io.lib.JSONArray;
 import de.codingair.codingapi.tools.io.lib.ParseException;
 import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.io.utils.Serializable;
+import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.codingapi.utils.ImprovedDouble;
 import de.codingair.codingapi.utils.Value;
 import de.codingair.warpsystem.api.destinations.utils.Result;
@@ -35,7 +36,6 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.process.TeleportDummy;
 import de.codingair.warpsystem.spigot.base.utils.teleport.process.WaitForTeleport;
 import de.codingair.warpsystem.spigot.features.warps.nextlevel.exceptions.IconReadException;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 

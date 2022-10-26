@@ -5,7 +5,7 @@
     <parent>
         <artifactId>WarpSystem</artifactId>
         <groupId>de.codingair</groupId>
-        <version>5.1.3</version>
+        <version>5.1.3_Hotfix-1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -63,10 +63,6 @@
                         <relocation>
                             <pattern>org.intellij.lang.annotations</pattern>
                             <shadedPattern>de.codingair.warpsystem.lib.annotations</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>com.google.gson</pattern>
-                            <shadedPattern>de.codingair.warpsystem.lib.gson</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

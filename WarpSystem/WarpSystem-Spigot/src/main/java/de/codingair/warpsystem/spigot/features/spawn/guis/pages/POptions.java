@@ -8,6 +8,7 @@ import de.codingair.codingapi.player.gui.inventory.gui.simple.SyncAnvilGUIButton
 import de.codingair.codingapi.player.gui.inventory.gui.simple.SyncButton;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
+import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.codingapi.utils.TextAlignment;
 import de.codingair.warpsystem.spigot.api.chatinput.ChatInputEvent;
 import de.codingair.warpsystem.spigot.api.chatinput.SyncChatInputGUIButton;
@@ -19,7 +20,6 @@ import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.spawn.guis.SpawnEditor;
 import de.codingair.warpsystem.spigot.features.spawn.managers.SpawnManager;
 import de.codingair.warpsystem.spigot.features.spawn.utils.Spawn;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -202,7 +202,7 @@ public class POptions extends PageItem {
                 return new ItemBuilder(XMaterial.NAME_TAG)
                         .setName(Editor.ITEM_TITLE_COLOR + Lang.get("Teleport_Name"))
                         .setLore(Lang.get("Spawn_Name_Button_hint"))
-                        .addLore("", "§3" + Lang.get("Current") + ": " + "§7'§f" + org.bukkit.ChatColor.translateAlternateColorCodes('&', clone.getDisplayName()) + "§7'",
+                        .addLore("", "§3" + Lang.get("Current") + ": " + "§7'§f" + ChatColor.translateAll('&', clone.getDisplayName()) + "§7'",
                                 "", "§3" + Lang.get("Leftclick") + ": §a" + Lang.get("Change_Name"))
                         .getItem();
             }

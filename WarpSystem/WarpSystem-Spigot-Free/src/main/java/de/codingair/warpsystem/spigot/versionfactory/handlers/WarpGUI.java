@@ -7,6 +7,7 @@ import de.codingair.codingapi.server.sounds.Sound;
 import de.codingair.codingapi.server.sounds.SoundData;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.items.ItemBuilder;
+import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.codingapi.utils.TextAlignment;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
@@ -23,7 +24,6 @@ import de.codingair.warpsystem.spigot.features.warps.guis.editor.GEditor;
 import de.codingair.warpsystem.spigot.features.warps.managers.IconManager;
 import de.codingair.warpsystem.spigot.features.warps.nextlevel.utils.Icon;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -106,7 +106,7 @@ public class WarpGUI implements IWarpGUI {
                                 return;
                             }
 
-                            input = ChatColor.translateAlternateColorCodes('&', input);
+                            input = ChatColor.translateAll('&', input);
 
                             if (clickEvent.isRightClick()) {
                                 StringBuilder builder = new StringBuilder();

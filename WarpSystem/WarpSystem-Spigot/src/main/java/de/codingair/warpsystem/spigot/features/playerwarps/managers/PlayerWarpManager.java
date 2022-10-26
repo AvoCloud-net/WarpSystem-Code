@@ -573,8 +573,8 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
             }
 
             for (PlayerWarp d : list) {
-                String nameWithoutColor = net.md_5.bungee.api.ChatColor.stripColor(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', name));
-                String dName = net.md_5.bungee.api.ChatColor.stripColor(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', d.getName())).replace(" ", "_");
+                String nameWithoutColor = ChatColor.stripColor(ChatColor.translateAll('&', name));
+                String dName = ChatColor.stripColor(ChatColor.translateAll('&', d.getName())).replace(" ", "_");
                 if (dName.equalsIgnoreCase(nameWithoutColor)) {
                     found = true;
                     break;

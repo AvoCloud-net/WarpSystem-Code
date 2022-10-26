@@ -3,6 +3,7 @@ package de.codingair.warpsystem.spigot.features.spawn.utils;
 import de.codingair.codingapi.server.Environment;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.io.utils.DataMask;
+import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.api.destinations.utils.Result;
 import de.codingair.warpsystem.core.transfer.packets.general.TeleportSpawnPacket;
 import de.codingair.warpsystem.spigot.api.placeholders.PAPI;
@@ -16,7 +17,10 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destinati
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.EmptyAdapter;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.LocationAdapter;
 import de.codingair.warpsystem.spigot.features.spawn.managers.SpawnManager;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -48,7 +52,7 @@ public class Spawn extends FeatureObject {
     }
 
     public static String prepareBroadcastMessage(String s, Player player) {
-        return PAPI.convert(ChatColor.translateAlternateColorCodes('&', s), player).replace("\\n", "\n").replace("%player%", player.getName());
+        return PAPI.convert(ChatColor.translateAll('&', s), player).replace("\\n", "\n").replace("%player%", player.getName());
     }
 
     public boolean isValid() {
