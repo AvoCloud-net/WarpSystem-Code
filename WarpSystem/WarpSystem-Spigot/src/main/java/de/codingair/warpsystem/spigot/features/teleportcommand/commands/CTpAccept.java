@@ -23,7 +23,10 @@ public class CTpAccept extends WSCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /tpaccept <" + WarpSystem.opt().cmdArg() + "player" + WarpSystem.opt().cmdSug() + ">");
+                List<Invitation> invites = TeleportCommandManager.getInstance().getReceivedInvites(sender.getName());
+                if (invites.isEmpty()) sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /tpaccept <" + WarpSystem.opt().cmdArg() + "player" + WarpSystem.opt().cmdSug() + ">");
+                else invites.get(0).accept((Player) sender);
+
                 return false;
             }
         }.setOnlyPlayers(true));
