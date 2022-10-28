@@ -78,16 +78,15 @@ public abstract class FeatureObject implements Serializable {
 
     public FeatureObject perform(Player player) {
         WarpAction warp = getAction(WarpAction.class);
-        if (warp != null) return perform(player, warp.getValue().getId(), warp.getValue(), SoundPage.createStandard(), skip, true);
-        else return perform(player, null, null, SoundPage.createStandard(), skip, true);
+        if (warp != null) return perform(player, warp.getValue().getId(), warp.getValue(), SoundPage.createStandard(), skip);
+        else return perform(player, null, null, SoundPage.createStandard(), skip);
     }
 
-    public FeatureObject perform(Player player, String destName, Destination dest, SoundData sound, boolean skip, boolean afterEffects) {
+    public FeatureObject perform(Player player, String destName, Destination dest, SoundData sound, boolean skip) {
         TeleportOptions options = new TeleportOptions(dest, destName);
         options.setTeleportSound(sound);
         options.setSkip(skip);
         options.setCanMove(skip);
-        options.setAfterEffects(afterEffects, false);
 
         return perform(player, options);
     }

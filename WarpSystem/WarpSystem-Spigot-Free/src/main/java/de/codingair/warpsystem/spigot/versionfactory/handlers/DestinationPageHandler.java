@@ -252,8 +252,8 @@ public class DestinationPageHandler {
     }
 
     @NotNull
-    private static String getBooleanDescription(boolean enabled, boolean standard) {
-        if (standard) return  "§7" + getBooleanDescription(standard) + " §8(§e" + Lang.get("Default") + "§8)";
+    private static String getBooleanDescription(boolean enabled, boolean isStandard) {
+        if (isStandard) return  "§7" + getBooleanDescription(enabled) + " §8(§e" + Lang.get("Default") + "§8)";
         return getBooleanDescription(enabled);
     }
 
