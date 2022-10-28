@@ -25,6 +25,9 @@ public class PublishGlobalWarpPacketHandler implements ResponsiblePacketHandler<
             GlobalWarpHandler handler = Core.getPlugin().getHandler(GlobalWarpHandler.class);
             boolean overwrite = packet.isOverwrite();
 
+            // Set server name before saving it to files!
+            packet.warp.setServer(server.getName());
+
             if (overwrite) {
                 SGlobalWarp warp = handler.get(packet.warp.getName());
                 if (warp != null) {
@@ -37,7 +40,6 @@ public class PublishGlobalWarpPacketHandler implements ResponsiblePacketHandler<
                     //Name does not exist -> create
                     if (handler.add(packet.warp)) {
                         //Added
-                        packet.warp.setServer(server.getName());
                         handler.synchronize(packet.warp, UpdateGlobalWarpPacket.Action.ADD);
                         return CompletableFuture.completedFuture(new BooleanPacket(true));
                     }
@@ -47,7 +49,6 @@ public class PublishGlobalWarpPacketHandler implements ResponsiblePacketHandler<
             } else {
                 if (handler.add(packet.warp)) {
                     //Added
-                    packet.warp.setServer(server.getName());
                     handler.synchronize(packet.warp, UpdateGlobalWarpPacket.Action.ADD);
                     return CompletableFuture.completedFuture(new BooleanPacket(true));
                 } else {
