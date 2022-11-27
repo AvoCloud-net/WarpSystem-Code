@@ -539,7 +539,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     }
 
     public List<String> getWorlds(@NotNull String server) {
-        return this.worlds.get(server.toLowerCase());
+        return this.worlds.getOrDefault(server.toLowerCase(), new ArrayList<>());
     }
 
     public double getCosts() {
