@@ -23,11 +23,12 @@ public class FakeBlockBreakEvent extends BlockBreakEvent {
     private static final IReflection.FieldAccessor<?> PLAYER_CONNECTION_FIELD = IReflection.getField(PacketUtils.EntityPlayerClass, PacketUtils.PlayerConnectionClass, 0);
 
     static {
-        if (Version.atLeast(19)) {
+        if (Version.between(19, 19.2)) {
             Class<?> profilePublicKeyClass = IReflection.getClass("net.minecraft.world.entity.player.", "ProfilePublicKey");
             PLAYER_INTERACT_MANAGER = null;
             PLAYER = IReflection.getConstructor(PacketUtils.EntityPlayerClass, PacketUtils.MinecraftServerClass, PacketUtils.WorldServerClass, GameProfile.class, profilePublicKeyClass);
         } else if (Version.atLeast(17)) {
+            // also for 1.19.3
             PLAYER_INTERACT_MANAGER = null;
             PLAYER = IReflection.getConstructor(PacketUtils.EntityPlayerClass, PacketUtils.MinecraftServerClass, PacketUtils.WorldServerClass, GameProfile.class);
         } else {
@@ -101,7 +102,7 @@ public class FakeBlockBreakEvent extends BlockBreakEvent {
                     profile,
                     PLAYER_INTERACT_MANAGER.newInstance(PacketUtils.getWorldServer(player.getWorld()))
             );
-        else if (Version.atLeast(19))
+        else if (Version.between(19, 19.2))
             return PLAYER.newInstance(
                     PacketUtils.getMinecraftServer(),
                     PacketUtils.getWorldServer(player.getWorld()),
