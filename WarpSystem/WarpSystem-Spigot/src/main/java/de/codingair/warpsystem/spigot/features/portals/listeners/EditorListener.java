@@ -49,7 +49,7 @@ public class EditorListener implements Listener {
                     String name = "§7" + ChatColor.stripColor(BlockType.CUSTOM.getName()) + ": §e" + m.name();
                     if (!name.equals(item.getDisplayName())) {
                         item.setDisplayName(name);
-                        e.getPlayer().getInventory().setItem(7, item);
+                        e.getPlayer().getInventory().setItem(8, item);
                     }
                     return;
                 }
