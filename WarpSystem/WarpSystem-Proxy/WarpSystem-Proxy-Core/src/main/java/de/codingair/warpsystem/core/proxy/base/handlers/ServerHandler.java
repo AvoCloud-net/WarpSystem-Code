@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.stream.Stream;
 
 public abstract class ServerHandler {
+    private static final String[] OFFLINE_TRIGGER = {"io.netty.channel.abstractchannel$annotatedconnectexception: finishconnect(..)", "finishconnect(..) failed", "connection refused"};
     private final HashMap<Server<?>, ServerOptions> options = new HashMap<>();
     private final ConcurrentHashMap<Server<?>, ServerPing> cachedPing = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Server<?>, Set<CompletableFuture<Void>>> waiting = new ConcurrentHashMap<>();
@@ -144,6 +145,13 @@ public abstract class ServerHandler {
         return ping != null && ping.getStatus();
     }
 
+    private boolean isOfflineError(@NotNull Throwable t) {
+        for (String s : OFFLINE_TRIGGER) {
+            if (t.getMessage().toLowerCase().contains(s)) return true;
+        }
+        return false;
+    }
+
     public void run() {
         if (running) return;
         running = true;
@@ -170,8 +178,7 @@ public abstract class ServerHandler {
                 ping.setMaxPlayers(0);
                 ping.setMotd(null);
 
-                boolean serverJustOffline = error.getMessage().toLowerCase().contains("connection refused");
-                if (!serverJustOffline) {
+                if (!isOfflineError(error)) {
                     if (ignorePingErrors) {
                         //make server accessible again
                         ping.setStatus(true);
