@@ -163,8 +163,8 @@ public class ShortcutManager implements Manager, ProxyFeature {
 
     public void reloadCommand(Shortcut s, boolean force) {
         ShortcutExecutor executor = executors.remove(s);
-        boolean reload;
-        if (reload = (executor != null)) executor.unregister();
+        boolean reload = executor != null;
+        if (reload) executor.unregister();
 
         executor = new ShortcutExecutor(s);
         executors.put(s, executor);

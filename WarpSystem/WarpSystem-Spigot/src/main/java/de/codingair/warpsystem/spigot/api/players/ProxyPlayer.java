@@ -10,14 +10,8 @@ public class ProxyPlayer {
     private final String name;
     private final String displayName;
 
-    public ProxyPlayer(Player player) {
-        this.player = player;
-        this.name = player.getName();
-        this.displayName = player.getDisplayName();
-    }
-
     public ProxyPlayer(String name, String displayName) {
-        this.player = Bukkit.getPlayer(name);
+        this.player = Bukkit.getPlayerExact(name);
         this.name = name;
         this.displayName = displayName;
     }
