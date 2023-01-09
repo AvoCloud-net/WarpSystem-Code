@@ -90,7 +90,7 @@ WarpSystem:
     Allow_Move: false
     # Values: ACTION_BAR, TITLE (separate lines with '\n')
     Delay_Display: ACTION_BAR
-    # A list of forbidden WorldGuard regions.
+    # A list of forbidden WorldGuard regions or world names.
     # All types of user based teleportations are included: /back, /tpa, /tpahere, PlayerWarps, random locations
     Forbidden_Regions: []
     # Searches for a safe spot in a 5 blocks radius when teleporting into a danger zone in survival/adventure mode

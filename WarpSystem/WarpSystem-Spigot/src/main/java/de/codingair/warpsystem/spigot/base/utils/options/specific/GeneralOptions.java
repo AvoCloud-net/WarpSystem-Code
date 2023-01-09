@@ -316,9 +316,13 @@ public class GeneralOptions extends Options {
 
     public boolean forbiddenRegion(Location location) {
         Stream<String> regions = WorldGuardHelper.getRegion(location);
+        List<String> forbidden = forbiddenRegions.getValue();
+
+        if (forbidden.isEmpty()) return false;
+        if (location.getWorld() != null && forbidden.contains(location.getWorld().getName())) return false;
 
         if (regions == null) return false;
-        return regions.anyMatch(s -> forbiddenRegions.getValue().contains(s));
+        return regions.anyMatch(forbidden::contains);
     }
 
     public boolean isSafeTp() {
