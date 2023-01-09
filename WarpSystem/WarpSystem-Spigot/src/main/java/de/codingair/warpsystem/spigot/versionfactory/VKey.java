@@ -17,6 +17,7 @@ public enum VKey {
     RTP_Go_Command_Handler(VFac.OBJECTS),
     WarpGUIChoosePage(VFac.OBJECTS),
     CWarpSystem(VFac.OBJECTS),
+    TeleportPostProcessing(VFac.OBJECTS),
 
     DestinationPageHandler(VFac.HANDLERS),
     TeleportCommandHandler(VFac.HANDLERS),

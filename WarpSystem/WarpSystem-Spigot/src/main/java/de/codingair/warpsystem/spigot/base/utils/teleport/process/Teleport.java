@@ -9,6 +9,8 @@ import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
 import de.codingair.warpsystem.spigot.base.utils.teleport.TeleportOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
+import de.codingair.warpsystem.spigot.versionfactory.VFac;
+import de.codingair.warpsystem.spigot.versionfactory.VKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -56,8 +58,12 @@ public class Teleport {
                         .then(new WaitForTeleport())
                         .then(new ConfirmPayment())
                         .then(new TeleportDelay())
-                        .then(new PlayerTeleport(afterEffectPosition))
-                        .then(new AfterEffects(afterEffectPosition))
+                        .then(new PlayerTeleport(afterEffectPosition));
+
+                TeleportStage post = VFac.buildOr(VKey.TeleportPostProcessing, null);
+                if (post != null) stage = stage.then(post);
+
+                stage = stage.then(new AfterEffects(afterEffectPosition))
                         .begin();
             });
         });

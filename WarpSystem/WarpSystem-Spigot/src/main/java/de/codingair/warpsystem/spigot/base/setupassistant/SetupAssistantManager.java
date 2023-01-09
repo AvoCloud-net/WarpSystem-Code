@@ -33,6 +33,8 @@ import java.util.concurrent.TimeUnit;
 @Function (name = "Currency name", configPath = "WarpSystem.Economy.Name", defaultValue = "Coin(s)", clazz = String.class, since = "v4.2.8")
 @Function (name = "Proxy Update Fetching", description = "If your Proxy has a newer jar than your Spigot, there is an option to deliver this jar directly to your Spigot without FTP access.  Values: 0=Disabled, 1=Ask_on_Enable, 2=Auto.", configPath = "WarpSystem.Proxy.Fetch_Updated_Jars", defaultValue = "1", clazz = Integer.class, since = "v4.2.11")
 @Function (name = "Safe Teleports", description = "Searches for a safe spot in a 5 blocks radius when teleporting into a danger zone in survival/adventure mode.", configPath = "WarpSystem.Teleport.Safe_TP", defaultValue = "true", clazz = Boolean.class, since = "v5.0.2")
+@Function (name = "Invulnerability Teleports", description = "Adds invulnerability time after teleports to ensure safe world loading.", configPath = "WarpSystem.Teleport.Invulnerability.Enabled", defaultValue = "false", clazz = Boolean.class, since = "v5.1.4")
+@Function (name = "Teleport Invul. Time", description = "Configures the invulnerability time after a teleport. Applies only if invulnerability teleports are activated.", configPath = "WarpSystem.Teleport.Invulnerability.Time", defaultValue = "3", clazz = Integer.class, since = "v5.1.4")
 public class SetupAssistantManager {
     private final Cache<PluginVersion, List<Value>> cache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
     private SetupAssistant assistant = null;

@@ -13,6 +13,7 @@ import de.codingair.warpsystem.spigot.base.guis.editor.pages.SoundPage;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
+import de.codingair.warpsystem.spigot.base.utils.options.specific.GeneralOptions;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destination;
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.adapters.LocationAdapter;
 import de.codingair.warpsystem.spigot.features.animations.AnimationManager;
@@ -52,6 +53,9 @@ public class TeleportOptions implements Options {
     private boolean publicAnimations;
     private boolean teleportAnimation = true;
 
+    private boolean invulnerability;
+    private float invulnerabilityTime;
+
     public TeleportOptions() {
         this((Destination) null, null);
     }
@@ -86,6 +90,9 @@ public class TeleportOptions implements Options {
         this.cancelSound = new SoundData(Sound.ENTITY_ITEM_BREAK, 0.7F, 1F);
         if (destination != null) this.afterEffects = destination.getCustomOptions().getParticles();
         this.publicAnimations = WarpSystem.opt().isPublicAnimations();
+
+        invulnerability = WarpSystem.opt().invulnerability();
+        invulnerabilityTime = (float) WarpSystem.opt().invulnerabilityTime();
     }
 
     public Location buildLocation() {
@@ -332,6 +339,28 @@ public class TeleportOptions implements Options {
 
     public @NotNull Options setDelay(int delay) {
         this.delay = delay;
+        return this;
+    }
+
+    @Override
+    public boolean withPostInvulnerability() {
+        return invulnerability;
+    }
+
+    @Override
+    public float postInvulnerabilityDuration() {
+        return invulnerabilityTime;
+    }
+
+    @Override
+    public @NotNull Options setWithPostInvulnerability(boolean invulnerability) {
+        this.invulnerability = invulnerability;
+        return this;
+    }
+
+    @Override
+    public @NotNull Options setPostInvulnerabilityDuration(float invulnerabilityTime) {
+        this.invulnerabilityTime = invulnerabilityTime;
         return this;
     }
 }

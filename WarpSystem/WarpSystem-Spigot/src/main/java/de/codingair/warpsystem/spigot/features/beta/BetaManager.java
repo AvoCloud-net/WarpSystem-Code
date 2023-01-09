@@ -8,6 +8,7 @@ import de.codingair.warpsystem.spigot.base.setupassistant.annotations.AvailableF
 import de.codingair.warpsystem.spigot.base.setupassistant.annotations.Function;
 import de.codingair.warpsystem.spigot.features.beta.functions.Beta;
 import de.codingair.warpsystem.spigot.features.beta.functions.TeleportInterceptions;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,7 +38,7 @@ public class BetaManager implements Manager {
         functions.remove("PLACEHOLDER");
 
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("Config");
-        UTFConfig config = file.getConfig();
+        YamlConfiguration config = file.getConfig();
         boolean participate = config.getBoolean("WarpSystem.Beta.Participate");
 
         for (String function : functions) {

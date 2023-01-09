@@ -1,7 +1,6 @@
 package de.codingair.warpsystem.spigot.versionfactory.handlers;
 
 import de.codingair.codingapi.files.ConfigFile;
-import de.codingair.codingapi.files.loader.UTFConfig;
 import de.codingair.codingapi.tools.Area;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.Location;
@@ -11,6 +10,7 @@ import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomLo
 import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
 import de.codingair.warpsystem.spigot.features.randomteleports.utils.RandomLocationCalculator;
 import org.bukkit.WorldBorder;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +22,7 @@ public class RandomTeleportHandler extends RandomTeleportManager {
     @Override
     public boolean load(boolean hide) {
         ConfigFile rtpFile = WarpSystem.getInstance().getFileManager().loadFile("RTPConfig", "/");
-        UTFConfig config = rtpFile.getConfig();
+        YamlConfiguration config = rtpFile.getConfig();
 
         this.worldBorder = config.getBoolean("RandomTeleport.Support.WorldBorder", true);
         return super.load(hide);

@@ -26,6 +26,19 @@ public class VFac {
         }
     }
 
+    public static <A> A buildOr(VKey key, A def, Object... args) {
+        return build(key.getPath(), def, args);
+    }
+
+    private static <A> A build(String path, A def, Object... args) {
+        try {
+            Class<?> c = Class.forName(path);
+            return build(c, args);
+        } catch (ClassNotFoundException e) {
+            return def;
+        }
+    }
+
     private static <A> A build(Class<?> c, Object... args) {
         try {
             Class<?>[] classes = new Class[args.length];

@@ -14,6 +14,7 @@ import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.features.FeatureType;
 import de.codingair.warpsystem.spigot.features.animations.utils.Animation;
 import de.codingair.warpsystem.spigot.features.animations.utils.ParticlePart;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +37,7 @@ public class AnimationManager implements Manager {
         if (WarpSystem.getInstance().getFileManager().getFile("Animations") == null) WarpSystem.getInstance().getFileManager().loadFile("Animations", "/Memory/");
         WarpSystem.log("  > Loading Animations");
 
-        UTFConfig config = WarpSystem.getInstance().getFileManager().getFile("Animations").getConfig();
+        YamlConfiguration config = WarpSystem.getInstance().getFileManager().getFile("Animations").getConfig();
         destroy();
 
         boolean success = true;

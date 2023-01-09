@@ -67,7 +67,7 @@
             <dependency>
                 <groupId>com.github.CodingAir</groupId>
                 <artifactId>CodingAPI</artifactId>
-                <version>1.61</version>
+                <version>1.62</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -79,7 +79,7 @@
             <dependency>
                 <groupId>com.github.CodingAir</groupId>
                 <artifactId>WarpSystem-API</artifactId>
-                <version>5.0.6</version>
+                <version>5.1.4</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>

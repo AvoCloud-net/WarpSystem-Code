@@ -3,6 +3,7 @@ package de.codingair.warpsystem.spigot.base.utils.options;
 import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.codingapi.files.loader.UTFConfig;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
@@ -30,7 +31,7 @@ public abstract class Options {
         return file;
     }
 
-    public UTFConfig getConfig() {
+    public YamlConfiguration getConfig() {
         return this.file.getConfig();
     }
 

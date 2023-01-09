@@ -37,6 +37,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.permissions.PermissionAttachmentInfo;
@@ -112,7 +113,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
         this.playData = WarpSystem.getInstance().getFileManager().loadFile("PlayData", "/Memory/");
 
         ConfigFile rtpFile = WarpSystem.getInstance().getFileManager().loadFile("RTPConfig", "/");
-        UTFConfig config = rtpFile.getConfig();
+        YamlConfiguration config = rtpFile.getConfig();
 
         if (!hide) WarpSystem.log("  > Loading RandomTeleporters");
 
@@ -248,7 +249,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     @Override
     public void save(boolean saver) {
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("Teleporters");
-        UTFConfig config = file.getConfig();
+        YamlConfiguration config = file.getConfig();
 
         if (!saver) WarpSystem.log("  > Saving RandomTeleporters");
 
@@ -505,7 +506,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     }
 
     public void increaseTeleports(UUID uuid) {
-        UTFConfig config = playData.getConfig();
+        YamlConfiguration config = playData.getConfig();
         int i = config.getInt("RandomTeleporter." + uuid.toString() + ".Teleports", 0) + 1;
         config.set("RandomTeleporter." + uuid + ".Teleports", i);
         playData.saveConfig();
@@ -520,7 +521,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     }
 
     public void setBoughtTeleports(UUID uuid, int teleports) {
-        UTFConfig config = playData.getConfig();
+        YamlConfiguration config = playData.getConfig();
         config.set("RandomTeleporter." + uuid.toString() + ".Bought", teleports);
         playData.saveConfig();
     }
@@ -530,7 +531,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
     }
 
     public int getBoughtTeleports(UUID uuid) {
-        UTFConfig config = playData.getConfig();
+        YamlConfiguration config = playData.getConfig();
         return config.getInt("RandomTeleporter." + uuid.toString() + ".Bought", 0);
     }
 

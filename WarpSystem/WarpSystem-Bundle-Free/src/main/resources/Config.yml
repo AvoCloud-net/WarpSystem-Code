@@ -95,6 +95,10 @@ WarpSystem:
     Forbidden_Regions: []
     # Searches for a safe spot in a 5 blocks radius when teleporting into a danger zone in survival/adventure mode
     Safe_TP: true
+    # PREMIUM ONLY: If true, players receive invulnerability after teleporting
+    Invulnerability:
+      Enabled: false
+      Time: 3
 
   # PREMIUM
   # ByPass: warpsystem.bypass.cooldown

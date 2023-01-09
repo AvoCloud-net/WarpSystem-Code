@@ -39,6 +39,8 @@ public class GeneralOptions extends Options {
     private Option<String> placeholderColorsNotFull = new Option<>("WarpSystem.Proxy.Placeholder.Colors.Not_Full", "&a");
     private Option<List<String>> forbiddenRegions = new Option<>("WarpSystem.Teleport.Forbidden_Regions", new ArrayList<>());
     private Option<Boolean> safeTp = new Option<>("WarpSystem.Teleport.Safe_TP", false);
+    private Option<Boolean> invulnerability = new Option<>("WarpSystem.Teleport.Invulnerability.Enabled", false);
+    private Option<Number> invulnerabilityTime = new Option<>("WarpSystem.Teleport.Invulnerability.Time", 3.0);
 
     public GeneralOptions() {
         super("Config");
@@ -73,6 +75,8 @@ public class GeneralOptions extends Options {
         set(placeholderColorsNotFull);
         set(forbiddenRegions);
         set(safeTp);
+        set(invulnerability);
+        set(invulnerabilityTime);
         save();
     }
 
@@ -100,6 +104,8 @@ public class GeneralOptions extends Options {
         get(placeholderColorsNotFull);
         get(forbiddenRegions);
         get(safeTp);
+        get(invulnerability);
+        get(invulnerabilityTime);
 
         if (fetchUpdates.getValue() < 0 || fetchUpdates.getValue() > 2) fetchUpdates.setValue(1);
         if (System.getProperty("os.name").toLowerCase().contains("win") || System.getProperty("os.name").toLowerCase().contains("mac"))
@@ -160,6 +166,8 @@ public class GeneralOptions extends Options {
             this.placeholderColorsNotFull = o.placeholderColorsNotFull.clone();
             this.forbiddenRegions = o.forbiddenRegions.clone();
             this.safeTp = o.safeTp.clone();
+            this.invulnerability = o.invulnerability.clone();
+            this.invulnerabilityTime = o.invulnerabilityTime.clone();
         }
     }
 
@@ -315,5 +323,13 @@ public class GeneralOptions extends Options {
 
     public boolean isSafeTp() {
         return safeTp.getValue();
+    }
+
+    public boolean invulnerability() {
+        return invulnerability.getValue();
+    }
+
+    public double invulnerabilityTime() {
+        return invulnerabilityTime.getValue().doubleValue();
     }
 }
