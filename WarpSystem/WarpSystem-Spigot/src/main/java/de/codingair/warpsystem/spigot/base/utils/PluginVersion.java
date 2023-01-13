@@ -22,6 +22,7 @@ public enum PluginVersion {
     v5_1_3,
     v5_1_4,
     v5_1_5,
+    v5_1_6,
     ;
 
     public static final PluginVersion[] values = values();
@@ -51,7 +52,7 @@ public enum PluginVersion {
     }
 
     public static PluginVersion getUpcoming() {
-        if (upcoming == null) upcoming = values[getCurrent().ordinal() + 1];
+        if (upcoming == null && getCurrent().ordinal() + 1 < values.length) upcoming = values[getCurrent().ordinal() + 1];
         return upcoming;
     }
 
@@ -63,7 +64,7 @@ public enum PluginVersion {
 
     public PluginVersion next() {
         int i = ordinal() + 1;
-        if (i >= values.length) i = 1;
+        if (i == values.length) i = 0;
         return values[i];
     }
 
