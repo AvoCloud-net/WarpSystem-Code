@@ -1,6 +1,5 @@
 package de.codingair.warpsystem.spigot.base.utils.featureobjects;
 
-import com.google.common.base.CharMatcher;
 import de.codingair.codingapi.server.sounds.SoundData;
 import de.codingair.codingapi.tools.Call;
 import de.codingair.codingapi.tools.Callback;
@@ -245,7 +244,7 @@ public abstract class FeatureObject implements Serializable {
         this.disabled = d.getBoolean("disabled");
         this.permission = d.getString("permission");
         this.cooldown = d.getLong("cooldown");
-        if (this.permission != null) this.permission = ChatColor.stripColor(CharMatcher.whitespace().trimFrom(this.permission));
+        if (this.permission != null) this.permission = ChatColor.stripColor(Lang.whitespace().trimFrom(this.permission));
 
         this.skip = d.getBoolean("skip");
         this.performed = d.getInteger("performed");

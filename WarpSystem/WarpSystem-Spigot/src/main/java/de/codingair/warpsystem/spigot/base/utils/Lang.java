@@ -1,11 +1,13 @@
 package de.codingair.warpsystem.spigot.base.utils;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import de.codingair.codingapi.API;
 import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.codingapi.player.MessageAPI;
 import de.codingair.codingapi.player.gui.inventory.gui.GUI;
+import de.codingair.codingapi.server.specification.Version;
 import de.codingair.codingapi.tools.time.TimeList;
 import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
@@ -50,6 +52,11 @@ public class Lang {
         if (API.getRemovable(player, GUI.class) != null) return;
 
         MessageAPI.sendTitle(player, title, "§7Get full access with \"§6/ws upgrade§7\"", 5, 50, 5);
+    }
+
+    public static CharMatcher whitespace() {
+        //noinspection deprecation
+        return Version.atLeast(18.0D) ? CharMatcher.whitespace() : CharMatcher.WHITESPACE;
     }
 
     public static void PREMIUM_CHAT(TextComponent base, CommandSender sender) {
