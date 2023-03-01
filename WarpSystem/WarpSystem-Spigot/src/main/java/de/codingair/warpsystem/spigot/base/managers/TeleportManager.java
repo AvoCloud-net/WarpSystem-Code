@@ -16,11 +16,17 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destinati
 import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.DestinationType;
 import de.codingair.warpsystem.spigot.base.utils.teleport.process.Teleport;
 import de.codingair.warpsystem.spigot.base.utils.teleport.process.TeleportDelay;
+import de.codingair.warpsystem.spigot.features.globalwarps.managers.GlobalWarpManager;
+import de.codingair.warpsystem.spigot.features.simplewarps.SimpleWarp;
+import de.codingair.warpsystem.spigot.features.simplewarps.managers.SimpleWarpManager;
+import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -150,5 +156,42 @@ public class TeleportManager implements ITeleportManager {
 
     public void clear() {
         if (this.teleports != null) this.teleports.invalidateAll();
+    }
+
+    @Override
+    public @NotNull @Unmodifiable Set<String> servers() {
+        return Collections.unmodifiableSet(worlds().keySet());
+    }
+
+    @Override
+    public @NotNull @Unmodifiable Map<String, Set<String>> worlds() {
+        ServerManager man = WarpSystem.getInstance().getServerManager();
+        return Collections.unmodifiableMap(man.getWorlds());
+    }
+
+    @Override
+    public @NotNull @Unmodifiable Set<String> simpleWarps() {
+        SimpleWarpManager man = SimpleWarpManager.getInstance();
+        if (man == null) return Collections.emptySet();
+
+        return Collections.unmodifiableSet(man.getWarps().keySet());
+    }
+
+    @Override
+    public @Nullable Location simpleWarp(@NotNull String id) {
+        SimpleWarpManager man = SimpleWarpManager.getInstance();
+        if (man == null) return null;
+
+        SimpleWarp warp = man.getWarp(id);
+        if (warp == null) return null;
+        return warp.getLocation();
+    }
+
+    @Override
+    public @NotNull @Unmodifiable Map<String, String> globalWarps() {
+        GlobalWarpManager man = GlobalWarpManager.getInstance();
+        if (man == null) return Collections.emptyMap();
+
+        return Collections.unmodifiableMap(man.getGlobalWarps());
     }
 }
