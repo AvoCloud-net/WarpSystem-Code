@@ -1,12 +1,13 @@
 package de.codingair.warpsystem.spigot.features.portals.managers;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import de.codingair.codingapi.API;
 import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.codingapi.player.gui.inventory.gui.GUI;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.io.JSON.JSON;
 import de.codingair.codingapi.tools.io.JSON.JSONParser;
-import de.codingair.codingapi.tools.time.TimeList;
 import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.spigot.api.StringFormatter;
@@ -32,6 +33,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @AvailableForSetupAssistant (type = "Portals", config = "Config")
 @Function (name = "Enabled", defaultValue = "true", configPath = "WarpSystem.Functions.Portals", clazz = Boolean.class)
@@ -41,8 +43,8 @@ import java.util.*;
 public class PortalManager implements Manager {
     private final Set<Portal> portals = new HashSet<>();
     private final Set<Player> noTeleport = new HashSet<>();
-    private final TimeList<String> goingToDelete = new TimeList<>();
-    private final TimeList<String> goingToEdit = new TimeList<>();
+    private final Cache<UUID, Boolean> goingToDelete = CacheBuilder.newBuilder().expireAfterWrite(30, TimeUnit.SECONDS).build();
+    private final Cache<UUID, Boolean> goingToEdit = CacheBuilder.newBuilder().expireAfterWrite(30, TimeUnit.SECONDS).build();
 
     private double maxParticleDistance;
     private long hologramUpdateInterval;
@@ -170,7 +172,7 @@ public class PortalManager implements Manager {
                     } else if (API.getRemovable(player, GUI.class) != null) return;
                     else if (WarpSystem.getInstance().getTeleportManager().isTeleporting(player)) return;
 
-                    if (goingToDelete.contains(player.getName())) {
+                    if (goingToDelete.getIfPresent(player.getUniqueId()) != null) {
                         setGoingToDelete(player, 0);
                         noTeleport.add(player);
 
@@ -195,7 +197,7 @@ public class PortalManager implements Manager {
                             noTeleport.remove(player);
                         }, 4L);
                         return;
-                    } else if (goingToEdit.contains(player.getName())) {
+                    } else if (goingToEdit.getIfPresent(player.getUniqueId()) != null) {
                         setGoingToEdit(player, 0);
                         noTeleport.add(player);
 
@@ -236,19 +238,17 @@ public class PortalManager implements Manager {
 
     public void setGoingToDelete(Player player, int time) {
         if (time == 0) {
-            this.goingToDelete.remove(player.getName());
+            this.goingToDelete.invalidate(player.getUniqueId());
         } else {
-            if (this.goingToDelete.contains(player.getName())) this.goingToDelete.setExpire(player.getName(), time);
-            else this.goingToDelete.add(player.getName(), time);
+            this.goingToDelete.put(player.getUniqueId(), true);
         }
     }
 
     public void setGoingToEdit(Player player, int time) {
         if (time == 0) {
-            this.goingToEdit.remove(player.getName());
+            this.goingToEdit.invalidate(player.getUniqueId());
         } else {
-            if (this.goingToEdit.contains(player.getName())) this.goingToEdit.setExpire(player.getName(), time);
-            else this.goingToEdit.add(player.getName(), time);
+            this.goingToEdit.put(player.getUniqueId(), true);
         }
     }
 

@@ -1,6 +1,7 @@
 package de.codingair.warpsystem.spigot.api.blocks.listeners;
 
-import de.codingair.codingapi.tools.time.TimeSet;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import de.codingair.warpsystem.spigot.api.blocks.utils.Position;
 import de.codingair.warpsystem.spigot.api.blocks.utils.StaticBlock;
 import org.bukkit.Location;
@@ -19,17 +20,15 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class RuleListener implements Listener {
     public static HashMap<Position, StaticBlock> BLOCKS = new HashMap<>();
-    private static TimeSet<Entity> NO_DAMAGE;
-
-    public RuleListener() {
-        if (NO_DAMAGE == null) NO_DAMAGE = new TimeSet<>();
-    }
+    private static final Cache<UUID, Boolean> NO_DAMAGE = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.SECONDS).build();
 
     public static void noDamageTo(Entity entity) {
-        if (NO_DAMAGE != null) NO_DAMAGE.add(entity, 1);
+        NO_DAMAGE.put(entity.getUniqueId(), true);
     }
 
     @EventHandler
@@ -52,7 +51,7 @@ public class RuleListener implements Listener {
 
     @EventHandler (priority = EventPriority.LOWEST)
     public void onHit(EntityCombustEvent e) {
-        if (NO_DAMAGE.contains(e.getEntity())) {
+        if (NO_DAMAGE.getIfPresent(e.getEntity().getUniqueId()) != null) {
             e.setCancelled(true);
             e.setDuration(0);
             return;
@@ -66,7 +65,7 @@ public class RuleListener implements Listener {
 
     @EventHandler (priority = EventPriority.LOWEST)
     public void onHit(EntityDamageEvent e) {
-        if (NO_DAMAGE.contains(e.getEntity())) {
+        if (NO_DAMAGE.getIfPresent(e.getEntity().getUniqueId()) != null) {
             e.setCancelled(true);
             return;
         }

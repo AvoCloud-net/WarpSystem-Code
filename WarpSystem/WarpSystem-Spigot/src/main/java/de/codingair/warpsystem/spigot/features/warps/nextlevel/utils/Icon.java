@@ -4,29 +4,24 @@ import de.codingair.codingapi.tools.Call;
 import de.codingair.codingapi.tools.Callback;
 import de.codingair.codingapi.tools.io.utils.DataMask;
 import de.codingair.codingapi.tools.items.ItemBuilder;
-import de.codingair.codingapi.tools.time.TimeMap;
 import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.codingapi.utils.ImprovedDouble;
 import de.codingair.warpsystem.api.destinations.utils.Result;
+import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.FeatureObject;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.Action;
 import de.codingair.warpsystem.spigot.base.utils.featureobjects.actions.ActionObject;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
 import de.codingair.warpsystem.spigot.features.warps.managers.IconManager;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Icon extends FeatureObject {
-    private final TimeMap<Player, PaymentConfirmation> confirm = new TimeMap<Player, PaymentConfirmation>() {
-        @Override
-        public void timeout(Player key, PaymentConfirmation pc) {
-            pc.getCallback().accept(Result.ERROR);
-        }
-    };
+    private final Map<UUID, PaymentConfirmation> confirm = new HashMap<>();
     private boolean hideName;
     private String name;
     private ItemStack item;
@@ -67,7 +62,7 @@ public class Icon extends FeatureObject {
 
     @Override
     public FeatureObject perform(Player player) {
-        PaymentConfirmation pc = confirm.remove(player);
+        PaymentConfirmation pc = confirm.remove(player.getUniqueId());
 
         if (pc != null) {
             //confirm
@@ -99,12 +94,20 @@ public class Icon extends FeatureObject {
             return null;
         }
 
-        confirm.put(player, new PaymentConfirmation(callback, costs), 2000);
+        confirm.put(player.getUniqueId(), new PaymentConfirmation(callback, costs));
+        Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
+            PaymentConfirmation pc = confirm.remove(player.getUniqueId());
+            if (pc != null) {
+                // timeout
+                pc.getCallback().accept(Result.ERROR);
+            }
+        }, 40);
+
         player.sendMessage(Lang.getPrefix() + Lang.get("Icon_Costs_Confirm").replace("%AMOUNT%", new ImprovedDouble(costs).toString()));
         return () -> {
-            PaymentConfirmation pc = confirm.remove(player);
+            PaymentConfirmation pc = confirm.remove(player.getUniqueId());
             if (pc != null) {
-                //confirm
+                // timeout
                 pc.getCallback().accept(Result.CANCELLED);
             }
         };

@@ -7,8 +7,6 @@ import de.codingair.codingapi.files.loader.UTFConfig;
 import de.codingair.codingapi.server.reflections.IReflection;
 import de.codingair.codingapi.server.specification.Type;
 import de.codingair.codingapi.server.specification.Version;
-import de.codingair.codingapi.tools.time.TimeFetcher;
-import de.codingair.codingapi.tools.time.Timer;
 import de.codingair.packetmanagement.utils.Proxy;
 import de.codingair.warpsystem.api.destinations.utils.Result;
 import de.codingair.warpsystem.core.transfer.packets.proxy.SendJarPacket;
@@ -47,10 +45,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 public class WarpSystem extends JavaPlugin implements Proxy {
@@ -62,7 +57,6 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     private final FileManager fileManager = new FileManager(this);
     private final HeadManager headManager = new HeadManager();
     private final SetupAssistantManager setupAssistantManager = new SetupAssistantManager();
-    private final Timer timer = new Timer();
     private final SpigotHandler dataHandler = new SpigotHandler(this);
     private PlayerDataManager playerDataManager;
     private CooldownManager cooldownManager;
@@ -124,7 +118,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     public void onEnable() {
         if (!checkSpigot()) return;
 
-        timer.start();
+        long start = System.currentTimeMillis();
 
         instance = this;
         copyConfig();
@@ -201,7 +195,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             afterOnEnable();
 
             log(" ");
-            log("Finished (" + timer.result() + ")");
+            log("Finished (" + (System.currentTimeMillis() - start) + "ms)");
             log(" ");
             log("__________________________________________________________");
             log(" ");
@@ -397,8 +391,9 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         if (!this.shouldSave) return;
         try {
             if (!this.ERROR) {
+                long start = System.currentTimeMillis();
+
                 if (!saver) {
-                    timer.start();
 
                     log(" ");
                     log("__________________________________________________________");
@@ -428,7 +423,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
                 if (!saver) {
                     log(" ");
-                    log("Finished (" + timer.result() + ")");
+                    log("Finished (" + (System.currentTimeMillis() - start) + "ms)");
                     log(" ");
                     log("__________________________________________________________");
                     log(" ");
@@ -463,8 +458,9 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
     public void createBackup() {
         getDataFolder().mkdir();
+        Calendar c = Calendar.getInstance();
 
-        File backupFolder = new File(getDataFolder().getPath() + "/Backups/", TimeFetcher.getYear() + "_" + (TimeFetcher.getMonthNum() + 1) + "_" + TimeFetcher.getDay() + " " + TimeFetcher.getHour() + "_" + TimeFetcher.getMinute() + "_" + TimeFetcher.getSecond());
+        File backupFolder = new File(getDataFolder().getPath() + "/Backups/", c.get(Calendar.YEAR) + "_" + (c.get(Calendar.MONTH) + 1) + "_" + c.get(Calendar.DAY_OF_MONTH) + " " + c.get(Calendar.HOUR_OF_DAY) + "_" + c.get(Calendar.MINUTE) + "_" + c.get(Calendar.SECOND));
         backupFolder.mkdirs();
 
         for (File file : getDataFolder().listFiles()) {

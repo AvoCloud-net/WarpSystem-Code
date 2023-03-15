@@ -1,7 +1,8 @@
 package de.codingair.warpsystem.spigot.features.randomteleports.listeners;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import de.codingair.codingapi.tools.Location;
-import de.codingair.codingapi.tools.time.TimeSet;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.features.randomteleports.managers.RandomTeleportManager;
@@ -14,28 +15,31 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
 public class InteractListener implements Listener {
-    private final TimeSet<Player> blocked = new TimeSet<>();
-    private final TimeSet<Player> addingNewBlock = new TimeSet<>();
+    private final Cache<UUID, Boolean> blocked = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.SECONDS).build();
+    private final Cache<UUID, Boolean> addingNewBlock = CacheBuilder.newBuilder().expireAfterWrite(30, TimeUnit.SECONDS).build();
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        if (e.getAction() != Action.RIGHT_CLICK_BLOCK || blocked.contains(e.getPlayer())) return;
+        if (e.getAction() != Action.RIGHT_CLICK_BLOCK || blocked.getIfPresent(e.getPlayer().getUniqueId()) != null) return;
         Block b = e.getClickedBlock();
         if (b == null) return;
         org.bukkit.Location loc = b.getLocation();
 
-        if (addingNewBlock.contains(e.getPlayer())) {
+        if (addingNewBlock.getIfPresent(e.getPlayer().getUniqueId()) != null) {
             RandomTeleportManager.getInstance().getInteractBlocks().add(new Location(loc));
             e.getPlayer().sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Block_Added"));
-            addingNewBlock.remove(e.getPlayer());
-            blocked.add(e.getPlayer(), 1);
+            addingNewBlock.invalidate(e.getPlayer().getUniqueId());
+            blocked.put(e.getPlayer().getUniqueId(), true);
             return;
         }
 
         for (Location l : RandomTeleportManager.getInstance().getInteractBlocks()) {
             if (l.equals(loc)) {
-                blocked.add(e.getPlayer(), 1);
+                blocked.put(e.getPlayer().getUniqueId(), true);
                 RandomTeleportManager.getInstance().tryToTeleport(e.getPlayer());
                 break;
             }
@@ -66,7 +70,7 @@ public class InteractListener implements Listener {
         }
     }
 
-    public TimeSet<Player> getAddingNewBlock() {
-        return addingNewBlock;
+    public void setAsAdding(Player player) {
+        this.addingNewBlock.put(player.getUniqueId(), true);
     }
 }

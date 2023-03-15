@@ -8,7 +8,6 @@ import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.codingapi.player.MessageAPI;
 import de.codingair.codingapi.player.gui.inventory.gui.GUI;
 import de.codingair.codingapi.server.specification.Version;
-import de.codingair.codingapi.tools.time.TimeList;
 import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.money.Bank;
@@ -30,7 +29,7 @@ public class Lang {
     public static final String PREMIUM_HOTBAR = "§8» §6§lPremium feature §8«";
     public static final String PREMIUM_LORE = "§r §8(§6Premium§8)";
     private static final Cache<String, Boolean> EXIST = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
-    private static final TimeList<CommandSender> premiumMessage = new TimeList<>();
+    private static final Cache<CommandSender, Boolean> premiumMessage = CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.SECONDS).build();
     private static ConfigFile config = null;
 
     public static void PREMIUM_CHAT(CommandSender sender) {
@@ -67,7 +66,7 @@ public class Lang {
         if (!chat && sender instanceof Player) {
             PREMIUM_TITLE((Player) sender, "§7This is a §6Premium §7feature!");
         } else {
-            if (premiumMessage.contains(sender)) return;
+            if (premiumMessage.getIfPresent(sender) != null) return;
 
             TextComponent tc1 = new TextComponent(" §8[");
             TextComponent upgrade = new TextComponent("§6§nUpgrade");
@@ -87,12 +86,12 @@ public class Lang {
                 ((Player) sender).spigot().sendMessage(base);
             } else sender.sendMessage(base.getText());
 
-            premiumMessage.add(sender, 5);
+            premiumMessage.put(sender, true);
         }
     }
 
     public static void PREMIUM_CHAT_UPGRADE(CommandSender sender) {
-        if (premiumMessage.contains(sender)) return;
+        if (premiumMessage.getIfPresent(sender) != null) return;
 
         TextComponent tc0 = new TextComponent("\n" + Lang.getPrefix() + "§7Thank you for thinking about an ");
         TextComponent upgrade = new TextComponent("§6§nupgrade");
@@ -111,7 +110,7 @@ public class Lang {
             ((Player) sender).spigot().sendMessage(tc0);
         } else sender.sendMessage(tc0.getText());
 
-        premiumMessage.add(sender, 10);
+        premiumMessage.put(sender, true);
     }
 
     public static void initPreDefinedLanguages(JavaPlugin plugin) throws IOException {

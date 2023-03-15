@@ -1,5 +1,7 @@
 package de.codingair.warpsystem.spigot.base.commands;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import de.codingair.codingapi.API;
 import de.codingair.codingapi.player.chat.ChatButton;
 import de.codingair.codingapi.player.chat.SimpleMessage;
@@ -13,7 +15,6 @@ import de.codingair.codingapi.server.commands.builder.CommandComponent;
 import de.codingair.codingapi.server.commands.builder.special.MultiCommandComponent;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
-import de.codingair.codingapi.tools.time.TimeList;
 import de.codingair.warpsystem.spigot.api.WSCommandBuilder;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.setupassistant.utils.NavigationCommand;
@@ -38,6 +39,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class CWarpSystem extends WSCommandBuilder {
     public CWarpSystem() {
@@ -383,11 +386,11 @@ public class CWarpSystem extends WSCommandBuilder {
         });
 
         getBaseComponent().addChild(new CommandComponent("reload") {
-            final TimeList<CommandSender> confirm = new TimeList<>();
+            final Cache<CommandSender, Boolean> confirm = CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.SECONDS).build();
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                if (confirm.contains(sender)) {
+                if (confirm.getIfPresent(sender) != null) {
                     try {
                         sender.sendMessage(Lang.getPrefix() + Lang.get("Plugin_Reloading"));
                         WarpSystem.getInstance().reload(false);
@@ -398,7 +401,7 @@ public class CWarpSystem extends WSCommandBuilder {
                     }
                 } else {
                     sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Unsaved_Changes"));
-                    confirm.add(sender, 10);
+                    confirm.put(sender, true);
                 }
                 return true;
             }

@@ -1,6 +1,7 @@
 package de.codingair.warpsystem.spigot.base.listeners;
 
-import de.codingair.codingapi.tools.time.TimeMap;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import de.codingair.warpsystem.core.transfer.packets.proxy.InitialPacket;
 import de.codingair.warpsystem.core.transfer.packets.proxy.PrepareLoginMessagePacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.RequestInitialPacket;
@@ -16,10 +17,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public class BungeeBukkitListener implements Listener {
-    private final TimeMap<String, String> loginMessage = new TimeMap<>();
+    private final Cache<String, String> loginMessage = CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.SECONDS).build();
     private String[] notice = null;
 
     public BungeeBukkitListener() {
@@ -32,8 +34,11 @@ public class BungeeBukkitListener implements Listener {
         Player p = e.getPlayer();
         if (!p.isOnline()) return; //filter fake NPCs
 
-        String message = loginMessage.remove(p.getName());
-        if (message != null) p.sendMessage(message);
+        String message = loginMessage.getIfPresent(p.getName());
+        if (message != null) {
+            loginMessage.invalidate(p.getName());
+            p.sendMessage(message);
+        }
 
         if (WarpSystem.getInstance().isUseProxy()) {
             //request initial packet //do NOT check if already connected -> initial packet for every proxy server
@@ -61,7 +66,7 @@ public class BungeeBukkitListener implements Listener {
 
         Player p = Bukkit.getPlayer(packet.getPlayer());
         if (p != null) p.sendMessage(packet.getMessage());
-        else loginMessage.put(packet.getPlayer(), packet.getMessage(), 10000);
+        else loginMessage.put(packet.getPlayer(), packet.getMessage());
     }
 
     @NotNull

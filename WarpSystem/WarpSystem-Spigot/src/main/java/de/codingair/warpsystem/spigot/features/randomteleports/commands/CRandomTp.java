@@ -123,7 +123,7 @@ public class CRandomTp extends WSCommandBuilder {
         getComponent("blocks").addChild(new CommandComponent("add") {
             @Override
             public boolean runCommand(CommandSender sender, String label, String[] args) {
-                RandomTeleportManager.getInstance().getListener().getAddingNewBlock().add((Player) sender, 30);
+                RandomTeleportManager.getInstance().getListener().setAsAdding((Player) sender);
                 sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Adding_New_Block"));
                 return false;
             }

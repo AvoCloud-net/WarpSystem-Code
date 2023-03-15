@@ -2,8 +2,6 @@ package de.codingair.warpsystem.bungee.base;
 
 import de.codingair.codingapi.bungeecord.BungeeAPI;
 import de.codingair.codingapi.bungeecord.files.FileManager;
-import de.codingair.codingapi.tools.time.TimeFetcher;
-import de.codingair.codingapi.tools.time.Timer;
 import de.codingair.warpsystem.bungee.base.commands.CWarpSystem;
 import de.codingair.warpsystem.bungee.base.listeners.MainListener;
 import de.codingair.warpsystem.bungee.base.listeners.SetupAssistantListener;
@@ -37,6 +35,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.Calendar;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -47,7 +46,6 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
     private final BungeeHandler dataHandler = new BungeeHandler(this);
     private final FileManager fileManager = new FileManager(this);
     private final JarManager jarManager = new JarManager();
-    private final Timer timer = new Timer();
     private final WorldManager worldManager = new WorldManager();
     private DataManager dataManager;
     private CooldownManager cooldownManager;
@@ -72,7 +70,7 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        timer.start();
+        long start = System.currentTimeMillis();
         Core.setPlugin(this);
 
         BungeeAPI.getInstance().onEnable(this);
@@ -134,7 +132,7 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
         this.startAutoSaver();
 
         logMessage(" ");
-        logMessage("Done (" + timer.result() + ")");
+        logMessage("Done (" + (System.currentTimeMillis() - start) + "ms)");
         logMessage(" ");
         logMessage("________________________________________________________");
         logMessage(" ");
@@ -179,9 +177,8 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
 
     private void save(boolean saver) {
         try {
+            long start = System.currentTimeMillis();
             if (!saver) {
-                timer.start();
-
                 logMessage(" ");
                 logMessage("________________________________________________________");
                 logMessage(" ");
@@ -198,7 +195,7 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
 
             if (!saver) {
                 logMessage(" ");
-                logMessage("Done (" + timer.result() + ")");
+                logMessage("Done (" + (System.currentTimeMillis() - start) + "ms)");
                 logMessage(" ");
                 logMessage("________________________________________________________");
                 logMessage(" ");
@@ -210,8 +207,9 @@ public class WarpSystem extends Plugin implements ProxyPlugin {
 
     public void createBackup() {
         getDataFolder().mkdir();
+        Calendar c = Calendar.getInstance();
 
-        File backupFolder = new File(getDataFolder().getPath() + "/Backups/", TimeFetcher.getYear() + "_" + (TimeFetcher.getMonthNum() + 1) + "_" + TimeFetcher.getDay() + " " + TimeFetcher.getHour() + "_" + TimeFetcher.getMinute() + "_" + TimeFetcher.getSecond());
+        File backupFolder = new File(getDataFolder().getPath() + "/Backups/", c.get(Calendar.YEAR) + "_" + (c.get(Calendar.MONTH) + 1) + "_" + c.get(Calendar.DAY_OF_MONTH) + " " + c.get(Calendar.HOUR_OF_DAY) + "_" + c.get(Calendar.MINUTE) + "_" + c.get(Calendar.SECOND));
         backupFolder.mkdirs();
 
         for (File file : getDataFolder().listFiles()) {

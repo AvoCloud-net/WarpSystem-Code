@@ -7,8 +7,6 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.scheduler.Scheduler;
-import de.codingair.codingapi.tools.time.TimeFetcher;
-import de.codingair.codingapi.tools.time.Timer;
 import de.codingair.warpsystem.core.proxy.Core;
 import de.codingair.warpsystem.core.proxy.base.handlers.JarManager;
 import de.codingair.warpsystem.core.proxy.base.handlers.PlayerDataHandler;
@@ -37,6 +35,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.Calendar;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -83,8 +82,7 @@ public class WarpSystem extends VelocityPlugin {
 
     @Subscribe
     public void onEnable(ProxyInitializeEvent e) {
-        Timer t = new Timer();
-        t.start();
+        long start = System.currentTimeMillis();
 
         Core.setPlugin(this);
 
@@ -137,7 +135,7 @@ public class WarpSystem extends VelocityPlugin {
         startAutoSaver();
 
         log(" ");
-        log("Done (" + t.result() + ")");
+        log("Done (" + (System.currentTimeMillis() - start) + "ms)");
         log(" ");
         log("________________________________________________________");
         log(" ");
@@ -169,9 +167,8 @@ public class WarpSystem extends VelocityPlugin {
 
     private void save(boolean saver) {
         try {
-            Timer timer = new Timer();
+            long start = System.currentTimeMillis();
             if (!saver) {
-                timer.start();
 
                 log(" ");
                 log("________________________________________________________");
@@ -189,7 +186,7 @@ public class WarpSystem extends VelocityPlugin {
 
             if (!saver) {
                 log(" ");
-                log("Done (" + timer.result() + ")");
+                log("Done (" + (System.currentTimeMillis() - start) + "ms)");
                 log(" ");
                 log("________________________________________________________");
                 log(" ");
@@ -201,8 +198,9 @@ public class WarpSystem extends VelocityPlugin {
 
     public void createBackup() {
         getDataFolder().mkdir();
+        Calendar c = Calendar.getInstance();
 
-        File backupFolder = new File(getDataFolder().getPath() + "/Backups/", TimeFetcher.getYear() + "_" + (TimeFetcher.getMonthNum() + 1) + "_" + TimeFetcher.getDay() + " " + TimeFetcher.getHour() + "_" + TimeFetcher.getMinute() + "_" + TimeFetcher.getSecond());
+        File backupFolder = new File(getDataFolder().getPath() + "/Backups/", c.get(Calendar.YEAR) + "_" + (c.get(Calendar.MONTH) + 1) + "_" + c.get(Calendar.DAY_OF_MONTH) + " " + c.get(Calendar.HOUR_OF_DAY) + "_" + c.get(Calendar.MINUTE) + "_" + c.get(Calendar.SECOND));
         backupFolder.mkdirs();
 
         for (File file : getDataFolder().listFiles()) {

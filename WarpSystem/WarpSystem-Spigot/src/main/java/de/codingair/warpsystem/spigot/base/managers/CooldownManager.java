@@ -1,8 +1,9 @@
 package de.codingair.warpsystem.spigot.base.managers;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.codingapi.tools.io.JSON.JSON;
-import de.codingair.codingapi.tools.time.TimeMap;
 import de.codingair.warpsystem.core.features.cooldown.Cooldown;
 import de.codingair.warpsystem.core.features.cooldown.ICooldownManager;
 import de.codingair.warpsystem.core.transfer.handlers.CooldownDataPacketHandler;
@@ -20,7 +21,7 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public class CooldownManager implements ICooldownManager {
-    private static final TimeMap<Player, Integer> COOLDOWN_MESSAGE_BUFFER = new TimeMap<>();
+    private static final Cache<UUID, Integer> COOLDOWN_MESSAGE_BUFFER = CacheBuilder.newBuilder().expireAfterWrite(1, java.util.concurrent.TimeUnit.SECONDS).build();
     //expired cooldown will be removed on access (get, save)
     private final HashMap<UUID, HashMap<Integer, Long>> cache = new HashMap<>();
     private ConfigFile file;
@@ -161,9 +162,9 @@ public class CooldownManager implements ICooldownManager {
     public boolean checkPlayer(Player player, int hash) {
         long cooldown = getRemainingCooldown(player, hash);
         if (cooldown > 0) {
-            Integer time = COOLDOWN_MESSAGE_BUFFER.get(player);
+            Integer time = COOLDOWN_MESSAGE_BUFFER.getIfPresent(player.getUniqueId());
             if (time != null && time == (int) (cooldown / 1000)) return true;
-            COOLDOWN_MESSAGE_BUFFER.put(player, (int) (cooldown / 1000), 1000);
+            COOLDOWN_MESSAGE_BUFFER.put(player.getUniqueId(), (int) (cooldown / 1000));
 
             player.sendMessage(Lang.getPrefix() + Lang.get("Cooldown_Info").replace("%TIME%", StringFormatter.convertInTimeFormat(cooldown + 1000)));
             return true;
