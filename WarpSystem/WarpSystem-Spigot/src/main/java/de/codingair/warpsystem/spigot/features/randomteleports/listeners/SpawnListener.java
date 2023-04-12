@@ -93,7 +93,7 @@ public class SpawnListener implements Listener {
                 public void accept(Location loc) {
                     if (loc == null) {
                         uninject(player);
-                        showPlayer(player);
+                        AsyncCatcher.runSync(WarpSystem.getInstance(), () -> showPlayer(player));
                         teleporting.remove(player.getName());
                         clearCache(player, true);
                         player.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_No_Location_Found"));
