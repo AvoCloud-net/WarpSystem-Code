@@ -39,8 +39,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.bukkit.plugin.InvalidDescriptionException;
-import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
@@ -146,6 +144,9 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
             this.dataManager = new DataManager();
             this.dataManager.preLoad();
+
+            // make sure to have the config loaded (might be unloaded during preloading)
+            this.fileManager.loadFile("Config", "/");
 
             this.updateNotifier = new UpdateNotifier();
             loadOptions();
@@ -368,12 +369,8 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
     public void reload(boolean save) {
         this.shouldSave = save;
-
-        try {
-            API.getInstance().reload(this);
-        } catch (InvalidDescriptionException | FileNotFoundException | InvalidPluginException e) {
-            e.printStackTrace();
-        }
+        onDisable();
+        onEnable();
     }
 
     private void startAutoSaver() {
