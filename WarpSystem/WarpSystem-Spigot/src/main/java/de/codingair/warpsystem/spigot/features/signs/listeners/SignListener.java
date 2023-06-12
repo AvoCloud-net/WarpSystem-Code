@@ -48,6 +48,7 @@ public class SignListener implements Listener {
 
                 if (!e.getPlayer().isSneaking() && e.getPlayer().hasPermission(Permissions.PERMISSION_MODIFY_WARP_SIGNS) &&
                         held != null && held.getType().name().toLowerCase().contains("sign")) {
+                    e.setCancelled(true);
                     sign.editMode();
                     sign.setEditing(true);
                     Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> new WarpSignGUI(e.getPlayer(), sign).open(), 1L);
