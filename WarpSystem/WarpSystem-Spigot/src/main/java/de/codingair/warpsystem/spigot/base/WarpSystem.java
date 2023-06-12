@@ -263,6 +263,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         playerDataManager.flush();
 
         HandlerList.unregisterAll(this);
+        Bukkit.getScheduler().cancelTasks(this);
 
         this.proxyFeatureList.forEach(ProxyFeature::onDisconnect);
         this.proxyFeatureList.clear();
