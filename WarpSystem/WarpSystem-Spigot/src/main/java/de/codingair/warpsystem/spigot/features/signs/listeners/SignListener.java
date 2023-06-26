@@ -44,11 +44,11 @@ public class SignListener implements Listener {
 
             WarpSign sign = manager.getByLocation(s.getLocation());
             if (sign != null) {
+                e.setCancelled(true);
                 ItemStack held = e.getPlayer().getInventory().getItem(e.getPlayer().getInventory().getHeldItemSlot());
 
                 if (!e.getPlayer().isSneaking() && e.getPlayer().hasPermission(Permissions.PERMISSION_MODIFY_WARP_SIGNS) &&
                         held != null && held.getType().name().toLowerCase().contains("sign")) {
-                    e.setCancelled(true);
                     sign.editMode();
                     sign.setEditing(true);
                     Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> new WarpSignGUI(e.getPlayer(), sign).open(), 1L);
