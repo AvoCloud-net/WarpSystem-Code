@@ -54,7 +54,11 @@ public class TeleportCommandManager extends de.codingair.warpsystem.spigot.featu
         } else {
             if (p == null) throw new NullPointerException("Cannot handle back action for " + player + "!");
             l = this.backPosition.remove(player);
-            if (l == null) return proxyBack(p, skip);
+            if (l == null) {
+                boolean proxyWideBack = de.codingair.warpsystem.spigot.features.teleportcommand.TeleportCommandManager.getInstance().isProxyBack();
+                if (proxyWideBack) return proxyBack(p, skip);
+                else return CompletableFuture.completedFuture(TeleportBackPacket.Result.NO_LAST_POSITION);
+            }
         }
 
         return CompletableFuture.completedFuture(teleportBack(player, l, force, skip, proxy));

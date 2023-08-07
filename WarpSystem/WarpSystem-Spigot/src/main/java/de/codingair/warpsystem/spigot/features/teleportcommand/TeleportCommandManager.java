@@ -49,6 +49,7 @@ import java.util.concurrent.TimeUnit;
 @Function (name = "TpaHere", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.TpaHere", clazz = Boolean.class)
 @Function (name = "TpaAll", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.TpaAll", clazz = Boolean.class)
 @Function (name = "TpaToggle", defaultValue = "true", configPath = "WarpSystem.TeleportCommands.TpaToggle", clazz = Boolean.class)
+@Function (name = "Proxy wide /back", defaultValue = "true", configPath = "WarpSystem.Proxy.Proxy_wide_Back_position", clazz = Boolean.class, since = "v5.1.8")
 public abstract class TeleportCommandManager implements Manager, ProxyFeature, Collectible {
     protected final Cache<String, PlayerLocationData> dying = CacheBuilder.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES).build();
     protected final HashMap<String, Location> backPosition = new HashMap<>();
@@ -60,6 +61,7 @@ public abstract class TeleportCommandManager implements Manager, ProxyFeature, C
     private int expireDelay = 30;
     private int tpaCosts = 0;
     private boolean proxy = false;
+    private boolean proxyBack = true;
     private ITeleportCommandHandler handler;
 
     private CTeleport tp;
@@ -107,6 +109,7 @@ public abstract class TeleportCommandManager implements Manager, ProxyFeature, C
             expireDelay = file.getConfig().getInt("WarpSystem.TeleportCommands.TeleportRequests.ExpireDelay", 30);
             tpaCosts = file.getConfig().getInt("WarpSystem.TeleportCommands.TeleportRequests.Teleport_Costs", 0);
             proxy = file.getConfig().getBoolean("WarpSystem.TeleportCommands.Proxy", true);
+            proxyBack = file.getConfig().getBoolean("WarpSystem.Proxy.Proxy_wide_Back_position", true);
 
             if (file.getConfig().getBoolean("WarpSystem.TeleportCommands.Tp", true)) {
                 (tp = new CTeleport()).register();
@@ -427,5 +430,9 @@ public abstract class TeleportCommandManager implements Manager, ProxyFeature, C
 
     public boolean isServerAccessible(String server) {
         return getServerOptions(server) != null;
+    }
+
+    public boolean isProxyBack() {
+        return proxyBack;
     }
 }

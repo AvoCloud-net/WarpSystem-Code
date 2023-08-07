@@ -61,20 +61,25 @@ public class SpawnManager implements Manager {
     }
 
     private Location readEssentialsSpawn() {
-        File target = new File(WarpSystem.getInstance().getDataFolder().getParent() + "/Essentials/spawn.yml");
-        if (!target.exists()) return null;
+        try {
+            File target = new File(WarpSystem.getInstance().getDataFolder().getParent() + "/Essentials/spawn.yml");
+            if (!target.exists()) return null;
 
-        FileConfiguration config = YamlConfiguration.loadConfiguration(target);
-        String world = config.getString("spawns.default.world");
-        if (world == null) return null;
+            FileConfiguration config = YamlConfiguration.loadConfiguration(target);
+            String world = config.getString("spawns.default.world");
+            if (world == null) return null;
 
-        return new de.codingair.codingapi.tools.Location(world,
-                config.getDouble("spawns.default.x"),
-                config.getDouble("spawns.default.y"),
-                config.getDouble("spawns.default.z"),
-                (float) config.getDouble("spawns.default.yaw"),
-                (float) config.getDouble("spawns.default.pitch")
-        );
+            return new de.codingair.codingapi.tools.Location(world,
+                    config.getDouble("spawns.default.x"),
+                    config.getDouble("spawns.default.y"),
+                    config.getDouble("spawns.default.z"),
+                    (float) config.getDouble("spawns.default.yaw"),
+                    (float) config.getDouble("spawns.default.pitch")
+            );
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
