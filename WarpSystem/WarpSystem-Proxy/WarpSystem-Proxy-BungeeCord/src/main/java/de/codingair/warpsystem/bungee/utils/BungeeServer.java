@@ -38,7 +38,17 @@ public class BungeeServer implements Server<String> {
         CompletableFuture<ServerPing> future = new CompletableFuture<>();
         server.ping((serverPing, t) -> {
             if (t != null) future.completeExceptionally(t);
-            else future.complete(new ServerPing(true, serverPing.getPlayers().getOnline(), serverPing.getPlayers().getMax(), BaseComponent.toLegacyText(serverPing.getDescriptionComponent())));
+            else {
+                int online = 0;
+                int max = 0;
+
+                if (serverPing.getPlayers() != null) {
+                    online = serverPing.getPlayers().getOnline();
+                    max = serverPing.getPlayers().getMax();
+                }
+
+                future.complete(new ServerPing(true, online, max, BaseComponent.toLegacyText(serverPing.getDescriptionComponent())));
+            }
         });
         return future;
     }
