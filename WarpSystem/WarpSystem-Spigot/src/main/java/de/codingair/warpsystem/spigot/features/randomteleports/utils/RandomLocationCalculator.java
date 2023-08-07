@@ -76,7 +76,9 @@ public abstract class RandomLocationCalculator implements Runnable {
         if (maxTime > 5000) maxTime = 5000;
 
         do {
-            if (start + maxTime < System.currentTimeMillis()) {
+            boolean interrupt = !WarpSystem.getInstance().isEnabled() ||
+                    start + maxTime < System.currentTimeMillis();
+            if (interrupt) {
                 return null;
             }
 
