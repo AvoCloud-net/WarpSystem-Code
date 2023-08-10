@@ -47,7 +47,10 @@ public class BungeeServer implements Server<String> {
                     max = serverPing.getPlayers().getMax();
                 }
 
-                future.complete(new ServerPing(true, online, max, BaseComponent.toLegacyText(serverPing.getDescriptionComponent())));
+                BaseComponent desc = serverPing.getDescriptionComponent();
+                String description = desc == null ? "" : BaseComponent.toLegacyText(desc);
+
+                future.complete(new ServerPing(true, online, max, description));
             }
         });
         return future;
