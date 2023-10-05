@@ -13,34 +13,72 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.permissions.PermissibleBase;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 public class FakeBlockBreakEvent extends BlockBreakEvent {
     private static final IReflection.ConstructorAccessor PLAYER;
+    private static IReflection.MethodAccessor DEFAULT_CLIENT_INFORMATION;
+    private static Function<GameProfile, Object> COMMON_LISTENER_COOKIE;
     private static final IReflection.ConstructorAccessor PLAYER_INTERACT_MANAGER;
     private static final IReflection.ConstructorAccessor PLAYER_CONNECTION;
-    private static final IReflection.ConstructorAccessor NETWORK_MANAGER;
+    private static final Function<Player, Object> NETWORK_MANAGER;
+    private static Consumer<Object> MUTE_NETWORK_MANAGER;
     private static final Object PROTOCOL_DIRECTION;
     private static final IReflection.FieldAccessor<PermissibleBase> PERMISSION_BASE = IReflection.getField(PacketUtils.CraftPlayerClass, PermissibleBase.class, 0);
     private static final IReflection.FieldAccessor<?> PLAYER_CONNECTION_FIELD = IReflection.getField(PacketUtils.EntityPlayerClass, PacketUtils.PlayerConnectionClass, 0);
 
     static {
-        if (Version.between(19, 19.2)) {
-            Class<?> profilePublicKeyClass = IReflection.getClass("net.minecraft.world.entity.player.", "ProfilePublicKey");
+        Class<?> protocolDirection = IReflection.getClass(IReflection.ServerPacket.PROTOCOL, "EnumProtocolDirection");
+
+        if (Version.atLeast(20.2)) {
+            Class<?> clientInformationClass = IReflection.getClass("net.minecraft.server.level.", "ClientInformation");
+            Class<?> commonListenerCookieClass = IReflection.getClass("net.minecraft.server.network.", "CommonListenerCookie");
+            DEFAULT_CLIENT_INFORMATION = IReflection.getMethod(clientInformationClass, clientInformationClass, new Class[0]);
+
+            IReflection.MethodAccessor getCookie = IReflection.getMethod(commonListenerCookieClass, commonListenerCookieClass, new Class[]{GameProfile.class});
+
+            COMMON_LISTENER_COOKIE = (profile) -> getCookie.invoke(null, profile);
+
             PLAYER_INTERACT_MANAGER = null;
-            PLAYER = IReflection.getConstructor(PacketUtils.EntityPlayerClass, PacketUtils.MinecraftServerClass, PacketUtils.WorldServerClass, GameProfile.class, profilePublicKeyClass);
-        } else if (Version.atLeast(17)) {
-            // also for 1.19.3
-            PLAYER_INTERACT_MANAGER = null;
-            PLAYER = IReflection.getConstructor(PacketUtils.EntityPlayerClass, PacketUtils.MinecraftServerClass, PacketUtils.WorldServerClass, GameProfile.class);
+            PLAYER = IReflection.getConstructor(PacketUtils.EntityPlayerClass, PacketUtils.MinecraftServerClass, PacketUtils.WorldServerClass, GameProfile.class, clientInformationClass);
+            PLAYER_CONNECTION = IReflection.getConstructor(PacketUtils.PlayerConnectionClass, PacketUtils.MinecraftServerClass, PacketUtils.NetworkManagerClass, PacketUtils.EntityPlayerClass, commonListenerCookieClass);
+            PROTOCOL_DIRECTION = protocolDirection.getEnumConstants()[0];
+
+            IReflection.ConstructorAccessor networkManagerCon = IReflection.getConstructor(PacketUtils.NetworkManagerClass, protocolDirection);
+            IReflection.FieldAccessor<?> networkManagerField = IReflection.getField(PacketUtils.PlayerConnectionClass, PacketUtils.NetworkManagerClass, 0);
+            Class<?> channelClass = IReflection.getClass("io.netty.channel.", "Channel");
+            IReflection.FieldAccessor<?> channelField = IReflection.getField(PacketUtils.NetworkManagerClass, channelClass, 0);
+            NETWORK_MANAGER = p -> {
+                Object man = networkManagerCon.newInstance(PROTOCOL_DIRECTION);
+                // forward channel of original player to not run into errors -> MUST be removed
+                // after instantiating the player connection
+                channelField.set(man, channelField.get(networkManagerField.get(PacketUtils.getPlayerConnection(p))));
+                return man;
+            };
+
+            MUTE_NETWORK_MANAGER = man -> channelField.set(man, null);
         } else {
-            PLAYER_INTERACT_MANAGER = IReflection.getConstructor(PacketUtils.PlayerInteractManagerClass, PacketUtils.WorldServerClass);
-            PLAYER = IReflection.getConstructor(PacketUtils.EntityPlayerClass, PacketUtils.MinecraftServerClass, PacketUtils.WorldServerClass, GameProfile.class, PacketUtils.PlayerInteractManagerClass);
+            if (Version.between(19, 19.2)) {
+                Class<?> profilePublicKeyClass = IReflection.getClass("net.minecraft.world.entity.player.", "ProfilePublicKey");
+                PLAYER_INTERACT_MANAGER = null;
+                PLAYER = IReflection.getConstructor(PacketUtils.EntityPlayerClass, PacketUtils.MinecraftServerClass, PacketUtils.WorldServerClass, GameProfile.class, profilePublicKeyClass);
+            } else if (Version.atLeast(17)) {
+                // also for 1.19.3
+                PLAYER_INTERACT_MANAGER = null;
+                PLAYER = IReflection.getConstructor(PacketUtils.EntityPlayerClass, PacketUtils.MinecraftServerClass, PacketUtils.WorldServerClass, GameProfile.class);
+            } else {
+                PLAYER_INTERACT_MANAGER = IReflection.getConstructor(PacketUtils.PlayerInteractManagerClass, PacketUtils.WorldServerClass);
+                PLAYER = IReflection.getConstructor(PacketUtils.EntityPlayerClass, PacketUtils.MinecraftServerClass, PacketUtils.WorldServerClass, GameProfile.class, PacketUtils.PlayerInteractManagerClass);
+            }
+
+            PLAYER_CONNECTION = IReflection.getConstructor(PacketUtils.PlayerConnectionClass, PacketUtils.MinecraftServerClass, PacketUtils.NetworkManagerClass, PacketUtils.EntityPlayerClass);
+            PROTOCOL_DIRECTION = protocolDirection.getEnumConstants()[1];
+
+            IReflection.ConstructorAccessor networkManagerCon = IReflection.getConstructor(PacketUtils.NetworkManagerClass, protocolDirection);
+            NETWORK_MANAGER = p -> networkManagerCon.newInstance(PROTOCOL_DIRECTION);
         }
 
-        PLAYER_CONNECTION = IReflection.getConstructor(PacketUtils.PlayerConnectionClass, PacketUtils.MinecraftServerClass, PacketUtils.NetworkManagerClass, PacketUtils.EntityPlayerClass);
-
-        Class<?> protocolDirection = IReflection.getClass(IReflection.ServerPacket.PROTOCOL, "EnumProtocolDirection");
-        NETWORK_MANAGER = IReflection.getConstructor(PacketUtils.NetworkManagerClass, protocolDirection);
-        PROTOCOL_DIRECTION = protocolDirection.getEnumConstants()[1];
     }
 
     public FakeBlockBreakEvent(@NotNull Block theBlock, @NotNull Player player) {
@@ -82,7 +120,7 @@ public class FakeBlockBreakEvent extends BlockBreakEvent {
         GameProfile profile = GameProfileUtils.getGameProfile(player);
         Object fakePlayer = createFakePlayerInstance(player, profile);
 
-        PLAYER_CONNECTION_FIELD.set(fakePlayer, createConnectionDump(fakePlayer));
+        PLAYER_CONNECTION_FIELD.set(fakePlayer, createConnectionDump(player, fakePlayer, profile));
 
         Player craftFakePlayer = (Player) PacketUtils.getBukkitEntity(fakePlayer);
 
@@ -102,6 +140,13 @@ public class FakeBlockBreakEvent extends BlockBreakEvent {
                     profile,
                     PLAYER_INTERACT_MANAGER.newInstance(PacketUtils.getWorldServer(player.getWorld()))
             );
+        else if (Version.atLeast(20.2))
+            return PLAYER.newInstance(
+                    PacketUtils.getMinecraftServer(),
+                    PacketUtils.getWorldServer(player.getWorld()),
+                    profile,
+                    DEFAULT_CLIENT_INFORMATION.invoke(null)
+            );
         else if (Version.between(19, 19.2))
             return PLAYER.newInstance(
                     PacketUtils.getMinecraftServer(),
@@ -116,7 +161,14 @@ public class FakeBlockBreakEvent extends BlockBreakEvent {
             );
     }
 
-    private static Object createConnectionDump(@NotNull Object entityPlayer) {
-        return PLAYER_CONNECTION.newInstance(PacketUtils.getMinecraftServer(), NETWORK_MANAGER.newInstance(PROTOCOL_DIRECTION), entityPlayer);
+    private static Object createConnectionDump(@NotNull Player player, @NotNull Object fakePlayer, @NotNull GameProfile profile) {
+        if (Version.atLeast(20.2)) {
+            Object networkManager = NETWORK_MANAGER.apply(player);
+            Object playerCon = PLAYER_CONNECTION.newInstance(PacketUtils.getMinecraftServer(), networkManager, fakePlayer, COMMON_LISTENER_COOKIE.apply(profile));
+            MUTE_NETWORK_MANAGER.accept(networkManager);
+            return playerCon;
+        } else {
+            return PLAYER_CONNECTION.newInstance(PacketUtils.getMinecraftServer(), NETWORK_MANAGER.apply(player), fakePlayer);
+        }
     }
 }
