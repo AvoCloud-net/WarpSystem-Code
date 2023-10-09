@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import de.codingair.codingapi.player.data.GameProfileUtils;
 import de.codingair.codingapi.tools.items.ItemBuilder;
+import de.codingair.codingapi.utils.PropertyUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
@@ -28,7 +29,7 @@ public class Head {
         Collection<Property> properties = profile.getProperties().get("textures");
         Property property = properties.toArray().length == 0 ? null : (Property) properties.toArray()[0];
 
-        String pValue = property == null ? null : property.getValue();
+        String pValue = property == null ? null : PropertyUtils.getValue(property);
 
         try {
             JSONObject json = (JSONObject) new JSONParser().parse(new String(Base64Coder.decode(pValue)));
