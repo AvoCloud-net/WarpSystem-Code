@@ -322,7 +322,7 @@ public class GWarps extends GUI {
     private void addToGUI(Player p, Icon icon) {
         if (icon.isDisabled() && !editing) return;
 
-        if ((icon.getSlot() == 0 && showMenu) || icon.getSlot() >= getSize(getPlayer())) return;
+        if ((icon.getSlot() == 0 && showMenu && p.hasPermission(Permissions.PERMISSION_MODIFY_WARP_GUI)) || icon.getSlot() >= getSize(getPlayer())) return;
 
         for (Class<? extends Icon> forbidden : this.hide) {
             if (forbidden.isInstance(icon)) return;
