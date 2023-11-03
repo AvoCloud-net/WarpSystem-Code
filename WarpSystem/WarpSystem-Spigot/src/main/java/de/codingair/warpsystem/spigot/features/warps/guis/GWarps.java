@@ -51,6 +51,7 @@ public class GWarps extends GUI {
     private int oldSlot = -999;
     private Icon cursorIcon = null;
     private boolean showMenu = true;
+    private boolean changingGUI = false;
     private int emptySlots = 0;
 
     public GWarps(Player p, Icon page, boolean editing) {
@@ -83,6 +84,7 @@ public class GWarps extends GUI {
         Bukkit.getPluginManager().registerEvents(listener = new Listener() {
             @EventHandler
             public void onClick(InventoryClickEvent e) {
+                if (!getInventory().equals(e.getInventory())) return;
                 if (!p.equals(e.getWhoClicked())) return;
 
                 if (e.getClickedInventory() == e.getView().getBottomInventory() && cloning && cursorIcon == null) {
@@ -93,6 +95,7 @@ public class GWarps extends GUI {
 
             @EventHandler
             public void onClick(InventoryDragEvent e) {
+                if (!getInventory().equals(e.getInventory())) return;
                 if (!p.equals(e.getWhoClicked())) return;
 
                 if (cloning && cursorIcon == null) {
@@ -126,6 +129,7 @@ public class GWarps extends GUI {
         addListener(new InterfaceListener() {
             @Override
             public void onInvClickEvent(InventoryClickEvent e) {
+                if (!getInventory().equals(e.getInventory())) return;
                 if (!p.equals(e.getWhoClicked())) return;
 
                 if (!cloning && cursorIcon != null && cursorIcon.getPage() == GWarps.this.page && cursorIcon.getSlot() == e.getSlot()) {
@@ -138,6 +142,7 @@ public class GWarps extends GUI {
 
             @Override
             public void onDropItem(InventoryClickEvent e) {
+                if (!getInventory().equals(e.getInventory())) return;
                 if (!p.equals(e.getWhoClicked())) return;
 
                 e.setCancelled(true);
@@ -164,11 +169,14 @@ public class GWarps extends GUI {
 
             @Override
             public void onInvCloseEvent(InventoryCloseEvent e) {
+                if (!getInventory().equals(e.getInventory())) return;
                 if (!p.equals(e.getPlayer())) return;
 
                 e.getView().setCursor(new ItemStack(Material.AIR));
 
-                if (!showMenu) {
+                if (changingGUI) {
+                    changingGUI = false;
+                } else if (!showMenu) {
                     showMenu = true;
                     reinitialize();
                     setTitle(getTitle(GWarps.this.page, getPlayer()));
@@ -290,7 +298,9 @@ public class GWarps extends GUI {
                     addButton(new ItemButton(i, none.clone()) {
                         @Override
                         public void onClick(InventoryClickEvent clickEvent) {
-                            HANDLER.handleBarrierClick(clickEvent, p, this, GWarps.this, none, slot);
+                            changingGUI = true;
+                            boolean closing = HANDLER.handleBarrierClick(clickEvent, p, this, GWarps.this, none, slot);
+                            if (!closing) changingGUI = false;
                         }
                     }.setOption(option).setOnlyLeftClick(false));
                 }
@@ -340,7 +350,9 @@ public class GWarps extends GUI {
             @Override
             public void onClick(InventoryClickEvent e, Player player) {
                 if (editing) {
-                    HANDLER.onEditingIconClick(e, player, this, icon, s, GWarps.this);
+                    changingGUI = true;
+                    boolean closing = HANDLER.onEditingIconClick(e, player, this, icon, s, GWarps.this);
+                    if (!closing) changingGUI = false;
                 } else if (e.isLeftClick()) {
                     if(icon.hasPermission() && !p.hasPermission(icon.getPermission())) {
                         p.sendMessage(Lang.getPrefix() + Lang.get("No_Permission"));

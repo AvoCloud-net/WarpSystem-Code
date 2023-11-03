@@ -46,12 +46,12 @@ public class WarpGUI implements IWarpGUI {
     }
 
     @Override
-    public void handleBarrierClick(InventoryClickEvent clickEvent, Player player, ItemButton button, GWarps gui, ItemStack none, int slot) {
+    public boolean handleBarrierClick(InventoryClickEvent clickEvent, Player player, ItemButton button, GWarps gui, ItemStack none, int slot) {
         if (gui.isCloning()) {
             if (gui.getCursorIcon() == null) {
                 gui.setCloning(false);
                 clickEvent.getView().setCursor(new ItemStack(Material.AIR));
-                return;
+                return false;
             }
 
             if (clickEvent.isLeftClick()) {
@@ -87,7 +87,7 @@ public class WarpGUI implements IWarpGUI {
                 gui.reinitialize();
             }
 
-            return;
+            return false;
         } else if (gui.isMoving()) {
             if (clickEvent.isLeftClick()) {
                 gui.getCursorIcon().setPage(gui.getPage());
@@ -96,7 +96,7 @@ public class WarpGUI implements IWarpGUI {
                 gui.setMoving(false, clickEvent.getSlot());
             }
 
-            return;
+            return false;
         }
 
         if (clickEvent.isRightClick()) {
@@ -104,12 +104,12 @@ public class WarpGUI implements IWarpGUI {
             gui.setCloning(true);
         }
 
-        if (!clickEvent.isLeftClick()) return;
+        if (!clickEvent.isLeftClick()) return false;
 
         ItemStack item = player.getInventory().getItem(player.getInventory().getHeldItemSlot());
         if (item == null || item.getType().equals(Material.AIR)) {
             player.sendMessage(Lang.getPrefix() + Lang.get("No_Item_In_Hand"));
-            return;
+            return false;
         }
 
         Callback<Boolean> callback = new Callback<Boolean>() {
@@ -204,6 +204,7 @@ public class WarpGUI implements IWarpGUI {
         };
 
         new GChooseIconType(player, gui.getPage(), callback).open();
+        return true;
     }
 
     @Override
@@ -249,7 +250,7 @@ public class WarpGUI implements IWarpGUI {
     }
 
     @Override
-    public void onEditingIconClick(InventoryClickEvent e, Player player, SyncButton button, Icon icon, SoundData s, GWarps gui) {
+    public boolean onEditingIconClick(InventoryClickEvent e, Player player, SyncButton button, Icon icon, SoundData s, GWarps gui) {
         s.play(player);
 
         if (gui.isCloning() && gui.getCursorIcon() == null) {
@@ -263,7 +264,7 @@ public class WarpGUI implements IWarpGUI {
                 e.getView().setCursor(new ItemStack(Material.AIR));
             }
             icons.clear();
-            return;
+            return false;
         }
 
         if ((e.getClick() == ClickType.UNKNOWN || e.getClick() == ClickType.MIDDLE) && gui.getEmptySlots() > 0) {
@@ -286,7 +287,7 @@ public class WarpGUI implements IWarpGUI {
 
                 e.getView().setCursor(new ItemStack(Material.AIR));
             } else if (gui.isMoving()) {
-                if (icon.isPage() && icon.getPage() != gui.getCursorIcon().getPage()) return;
+                if (icon.isPage() && icon.getPage() != gui.getCursorIcon().getPage()) return false;
                 Icon otherCat = null;
                 if (!gui.getCursorIcon().isPage()) {
                     otherCat = gui.getCursorIcon().getPage();
@@ -307,10 +308,11 @@ public class WarpGUI implements IWarpGUI {
                     gui.setMoving(true, e.getSlot());
                 } else {
                     gui.changeGUI(new GEditor(player, icon), true);
+                    return true;
                 }
             }
         } else if (e.isRightClick()) {
-            if (gui.isCloning()) return;
+            if (gui.isCloning()) return false;
             if (gui.isMoving()) {
                 if (icon.isPage() && !gui.getCursorIcon().isPage()) {
                     gui.setPage(icon);
@@ -343,7 +345,7 @@ public class WarpGUI implements IWarpGUI {
                     if (player.getInventory().getItem(player.getInventory().getHeldItemSlot()) == null || player.getInventory().getItem(player.getInventory().getHeldItemSlot()).getType() == Material.AIR
                             || icon.getRaw().getType() == player.getInventory().getItem(player.getInventory().getHeldItemSlot()).getType()) {
                         player.sendMessage(Lang.getPrefix() + Lang.get("No_Item_In_Hand"));
-                        return;
+                        return false;
                     }
 
                     icon.changeItem(player.getInventory().getItem(player.getInventory().getHeldItemSlot()));
@@ -352,6 +354,8 @@ public class WarpGUI implements IWarpGUI {
                 }
             }
         }
+
+        return false;
     }
 
     private String getCopiedName(String name) {

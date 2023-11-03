@@ -12,9 +12,9 @@ import org.bukkit.inventory.ItemStack;
 public interface IWarpGUI {
     ItemBuilder getBarrier();
 
-    void handleBarrierClick(InventoryClickEvent clickEvent, Player player, ItemButton button, GWarps gui, ItemStack none, int slot);
+    boolean handleBarrierClick(InventoryClickEvent clickEvent, Player player, ItemButton button, GWarps gui, ItemStack none, int slot);
 
     void modifyEditingIconBuilder(ItemBuilder iconBuilder, Icon icon);
 
-    void onEditingIconClick(InventoryClickEvent e, Player player, SyncButton button, Icon icon, SoundData s, GWarps gui);
+    boolean onEditingIconClick(InventoryClickEvent e, Player player, SyncButton button, Icon icon, SoundData s, GWarps gui);
 }
