@@ -38,12 +38,13 @@ public class ServerAdapter extends CloneableAdapter implements IServerAdapter {
         }
 
         if (WarpSystem.getInstance().getCurrentServer().equalsIgnoreCase(server)) {
+            if (callback != null) callback.accept(Result.ALREADY_ON_TARGET_SERVER);
             player.sendMessage(Lang.getPrefix() + Lang.get("Player_Is_Already_On_Target_Server"));
             return CompletableFuture.completedFuture(false);
         }
 
         if (keepPosition) {
-            if(message == null) message = PrepareCoordinationTeleportPacket.NO_MESSAGE;
+            if (message == null) message = PrepareCoordinationTeleportPacket.NO_MESSAGE;
 
             org.bukkit.Location location = player.getLocation();
             PrepareCoordinationTeleportPacket packet = new PrepareCoordinationTeleportPacket(player.getName(), server, player.getWorld().getName(), displayName, message,
