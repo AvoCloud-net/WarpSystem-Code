@@ -51,7 +51,7 @@ public class RandomTeleportHandler extends RandomTeleportManager {
         public boolean correct(Location location, boolean safety) {
             if (RandomTeleportManager.getInstance().getBiomeBlacklist() != null && RandomTeleportManager.getInstance().getBiomeBlacklist().contains(location.getBlock().getBiome()))
                 return false;
-            if (RandomTeleportManager.getInstance().isProtectedRegions() && isProtected(location).join()) return false;
+            if (RandomTeleportManager.getInstance().isProtectedRegions() && isProtectedAsync(location).join()) return false;
             if (((RandomTeleportHandler) RandomTeleportManager.getInstance()).isWorldBorder() && !isInsideOfWorldBorder(location)) return false;
             if (safety) {
                 Location above = location.clone();

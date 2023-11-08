@@ -19,17 +19,21 @@ public class RandomTPPacketHandler implements ResponsiblePacketHandler<RandomTPP
         Player pp = Core.getPlugin().getPlayer(packet.getPlayer());
         Server<?> target = Core.getPlugin().getServer(packet.getServer());
 
-        if (target == null || !Core.getServerManager().isOnline(target)) return CompletableFuture.completedFuture(new BooleanPacket(false));
+        if (target == null || !Core.getServerManager().isOnline(target))
+            return CompletableFuture.completedFuture(new BooleanPacket(false));
 
         if (pp != null) {
             packet.setServer(((Server<?>) connection).getName());
 
             CompletableFuture<BooleanPacket> future = new CompletableFuture<>();
 
+            boolean sendEarly = !target.isEmpty();
+            if (sendEarly) Core.getPlugin().dataHandler().send(packet.noFuture(), target, Direction.DOWN);
+
             ServerHandler.sendPlayerTo(pp, target).whenComplete((res, t) -> {
-                if(t != null) t.printStackTrace();
-                else if(res.isConnected()) {
-                    Core.getPlugin().dataHandler().send(packet.noFuture(), target, Direction.DOWN);
+                if (t != null) t.printStackTrace();
+                else if (res.isConnected()) {
+                    if (!sendEarly) Core.getPlugin().dataHandler().send(packet.noFuture(), target, Direction.DOWN);
                     future.complete(new BooleanPacket(true));
                     return;
                 }

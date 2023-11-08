@@ -49,6 +49,10 @@ public abstract class RandomLocationCalculator implements Runnable {
         fakeCheck = player != null ? FakeBlockBreakEvent.buildFake(player) : null;
     }
 
+    public void applyUnsafePlayer(@NotNull Player player) {
+        fakeCheck = FakeBlockBreakEvent.buildFake(player, Bukkit.getOnlinePlayers().stream().filter(p -> !p.equals(player)).findAny().orElseThrow(() -> new IllegalStateException("No other player found!")));
+    }
+
     @Override
     public void run() {
         Location location = calculate();
@@ -214,7 +218,7 @@ public abstract class RandomLocationCalculator implements Runnable {
 
     public abstract boolean correct(Location location, boolean safety);
 
-    public CompletableFuture<Boolean> isProtected(Location location) {
+    public CompletableFuture<Boolean> isProtectedAsync(Location location) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
         if (WarpSystem.opt().forbiddenRegion(location)) future.complete(true);
@@ -224,6 +228,15 @@ public abstract class RandomLocationCalculator implements Runnable {
         } else future.complete(false);
 
         return future;
+    }
+
+    public boolean isProtected(Location location) {
+        if (WarpSystem.opt().forbiddenRegion(location)) return true;
+        else if (fakeCheck != null) {
+            //events can only be triggered synchronously; assuming we're in sync
+            return FakeBlockBreakEvent.tryWithFake(this.fakeCheck, location);
+        }
+        return false;
     }
 
     public long getLastReaction() {
@@ -236,6 +249,6 @@ public abstract class RandomLocationCalculator implements Runnable {
     }
 
     public Location getResult() {
-        return result;
+        return result == null ? null : result.clone();
     }
 }

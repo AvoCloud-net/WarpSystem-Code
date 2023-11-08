@@ -126,7 +126,7 @@ public class RandomLocationCacheImpl implements RandomLocationCache {
 
         CompletableFuture<Location> future = new CompletableFuture<>();
         Bukkit.getScheduler().runTaskAsynchronously(WarpSystem.getInstance(),
-                () -> c.isProtected(Location.getByLocation(l)).thenAccept(
+                () -> c.isProtectedAsync(Location.getByLocation(l)).thenAccept(
                         isProtected -> AsyncCatcher.runSync(WarpSystem.getInstance(), () -> {
                                     if (isProtected) future.complete(null);
                                     else future.complete(l);

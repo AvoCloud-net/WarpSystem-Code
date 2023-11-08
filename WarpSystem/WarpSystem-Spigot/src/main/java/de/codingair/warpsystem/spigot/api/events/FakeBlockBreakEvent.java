@@ -117,10 +117,21 @@ public class FakeBlockBreakEvent extends BlockBreakEvent {
 
     @NotNull
     public static Player buildFake(@NotNull Player player) {
+        return buildFake(player, player);
+    }
+
+    /**
+     * @param player       The player which should be copied.
+     * @param onlinePlayer An online player which is already initialized (after PlayerSpawnEvent).
+     * @return The fake player.
+     */
+    @NotNull
+    public static Player buildFake(@NotNull Player player, @NotNull Player onlinePlayer) {
         GameProfile profile = GameProfileUtils.getGameProfile(player);
         Object fakePlayer = createFakePlayerInstance(player, profile);
 
-        PLAYER_CONNECTION_FIELD.set(fakePlayer, createConnectionDump(player, fakePlayer, profile));
+        // use another online player to avoid NPEs when not all fields are initialized yet
+        PLAYER_CONNECTION_FIELD.set(fakePlayer, createConnectionDump(onlinePlayer, fakePlayer, profile));
 
         Player craftFakePlayer = (Player) PacketUtils.getBukkitEntity(fakePlayer);
 
