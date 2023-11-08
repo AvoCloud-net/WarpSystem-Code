@@ -16,7 +16,7 @@ public class Permissions {
     public static final String PERMISSION_MODIFY_GLOBAL_WARPS = "warpsystem.modify.globalwarps";
     public static final String PERMISSION_MODIFY_SIMPLE_WARPS = "warpsystem.modify.simplewarps";
     public static final String PERMISSION_MODIFY_PORTALS = "warpsystem.modify.portals";
-    public static final String PERMISSION_MODIFY_RANDOM_TELEPORTER = "warpsystem.modify.randomteleporters";
+    public static final String PERMISSION_MODIFY_RANDOM_TELEPORTER = "warpsystem.modify.randomteleport";
     public static final String PERMISSION_MODIFY_PLAYER_WARPS = "warpsystem.modify.playerwarps";
     public static final String PERMISSION_MODIFY_SPAWN = "warpsystem.modify.spawn";
 
@@ -34,8 +34,8 @@ public class Permissions {
     public static final String PERMISSION_SIMPLE_WARPS_DIRECT_TELEPORT = "warpsystem.simplewarp.directteleport";
     public static final String PERMISSION_GLOBAL_WARPS_DIRECT_TELEPORT = "warpsystem.globalwarp.directteleport";
 
-    public static final String PERMISSION_RANDOM_TELEPORT_SELECTION_SELF = "warpsystem.randomteleporters.selection";
-    public static final String PERMISSION_RANDOM_TELEPORT_SELECTION_OTHER = "warpsystem.randomteleporters.selection.other";
+    public static final String PERMISSION_RANDOM_TELEPORT_SELECTION_SELF = "warpsystem.randomteleport.selection";
+    public static final String PERMISSION_RANDOM_TELEPORT_SELECTION_OTHER = "warpsystem.randomteleport.selection.other";
 
     public static final String PERMISSION_ByPass_Teleport_Costs = "warpsystem.bypass.teleport.costs";
     public static final String PERMISSION_ByPass_Teleport_Delay = "warpsystem.bypass.teleport.delay";
@@ -58,7 +58,7 @@ public class Permissions {
     public static String PERMISSION_USE_SIMPLE_WARPS = "warpsystem.use.simplewarps";
     public static String PERMISSION_USE_PLAYER_WARPS = "warpsystem.use.playerwarps";
     public static String PERMISSION_USE_PORTALS = "warpsystem.use.portals";
-    public static String PERMISSION_USE_RANDOM_TELEPORTER = "warpsystem.use.randomteleporters";
+    public static String PERMISSION_USE_RANDOM_TELEPORTER = "warpsystem.use.randomteleport";
     public static String PERMISSION_USE_RANDOM_TELEPORTER_GO = PERMISSION_USE_RANDOM_TELEPORTER + ".go";
     public static String PERMISSION_USE_SPAWN = "warpsystem.use.spawn";
 
