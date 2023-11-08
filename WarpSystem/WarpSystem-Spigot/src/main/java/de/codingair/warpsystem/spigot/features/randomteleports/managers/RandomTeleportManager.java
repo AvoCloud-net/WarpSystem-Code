@@ -115,7 +115,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
         ConfigFile rtpFile = WarpSystem.getInstance().getFileManager().loadFile("RTPConfig", "/");
         YamlConfiguration config = rtpFile.getConfig();
 
-        if (!hide) WarpSystem.log("  > Loading RandomTeleporters");
+        if (!hide) WarpSystem.log("  > Loading RandomTeleports");
 
         this.buyable = config.getBoolean("RandomTeleport.Buyable.Enabled", true);
         this.costs = config.getDouble("RandomTeleport.Buyable.Costs", 500.0);
@@ -251,7 +251,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("Teleporters");
         YamlConfiguration config = file.getConfig();
 
-        if (!saver) WarpSystem.log("  > Saving RandomTeleporters");
+        if (!saver) WarpSystem.log("  > Saving RandomTeleports");
 
         List<JSON> interactBlocks = new ArrayList<>();
         for (Location l : this.interactBlocks) {
@@ -324,9 +324,9 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
                 String perm = effectivePermission.getPermission();
 
                 if (perm.equals("*") || perm.toLowerCase().startsWith("warpsystem.*")
-                        || perm.toLowerCase().startsWith("warpsystem.randomteleporters.*")) return -1;
+                        || perm.toLowerCase().startsWith("warpsystem.randomteleport.*")) return -1;
 
-                if (perm.toLowerCase().startsWith("warpsystem.randomteleporters.max.")) {
+                if (perm.toLowerCase().startsWith("warpsystem.randomteleport.max.")) {
                     String s = perm.substring(33);
                     if (s.equals("*") || s.equalsIgnoreCase("n")) return -1;
 
@@ -353,9 +353,9 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
                 String perm = effectivePermission.getPermission();
 
                 if (perm.equals("*") || perm.toLowerCase().startsWith("warpsystem.*")
-                        || perm.toLowerCase().startsWith("warpsystem.randomteleporters.*")) return -1;
+                        || perm.toLowerCase().startsWith("warpsystem.randomteleport.*")) return -1;
 
-                if (perm.toLowerCase().startsWith("warpsystem.randomteleporters.free.")) {
+                if (perm.toLowerCase().startsWith("warpsystem.randomteleport.free.")) {
                     String s = perm.substring(34);
                     if (s.equals("*") || s.equalsIgnoreCase("n")) return -1;
 

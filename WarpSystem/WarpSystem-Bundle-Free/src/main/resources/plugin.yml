@@ -20,7 +20,7 @@ permissions:
       warpsystem.modify.globalwarps: true
       warpsystem.modify.simplewarps: true
       warpsystem.modify.portals: true
-      warpsystem.modify.randomteleporters: true
+      warpsystem.modify.randomteleport: true
       warpsystem.modify.playerwarps: true
       warpsystem.modify.spawn: true
   warpsystem.modify.warpgui:
@@ -35,7 +35,7 @@ permissions:
     default: op
   warpsystem.modify.portals:
     default: op
-  warpsystem.modify.randomteleporters:
+  warpsystem.modify.randomteleport:
     default: op
   warpsystem.modify.playerwarps:
     default: op
@@ -51,22 +51,22 @@ permissions:
   warpsystem.globalwarp.directteleport:
     default: op
 
-  warpsystem.randomteleporters.*:
+  warpsystem.randomteleport.*:
     children:
-      warpsystem.randomteleporters.free.*: true
-      warpsystem.randomteleporters.max.*: true
-      warpsystem.randomteleporters.selection.*: true
-  warpsystem.randomteleporters.selection.*:
+      warpsystem.randomteleport.free.*: true
+      warpsystem.randomteleport.max.*: true
+      warpsystem.randomteleport.selection.*: true
+  warpsystem.randomteleport.selection.*:
     children:
-      warpsystem.randomteleporters.selection: true
-      warpsystem.randomteleporters.selection.other: true
-  warpsystem.randomteleporters.free.*:
+      warpsystem.randomteleport.selection: true
+      warpsystem.randomteleport.selection.other: true
+  warpsystem.randomteleport.free.*:
     default: op
-  warpsystem.randomteleporters.max.*:
+  warpsystem.randomteleport.max.*:
     default: op
-  warpsystem.randomteleporters.selection:
+  warpsystem.randomteleport.selection:
     default: op
-  warpsystem.randomteleporters.selection.other:
+  warpsystem.randomteleport.selection.other:
     default: op
 
   warpsystem.bypass.*:
@@ -96,7 +96,7 @@ permissions:
       warpsystem.use.globalwarps: true
       warpsystem.use.simplewarps: true
       warpsystem.use.portals: true
-      warpsystem.use.randomteleporters: true
+      warpsystem.use.randomteleport: true
       warpsystem.use.playerwarps: true
       warpsystem.use.spawn: true
   warpsystem.use.teleportcommand.*:
@@ -148,9 +148,9 @@ permissions:
     default: op
   warpsystem.use.portals:
     default: op
-  warpsystem.use.randomteleporters:
+  warpsystem.use.randomteleport:
     default: op
-  warpsystem.use.randomteleporters.go:
+  warpsystem.use.randomteleport.go:
     default: op
   warpsystem.use.spawn:
     default: op
@@ -163,6 +163,6 @@ permissions:
       warpsystem.warpgui.other: true
       warpsystem.simplewarp.directteleport: true
       warpsystem.globalwarp.directteleport: true
-      warpsystem.randomteleporters.*: true
+      warpsystem.randomteleport.*: true
       warpsystem.bypass.*: true
       warpsystem.use.*: true
