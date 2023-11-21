@@ -272,13 +272,33 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
     }
 
     public void checkPlayerWarpOwnerNames(Player player) {
-        List<PlayerWarp> warps = new ArrayList<>(getOwnWarps(player));
+        String playerName = player.getName();
 
+        List<PlayerWarp> warps = new ArrayList<>(getOwnWarps(player));
+        Set<String> oldNames = new HashSet<>();
+
+        boolean changed = false;
         for (PlayerWarp warp : warps) {
-            warp.getOwner().setName(player.getName());
+            PlayerWarp copy = warp.clone();
+
+            // sync if name has changed
+            if (warp.getOwner().setName(playerName)) {
+                oldNames.add(copy.getOwner().getName().toLowerCase());
+                changed = true;
+                sync(copy, warp, player);
+            }
         }
 
         warps.clear();
+        if (changed) {
+            save(false);
+
+            // update names to id map
+            for (String oldName : oldNames) {
+                names.remove(oldName);
+            }
+            names.put(playerName.toLowerCase(), player.getUniqueId());
+        }
     }
 
     public List<PlayerWarp> filter(List<Category> classes, Player toTeleport) {
@@ -503,7 +523,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
             }
             lists.clear();
         } else {
-            UUID id = names.get(prefer);
+            UUID id = names.get(prefer.toLowerCase());
             if (id != null) {
                 List<PlayerWarp> warps = this.warps.get(id);
 
@@ -554,7 +574,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
             warp.born();
         }
 
-        names.putIfAbsent(warp.getOwner().getName(), warp.getOwner().getId());
+        names.putIfAbsent(warp.getOwner().getName().toLowerCase(), warp.getOwner().getId());
         this.warps.putIfAbsent(warp.getOwner().getId(), warps);
     }
 
@@ -592,7 +612,7 @@ public abstract class PlayerWarpManager implements Manager, Ticker, ProxyFeature
 
         if (warps.isEmpty()) {
             this.warps.remove(warp.getOwner().getId());
-            this.names.remove(warp.getOwner().getName());
+            this.names.remove(warp.getOwner().getName().toLowerCase());
         }
 
         if (informBungee && checkBungeeCord()) {

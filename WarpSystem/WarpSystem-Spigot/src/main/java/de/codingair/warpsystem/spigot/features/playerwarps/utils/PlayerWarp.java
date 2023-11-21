@@ -836,8 +836,10 @@ public class PlayerWarp extends FeatureObject {
             return this.name;
         }
 
-        public void setName(String name) {
+        public boolean setName(String name) {
+            boolean changed = !this.name.equals(name);
             this.name = name;
+            return changed;
         }
 
         public UUID getId() {
