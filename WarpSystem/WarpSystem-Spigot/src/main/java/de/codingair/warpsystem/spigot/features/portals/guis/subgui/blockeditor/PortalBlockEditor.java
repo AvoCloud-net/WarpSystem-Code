@@ -6,27 +6,24 @@ import de.codingair.codingapi.player.MessageAPI;
 import de.codingair.codingapi.player.gui.PlayerItem;
 import de.codingair.codingapi.server.reflections.IReflection;
 import de.codingair.codingapi.server.specification.Version;
-import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
-import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.codingapi.utils.Removable;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.features.portals.utils.BlockType;
 import de.codingair.warpsystem.spigot.features.portals.utils.Portal;
 import de.codingair.warpsystem.spigot.features.portals.utils.PortalBlock;
-import de.codingair.warpsystem.spigot.versionfactory.VFac;
-import de.codingair.warpsystem.spigot.versionfactory.VKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.BoundingBox;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +36,7 @@ public class PortalBlockEditor implements Removable {
     private final Portal portal;
     private final List<Block> alignTo = new ArrayList<>();
     private final FastEditingTool fastEditingTool;
+    private final CustomPortalBlockTool customPortalBlockTool;
     private boolean ended = false;
     private ItemStack[] old;
     private BukkitRunnable alignRunnable;
@@ -49,6 +47,7 @@ public class PortalBlockEditor implements Removable {
         API.addRemovable(this);
         this.portal = portal;
         this.fastEditingTool = new FastEditingTool(this, player);
+        this.customPortalBlockTool = new CustomPortalBlockTool(this, player);
 
         this.alignRunnable = new BukkitRunnable() {
             @Override
@@ -105,39 +104,7 @@ public class PortalBlockEditor implements Removable {
             }
         }
 
-        PlayerItem item;
-        this.player.getInventory().setItem(8, item = new PlayerItem(WarpSystem.getInstance(), player, new ItemBuilder(XMaterial.GHAST_TEAR).setName("§7" + ChatColor.stripColor(BlockType.CUSTOM.getName()) + ": §c-" + (VFac.isAvailable("Indicator") ? Lang.PREMIUM_LORE : "")).getItem()) {
-            private long last = 0;
-
-            @Override
-            public void onInteract(PlayerInteractEvent e) {
-                e.setCancelled(true);
-                if (System.currentTimeMillis() - last < 50) return;
-                else last = System.currentTimeMillis();
-
-                Block b = player.getTargetBlock((Set<Material>) null, 10);
-                if (b != null && b.getType() != XMaterial.AIR.parseMaterial() && b.getType() != XMaterial.VOID_AIR.parseMaterial() && b.getType() != XMaterial.CAVE_AIR.parseMaterial() && b.getType() != XMaterial.CHEST.parseMaterial() && b.getType() != XMaterial.TRAPPED_CHEST.parseMaterial()) {
-                    Material m = b.getType();
-
-                    IReflection.MethodAccessor isFuel = IReflection.getSaveMethod(Material.class, "isFuel", boolean.class);
-                    boolean fuel = isFuel != null && (boolean) isFuel.invoke(m);
-
-                    if (!m.isOccluding() && (fuel || !m.isSolid())) {
-                        VFac.build(VKey.PortalBlockEditorHandler, PortalBlockEditor.this, b, player);
-                    }
-                }
-            }
-
-            @Override
-            public void onHover(PlayerItemHeldEvent e) {
-                setAlignBlocks(true);
-            }
-
-            @Override
-            public void onUnhover(PlayerItemHeldEvent e) {
-                setAlignBlocks(false);
-            }
-        }.setFreezed(true));
+        this.player.getInventory().setItem(8, customPortalBlockTool);
 
         if (this.player.getInventory().getHeldItemSlot() == 0) {
             fastEditingTool.onHover(null);
@@ -146,8 +113,38 @@ public class PortalBlockEditor implements Removable {
         }
 
         if (this.player.getInventory().getHeldItemSlot() == 8) {
-            item.onHover(null);
+            customPortalBlockTool.onHover(null);
         }
+    }
+
+    @Nullable
+    public static Block getSupportTargetMaterial(@NotNull Player player) {
+        Block b = player.getTargetBlock((Set<Material>) null, 10);
+
+        if (b != null && b.getType() != XMaterial.AIR.parseMaterial() && b.getType() != XMaterial.VOID_AIR.parseMaterial() && b.getType() != XMaterial.CAVE_AIR.parseMaterial() && b.getType() != XMaterial.CHEST.parseMaterial() && b.getType() != XMaterial.TRAPPED_CHEST.parseMaterial()) {
+            if (Version.atLeast(14)) {
+                if (b.isPassable()) return b;
+                else {
+                    BoundingBox bb = b.getBoundingBox();
+                    if (bb.getWidthX() < 0.9 || bb.getWidthZ() < 0.9 || bb.getHeight() < 0.9) return b;
+
+                    if (Version.atLeast(17)) {
+                        // assume that we only use multiple bounding boxes to allow some clearance
+                        if (b.getCollisionShape().getBoundingBoxes().size() > 1) return b;
+                    }
+                }
+            } else {
+                // 1.13 and below
+                Material m = b.getType();
+
+                IReflection.MethodAccessor isFuel = IReflection.getSaveMethod(Material.class, "isFuel", boolean.class);
+                boolean fuel = isFuel != null && (boolean) isFuel.invoke(m);
+
+                if (!m.isOccluding() && (fuel || !m.isSolid())) return b;
+            }
+        }
+
+        return null;
     }
 
     public void update() {
@@ -236,13 +233,13 @@ public class PortalBlockEditor implements Removable {
         if (Version.get().isBiggerThan(Version.v1_12)) {
             //block data
             Class<?> blockDataClass = IReflection.getClass(IReflection.ServerPacket.BUKKIT_PACKET, "block.data.BlockData");
-            IReflection.MethodAccessor sendBlockChange = IReflection.getMethod(Player.class, "sendBlockChange", null, new Class[] {org.bukkit.Location.class, blockDataClass});
+            IReflection.MethodAccessor sendBlockChange = IReflection.getMethod(Player.class, "sendBlockChange", null, new Class[]{org.bukkit.Location.class, blockDataClass});
             IReflection.MethodAccessor getData = IReflection.getMethod(Block.class, "getBlockData", blockDataClass, new Class[0]);
 
             sendBlockChange.invoke(player, b.getLocation(), getData.invoke(b));
         } else {
             //loc, mat, byte
-            IReflection.MethodAccessor sendBlockChange = IReflection.getMethod(Player.class, "sendBlockChange", null, new Class[] {org.bukkit.Location.class, Material.class, byte.class});
+            IReflection.MethodAccessor sendBlockChange = IReflection.getMethod(Player.class, "sendBlockChange", null, new Class[]{org.bukkit.Location.class, Material.class, byte.class});
             IReflection.MethodAccessor getData = IReflection.getMethod(Block.class, "getData", byte.class, new Class[0]);
             sendBlockChange.invoke(player, b.getLocation(), b.getType(), getData.invoke(b));
         }
@@ -252,13 +249,13 @@ public class PortalBlockEditor implements Removable {
         if (Version.get().isBiggerThan(Version.v1_12)) {
             //block data
             Class<?> blockDataClass = IReflection.getClass(IReflection.ServerPacket.BUKKIT_PACKET, "block.data.BlockData");
-            IReflection.MethodAccessor sendBlockChange = IReflection.getMethod(Player.class, "sendBlockChange", null, new Class[] {org.bukkit.Location.class, blockDataClass});
+            IReflection.MethodAccessor sendBlockChange = IReflection.getMethod(Player.class, "sendBlockChange", null, new Class[]{org.bukkit.Location.class, blockDataClass});
             IReflection.MethodAccessor createBlockData = IReflection.getMethod(Material.class, "createBlockData", blockDataClass, new Class[0]);
 
             sendBlockChange.invoke(player, loc, createBlockData.invoke(XMaterial.GLASS.parseMaterial()));
         } else {
             //loc, mat, byte
-            IReflection.MethodAccessor sendBlockChange = IReflection.getMethod(Player.class, "sendBlockChange", null, new Class[] {org.bukkit.Location.class, Material.class, byte.class});
+            IReflection.MethodAccessor sendBlockChange = IReflection.getMethod(Player.class, "sendBlockChange", null, new Class[]{org.bukkit.Location.class, Material.class, byte.class});
             sendBlockChange.invoke(player, loc, XMaterial.GLASS.parseMaterial(), (byte) 1);
         }
     }
@@ -273,5 +270,9 @@ public class PortalBlockEditor implements Removable {
 
     public List<Block> getAlignTo() {
         return alignTo;
+    }
+
+    public CustomPortalBlockTool getCustomPortalBlockTool() {
+        return customPortalBlockTool;
     }
 }

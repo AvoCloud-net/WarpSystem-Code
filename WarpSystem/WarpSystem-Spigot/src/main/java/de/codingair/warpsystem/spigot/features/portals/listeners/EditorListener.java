@@ -26,33 +26,25 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
 public class EditorListener implements Listener {
-    @EventHandler (priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onMove(PlayerMoveEvent e) {
         PortalBlockEditor editor = PortalManager.getInstance().getEditor(e.getPlayer());
         if (editor != null && e.getPlayer().getInventory().getHeldItemSlot() == 8) {
-            PlayerItem item = API.getRemovable(e.getPlayer(), PlayerItem.class);
+            PlayerItem item = editor.getCustomPortalBlockTool();
 
-            if (item.getType() != XMaterial.GHAST_TEAR.parseMaterial()) return;
-
-            Block b = e.getPlayer().getTargetBlock((Set<Material>) null, 10);
-            if (b != null && b.getType() != XMaterial.AIR.parseMaterial() && b.getType() != XMaterial.VOID_AIR.parseMaterial() && b.getType() != XMaterial.CAVE_AIR.parseMaterial() && b.getType() != XMaterial.CHEST.parseMaterial() && b.getType() != XMaterial.TRAPPED_CHEST.parseMaterial()) {
-                Material m = b.getType();
-
-                IReflection.MethodAccessor isFuel = IReflection.getSaveMethod(Material.class, "isFuel", boolean.class);
-                boolean fuel = isFuel != null && (boolean) isFuel.invoke(m);
-
-                if (!m.isOccluding() && (fuel || !m.isSolid())) {
-                    String name = "§7" + ChatColor.stripColor(BlockType.CUSTOM.getName()) + ": §e" + m.name();
-                    if (!name.equals(item.getDisplayName())) {
-                        item.setDisplayName(name);
-                        e.getPlayer().getInventory().setItem(8, item);
-                    }
-                    return;
+            Block b = PortalBlockEditor.getSupportTargetMaterial(e.getPlayer());
+            if (b != null) {
+                String name = "§7" + ChatColor.stripColor(BlockType.CUSTOM.getName()) + ": §e" + formatMaterial(b.getType());
+                if (!name.equals(item.getDisplayName())) {
+                    item.setDisplayName(name);
+                    e.getPlayer().getInventory().setItem(8, item);
                 }
+                return;
             }
 
             String name = "§7" + ChatColor.stripColor(BlockType.CUSTOM.getName()) + ": §c-";
@@ -63,7 +55,23 @@ public class EditorListener implements Listener {
         }
     }
 
-    @EventHandler (priority = EventPriority.HIGHEST)
+    @NotNull
+    public static String formatMaterial(@NotNull Material material) {
+        String name = material.name();
+        StringBuilder b = new StringBuilder(name.toLowerCase());
+
+        int i = 0;
+        do {
+            b.replace(i, i + 1, b.substring(i, i + 1).toUpperCase());
+            i = b.indexOf("_", i);
+            if (i >= 0) b.replace(i, i + 1, " ");
+            i++;
+        } while (i > 0 && i < b.length());
+
+        return b.toString().trim();
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlace(BlockPlaceEvent e) {
         PortalBlockEditor editor = PortalManager.getInstance().getEditor(e.getPlayer());
         if (editor != null && !editor.getFastEditingTool().locationsSet()) {
@@ -81,7 +89,7 @@ public class EditorListener implements Listener {
         } else if (API.getRemovable(e.getPlayer(), HotbarGUI.class) != null) e.setCancelled(true);
     }
 
-    @EventHandler (priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInteract(PlayerInteractEvent e) {
         PortalBlockEditor editor = PortalManager.getInstance().getEditor(e.getPlayer());
         int slot = e.getPlayer().getInventory().getHeldItemSlot();
