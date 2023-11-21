@@ -55,7 +55,7 @@ public class Teleport {
                 });
 
                 stage = new SimulateStage(Teleport.this)
-                        .then(new WaitForTeleport())
+                        .then(new WaitWhileMoving())
                         .then(new ConfirmPayment())
                         .then(new TeleportDelay())
                         .then(new PlayerTeleport(afterEffectPosition));
@@ -77,7 +77,13 @@ public class Teleport {
     }
 
     public void cancelByStage(Result result) {
-        if (getOptions().getDelay(player) > 0 && options.getCancelSound() != null && stage != null && stage.active().isFired(TeleportDelay.class)) options.getCancelSound().play(player);
+        if (options.getCancelSound() != null) {
+            if (stage != null) {
+                TeleportStage active = stage.active();
+                if (active instanceof TeleportDelay && getOptions().getDelay(player) > 0) options.getCancelSound().play(player);
+                else if (active instanceof WaitWhileMoving) options.getCancelSound().play(player);
+            }
+        }
         options.fireCallbacks(result);
 
         if (result == Result.NOT_ENOUGH_MONEY) {

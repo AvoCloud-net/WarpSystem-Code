@@ -9,12 +9,15 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class WaitForTeleport extends TeleportStage {
+public class WaitWhileMoving extends TeleportStage {
+    private static final long MAX_WAIT_TIME = 3000;
 
-    protected WaitForTeleport() {
+    protected WaitWhileMoving() {
     }
 
     public static BukkitRunnable wait(Player player, Callback<Result> callback) {
+        long start = System.currentTimeMillis();
+
         BukkitRunnable r = new BukkitRunnable() {
             int notMoving = 0;
             int shakeTicks = 0;
@@ -25,6 +28,13 @@ public class WaitForTeleport extends TeleportStage {
             public void run() {
                 if (!player.isOnline() || location.getWorld() != player.getWorld()) {
                     this.cancel();
+                    callback.accept(Result.CANCELLED);
+                    return;
+                }
+
+                if (System.currentTimeMillis() - start > MAX_WAIT_TIME) {
+                    this.cancel();
+                    MessageAPI.stopSendingActionBar(player);
                     callback.accept(Result.CANCELLED);
                     return;
                 }

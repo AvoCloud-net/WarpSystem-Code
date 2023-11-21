@@ -32,7 +32,7 @@ import de.codingair.warpsystem.spigot.base.utils.teleport.destinations.Destinati
 import de.codingair.warpsystem.spigot.base.utils.teleport.process.ConfirmPayment;
 import de.codingair.warpsystem.spigot.base.utils.teleport.process.Teleport;
 import de.codingair.warpsystem.spigot.base.utils.teleport.process.TeleportDummy;
-import de.codingair.warpsystem.spigot.base.utils.teleport.process.WaitForTeleport;
+import de.codingair.warpsystem.spigot.base.utils.teleport.process.WaitWhileMoving;
 import de.codingair.warpsystem.spigot.features.warps.nextlevel.exceptions.IconReadException;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -205,7 +205,7 @@ public abstract class FeatureObject implements Serializable {
                 return this;
             }
 
-            waiting.setValue(WaitForTeleport.wait(player, new Callback<Result>() {
+            waiting.setValue(WaitWhileMoving.wait(player, new Callback<Result>() {
                 @Override
                 public void accept(Result result) {
                     if (result != Result.SUCCESS) {
