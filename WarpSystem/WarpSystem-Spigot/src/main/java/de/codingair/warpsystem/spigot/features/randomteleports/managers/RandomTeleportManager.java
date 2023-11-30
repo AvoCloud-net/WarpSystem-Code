@@ -327,7 +327,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
                         || perm.toLowerCase().startsWith("warpsystem.randomteleport.*")) return -1;
 
                 if (perm.toLowerCase().startsWith("warpsystem.randomteleport.max.")) {
-                    String s = perm.substring(33);
+                    String s = perm.substring(30);
                     if (s.equals("*") || s.equalsIgnoreCase("n")) return -1;
 
                     try {
@@ -356,7 +356,7 @@ public abstract class RandomTeleportManager implements Manager, ProxyFeature {
                         || perm.toLowerCase().startsWith("warpsystem.randomteleport.*")) return -1;
 
                 if (perm.toLowerCase().startsWith("warpsystem.randomteleport.free.")) {
-                    String s = perm.substring(34);
+                    String s = perm.substring(31);
                     if (s.equals("*") || s.equalsIgnoreCase("n")) return -1;
 
                     try {
