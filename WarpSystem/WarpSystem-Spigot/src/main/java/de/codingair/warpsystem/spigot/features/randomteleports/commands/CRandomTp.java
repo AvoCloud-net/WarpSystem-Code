@@ -118,6 +118,34 @@ public class CRandomTp extends WSCommandBuilder {
                     return false;
                 }
             });
+
+            getComponent("buy").addChild(new CommandComponent("confirm") {
+                @Override
+                public boolean runCommand(CommandSender sender, String label, String[] args) {
+                    //TextComponent
+
+                    if (!RandomTeleportManager.getInstance().canBuy((Player) sender)) {
+                        sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Bought_Too_Much").replace("%AMOUNT%", RandomTeleportManager.getInstance().getMaxTeleportAmount((Player) sender) + ""));
+                        return false;
+                    } else if (RandomTeleportManager.getInstance().getFreeTeleportAmount((Player) sender) == -1) {
+                        sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Info_Unlimited"));
+                        return false;
+                    }
+
+                    double bank = Bank.adapter().getMoney((Player) sender);
+                    double costs = RandomTeleportManager.getInstance().getCosts();
+
+                    if (bank >= costs) {
+                        Bank.adapter().withdraw((Player) sender, costs);
+                        UUID u = WarpSystem.getInstance().getPlayerDataManager().get((Player) sender);
+                        RandomTeleportManager.getInstance().setBoughtTeleports(u, RandomTeleportManager.getInstance().getBoughtTeleports(u) + 1);
+                        sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Buy_Finished").replace("%AMOUNT%", fancyCosts(costs)));
+                    } else {
+                        sender.sendMessage(Lang.getPrefix() + Lang.get("RandomTP_Not_Enough_Money").replace("%AMOUNT%", fancyCosts(costs)));
+                    }
+                    return false;
+                }
+            });
         }
 
         getBaseComponent().addChild(new CommandComponent("blocks", Permissions.PERMISSION_MODIFY_RANDOM_TELEPORTER) {
