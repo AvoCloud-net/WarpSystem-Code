@@ -163,6 +163,9 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
             new PostWorldManager();
 
+            // load heads before using them
+            headManager.onEnable();
+
             log("Loading features");
             this.dataManager.removeDisabled();
 

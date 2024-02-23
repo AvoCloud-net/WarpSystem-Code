@@ -4,14 +4,18 @@ import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.warpsystem.spigot.api.players.Head;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
 import java.util.UUID;
 
 public class HeadManager {
+    private static final int MAX_COUNTER = 20;
     private ConfigFile file = null;
+    private int queueCounter = 0;
+    private BukkitRunnable savingQueue = null;
 
-    private void checkFile() {
+    public void onEnable() {
         if (this.file == null) this.file = WarpSystem.getInstance().getFileManager().loadFile("PlayerSkins", "Memory/");
     }
 
@@ -21,7 +25,6 @@ public class HeadManager {
 
     public String getSkinId(UUID uuid) {
         if (uuid == null) return null;
-        checkFile();
         return this.file.getConfig().getString(uuid.toString());
     }
 
@@ -30,22 +33,36 @@ public class HeadManager {
      */
     public boolean update(Player player, UUID uuid) {
         if (uuid == null || !player.isOnline()) return false;
-        checkFile();
 
         Head head = new Head(player);
 
         String id = this.file.getConfig().getString(uuid.toString());
         if (!Objects.equals(head.getId(), id)) {
             this.file.getConfig().set(uuid.toString(), head.getId());
-            this.file.saveConfig();
+            queueFileSave();
             return true;
         }
 
         return false;
     }
 
-    public Head getHead(Player player) {
-        update(player, WarpSystem.getInstance().getPlayerDataManager().get(player));
-        return new Head(player);
+    private void queueFileSave() {
+        if (savingQueue != null) {
+            savingQueue.cancel();
+            queueCounter++;
+        }
+
+        savingQueue = new BukkitRunnable() {
+            @Override
+            public void run() {
+                file.saveConfig();
+                savingQueue = null;
+            }
+        };
+
+        if (queueCounter >= MAX_COUNTER) {
+            queueCounter = 0;
+            savingQueue.runTaskAsynchronously(WarpSystem.getInstance());
+        } else savingQueue.runTaskLaterAsynchronously(WarpSystem.getInstance(), 100L);
     }
 }
