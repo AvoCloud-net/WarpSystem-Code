@@ -7,11 +7,11 @@
   ],
   "dependencies": [
     {
-      "id": "Trevor",
+      "id": "trevor",
       "optional": true
     },
     {
-      "id": "RedisBungee",
+      "id": "redisbungee",
       "optional": true
     }
   ],
