@@ -17,6 +17,7 @@ public class SpawnManager extends SpawnHandler {
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("Config");
 
         WarpSystem.proxy().getEventManager().register(WarpSystem.getInstance(), new ServerListener());
+        WarpSystem.proxy().getEventManager().register(WarpSystem.getInstance(), new SpawnListener());
 
         return super.load(loader, new VelocityConfigMask(file));
     }

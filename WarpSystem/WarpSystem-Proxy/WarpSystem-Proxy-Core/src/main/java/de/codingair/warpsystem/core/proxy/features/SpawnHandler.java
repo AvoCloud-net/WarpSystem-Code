@@ -10,27 +10,31 @@ import de.codingair.warpsystem.core.utils.Manager;
 import java.util.Objects;
 
 public abstract class SpawnHandler implements Manager {
-    protected String spawn, respawn;
+    protected boolean spawnServerProxy;
+    protected String spawnServerCommand, respawnServerCommand;
 
     public boolean load(boolean loader, DataMask mask) {
-        this.spawn = mask.getString("WarpSystem.GlobalSpawnOptions.Spawn", null);
-        this.respawn = mask.getString("WarpSystem.GlobalSpawnOptions.Respawn", null);
+        this.spawnServerProxy = mask.getBoolean("WarpSystem.GlobalSpawnOptions.ProxySpawn", false);
+        this.spawnServerCommand = mask.getString("WarpSystem.GlobalSpawnOptions.Spawn", null);
+        this.respawnServerCommand = mask.getString("WarpSystem.GlobalSpawnOptions.Respawn", null);
         return true;
     }
 
     public void save(boolean saver, DataMask mask) {
-        mask.put("WarpSystem.GlobalSpawnOptions.Spawn", this.spawn);
-        mask.put("WarpSystem.GlobalSpawnOptions.Respawn", this.respawn);
+        mask.put("WarpSystem.GlobalSpawnOptions.ProxySpawn", this.spawnServerProxy);
+        mask.put("WarpSystem.GlobalSpawnOptions.Spawn", this.spawnServerCommand);
+        mask.put("WarpSystem.GlobalSpawnOptions.Respawn", this.respawnServerCommand);
     }
 
     @Override
     public void destroy() {
     }
 
-    public void update(Server sender, String spawn, String respawn) {
-        if (!Objects.equals(this.spawn, spawn) || !Objects.equals(this.respawn, respawn)) {
-            this.spawn = spawn;
-            this.respawn = respawn;
+    public void update(Server sender, boolean spawnServerProxy, String spawn, String respawn) {
+        if (!Objects.equals(this.spawnServerCommand, spawn) || this.spawnServerProxy != spawnServerProxy || !Objects.equals(this.respawnServerCommand, respawn)) {
+            this.spawnServerProxy = spawnServerProxy;
+            this.spawnServerCommand = spawn;
+            this.respawnServerCommand = respawn;
             synchronize(sender);
         }
     }
@@ -43,14 +47,18 @@ public abstract class SpawnHandler implements Manager {
     }
 
     public SendGlobalSpawnOptionsPacket getInfoPacket() {
-        return new SendGlobalSpawnOptionsPacket(this.spawn, this.respawn);
+        return new SendGlobalSpawnOptionsPacket(this.spawnServerProxy, this.spawnServerCommand, this.respawnServerCommand);
     }
 
-    public String getSpawn() {
-        return spawn;
+    public boolean isSpawnServerProxy() {
+        return spawnServerProxy;
     }
 
-    public String getRespawn() {
-        return respawn;
+    public String getSpawnServerCommand() {
+        return spawnServerCommand;
+    }
+
+    public String getRespawnServerCommand() {
+        return respawnServerCommand;
     }
 }

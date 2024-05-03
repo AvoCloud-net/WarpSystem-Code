@@ -17,6 +17,7 @@ public class SpawnManager extends SpawnHandler {
         ConfigFile file = WarpSystem.getInstance().getFileManager().getFile("Config");
 
         WarpSystem.getInstance().getProxy().getPluginManager().registerListener(WarpSystem.getInstance(), new ServerListener());
+        WarpSystem.getInstance().getProxy().getPluginManager().registerListener(WarpSystem.getInstance(), new SpawnListener());
 
         return super.load(loader, new BungeeConfigMask(file));
     }

@@ -1,47 +1,59 @@
 package de.codingair.warpsystem.core.transfer.packets.general;
 
 import de.codingair.packetmanagement.packets.Packet;
+import de.codingair.packetmanagement.utils.ByteMask;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class SendGlobalSpawnOptionsPacket implements Packet {
-    private String spawn, respawn;
+    private Boolean spawnServerProxy;
+    private String spawnServerCommand, respawnServerCommand;
 
     public SendGlobalSpawnOptionsPacket() {
-        this.spawn = null;
-        this.respawn = null;
+        this.spawnServerProxy = null;
+        this.spawnServerCommand = null;
+        this.respawnServerCommand = null;
     }
 
-    public SendGlobalSpawnOptionsPacket(String spawn, String respawn) {
-        this.spawn = spawn;
-        this.respawn = respawn;
+    public SendGlobalSpawnOptionsPacket(boolean spawnServerProxy, String spawnServerCommand, String respawnServerCommand) {
+        this.spawnServerProxy = spawnServerProxy;
+        this.spawnServerCommand = spawnServerCommand;
+        this.respawnServerCommand = respawnServerCommand;
     }
 
     @Override
     public void write(DataOutputStream out) throws IOException {
-        byte options = (byte) (this.spawn != null ? 1 : 0);
-        if (this.respawn != null) options |= (1 << 1);
-        out.writeByte(options);
+        ByteMask mask = new ByteMask();
+        mask.setBit(0, spawnServerProxy != null && spawnServerProxy);
+        mask.setBit(1, spawnServerCommand != null);
+        mask.setBit(2, respawnServerCommand != null);
+        mask.write(out);
 
-        if (this.spawn != null) out.writeUTF(this.spawn);
-        if (this.respawn != null) out.writeUTF(this.respawn);
+        if (this.spawnServerCommand != null) out.writeUTF(this.spawnServerCommand);
+        if (this.respawnServerCommand != null) out.writeUTF(this.respawnServerCommand);
     }
 
     @Override
     public void read(DataInputStream in) throws IOException {
-        byte options = in.readByte();
+        ByteMask mask = new ByteMask();
+        mask.read(in);
 
-        if ((options & 1) != 0) this.spawn = in.readUTF();
-        if ((options & (1 << 1)) != 0) this.respawn = in.readUTF();
+        this.spawnServerProxy = mask.getBit(0);
+        if (mask.getBit(1)) this.spawnServerCommand = in.readUTF();
+        if (mask.getBit(2)) this.respawnServerCommand = in.readUTF();
     }
 
-    public String getSpawn() {
-        return spawn;
+    public boolean getSpawnServerProxy() {
+        return spawnServerProxy;
     }
 
-    public String getRespawn() {
-        return respawn;
+    public String getSpawnServerCommand() {
+        return spawnServerCommand;
+    }
+
+    public String getRespawnServerCommand() {
+        return respawnServerCommand;
     }
 }

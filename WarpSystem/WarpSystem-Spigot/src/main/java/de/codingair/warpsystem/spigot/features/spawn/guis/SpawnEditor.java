@@ -20,8 +20,8 @@ public class SpawnEditor extends Editor<Spawn> {
         super(p, clone, new Backup<Spawn>(spawn) {
             @Override
             public void applyTo(Spawn clone) {
-                if (WarpSystem.getInstance().isProxyConnected() && clone.getUsage().getName().contains("/spawn")) {
-                    String server = SpawnManager.getInstance().getSpawnServer();
+                if (WarpSystem.getInstance().isProxyConnected() && clone.getUsage().getDisplay().contains("/spawn")) {
+                    String server = SpawnManager.getInstance().getSpawnServerCommand();
 
                     if (server != null && !WarpSystem.getInstance().getCurrentServer().equals(server)) {
                         clone.setUsage(clone.getUsage().getWithoutSpawnCommand());
@@ -33,8 +33,8 @@ public class SpawnEditor extends Editor<Spawn> {
                 if (WarpSystem.getInstance().isProxyConnected()) {
                     String s = WarpSystem.getInstance().getCurrentServer();
 
-                    String spawnServer = SpawnManager.getInstance().getSpawnServer();
-                    String respawnServer = SpawnManager.getInstance().getRespawnServer();
+                    String spawnServer = SpawnManager.getInstance().getSpawnServerCommand();
+                    String respawnServer = SpawnManager.getInstance().getRespawnServerCommand();
 
 
                     if (spawn.getUsage().isBungee()) spawnServer = s;
@@ -43,7 +43,7 @@ public class SpawnEditor extends Editor<Spawn> {
                     if (spawn.getRespawnUsage().isBungee()) respawnServer = s;
                     else if (s.equals(respawnServer)) respawnServer = null;
 
-                    SpawnManager.getInstance().updateGlobalOptions(spawnServer, respawnServer, p);
+                    SpawnManager.getInstance().updateGlobalOptions(spawn.getUsage() == Spawn.Usage.GLOBAL_EVERY_PROXY_JOIN, spawnServer, respawnServer, p);
                 }
             }
 

@@ -12,6 +12,6 @@ public class SendGlobalSpawnOptionsPacketHandler implements PacketHandler<SendGl
     @Override
     public void process(@NotNull SendGlobalSpawnOptionsPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         if (SpawnManager.getInstance() == null) return;
-        SpawnManager.getInstance().applyGlobalOptions(packet.getSpawn(), packet.getRespawn());
+        SpawnManager.getInstance().applyGlobalOptions(packet.getSpawnServerCommand(), packet.getRespawnServerCommand());
     }
 }

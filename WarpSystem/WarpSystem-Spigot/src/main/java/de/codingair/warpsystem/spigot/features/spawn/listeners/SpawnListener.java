@@ -17,7 +17,7 @@ public class SpawnListener implements Listener {
     public void onSpawn(PlayerSpawnLocationEvent e) {
         Spawn spawn = SpawnManager.getInstance().getSpawn();
         if (spawn != null) {
-            boolean b = spawn.getUsage() == Spawn.Usage.EVERY_JOIN || spawn.getUsage() == Spawn.Usage.LOCAL_EVERY_JOIN || spawn.getUsage() == Spawn.Usage.GLOBAL_EVERY_JOIN;
+            boolean b = spawn.getUsage() == Spawn.Usage.EVERY_JOIN || spawn.getUsage() == Spawn.Usage.LOCAL_EVERY_JOIN || spawn.getUsage() == Spawn.Usage.GLOBAL_EVERY_JOIN || spawn.getUsage() == Spawn.Usage.GLOBAL_EVERY_PROXY_JOIN;
 
             if (!e.getPlayer().hasPlayedBefore()) {
                 if (b || spawn.getUsage() == Spawn.Usage.FIRST_JOIN || spawn.getUsage() == Spawn.Usage.LOCAL_FIRST_JOIN || spawn.getUsage() == Spawn.Usage.GLOBAL_FIRST_JOIN) {
@@ -30,7 +30,7 @@ public class SpawnListener implements Listener {
     @EventHandler (priority = EventPriority.HIGH)
     public void onDeath(PlayerRespawnEvent e) {
         if (WarpSystem.getInstance().isProxyConnected()) {
-            String respawn = SpawnManager.getInstance().getRespawnServer();
+            String respawn = SpawnManager.getInstance().getRespawnServerCommand();
             if (respawn != null && !respawn.equals(WarpSystem.getInstance().getCurrentServer())) {
                 Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> WarpSystem.getDataHandler().send(new TeleportSpawnPacket(e.getPlayer().getName(), true), e.getPlayer()), 2L);
                 return;

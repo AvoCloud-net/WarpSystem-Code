@@ -17,7 +17,7 @@ public abstract class TeleportSpawnPacketHandler implements PacketHandler<Telepo
     public void process(@NotNull TeleportSpawnPacket packet, @NotNull Proxy proxy, @Nullable Object connection, @NotNull Direction direction) {
         SpawnHandler handler = Core.getPlugin().getHandler(SpawnHandler.class);
         Player player = Core.getPlugin().getPlayer(packet.getPlayer());
-        Server<?> server = Core.getPlugin().getServer(packet.isRespawn() ? handler.getRespawn() : handler.getSpawn());
+        Server<?> server = Core.getPlugin().getServer(packet.isRespawn() ? handler.getRespawnServerCommand() : handler.getSpawnServerCommand());
 
         if (player != null && server != null) {
             if (Core.getServerManager().isOnline(server)) {

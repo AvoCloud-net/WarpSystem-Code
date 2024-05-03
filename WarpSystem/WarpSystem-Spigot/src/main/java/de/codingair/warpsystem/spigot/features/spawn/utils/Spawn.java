@@ -25,6 +25,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.jetbrains.annotations.NotNull;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ public class Spawn extends FeatureObject {
     }
 
     public boolean switchServer() {
-        return SpawnManager.getInstance().getSpawnServer() != null && !SpawnManager.getInstance().getSpawnServer().equals(WarpSystem.getInstance().getCurrentServer());
+        return SpawnManager.getInstance().getSpawnServerCommand() != null && !SpawnManager.getInstance().getSpawnServerCommand().equals(WarpSystem.getInstance().getCurrentServer());
     }
 
     public Spawn clone() {
@@ -200,8 +201,16 @@ public class Spawn extends FeatureObject {
     public boolean read(DataMask d) throws Exception {
         boolean success = super.read(d);
 
-        this.usage = Usage.getById(d.getInteger("usage", 0));
-        this.respawnUsage = RespawnUsage.getById(d.getInteger("respawn", 0));
+        Object usage = d.get("usage");
+        if (usage instanceof Integer) this.usage = Usage.getByLegacyId((Integer) usage);
+        else if (usage instanceof String) this.usage = Usage.getByName((String) usage);
+        else this.usage = Usage.getDefault();
+        
+        Object respawnUsage = d.get("respawn");
+        if (respawnUsage instanceof Integer) this.respawnUsage = RespawnUsage.getByLegacyId((Integer) respawnUsage);
+        else if (respawnUsage instanceof String) this.respawnUsage = RespawnUsage.getByName((String) respawnUsage);
+        else this.respawnUsage = RespawnUsage.getDefault();
+
         this.randomFireWorks = d.getBoolean("fireworks", false);
         this.broadCastMessages = d.getList("broadcast");
         this.displayName = d.getString("displayname", "Spawn");
@@ -214,8 +223,8 @@ public class Spawn extends FeatureObject {
     public void write(DataMask d) {
         super.write(d);
 
-        d.put("usage", this.usage.ordinal());
-        d.put("respawn", this.respawnUsage.ordinal());
+        d.put("usage", this.usage.name());
+        d.put("respawn", this.respawnUsage.name());
         d.put("fireworks", this.randomFireWorks);
         d.put("broadcast", this.broadCastMessages);
         d.put("displayname", this.displayName);
@@ -275,31 +284,54 @@ public class Spawn extends FeatureObject {
         this.firstJoin = new de.codingair.codingapi.tools.Location(firstJoin);
     }
 
+    /**
+     * DO NOT RENAME VALUES (important for serialization)
+     */
     public enum Usage {
-        LOCAL("§b" + Lang.get("Local") + " §7(/spawn)"),
-        LOCAL_FIRST_JOIN("§b" + Lang.get("Local") + " §7(/spawn) §8+ " + "§7" + Lang.get("First_Join")),
-        LOCAL_EVERY_JOIN("§b" + Lang.get("Local") + " §7(/spawn) §8+ " + "§7" + Lang.get("Every_Join")),
-        GLOBAL("§e" + Lang.get("Global") + " §7(/spawn)", true),
-        GLOBAL_FIRST_JOIN("§e" + Lang.get("Global") + " §7(/spawn) §8+ " + "§7" + Lang.get("First_Join"), true),
-        GLOBAL_EVERY_JOIN("§e" + Lang.get("Global") + " §7(/spawn) §8+ " + "§7" + Lang.get("Every_Join"), true),
-        EVERY_JOIN("§7" + Lang.get("Every_Join")),
-        FIRST_JOIN("§7" + Lang.get("First_Join")),
-        DISABLED("§c" + Lang.get("Disabled"));
+        LOCAL(0, "§b" + Lang.get("Local") + " §7(/spawn)"),
+        LOCAL_FIRST_JOIN(1, "§b" + Lang.get("Local") + " §7(/spawn) §8+ " + "§7" + Lang.get("First_Join")),
+        LOCAL_EVERY_JOIN(2, "§b" + Lang.get("Local") + " §7(/spawn) §8+ " + "§7" + Lang.get("Every_Join")),
+        GLOBAL(3, "§e" + Lang.get("Global") + " §7(/spawn)", true),
+        GLOBAL_FIRST_JOIN(4, "§e" + Lang.get("Global") + " §7(/spawn) §8+ " + "§7" + Lang.get("First_Join"), true),
+        GLOBAL_EVERY_JOIN(5, "§e" + Lang.get("Global") + " §7(/spawn) §8+ " + "§7" + Lang.get("Every_Join"), true),
+        GLOBAL_EVERY_PROXY_JOIN(0, "§e" + Lang.get("Global") + " §7(/spawn) §8+ " + "§7" + Lang.get("Every_Proxy_Join"), true),
+        FIRST_JOIN(7, "§7" + Lang.get("First_Join")),
+        EVERY_JOIN(6, "§7" + Lang.get("Every_Join")),
+        DISABLED(8, "§c" + Lang.get("Disabled"));
 
-        private final String name;
+        private final int legacyId;
+        private final String display;
         private final boolean bungee;
 
-        Usage(String name, boolean bungee) {
-            this.name = name;
+        Usage(int legacyId, String display, boolean bungee) {
+            this.legacyId = legacyId;
+            this.display = display;
             this.bungee = bungee;
         }
 
-        Usage(String name) {
-            this(name, false);
+        Usage(int legacyId, String display) {
+            this(legacyId, display, false);
         }
 
-        public static Usage getById(int id) {
-            return values()[Math.max(Math.min(id, values().length - 1), 0)];
+        public static @NotNull Usage getByLegacyId(int legacyId) {
+            for (Usage value : values()) {
+                if (value.legacyId == legacyId) return value;
+            }
+            
+            return getDefault();
+        }
+
+        public static @NotNull Usage getByName(String name) {
+            for (Usage value : values()) {
+                if (value.name().equals(name)) return value;
+            }
+            
+            return getDefault();
+        }
+
+        @NotNull
+        public static Usage getDefault() {
+            return LOCAL;
         }
 
         public Usage next() {
@@ -309,10 +341,23 @@ public class Spawn extends FeatureObject {
         }
 
         public Usage getWithoutSpawnCommand() {
-            if (ordinal() == 0 || ordinal() == 3) return DISABLED;
-            if (ordinal() == 1 || ordinal() == 4) return FIRST_JOIN;
-            if (ordinal() == 2 || ordinal() == 5) return EVERY_JOIN;
-            return this;
+            switch (this) {
+                case LOCAL:
+                case GLOBAL:
+                    return DISABLED;
+
+                case LOCAL_FIRST_JOIN:
+                case GLOBAL_FIRST_JOIN:
+                    return FIRST_JOIN;
+
+                case LOCAL_EVERY_JOIN:
+                case GLOBAL_EVERY_JOIN:
+                case GLOBAL_EVERY_PROXY_JOIN:
+                    return EVERY_JOIN;
+
+                default:
+                    return this;
+            }
         }
 
         public Usage previous() {
@@ -322,11 +367,12 @@ public class Spawn extends FeatureObject {
         }
 
         public Usage getLocal() {
+            if (this == GLOBAL_EVERY_PROXY_JOIN) return LOCAL_EVERY_JOIN;
             return valueOf(name().replace("GLOBAL", "LOCAL"));
         }
 
-        public String getName() {
-            return name;
+        public String getDisplay() {
+            return display;
         }
 
         public boolean isBungee() {
@@ -334,25 +380,47 @@ public class Spawn extends FeatureObject {
         }
     }
 
+    /**
+     * DO NOT RENAME VALUES (important for serialization)
+     */
     public enum RespawnUsage {
-        DISABLED("§c" + Lang.get("Disabled")),
-        LOCAL("§b" + Lang.get("Local")),
-        GLOBAL("§e" + Lang.get("Global"), true);
+        DISABLED(0, "§c" + Lang.get("Disabled")),
+        LOCAL(1, "§b" + Lang.get("Local")),
+        GLOBAL(2, "§e" + Lang.get("Global"), true);
 
-        private final String name;
+        private final int legacyId;
+        private final String display;
         private final boolean bungee;
 
-        RespawnUsage(String name, boolean bungee) {
-            this.name = name;
+        RespawnUsage(int legacyId, String display, boolean bungee) {
+            this.legacyId = legacyId;
+            this.display = display;
             this.bungee = bungee;
         }
 
-        RespawnUsage(String name) {
-            this(name, false);
+        RespawnUsage(int legacyId, String display) {
+            this(legacyId, display, false);
         }
 
-        public static RespawnUsage getById(int id) {
-            return values()[Math.max(Math.min(id, values().length - 1), 0)];
+        public static @NotNull RespawnUsage getByLegacyId(int legacyId) {
+            for (RespawnUsage value : values()) {
+                if (value.legacyId == legacyId) return value;
+            }
+            
+            return getDefault();
+        }
+
+        public static @NotNull RespawnUsage getByName(String name) {
+            for (RespawnUsage value : values()) {
+                if (value.name().equals(name)) return value;
+            }
+            
+            return getDefault();
+        }
+
+        @NotNull
+        public static RespawnUsage getDefault() {
+            return DISABLED;
         }
 
         public RespawnUsage next() {
@@ -371,8 +439,8 @@ public class Spawn extends FeatureObject {
             return values()[previous];
         }
 
-        public String getName() {
-            return name;
+        public String getDisplay() {
+            return display;
         }
 
         public boolean isBungee() {

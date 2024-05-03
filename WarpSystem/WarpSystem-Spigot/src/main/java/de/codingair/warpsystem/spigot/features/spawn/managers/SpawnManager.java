@@ -28,7 +28,8 @@ import java.util.Objects;
 @Function (name = "Enabled", defaultValue = "false", config = "Config", configPath = "WarpSystem.Functions.Spawn", clazz = Boolean.class)
 @Function (name = "Teleport message", defaultValue = "true", config = "Config", configPath = "WarpSystem.Send.Teleport_Message.Spawn", clazz = Boolean.class)
 public class SpawnManager implements Manager {
-    private String spawnServer = null, respawnServer = null;
+    private String spawnServerCommand = null, respawnServerCommand = null;
+    private boolean spawnServerProxy = false;
     private Spawn spawn;
 
     public static SpawnManager getInstance() {
@@ -106,16 +107,21 @@ public class SpawnManager implements Manager {
         this.spawn.addAction(new WarpAction(new Destination(new LocationAdapter(location))));
     }
 
-    public String getSpawnServer() {
-        return spawnServer;
+    public boolean isSpawnServerProxy() {
+        return spawnServerProxy;
     }
 
-    public void updateGlobalOptions(String spawn, String respawn, Player connection) {
-        if (!Objects.equals(this.spawnServer, spawn) || !Objects.equals(this.respawnServer, respawn)) {
-            this.spawnServer = spawn;
-            this.respawnServer = respawn;
+    public String getSpawnServerCommand() {
+        return spawnServerCommand;
+    }
 
-            WarpSystem.getDataHandler().send(new SendGlobalSpawnOptionsPacket(spawn, respawn), connection);
+    public void updateGlobalOptions(boolean spawnServerProxy, String spawnServerCommand, String respawnServerCommand, Player connection) {
+        if (!Objects.equals(this.spawnServerProxy, spawnServerProxy) || !Objects.equals(this.spawnServerCommand, spawnServerCommand) || !Objects.equals(this.respawnServerCommand, respawnServerCommand)) {
+            this.spawnServerProxy = spawnServerProxy;
+            this.spawnServerCommand = spawnServerCommand;
+            this.respawnServerCommand = respawnServerCommand;
+
+            WarpSystem.getDataHandler().send(new SendGlobalSpawnOptionsPacket(spawnServerProxy, spawnServerCommand, respawnServerCommand), connection);
         }
     }
 
@@ -125,11 +131,11 @@ public class SpawnManager implements Manager {
         if (this.spawn != null && this.spawn.getUsage().isBungee() && !Objects.equals(s, spawn)) this.spawn.setUsage(this.spawn.getUsage().getLocal());
         if (this.spawn != null && this.spawn.getRespawnUsage().isBungee() && !Objects.equals(s, respawn)) this.spawn.setRespawnUsage(this.spawn.getRespawnUsage().getLocal());
 
-        this.spawnServer = spawn;
-        this.respawnServer = respawn;
+        this.spawnServerCommand = spawn;
+        this.respawnServerCommand = respawn;
     }
 
-    public String getRespawnServer() {
-        return respawnServer;
+    public String getRespawnServerCommand() {
+        return respawnServerCommand;
     }
 }
