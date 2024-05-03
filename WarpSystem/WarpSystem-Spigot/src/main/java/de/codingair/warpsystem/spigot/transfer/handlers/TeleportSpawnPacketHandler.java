@@ -20,6 +20,7 @@ public class TeleportSpawnPacketHandler implements PacketHandler<TeleportSpawnPa
         if (spawn != null) {
             TeleportOptions options = new TeleportOptions();
             spawn.prepareTeleportOptions(packet.getPlayer(), options);
+            options.setSkip(true);
             if (packet.isRespawn()) options.setMessage(null);
 
             TeleportListener.setSpawnPositionOrTeleport(packet.getPlayer(), options);
