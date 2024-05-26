@@ -4,6 +4,7 @@ import de.codingair.codingapi.API;
 import de.codingair.codingapi.files.ConfigFile;
 import de.codingair.codingapi.files.FileManager;
 import de.codingair.codingapi.files.loader.UTFConfig;
+import de.codingair.codingapi.nms.NmsCheck;
 import de.codingair.codingapi.server.reflections.IReflection;
 import de.codingair.codingapi.server.specification.Type;
 import de.codingair.codingapi.server.specification.Version;
@@ -14,6 +15,7 @@ import de.codingair.warpsystem.core.transfer.packets.proxy.SetupAssistantStorePa
 import de.codingair.warpsystem.core.transfer.packets.spigot.RequestInitialPacket;
 import de.codingair.warpsystem.core.utils.Manager;
 import de.codingair.warpsystem.spigot.api.SpigotAPI;
+import de.codingair.warpsystem.spigot.api.events.FakeBlockBreakEvent;
 import de.codingair.warpsystem.spigot.api.placeholders.PAPI;
 import de.codingair.warpsystem.spigot.base.commands.CWarpSystem;
 import de.codingair.warpsystem.spigot.base.listeners.*;
@@ -69,6 +71,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     private UpdateNotifier updateNotifier;
     private boolean old = false;
     private boolean ERROR = true;
+    private boolean workingNms = false;
     private boolean shouldSave = true;
     private String oldVersion = null;
     private UTFConfig oldConfig = null;
@@ -115,6 +118,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     @Override
     public void onEnable() {
         if (!checkSpigot()) return;
+        checkNms();
 
         long start = System.currentTimeMillis();
 
@@ -244,6 +248,11 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
     @Override
     public void onDisable() {
+        if (!workingNms) {
+            getLogger().log(Level.SEVERE, "This Minecraft version does not seem to be supported yet. Please contact the author with the given error above.");
+            getLogger().log(Level.SEVERE, "Here's an invitation to the discord for support: https://discord.gg/DxKMcGjQbp");
+            return;
+        }
         if (Version.type() == Type.BUKKIT) return;
 
         API.getInstance().onDisable(this);
@@ -262,8 +271,9 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         updateAvailable = false;
         old = false;
         ERROR = true;
+        workingNms = false;
         shouldSave = true;
-        playerDataManager.flush();
+        if (playerDataManager != null) playerDataManager.flush();
 
         HandlerList.unregisterAll(this);
         Bukkit.getScheduler().cancelTasks(this);
@@ -275,6 +285,13 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         dataHandler.onDisable();
 
         destroy();
+    }
+
+    private void checkNms() {
+        NmsCheck.test(new Class[]{
+                FakeBlockBreakEvent.class
+        });
+        workingNms = true;
     }
 
     private void checkBackup(ConfigFile config, boolean createBackup) {

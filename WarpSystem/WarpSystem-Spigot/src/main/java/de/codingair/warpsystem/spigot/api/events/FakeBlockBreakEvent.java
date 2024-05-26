@@ -1,6 +1,7 @@
 package de.codingair.warpsystem.spigot.api.events;
 
 import com.mojang.authlib.GameProfile;
+import de.codingair.codingapi.nms.NmsLoader;
 import de.codingair.codingapi.player.data.GameProfileUtils;
 import de.codingair.codingapi.server.reflections.IReflection;
 import de.codingair.codingapi.server.reflections.PacketUtils;
@@ -28,6 +29,8 @@ public class FakeBlockBreakEvent extends BlockBreakEvent {
     private static final IReflection.FieldAccessor<PermissibleBase> PERMISSION_BASE = IReflection.getField(PacketUtils.CraftPlayerClass, PermissibleBase.class, 0);
     private static final IReflection.FieldAccessor<?> PLAYER_CONNECTION_FIELD = IReflection.getField(PacketUtils.EntityPlayerClass, PacketUtils.PlayerConnectionClass, 0);
 
+    private static final Class<?> PlayerInteractManagerClass = IReflection.getClass(IReflection.ServerPacket.MINECRAFT_PACKAGE("net.minecraft.server.level"), "PlayerInteractManager");
+
     static {
         Class<?> protocolDirection = IReflection.getClass(IReflection.ServerPacket.PROTOCOL, "EnumProtocolDirection");
 
@@ -36,9 +39,14 @@ public class FakeBlockBreakEvent extends BlockBreakEvent {
             Class<?> commonListenerCookieClass = IReflection.getClass("net.minecraft.server.network.", "CommonListenerCookie");
             DEFAULT_CLIENT_INFORMATION = IReflection.getMethod(clientInformationClass, clientInformationClass, new Class[0]);
 
-            IReflection.MethodAccessor getCookie = IReflection.getMethod(commonListenerCookieClass, commonListenerCookieClass, new Class[]{GameProfile.class});
-
-            COMMON_LISTENER_COOKIE = (profile) -> getCookie.invoke(null, profile);
+            IReflection.MethodAccessor getCookie;
+            if (Version.atLeast(20.5)) {
+                getCookie = IReflection.getMethod(commonListenerCookieClass, commonListenerCookieClass, new Class[]{GameProfile.class, boolean.class});
+                COMMON_LISTENER_COOKIE = (profile) -> getCookie.invoke(null, profile, false);
+            } else {
+                getCookie = IReflection.getMethod(commonListenerCookieClass, commonListenerCookieClass, new Class[]{GameProfile.class});
+                COMMON_LISTENER_COOKIE = (profile) -> getCookie.invoke(null, profile);
+            }
 
             PLAYER_INTERACT_MANAGER = null;
             PLAYER = IReflection.getConstructor(PacketUtils.EntityPlayerClass, PacketUtils.MinecraftServerClass, PacketUtils.WorldServerClass, GameProfile.class, clientInformationClass);
@@ -68,8 +76,8 @@ public class FakeBlockBreakEvent extends BlockBreakEvent {
                 PLAYER_INTERACT_MANAGER = null;
                 PLAYER = IReflection.getConstructor(PacketUtils.EntityPlayerClass, PacketUtils.MinecraftServerClass, PacketUtils.WorldServerClass, GameProfile.class);
             } else {
-                PLAYER_INTERACT_MANAGER = IReflection.getConstructor(PacketUtils.PlayerInteractManagerClass, PacketUtils.WorldServerClass);
-                PLAYER = IReflection.getConstructor(PacketUtils.EntityPlayerClass, PacketUtils.MinecraftServerClass, PacketUtils.WorldServerClass, GameProfile.class, PacketUtils.PlayerInteractManagerClass);
+                PLAYER_INTERACT_MANAGER = IReflection.getConstructor(PlayerInteractManagerClass, PacketUtils.WorldServerClass);
+                PLAYER = IReflection.getConstructor(PacketUtils.EntityPlayerClass, PacketUtils.MinecraftServerClass, PacketUtils.WorldServerClass, GameProfile.class, PlayerInteractManagerClass);
             }
 
             PLAYER_CONNECTION = IReflection.getConstructor(PacketUtils.PlayerConnectionClass, PacketUtils.MinecraftServerClass, PacketUtils.NetworkManagerClass, PacketUtils.EntityPlayerClass);
@@ -78,7 +86,12 @@ public class FakeBlockBreakEvent extends BlockBreakEvent {
             IReflection.ConstructorAccessor networkManagerCon = IReflection.getConstructor(PacketUtils.NetworkManagerClass, protocolDirection);
             NETWORK_MANAGER = p -> networkManagerCon.newInstance(PROTOCOL_DIRECTION);
         }
+    }
 
+    @NmsLoader
+    private FakeBlockBreakEvent() {
+        //noinspection DataFlowIssue
+        this(null, null);
     }
 
     public FakeBlockBreakEvent(@NotNull Block theBlock, @NotNull Player player) {

@@ -27,6 +27,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BlockStateMeta;
 
 public class SignListener implements Listener {
     private final SignManager manager;
@@ -35,7 +36,7 @@ public class SignListener implements Listener {
         manager = WarpSystem.getInstance().getDataManager().getManager(FeatureType.SIGNS);
     }
 
-    @EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onInteract(PlayerInteractEvent e) {
         if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
 
@@ -65,7 +66,7 @@ public class SignListener implements Listener {
         }
     }
 
-    @EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onBreak(BlockBreakEvent e) {
         if (e.getBlock().getState() instanceof Sign) {
             Sign s = (Sign) e.getBlock().getState();
@@ -99,7 +100,6 @@ public class SignListener implements Listener {
                 ItemStack item = e.getItemInHand();
 
                 org.bukkit.Location location = NBTHelper.fromSign(item);
-
                 if (location != null) {
                     WarpSign original = manager.getByLocation(location);
 
@@ -118,7 +118,10 @@ public class SignListener implements Listener {
     public void onPick(PlayerPickItemEvent e) {
         Block b = e.getFrom();
 
-        if (b.getState() instanceof Sign && e.isNBTCopy()) {
+        if (b.getState() instanceof Sign && e.getItemStack().getItemMeta() instanceof BlockStateMeta) {
+            BlockStateMeta meta = (BlockStateMeta) e.getItemStack().getItemMeta();
+            if (!meta.hasBlockState()) return;
+
             WarpSign sign = manager.getByLocation(b.getLocation());
 
             if (sign != null) {
@@ -128,7 +131,7 @@ public class SignListener implements Listener {
         }
     }
 
-    @EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onPlace(SignChangeEvent e) {
         if (!e.getPlayer().hasPermission(Permissions.PERMISSION_MODIFY_WARP_SIGNS)) return;
 

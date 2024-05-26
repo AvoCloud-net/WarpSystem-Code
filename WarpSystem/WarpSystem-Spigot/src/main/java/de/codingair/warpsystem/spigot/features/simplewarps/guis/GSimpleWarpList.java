@@ -17,7 +17,7 @@ import java.util.List;
 
 public abstract class GSimpleWarpList extends GUIList<SimpleWarp> {
     public GSimpleWarpList(Player p) {
-        super(p, "§c" + Lang.get("SimpleWarps") + "§7- §c" + Lang.get("List") + " §7(%CURRENT%/%MAX%)", true);
+        super(p, "§c" + Lang.get("SimpleWarps") + "§7 - §c" + Lang.get("List") + " §7(%CURRENT%/%MAX%)", true);
     }
 
     @Override
