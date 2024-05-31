@@ -14,6 +14,7 @@ import de.codingair.codingapi.utils.ImprovedDouble;
 import de.codingair.warpsystem.core.transfer.packets.general.SendPlayerWarpsPacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.utils.PlayerWarpData;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
+import de.codingair.warpsystem.spigot.base.utils.FloodgateUtils;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.base.utils.commands.WarpSystemBaseComponent;
@@ -80,6 +81,11 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
 
             @Override
             public boolean runCommand(CommandSender sender, String label, String argument, String[] args) {
+                if (FloodgateUtils.isBedrockPlayer((Player) sender)) {
+                    sender.sendMessage(Lang.getPrefix() + WarpSystem.opt().cmdSug() + Lang.get("Use") + ": /" + label + " delete " + argument + " " + WarpSystem.opt().cmdArg() + "confirm");
+                    return false;
+                }
+
                 PlayerWarp warp = PlayerWarpManager.getManager().getWarp((Player) sender, argument);
 
                 if (warp == null) {
@@ -125,6 +131,35 @@ public class CPlayerWarps extends WarpSystemCommandBuilder {
                 message.setTimeOut(60);
 
                 message.send((Player) sender);
+                return false;
+            }
+        });
+
+        getComponent("delete", null).addChild(new CommandComponent("confirm") {
+            @Override
+            public boolean runCommand(CommandSender sender, String s, String[] args) {
+                String argument = args[args.length - 2];
+                PlayerWarp warp = PlayerWarpManager.getManager().getWarp((Player) sender, argument);
+
+                if (warp == null) {
+                    sender.sendMessage(Lang.getPrefix() + Lang.get("WARP_DOES_NOT_EXISTS"));
+                    return false;
+                }
+
+                boolean owner = warp.isOwner((Player) sender);
+
+                if (!owner && !sender.hasPermission(Permissions.PERMISSION_MODIFY_PLAYER_WARPS)) {
+                    sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_no_access"));
+                    return false;
+                }
+
+                double refund = PlayerWarpManager.getManager().delete(warp, true, (Player) sender);
+                if (refund == -1) return false;
+
+                if (refund > 0 && PlayerWarpManager.getManager().isEconomy()) {
+                    if(owner) Bank.adapter().deposit((Player) sender, refund);
+                    sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_Deleted_Info" + (!owner ? "_Admin" : "")).replace("%NAME%", warp.getName(true)).replace("%PLAYER%", warp.getOwner() == null ? "NULL" : warp.getOwner().getName()).replace("%PRICE%", CPlayerWarps.cut(refund) + ""));
+                } else sender.sendMessage(Lang.getPrefix() + Lang.get("Warp_was_deleted" + (!owner ? "_Admin" : "")).replace("%NAME%", warp.getName(true)).replace("%PLAYER%", warp.getOwner() == null ? "NULL" : warp.getOwner().getName()));
                 return false;
             }
         });

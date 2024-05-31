@@ -1,0 +1,20 @@
+package de.codingair.warpsystem.spigot.base.utils;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.geysermc.floodgate.api.FloodgateApi;
+import org.jetbrains.annotations.NotNull;
+
+public class FloodgateUtils {
+
+    public static boolean isBedrockPlayer(@NotNull Player player) {
+        if (Bukkit.getPluginManager().isPluginEnabled("floodgate")) {
+            return FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId());
+        } else return false;
+    }
+
+    public static boolean isNonBedrockPlayer(@NotNull Player player) {
+        return !isBedrockPlayer(player);
+    }
+
+}
