@@ -79,12 +79,12 @@ public class PortalBlock implements Serializable {
                     }
                 } else {
                     if (type == BlockType.NETHER) {
-                        new ModernBlock(this.location.getBlock()).setTypeAndData(type.getExactBlockMaterial(), new Orientable(portal.getCachedAxis()));
+                        new ModernBlock(this.location.getBlock()).setTypeAndData(type.getBlockMaterial(), new Orientable(portal.getCachedAxis()));
                     } else if (type == BlockType.END) {
                         if (portal.isVertically() && type.getVerticalBlockMaterial() != null) {
-                            this.location.getBlock().setType(type.getExactVerticalBlockMaterial(), true);
-                        } else this.location.getBlock().setType(type.getExactBlockMaterial(), false);
-                    } else this.location.getBlock().setType(type.getExactBlockMaterial(), false);
+                            this.location.getBlock().setType(type.getVerticalBlockMaterial(), true);
+                        } else this.location.getBlock().setType(type.getBlockMaterial(), false);
+                    } else this.location.getBlock().setType(type.getBlockMaterial(), false);
                 }
             }
         } else if (type.getEditMaterial() != null || type.getBlock() != null || type.getBlockMaterial() != null) this.location.getBlock().setType(Material.AIR, true);

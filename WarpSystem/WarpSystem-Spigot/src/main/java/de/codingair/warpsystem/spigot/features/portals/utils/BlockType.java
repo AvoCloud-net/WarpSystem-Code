@@ -13,18 +13,18 @@ import org.bukkit.inventory.ItemStack;
 public enum BlockType {
     WATER(Lang.get("Water_Portal"), null, new ItemBuilder(XMaterial.BLUE_TERRACOTTA), StaticWaterBlock.class),
     LAVA(Lang.get("Lava_Portal"), null, new ItemBuilder(XMaterial.RED_TERRACOTTA), StaticLavaBlock.class),
-    NETHER(Lang.get("Nether_Portal"), new ItemBuilder(XMaterial.NETHER_PORTAL), new ItemBuilder(XMaterial.PURPLE_TERRACOTTA), null),
-    END(Lang.get("End_Portal"), new ItemBuilder(XMaterial.END_PORTAL), new ItemBuilder(XMaterial.END_GATEWAY), new ItemBuilder(XMaterial.BLACK_TERRACOTTA), null),
-    AIR(Lang.get("Air_Portal"), new ItemBuilder(XMaterial.AIR), new ItemBuilder(XMaterial.WHITE_STAINED_GLASS), null),
+    NETHER(Lang.get("Nether_Portal"), XMaterial.NETHER_PORTAL, new ItemBuilder(XMaterial.PURPLE_TERRACOTTA), null),
+    END(Lang.get("End_Portal"), XMaterial.END_PORTAL, XMaterial.END_GATEWAY, new ItemBuilder(XMaterial.BLACK_TERRACOTTA), null),
+    AIR(Lang.get("Air_Portal"), XMaterial.AIR, new ItemBuilder(XMaterial.WHITE_STAINED_GLASS), null),
     CUSTOM(Lang.get("Custom_Portal"), null, null, null);
 
     private final String name;
-    private final ItemBuilder blockMaterial;
-    private final ItemBuilder verticalBlockMaterial;
+    private final XMaterial blockMaterial;
+    private final XMaterial verticalBlockMaterial;
     private final ItemBuilder editMaterial;
     private final Class<? extends Block> block;
 
-    BlockType(String name, ItemBuilder blockMaterial, ItemBuilder editMaterial, Class<? extends Block> block) {
+    BlockType(String name, XMaterial blockMaterial, ItemBuilder editMaterial, Class<? extends Block> block) {
         this.name = name;
         this.blockMaterial = blockMaterial;
         this.editMaterial = editMaterial;
@@ -32,7 +32,7 @@ public enum BlockType {
         this.block = block;
     }
 
-    BlockType(String name, ItemBuilder blockMaterial, ItemBuilder verticalBlockMaterial, ItemBuilder editMaterial, Class<? extends Block> block) {
+    BlockType(String name, XMaterial blockMaterial, XMaterial verticalBlockMaterial, ItemBuilder editMaterial, Class<? extends Block> block) {
         this.name = name;
         this.blockMaterial = blockMaterial;
         this.verticalBlockMaterial = verticalBlockMaterial;
@@ -72,27 +72,19 @@ public enum BlockType {
     }
 
     public boolean hasVerticalBlockMaterial() {
-        return verticalBlockMaterial != null && verticalBlockMaterial.getType() != null;
+        return verticalBlockMaterial != null && verticalBlockMaterial.parseMaterial() != null;
     }
 
-    public ItemBuilder getVerticalBlockMaterial() {
-        return verticalBlockMaterial == null ? null : verticalBlockMaterial.getType() == null ? null : verticalBlockMaterial.clone();
-    }
-
-    public Material getExactVerticalBlockMaterial() {
-        return verticalBlockMaterial == null ? null : verticalBlockMaterial.getType();
+    public Material getVerticalBlockMaterial() {
+        return verticalBlockMaterial == null ? null : verticalBlockMaterial.parseMaterial();
     }
 
     public boolean hasBlockMaterial() {
-        return blockMaterial != null && blockMaterial.getType() != null;
+        return blockMaterial != null && blockMaterial.parseMaterial() != null;
     }
 
-    public ItemBuilder getBlockMaterial() {
-        return blockMaterial == null ? null : blockMaterial.getType() == null ? null : blockMaterial.clone();
-    }
-
-    public Material getExactBlockMaterial() {
-        return blockMaterial == null ? null : blockMaterial.getType();
+    public Material getBlockMaterial() {
+        return blockMaterial == null ? null : blockMaterial.parseMaterial();
     }
 
     public Class<? extends Block> getBlock() {
