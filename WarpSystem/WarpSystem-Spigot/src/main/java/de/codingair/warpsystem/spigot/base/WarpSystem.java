@@ -117,7 +117,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
     @Override
     public void onEnable() {
-        if (!checkSpigot()) return;
+        if (!checkServerVersion()) return;
         checkNms();
 
         long start = System.currentTimeMillis();
@@ -248,6 +248,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
     @Override
     public void onDisable() {
+        if (Version.get() != null && Version.atLeast(20.5) && Version.type() != Type.PAPER) return;
         if (!workingNms) {
             getLogger().log(Level.SEVERE, "This Minecraft version does not seem to be supported yet. Please contact the author with the given error above.");
             getLogger().log(Level.SEVERE, "Here's an invitation to the discord for support: https://discord.gg/DxKMcGjQbp");
@@ -361,18 +362,25 @@ public class WarpSystem extends JavaPlugin implements Proxy {
         }, 1);
     }
 
-    private boolean checkSpigot() {
+    private boolean checkServerVersion() {
+        if (Version.get() != null && Version.atLeast(20.5) && Version.type() != Type.PAPER) {
+            shouldSave = false;
+            getLogger().info("====================");
+            getLogger().log(Level.SEVERE, "To support faster updates by having less NMS changes, this plugin requires a Paper server as of Minecraft 1.20.5 and upwards!");
+            getLogger().log(Level.SEVERE, "A fork of Paper does also work.");
+            Bukkit.getPluginManager().disablePlugin(this);
+            getLogger().info("====================");
+
+            return false;
+        }
+
         if (Version.type() == Type.BUKKIT) {
             shouldSave = false;
-            log(" ");
-            log(" ");
-            log(" ");
+            getLogger().info("====================");
             getLogger().log(Level.SEVERE, "This plugin requires a Spigot server!");
-            getLogger().log(Level.SEVERE, "A fork like PaperMc does also work.");
-            log(" ");
-            log(" ");
-            log(" ");
+            getLogger().log(Level.SEVERE, "A fork of Paper does also work.");
             Bukkit.getPluginManager().disablePlugin(this);
+            getLogger().info("====================");
 
             return false;
         }
