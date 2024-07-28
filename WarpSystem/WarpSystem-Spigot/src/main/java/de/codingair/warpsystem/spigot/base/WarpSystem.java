@@ -57,12 +57,13 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     private final FileManager fileManager = new FileManager(this);
     private final HeadManager headManager = new HeadManager();
     private final SetupAssistantManager setupAssistantManager = new SetupAssistantManager();
-    private final SpigotHandler dataHandler = new SpigotHandler(this);
+    private SpigotHandler dataHandler;
     private PlayerDataManager playerDataManager;
     private CooldownManager cooldownManager;
     private OptionBundle options;
     private GeneralOptions generalOptions;
     private boolean useProxy = false;
+    private boolean ignoreProxyDetection = false;
     private boolean connectedProxy = false;
     private String proxyPluginVersion = null;
     private String server = null;
@@ -142,7 +143,9 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
             ConfigFile config = this.fileManager.loadFile("Config", "/");
 
-            this.useProxy = config.getConfig().getBoolean("WarpSystem.Proxy.Enabled", true);
+            this.useProxy = config.getConfig().getBoolean("WarpSystem.Proxy.Enabled", false);
+            this.ignoreProxyDetection = config.getConfig().getBoolean("WarpSystem.Proxy.Ignore_Proxy_Detection", false);
+            this.dataHandler = new SpigotHandler(this);
             this.playerDataManager = new PlayerDataManager();
             this.serverManager = new ServerManager();
 
@@ -605,5 +608,9 @@ public class WarpSystem extends JavaPlugin implements Proxy {
 
     public boolean isUseProxy() {
         return useProxy;
+    }
+
+    public boolean ignoreProxyDetection() {
+        return ignoreProxyDetection;
     }
 }

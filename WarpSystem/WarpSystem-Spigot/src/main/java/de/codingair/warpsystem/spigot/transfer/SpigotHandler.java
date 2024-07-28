@@ -1,5 +1,9 @@
 package de.codingair.warpsystem.spigot.transfer;
 
+import de.codingair.packetmanagement.handlers.PacketHandler;
+import de.codingair.packetmanagement.packets.Packet;
+import de.codingair.packetmanagement.packets.RequestPacket;
+import de.codingair.packetmanagement.packets.ResponsePacket;
 import de.codingair.packetmanagement.variants.bytestream.OneWayStreamDataHandler;
 import de.codingair.warpsystem.core.transfer.packets.general.*;
 import de.codingair.warpsystem.core.transfer.packets.proxy.*;
@@ -7,6 +11,7 @@ import de.codingair.warpsystem.core.transfer.packets.spigot.PrepareTeleportReque
 import de.codingair.warpsystem.core.transfer.packets.spigot.RandomTPWorldsPacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.TeleportRequestHandledPacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.ToggleForceTeleportsPacket;
+import de.codingair.warpsystem.core.transfer.packets.spigot.utils.ConnectionPacket;
 import de.codingair.warpsystem.core.transfer.packets.utils.PacketType;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.transfer.handlers.*;
@@ -14,18 +19,29 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class SpigotHandler extends OneWayStreamDataHandler<Player> implements PluginMessageListener {
     public SpigotHandler(WarpSystem plugin) {
         super("warpsystem", plugin);
+
+        setIgnoreUnregistered(true);
     }
 
     @Override
     public void registering() {
         for (PacketType value : PacketType.values()) {
             registerPacket(value.getPacket());
+        }
+
+        if (!WarpSystem.getInstance().isUseProxy()) {
+            // fix: custom payload attacks
+            // When WarpSystem is not enabled on the proxy,
+            // all packets must be ignored to prevent any communication with external clients.
+            return;
         }
 
         registerHandler(SendGlobalSpawnOptionsPacket.class, new SendGlobalSpawnOptionsPacketHandler());
@@ -74,5 +90,42 @@ public class SpigotHandler extends OneWayStreamDataHandler<Player> implements Pl
     private Player getAny() {
         Optional<? extends Player> opt = Bukkit.getOnlinePlayers().stream().findFirst();
         return opt.orElse(null);
+    }
+
+    @Override
+    public <P extends Packet> boolean registerHandler(@NotNull Class<? extends P> receiving, @NotNull PacketHandler<P> handler) {
+        if (!WarpSystem.getInstance().isUseProxy()) {
+            // fix: custom payload attacks
+            // When WarpSystem is not enabled on the proxy,
+            // all packets must be ignored to prevent any communication with external clients.
+            return false;
+        }
+        return super.registerHandler(receiving, handler);
+    }
+
+    @Override
+    public void send(@NotNull Packet packet, @Nullable Player connection) {
+        if (!WarpSystem.getInstance().isUseProxy()) return;
+        super.send(packet, connection);
+    }
+
+    @Override
+    public <A extends ResponsePacket> CompletableFuture<A> send(@NotNull RequestPacket<A> packet, @Nullable Player connection) {
+        if (!WarpSystem.getInstance().isUseProxy()) {
+            CompletableFuture<A> future = new CompletableFuture<>();
+            future.completeExceptionally(new IllegalStateException("TradeProxy not connected."));
+            return future;
+        }
+        return super.send(packet, connection);
+    }
+
+    @Override
+    public <A extends ResponsePacket> CompletableFuture<A> send(@NotNull RequestPacket<A> packet, @Nullable Player connection, long timeOut) {
+        if (!WarpSystem.getInstance().isUseProxy() && !(packet instanceof ConnectionPacket)) {
+            CompletableFuture<A> future = new CompletableFuture<>();
+            future.completeExceptionally(new IllegalStateException("TradeProxy not connected."));
+            return future;
+        }
+        return super.send(packet, connection, timeOut);
     }
 }

@@ -7,6 +7,7 @@ import de.codingair.warpsystem.core.transfer.packets.proxy.PrepareLoginMessagePa
 import de.codingair.warpsystem.core.transfer.packets.spigot.RequestInitialPacket;
 import de.codingair.warpsystem.core.transfer.packets.spigot.utils.ConnectionPacket;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
+import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.Permissions;
 import de.codingair.warpsystem.spigot.transfer.handlers.InitialPacketHandler;
 import org.bukkit.Bukkit;
@@ -40,10 +41,8 @@ public class BungeeBukkitListener implements Listener {
             p.sendMessage(message);
         }
 
-        if (WarpSystem.getInstance().isUseProxy()) {
-            //request initial packet //do NOT check if already connected -> initial packet for every proxy server
-            Bukkit.getScheduler().runTaskAsynchronously(WarpSystem.getInstance(), () -> tryConnection(p, 0));
-        }
+        //request initial packet //do NOT check if already connected -> initial packet for every proxy server
+        Bukkit.getScheduler().runTaskAsynchronously(WarpSystem.getInstance(), () -> tryConnection(p, 0));
 
         Bukkit.getScheduler().runTaskLater(WarpSystem.getInstance(), () -> {
             if (notice != null && (p.hasPermission(Permissions.PERMISSION_NOTIFY) || p.isOp())) p.sendMessage(notice);
@@ -79,6 +78,16 @@ public class BungeeBukkitListener implements Listener {
 
         WarpSystem.getDataHandler().send(new ConnectionPacket(), p, 500).whenComplete((success, t) -> {
             if (success != null) {
+                if (!WarpSystem.getInstance().isUseProxy()) {
+                    if (!WarpSystem.getInstance().ignoreProxyDetection()) {
+                        notice = new String[]{Lang.getPrefix() + "§cWarning! §7The proxy support is §cdisabled §7but §eWarpSystem §7has been detected on your proxy. If you are sure that §eWarpSystem §7is installed on your proxy, you can activate the option in your config.yml file. This check prevents §ccustom payload attacks§7."};
+                        WarpSystem.getInstance().getLogger().warning("========================================");
+                        WarpSystem.getInstance().getLogger().warning("The proxy support is disabled but WarpSystem has been detected on your proxy. If you are sure that WarpSystem is installed on your proxy, you can activate the option in your config.yml file. This check prevents custom payload attacks.");
+                        WarpSystem.getInstance().getLogger().warning("========================================");
+                    }
+                    return;
+                }
+
                 WarpSystem.getDataHandler().send(new RequestInitialPacket(), p);
             } else {
                 tryConnection(p, counter + 1);

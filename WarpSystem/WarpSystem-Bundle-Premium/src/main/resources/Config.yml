@@ -20,8 +20,11 @@ WarpSystem:
       Teleport_Interceptions: false
 
   Proxy:
+    # Warning: Disabled for security reasons. You will be vulnerable to custom payload attacks if this is enabled, but WarpSystem is not deployed on your proxy.
     # Must be enabled to establish a valid connection to the BungeeCord/Velocity server
-    Enabled: true
+    Enabled: false
+    # If set to true, all messages that WarpSystem is deployed on your proxy but `Proxy.Enabled` is set to false will be ignored.
+    Ignore_Proxy_Detection: false
 
     # Enables /back on the entire proxy.
     Proxy_wide_Back_position: true
