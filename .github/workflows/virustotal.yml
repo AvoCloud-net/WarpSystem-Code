@@ -50,10 +50,12 @@ jobs:
           positives=$(echo "$response" | jq -r '.positives')
           link=$(echo "$response" | jq -r '.permalink')
 
-          if [ "$positives" = 0 ]
+          if [ "$positives" = "0" ]
           then
             echo "No virus detected."
+            exit 0
           else
-            echo "::error::$positives virus(es) detected! Link: $link"
+            echo "$positives virus(es) detected! Link: $link"
+            exit 1
           fi
         fi
