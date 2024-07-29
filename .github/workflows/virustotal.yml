@@ -3,7 +3,7 @@ name: Virus Total Check
 on:
   push:
     branches:
-      - development
+      - develop
 
 jobs:
   build:
