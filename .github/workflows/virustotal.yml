@@ -52,7 +52,7 @@ jobs:
         
             response_code=$(echo "$response" | jq -r '.response_code')
             echo "$response"
-            [ "$response_code" = "1" ]
+            [ ! "$response_code" = "1" ]
           do :; done
         
           positives=$(echo "$response" | jq -r '.positives')
