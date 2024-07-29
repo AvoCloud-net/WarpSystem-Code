@@ -51,6 +51,7 @@ jobs:
             response=$(curl -F apikey=$key -F resource="$resource" $url)
         
             response_code=$(echo "$response" | jq -r '.response_code')
+            echo "$response"
             [ "$response_code" = "1" ]
           do :; done
         
