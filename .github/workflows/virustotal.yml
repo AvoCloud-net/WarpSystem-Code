@@ -43,19 +43,25 @@ jobs:
           echo "::error::Could not run VirusTotal check. Message: $msg"
         else
           echo "Retrieving scan for resource '$resource'..."
-
-          url='https://www.virustotal.com/vtapi/v2/file/report'
-          response=$(curl -F apikey=$key -F resource="$resource" $url)
-
+        
+          while
+            sleep .5
+        
+            url='https://www.virustotal.com/vtapi/v2/file/report'
+            response=$(curl -F apikey=$key -F resource="$resource" $url)
+        
+            response_code=$(echo "$response" | jq -r '.response_code')
+            [ "$response_code" = "1" ]
+          do :; done
+        
           positives=$(echo "$response" | jq -r '.positives')
           link=$(echo "$response" | jq -r '.permalink')
-
+        
           if [ "$positives" = "0" ]
           then
             echo "No virus detected."
             exit 0
           else
-            echo "$response"
             echo "$positives virus(es) detected! Link: $link"
             exit 1
           fi
