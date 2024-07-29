@@ -45,13 +45,15 @@ jobs:
           echo "Retrieving scan for resource '$resource'..."
         
           while
-            sleep .5
+            if [ -n "$response_code" ]
+            then
+              sleep 10
+            fi
         
             url='https://www.virustotal.com/vtapi/v2/file/report'
             response=$(curl -F apikey=$key -F resource="$resource" $url)
         
             response_code=$(echo "$response" | jq -r '.response_code')
-            echo "$response"
             [ ! "$response_code" = "1" ]
           do :; done
         
