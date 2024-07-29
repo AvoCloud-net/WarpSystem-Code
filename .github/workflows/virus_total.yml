@@ -1,4 +1,4 @@
-name: Discord CI
+name: Virus Total Check
 
 on:
   push:
