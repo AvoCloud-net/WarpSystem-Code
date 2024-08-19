@@ -46,7 +46,7 @@ public enum BlockType {
         ItemBuilder builder = new ItemBuilder(item);
 
         for (BlockType value : values()) {
-            if (Version.get().isBiggerThan(Version.v1_12)) {
+            if (Version.after(12)) {
                 if (!value.hasEditMaterial()) continue;
                 if (builder.getType() == value.getExactEditMaterial()) return value;
             } else if (builder.equalsSimply(value.editMaterial)) return value;

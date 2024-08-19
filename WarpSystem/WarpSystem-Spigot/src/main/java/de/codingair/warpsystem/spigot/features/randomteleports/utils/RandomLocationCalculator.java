@@ -103,7 +103,7 @@ public abstract class RandomLocationCalculator implements Runnable {
     @NotNull
     private CompletableFuture<Chunk> getChunkAtAsync(@NotNull Location location) {
         Objects.requireNonNull(location.getWorld());
-        if (Version.get().isBiggerThan(8)) {
+        if (Version.after(8)) {
             boolean directTeleport = fakeCheck != null;
             if (directTeleport) {
                 return PaperLib.getChunkAtAsyncUrgently(

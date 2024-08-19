@@ -22,7 +22,7 @@ public class TeleportUtils {
     }
 
     private static double getHeight(HumanEntity e) {
-        if (Version.get().isBiggerThan(11)) return e.getHeight();
+        if (Version.after(11)) return e.getHeight();
         else return 2D;
     }
 

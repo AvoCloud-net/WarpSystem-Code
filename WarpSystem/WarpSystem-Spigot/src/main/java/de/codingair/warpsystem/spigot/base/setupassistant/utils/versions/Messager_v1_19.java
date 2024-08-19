@@ -24,7 +24,7 @@ public class Messager_v1_19 implements Messager {
     private final EvictingQueue<Object> queue = EvictingQueue.create(17);
     private final PacketReader reader;
     private final Set<Object> packets = new HashSet<>();
-    private final Class<?> oSystemPacketClass = IReflection.getClass(IReflection.ServerPacket.PACKETS, Version.since(19, "ClientboundSystemChatPacket"));
+    private final Class<?> oSystemPacketClass = IReflection.getClass(IReflection.ServerPacket.PACKETS, "ClientboundSystemChatPacket");
     private final IReflection.ConstructorAccessor con = IReflection.getConstructor(oSystemPacketClass, BaseComponent[].class, boolean.class);
 
     public Messager_v1_19(@NotNull Player player, @NotNull SetupAssistant assistant) {
@@ -33,7 +33,7 @@ public class Messager_v1_19 implements Messager {
         Class<?> iPacketClass = IReflection.getClass(IReflection.ServerPacket.PACKETS, "PacketPlayInChat");
         IReflection.FieldAccessor<String> inputText = IReflection.getField(iPacketClass, String.class, 0);
 
-        Class<?> oPlayerPacketClass = IReflection.getClass(IReflection.ServerPacket.PACKETS, Version.since(19, "ClientboundPlayerChatPacket"));
+        Class<?> oPlayerPacketClass = IReflection.getClass(IReflection.ServerPacket.PACKETS, "ClientboundPlayerChatPacket");
 
         reader = new PacketReader(player, "WS-SetupAssistant", WarpSystem.getInstance()) {
             @Override

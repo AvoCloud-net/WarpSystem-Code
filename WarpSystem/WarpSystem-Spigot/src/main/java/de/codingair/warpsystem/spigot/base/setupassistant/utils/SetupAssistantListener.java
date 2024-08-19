@@ -38,7 +38,7 @@ public class SetupAssistantListener implements PacketHandler<SetupAssistantStore
         if (chatPacket == null) {
             Class<?> packet = IReflection.getClass(IReflection.ServerPacket.MINECRAFT_PACKAGE, "PacketPlayOutChat");
 
-            if (Version.get().isBiggerThan(15)) {
+            if (Version.after(15)) {
                 Class<?> type = IReflection.getClass(IReflection.ServerPacket.MINECRAFT_PACKAGE, "ChatMessageType");
                 this.type = type.getEnumConstants()[0];
                 chatPacket = IReflection.getConstructor(packet, PacketUtils.IChatBaseComponentClass, type, UUID.class);
@@ -47,7 +47,7 @@ public class SetupAssistantListener implements PacketHandler<SetupAssistantStore
             }
         }
 
-        if (Version.get().isBiggerThan(15)) {
+        if (Version.after(15)) {
             return chatPacket.newInstance(PacketUtils.getRawIChatBaseComponent(message), type, UUID.randomUUID());
         } else return chatPacket.newInstance(PacketUtils.getRawIChatBaseComponent(message));
     }

@@ -78,7 +78,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
     private UTFConfig oldConfig = null;
 
     public static void updateCommandList() {
-        if (Version.get().isBiggerThan(Version.v1_12)) {
+        if (Version.after(12)) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 IReflection.MethodAccessor updateCommands = IReflection.getMethod(Player.class, "updateCommands");
                 updateCommands.invoke(player);
@@ -138,7 +138,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             log(" ");
             log("Status:");
             log(" ");
-            log("MC-Version: " + Version.get().fullVersion());
+            log("MC-Version: " + Version.fullVersion());
             log(" ");
 
             ConfigFile config = this.fileManager.loadFile("Config", "/");
@@ -423,7 +423,7 @@ public class WarpSystem extends JavaPlugin implements Proxy {
                     log(" ");
                     log("Status:");
                     log(" ");
-                    log("MC-Version: " + Version.get().name());
+                    log("MC-Version: " + Version.fullVersion());
                     log(" ");
                 }
 

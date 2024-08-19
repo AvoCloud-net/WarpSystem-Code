@@ -227,10 +227,10 @@ public class PlayerWarp extends FeatureObject {
         if (this.item == null) this.item = new ItemBuilder();
         if (d.data != null) this.item.setData(d.data);
         if (d.type != null) {
-            Optional<XMaterial> m = XMaterial.matchDefinedXMaterial(d.type, d.data == null || Version.get().isBiggerThan(Version.v1_12) ? 0 : d.data);
+            Optional<XMaterial> m = XMaterial.matchDefinedXMaterial(d.type, d.data == null || Version.after(12) ? 0 : d.data);
             applyMaterial(d, m);
         } else if (d.data != null) {
-            Optional<XMaterial> m = XMaterial.matchDefinedXMaterial(item.getType().name(), Version.get().isBiggerThan(Version.v1_12) ? 0 : d.data);
+            Optional<XMaterial> m = XMaterial.matchDefinedXMaterial(item.getType().name(), Version.after(12) ? 0 : d.data);
             applyMaterial(d, m);
         }
 

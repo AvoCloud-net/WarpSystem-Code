@@ -96,7 +96,7 @@ public class SignListener implements Listener {
         Block b = e.getBlock();
 
         if (b.getState() instanceof Sign) {
-            if (Version.get().isBiggerThan(13)) {
+            if (Version.after(13)) {
                 ItemStack item = e.getItemInHand();
 
                 org.bukkit.Location location = NBTHelper.fromSign(item);

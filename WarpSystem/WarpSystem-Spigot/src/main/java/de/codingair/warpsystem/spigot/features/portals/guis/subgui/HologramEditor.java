@@ -115,7 +115,7 @@ public class HologramEditor extends HotbarGUI {
     }
 
     private void sendBlockChange(Player player, Block b) {
-        if (Version.get().isBiggerThan(Version.v1_12)) {
+        if (Version.after(12)) {
             //block data
             Class<?> blockDataClass = IReflection.getClass(IReflection.ServerPacket.BUKKIT_PACKET, "block.data.BlockData");
             IReflection.MethodAccessor sendBlockChange = IReflection.getMethod(Player.class, "sendBlockChange", null, new Class[] {org.bukkit.Location.class, blockDataClass});
@@ -131,7 +131,7 @@ public class HologramEditor extends HotbarGUI {
     }
 
     private void changeToAlignmentBlock(Player player, Location loc) {
-        if (Version.get().isBiggerThan(Version.v1_12)) {
+        if (Version.after(12)) {
             //block data
             Class<?> blockDataClass = IReflection.getClass(IReflection.ServerPacket.BUKKIT_PACKET, "block.data.BlockData");
             IReflection.MethodAccessor sendBlockChange = IReflection.getMethod(Player.class, "sendBlockChange", null, new Class[] {org.bukkit.Location.class, blockDataClass});

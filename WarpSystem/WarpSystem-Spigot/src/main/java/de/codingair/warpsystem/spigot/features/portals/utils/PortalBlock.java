@@ -91,7 +91,7 @@ public class PortalBlock implements Serializable {
     }
 
     private void setEditData(Block b) {
-        if (Version.get().isBiggerThan(Version.v1_12)) {
+        if (Version.after(12)) {
             b.setType(type.getExactEditMaterial(), false);
         } else {
             ItemBuilder builder = type.getEditMaterial();

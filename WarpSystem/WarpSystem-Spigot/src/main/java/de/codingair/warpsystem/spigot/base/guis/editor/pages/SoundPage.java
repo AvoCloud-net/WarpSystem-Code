@@ -164,7 +164,7 @@ public class SoundPage extends PageItem {
                 return new ItemBuilder(XMaterial.MUSIC_DISC_CAT)
                         .setName(Editor.ITEM_TITLE_COLOR + Lang.get("Sound") + "§8 (§7" + (sounds.length - 1) + "§8)")
                         .addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Current") + ": §7'" + (searchingFor == null ? soundData.getSound().name() : ChatColor.highlight(soundData.getSound().name(), searchingFor, "§e", "§7")) + "§7' §8(§7id: " + soundData.getSound().ordinal() + "§8)")
-                        .addLore(soundData.getSound().isSupported() ? null : "§8» §7" + Lang.get("Not_Available_in_Version").replace("%VERSION%", Version.get().getShortVersionName()))
+                        .addLore(soundData.getSound().isSupported() ? null : "§8» §7" + Lang.get("Not_Available_in_Version").replace("%VERSION%", Version.versionTag()))
                         .addLore(soundData.getSound().isSupported() ? null : "")
                         .addLore(searchingFor == null ? null : Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Search_Short") + ": §7'" + searchingFor + "' §8(§7" + searched.size() + "§8)")
                         .addLore("", searchingFor == null || !searched.isEmpty() ? Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §7«" : null)

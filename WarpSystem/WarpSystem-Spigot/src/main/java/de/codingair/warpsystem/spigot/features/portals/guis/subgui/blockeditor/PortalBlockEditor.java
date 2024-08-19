@@ -230,7 +230,7 @@ public class PortalBlockEditor implements Removable {
     }
 
     public void sendBlockChange(Player player, Block b) {
-        if (Version.get().isBiggerThan(Version.v1_12)) {
+        if (Version.after(12)) {
             //block data
             Class<?> blockDataClass = IReflection.getClass(IReflection.ServerPacket.BUKKIT_PACKET, "block.data.BlockData");
             IReflection.MethodAccessor sendBlockChange = IReflection.getMethod(Player.class, "sendBlockChange", null, new Class[]{org.bukkit.Location.class, blockDataClass});
@@ -246,7 +246,7 @@ public class PortalBlockEditor implements Removable {
     }
 
     public void changeToAlignmentBlock(Player player, Location loc) {
-        if (Version.get().isBiggerThan(Version.v1_12)) {
+        if (Version.after(12)) {
             //block data
             Class<?> blockDataClass = IReflection.getClass(IReflection.ServerPacket.BUKKIT_PACKET, "block.data.BlockData");
             IReflection.MethodAccessor sendBlockChange = IReflection.getMethod(Player.class, "sendBlockChange", null, new Class[]{org.bukkit.Location.class, blockDataClass});

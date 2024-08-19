@@ -118,7 +118,7 @@ public class SetupAssistantManager {
 
     public void startAssistant(Player player, boolean general) {
         if (Version.between(19, 19.1)) {
-            player.sendMessage(Lang.getPrefix() + "§7The SetupAssistant is §cnot available §7for this version §8(" + Version.get().getShortVersionName() + ")§7. Please update to §cMinecraft 1.19.2§7.");
+            player.sendMessage(Lang.getPrefix() + "§7The SetupAssistant is §cnot available §7for this version §8(" + Version.fullVersion() + ")§7. Please update to §cMinecraft 1.19.2§7.");
             return;
         }
 

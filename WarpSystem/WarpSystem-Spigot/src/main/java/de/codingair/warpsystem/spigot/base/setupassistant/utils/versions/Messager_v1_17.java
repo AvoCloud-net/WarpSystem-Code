@@ -14,7 +14,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings ("UnstableApiUsage")
+@SuppressWarnings("UnstableApiUsage")
 public class Messager_v1_17 implements Messager {
     private final Player player;
     private final EvictingQueue<Object> queue = EvictingQueue.create(17);
@@ -24,12 +24,12 @@ public class Messager_v1_17 implements Messager {
         this.player = player;
 
         Class<?> iPacketClass = IReflection.getClass(IReflection.ServerPacket.PACKETS, "PacketPlayInChat");
-        IReflection.FieldAccessor<String> inputText = IReflection.getField(iPacketClass, Version.since(17, "a", "b"));
+        IReflection.FieldAccessor<String> inputText = IReflection.getField(iPacketClass, Version.choose("a", 17, "b"));
 
         Class<?> oPacketClass = IReflection.getClass(IReflection.ServerPacket.PACKETS, "PacketPlayOutChat");
-        IReflection.FieldAccessor<?> outputText = IReflection.getField(oPacketClass, Version.since(17, "components", "a"));
+        IReflection.FieldAccessor<?> outputText = IReflection.getField(oPacketClass, Version.choose("components", 17, "a"));
 
-        IReflection.MethodAccessor getText = IReflection.getMethod(PacketUtils.IChatBaseComponentClass, Version.since(18, "getText", "a"), String.class, new Class[0]);
+        IReflection.MethodAccessor getText = IReflection.getMethod(PacketUtils.IChatBaseComponentClass, Version.choose("getText", 18, "a"), String.class, new Class[0]);
 
         reader = new PacketReader(player, "WS-SetupAssistant", WarpSystem.getInstance()) {
             @Override
