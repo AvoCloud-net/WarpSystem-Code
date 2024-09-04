@@ -29,7 +29,7 @@ jobs:
     - name: Deploy to Discord
       run: |
         rank="<@&793495281387700234>"
-        milestone=62
+        milestone=63
         
         upload() {
             file=$(find "./WarpSystem/WarpSystem-Bundle-$1/target" -type f -name "WarpSystem_v*.jar" | head -n 1)
