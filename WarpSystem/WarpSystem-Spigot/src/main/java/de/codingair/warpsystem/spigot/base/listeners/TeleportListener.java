@@ -40,7 +40,7 @@ public class TeleportListener implements Listener {
         if (player != null && player.isOnline()) {
             //teleport
             org.bukkit.Location l = player.getLocation();
-            AsyncCatcher.runSync(WarpSystem.getInstance(), () -> WarpSystem.getInstance().getTeleportManager().teleport(player, options, true));
+            AsyncCatcher.runSync(WarpSystem.getInstance(), () -> WarpSystem.getInstance().getTeleportManager().teleport(player, options, true), l);
             return CompletableFuture.completedFuture(l);
         } else {
             TeleportData data = new TeleportData(options);

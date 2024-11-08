@@ -94,7 +94,7 @@ public class RandomLocationCacheImpl implements RandomLocationCache {
                         working.set(false);
                         checkWork();
                     } else preload(w, tries + 1);
-                });
+                }, c.getResult());
             }
         });
 
@@ -130,7 +130,7 @@ public class RandomLocationCacheImpl implements RandomLocationCache {
                         isProtected -> AsyncCatcher.runSync(WarpSystem.getInstance(), () -> {
                                     if (isProtected) future.complete(null);
                                     else future.complete(l);
-                                }
+                                }, player.getLocation()
                         )
                 )
         );

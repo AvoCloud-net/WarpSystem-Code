@@ -155,7 +155,7 @@ public class SpawnListener implements Listener {
             });
         } else {
             teleporting.remove(player.getName());
-            AsyncCatcher.runSync(WarpSystem.getInstance(), () -> player.sendMessage(Lang.getPrefix() + Lang.get("World_Not_Exists")));
+            AsyncCatcher.runSync(WarpSystem.getInstance(), () -> player.sendMessage(Lang.getPrefix() + Lang.get("World_Not_Exists")), player.getLocation());
         }
     }
 
