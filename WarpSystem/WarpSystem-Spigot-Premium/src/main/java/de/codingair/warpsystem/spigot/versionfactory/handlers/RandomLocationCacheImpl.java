@@ -88,12 +88,16 @@ public class RandomLocationCacheImpl implements RandomLocationCache {
             @Override
             public void accept(RandomLocationCalculator c) {
                 if (!WarpSystem.getInstance().isEnabled()) return;
+
+                if (c.getResult() == null) {
+                    preload(w, tries + 1);
+                    return;
+                }
+
                 AsyncCatcher.runSync(WarpSystem.getInstance(), () -> {
-                    if (c.getResult() != null) {
-                        storeLocation(w, c);
-                        working.set(false);
-                        checkWork();
-                    } else preload(w, tries + 1);
+                    storeLocation(w, c);
+                    working.set(false);
+                    checkWork();
                 }, c.getResult());
             }
         });

@@ -66,6 +66,7 @@ public abstract class RandomLocationCalculator implements Runnable {
         callback.accept(this);
     }
 
+    @Nullable
     private Location calculate() {
         long start = System.currentTimeMillis();
         Location location = new Location(startLocation);
@@ -248,6 +249,7 @@ public abstract class RandomLocationCalculator implements Runnable {
         return player;
     }
 
+    @Nullable
     public Location getResult() {
         return result == null ? null : result.clone();
     }
