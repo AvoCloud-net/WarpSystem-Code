@@ -29,6 +29,7 @@ import de.codingair.warpsystem.spigot.features.portals.old.EffectPortal;
 import de.codingair.warpsystem.spigot.features.portals.old.nativeportals.NativePortal;
 import de.codingair.warpsystem.spigot.features.portals.utils.Portal;
 import de.codingair.warpsystem.spigot.features.portals.utils.PortalFactory;
+import de.codingair.warpsystem.spigot.features.portals.utils.PortalMap;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -41,7 +42,7 @@ import java.util.concurrent.TimeUnit;
 @Function (name = "Particle distance", defaultValue = "64", configPath = "WarpSystem.Portals.ParticleDistance", clazz = Integer.class)
 @Function (name = "Hologram update interval", defaultValue = "1m", configPath = "WarpSystem.Portals.HologramUpdateInterval", clazz = String.class)
 public class PortalManager implements Manager {
-    private final Set<Portal> portals = new HashSet<>();
+    private final PortalMap portals = new PortalMap();
     private final Set<Player> noTeleport = new HashSet<>();
     private final Cache<UUID, Boolean> goingToDelete = CacheBuilder.newBuilder().expireAfterWrite(30, TimeUnit.SECONDS).build();
     private final Cache<UUID, Boolean> goingToEdit = CacheBuilder.newBuilder().expireAfterWrite(30, TimeUnit.SECONDS).build();
@@ -252,7 +253,7 @@ public class PortalManager implements Manager {
         }
     }
 
-    public Set<Portal> getPortals() {
+    public PortalMap getPortals() {
         return portals;
     }
 

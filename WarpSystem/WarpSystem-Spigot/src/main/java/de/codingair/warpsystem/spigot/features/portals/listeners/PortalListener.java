@@ -58,7 +58,7 @@ public class PortalListener implements Listener, Ticker {
         });
     }
 
-    @EventHandler (priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent e) {
         List<Portal> portals = new ArrayList<>(PortalManager.getInstance().getPortals());
         for (Portal portal : portals) {
@@ -67,15 +67,15 @@ public class PortalListener implements Listener, Ticker {
         portals.clear();
     }
 
-    @EventHandler (priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onQuit(PlayerQuitEvent e) {
         PortalEditor editor = PortalEditor.EDITORS.remove(e.getPlayer().getName());
         if (editor != null) editor.getBackup().cancel(editor.getClone());
     }
 
-    @EventHandler (priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onWalk(PlayerWalkEvent e) {
-        for (Portal portal : PortalManager.getInstance().getPortals()) {
+        for (Portal portal : PortalManager.getInstance().getPortals().at(e.getTo())) {
             if (!portal.isVisible() || portal.isEditMode()) continue;
 
             int test = portal.enteredPortal(e.getPlayer(), e.getFrom(), e.getTo());
@@ -105,7 +105,7 @@ public class PortalListener implements Listener, Ticker {
         }
     }
 
-    @EventHandler (priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPortal(PlayerPortalEvent e) {
         Player player = e.getPlayer();
         if (PortalManager.getInstance().getNoTeleport().contains(player)
@@ -115,7 +115,8 @@ public class PortalListener implements Listener, Ticker {
             e.setCancelled(true);
         }
 
-        for (Portal portal : PortalManager.getInstance().getPortals()) {
+        if (e.getTo() == null) return;
+        for (Portal portal : PortalManager.getInstance().getPortals().at(e.getTo())) {
             if (portal.enteredPortal(player, e.getFrom()) == 1) {
                 e.setCancelled(true);
                 return;
@@ -123,12 +124,13 @@ public class PortalListener implements Listener, Ticker {
         }
     }
 
-    @EventHandler (priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPortal(EntityPortalEvent e) {
         if (e.getEntity() instanceof LivingEntity) {
             LivingEntity le = (LivingEntity) e.getEntity();
 
-            for (Portal portal : PortalManager.getInstance().getPortals()) {
+            if (e.getTo() == null) return;
+            for (Portal portal : PortalManager.getInstance().getPortals().at(e.getTo())) {
                 if (portal.enteredPortal(le, e.getFrom()) == 1) {
                     e.setCancelled(true);
                     return;
@@ -137,7 +139,7 @@ public class PortalListener implements Listener, Ticker {
         }
     }
 
-    @EventHandler (priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockPlace(BlockPlaceEvent e) {
         for (Portal portal : PortalManager.getInstance().getPortals()) {
             if (portal == null) continue;
@@ -152,7 +154,7 @@ public class PortalListener implements Listener, Ticker {
         }
     }
 
-    @EventHandler (priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onBucketFill(PlayerBucketFillEvent e) {
         for (Portal portal : PortalManager.getInstance().getPortals()) {
             if (portal == null) continue;
@@ -165,7 +167,7 @@ public class PortalListener implements Listener, Ticker {
         }
     }
 
-    @EventHandler (priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockBreak(BlockBreakEvent e) {
         for (Portal portal : PortalManager.getInstance().getPortals()) {
             if (portal == null) continue;

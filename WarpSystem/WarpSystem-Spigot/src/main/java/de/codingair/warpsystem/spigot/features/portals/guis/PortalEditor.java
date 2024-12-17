@@ -63,6 +63,10 @@ public class PortalEditor extends Editor<Portal> {
                             }
                         }
                     }
+
+                    // re-add portal to portal map to update registered chunks
+                    PortalManager.getInstance().getPortals().remove(portal);
+                    PortalManager.getInstance().getPortals().add(portal);
                 }
             }
 
