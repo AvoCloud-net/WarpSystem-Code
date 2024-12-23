@@ -22,7 +22,7 @@ public class POptions extends PageItem {
     private final Portal clone;
 
     public POptions(Player p, Portal clone) {
-        super(p, PortalEditor.getMainTitle(), new ItemBuilder(XMaterial.COMMAND_BLOCK).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Options")).getItem(), false);
+        super(p, PortalEditor.getMainTitle(), new ItemBuilder(XMaterial.COMMAND_BLOCK).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Options")).setHideStandardLore(true).getItem(), false);
 
         this.clone = clone;
         initialize(p);

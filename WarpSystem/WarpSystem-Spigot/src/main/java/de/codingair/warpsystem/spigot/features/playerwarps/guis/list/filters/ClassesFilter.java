@@ -87,7 +87,7 @@ public class ClassesFilter implements Filter {
                                 .addLore("");
 
                         if (selected != null && selected.contains(c)) {
-                            builder.addEnchantment(Enchantment.DAMAGE_ALL, 1);
+                            builder.addEnchantment(Editor.anyEnchantment(), 1);
                             builder.setHideEnchantments(true);
                             builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §c" + Lang.get("Deselect"));
                         } else builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §a" + Lang.get("Select"));

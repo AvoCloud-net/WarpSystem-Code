@@ -34,7 +34,7 @@ public class POptions extends PageItem {
     private final Spawn clone;
 
     public POptions(Player p, Spawn clone) {
-        super(p, SpawnEditor.getMainTitle(), new ItemBuilder(XMaterial.COMMAND_BLOCK).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Options")).getItem(), false);
+        super(p, SpawnEditor.getMainTitle(), new ItemBuilder(XMaterial.COMMAND_BLOCK).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Options")).setHideStandardLore(true).getItem(), false);
         this.clone = clone;
         initialize(p);
     }

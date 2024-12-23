@@ -42,7 +42,7 @@ public class IconManager implements Manager {
     private boolean showWithoutPermission = false;
 
     private static ItemBuilder STANDARD_ITEM() {
-        return new ItemBuilder(Material.GRASS);
+        return new ItemBuilder(XMaterial.STONE);
     }
 
     public static IconManager getInstance() {

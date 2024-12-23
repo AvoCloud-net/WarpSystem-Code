@@ -11,6 +11,7 @@ import de.codingair.codingapi.server.sounds.SoundData;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.utils.ChatColor;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
+import de.codingair.warpsystem.spigot.base.guis.editor.Editor;
 import de.codingair.warpsystem.spigot.base.guis.editor.StandardButtonOption;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
 import de.codingair.warpsystem.spigot.base.utils.Permissions;
@@ -238,7 +239,7 @@ public class GWarps extends GUI {
             builder.addLore("");
             builder.addLore("§3" + Lang.get("Rightclick") + ": §b" + Lang.get("Show_Icon"));
 
-            builder.addEnchantment(Enchantment.DAMAGE_ALL, 1);
+            builder.addEnchantment(Editor.anyEnchantment(), 1);
             builder.setHideEnchantments(true);
 
             addButton(new ItemButton(0, builder.getItem()) {

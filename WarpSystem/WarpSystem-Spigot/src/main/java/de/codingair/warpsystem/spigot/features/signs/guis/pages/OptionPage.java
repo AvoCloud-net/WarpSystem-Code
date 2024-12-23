@@ -24,7 +24,7 @@ public class OptionPage extends PageItem {
     private final Sign s;
 
     public OptionPage(Player p, WarpSign sign) {
-        super(p, WarpSignGUI.getMainTitle(), new ItemBuilder(XMaterial.COMMAND_BLOCK).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Options")).getItem(), false);
+        super(p, WarpSignGUI.getMainTitle(), new ItemBuilder(XMaterial.COMMAND_BLOCK).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Options")).setHideStandardLore(true).getItem(), false);
 
         this.sign = sign;
         s = (Sign) sign.getLocation().getBlock().getState();

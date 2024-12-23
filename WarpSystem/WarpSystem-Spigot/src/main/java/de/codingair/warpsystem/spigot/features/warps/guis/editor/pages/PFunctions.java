@@ -21,7 +21,7 @@ public class PFunctions extends PageItem {
     private final Icon icon;
 
     public PFunctions(Player p, Icon icon) {
-        super(p, Editor.TITLE_COLOR + Lang.get("Item_Editing"), new ItemBuilder(XMaterial.COMMAND_BLOCK).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Options")).getItem(), false);
+        super(p, Editor.TITLE_COLOR + Lang.get("Item_Editing"), new ItemBuilder(XMaterial.COMMAND_BLOCK).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Options")).setHideStandardLore(true).getItem(), false);
 
         this.icon = icon;
         initialize(p);

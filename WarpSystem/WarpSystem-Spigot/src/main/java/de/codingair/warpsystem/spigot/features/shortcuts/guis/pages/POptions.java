@@ -23,7 +23,7 @@ public class POptions extends PageItem {
     private final Shortcut shortcut;
 
     public POptions(Player p, Shortcut shortcut) {
-        super(p, Editor.TITLE_COLOR + Lang.get("Shortcuts"), new ItemBuilder(XMaterial.COMMAND_BLOCK).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Options")).getItem(), false);
+        super(p, Editor.TITLE_COLOR + Lang.get("Shortcuts"), new ItemBuilder(XMaterial.COMMAND_BLOCK).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Options")).setHideStandardLore(true).getItem(), false);
 
         this.shortcut = shortcut;
         initialize(p);

@@ -14,12 +14,14 @@ import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.tools.items.XMaterial;
 import de.codingair.warpsystem.spigot.base.WarpSystem;
 import de.codingair.warpsystem.spigot.base.utils.Lang;
+import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -195,7 +197,7 @@ public class Editor<C> extends SimpleGUI {
             Button b = page.getPageButton().setOption(option);
 
             if (page == getCurrent()) {
-                b.getItem().addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 1);
+                b.getItem().addUnsafeEnchantment(anyEnchantment(), 1);
                 ItemMeta m = b.getItem().getItemMeta();
                 m.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 b.getItem().setItemMeta(m);
@@ -267,5 +269,11 @@ public class Editor<C> extends SimpleGUI {
 
     public void setSuccessSound(SoundData successSound) {
         this.successSound = successSound;
+    }
+
+    @NotNull
+    public static Enchantment anyEnchantment() {
+        //noinspection deprecation
+        return Enchantment.values()[0];
     }
 }

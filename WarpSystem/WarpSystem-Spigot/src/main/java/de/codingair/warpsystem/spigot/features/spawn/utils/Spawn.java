@@ -139,6 +139,15 @@ public class Spawn extends FeatureObject {
         }, 1L);
     }
 
+    @NotNull
+    private EntityType fireworkRocketType() {
+        try {
+            return EntityType.FIREWORK_ROCKET;
+        } catch (Exception ex) {
+            return EntityType.valueOf("FIREWORK");
+        }
+    }
+
     private void spawnFireWorks(Location l) {
         if (randomFireWorks) {
             if (l != null) {
@@ -155,7 +164,7 @@ public class Spawn extends FeatureObject {
                 Firework fw;
 
                 try {
-                    fw = (Firework) l.getWorld().spawnEntity(l, EntityType.FIREWORK);
+                    fw = (Firework) l.getWorld().spawnEntity(l, fireworkRocketType());
                 } catch (Exception ex) {
                     return;
                 }

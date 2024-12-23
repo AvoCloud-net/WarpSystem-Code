@@ -42,7 +42,7 @@ public class PAppearance extends PageItem {
     }
 
     private PAppearance(Player p, PlayerWarp warp, PlayerWarp original, boolean editing, boolean appearance) {
-        super(p, PWEditor.getMainTitle(), new ItemBuilder(appearance ? XMaterial.PAINTING : XMaterial.COMMAND_BLOCK).setName(Editor.ITEM_TITLE_COLOR + (appearance ? Lang.get("Appearance") : Lang.get("Options"))).getItem(), false);
+        super(p, PWEditor.getMainTitle(), new ItemBuilder(appearance ? XMaterial.PAINTING : XMaterial.COMMAND_BLOCK).setName(Editor.ITEM_TITLE_COLOR + (appearance ? Lang.get("Appearance") : Lang.get("Options"))).setHideStandardLore(true).getItem(), false);
 
         this.warp = warp;
         this.original = original;

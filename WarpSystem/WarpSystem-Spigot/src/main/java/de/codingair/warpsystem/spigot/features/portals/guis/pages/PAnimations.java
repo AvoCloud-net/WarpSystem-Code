@@ -113,7 +113,7 @@ public class PAnimations extends PageItem {
                             .setName(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §a" + Lang.get("Add"));
 
                     if (!canFinish()) {
-                        b.addEnchantment(Enchantment.DAMAGE_ALL, 1);
+                        b.addEnchantment(Editor.anyEnchantment(), 1);
                         b.setHideEnchantments(true);
                     }
 

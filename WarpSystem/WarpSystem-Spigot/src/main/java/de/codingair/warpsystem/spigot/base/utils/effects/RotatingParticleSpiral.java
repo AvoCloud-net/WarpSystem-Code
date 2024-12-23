@@ -15,7 +15,7 @@ public class RotatingParticleSpiral extends BukkitRunnable {
     private static final double CHANGE = 0.2;
     private static final double HEIGHT = 2.4;
 
-    private final Player[] players;
+    private final List<Player> players;
     private final Location loc;
     private double r = 0;
     private double rMult = 1;
@@ -23,7 +23,7 @@ public class RotatingParticleSpiral extends BukkitRunnable {
     private double spin = 0;
 
     public RotatingParticleSpiral(Player player, Location loc, boolean forVisiblePlayers) {
-        List<Player> players = new ArrayList<>();
+        players = new ArrayList<>();
         players.add(player);
 
         if (forVisiblePlayers && !player.hasPotionEffect(PotionEffectType.INVISIBILITY) && player.getGameMode() != GameMode.SPECTATOR) {
@@ -32,8 +32,6 @@ public class RotatingParticleSpiral extends BukkitRunnable {
             });
         }
 
-        this.players = players.toArray(new Player[0]);
-        players.clear();
         this.loc = loc;
     }
 
@@ -50,8 +48,8 @@ public class RotatingParticleSpiral extends BukkitRunnable {
             double z = r * Math.sin(theta + spin);
 
             loc.add(x, y, z);
-            if (edge) Particle.FIREWORKS_SPARK.getParticlePacket(loc).send(players);
-            else Particle.SPELL_WITCH.getParticlePacket(loc).send(players);
+            if (edge) players.forEach(Particle.FIREWORKS_SPARK.getParticlePacket(loc)::send);
+            else players.forEach(Particle.SPELL_WITCH.getParticlePacket(loc)::send);
             loc.subtract(x, y, z);
 
             edge = !edge;

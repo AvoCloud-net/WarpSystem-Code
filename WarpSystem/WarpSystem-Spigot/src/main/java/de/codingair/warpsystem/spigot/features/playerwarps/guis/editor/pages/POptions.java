@@ -22,7 +22,7 @@ public class POptions extends PageItem {
     private final boolean isEditing;
 
     public POptions(Player p, PlayerWarp warp, PlayerWarp original, boolean editing) {
-        super(p, PWEditor.getMainTitle(), new ItemBuilder(XMaterial.COMMAND_BLOCK).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Options")).getItem(), false);
+        super(p, PWEditor.getMainTitle(), new ItemBuilder(XMaterial.COMMAND_BLOCK).setName(Editor.ITEM_TITLE_COLOR + Lang.get("Options")).setHideStandardLore(true).getItem(), false);
 
         this.warp = warp;
         this.original = original;
