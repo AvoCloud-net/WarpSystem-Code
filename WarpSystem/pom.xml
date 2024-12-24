@@ -96,8 +96,7 @@
             <dependency>
                 <groupId>org.spigotmc</groupId>
                 <artifactId>spigot-api</artifactId>
-                <!-- The latest versions require a different java version => stick with 1.18 -->
-                <version>1.18-R0.1-SNAPSHOT</version>
+                <version>1.21.4-R0.1-SNAPSHOT</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
