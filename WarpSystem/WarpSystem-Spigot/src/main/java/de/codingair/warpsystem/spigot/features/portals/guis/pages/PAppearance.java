@@ -89,7 +89,7 @@ public class PAppearance extends PageItem {
                         .addLore("", Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §a" + Lang.get("Portals_Set_Blocks"));
 
                 if (!canFinish()) {
-                    itemBuilder.addEnchantment(Editor.anyEnchantment(), 1);
+                    itemBuilder.addEnchantment(ItemBuilder.anyEnchantment(), 1);
                     itemBuilder.setHideEnchantments(true);
                 }
 

@@ -239,7 +239,7 @@ public class GWarps extends GUI {
             builder.addLore("");
             builder.addLore("§3" + Lang.get("Rightclick") + ": §b" + Lang.get("Show_Icon"));
 
-            builder.addEnchantment(Editor.anyEnchantment(), 1);
+            builder.addEnchantment(ItemBuilder.anyEnchantment(), 1);
             builder.setHideEnchantments(true);
 
             addButton(new ItemButton(0, builder.getItem()) {

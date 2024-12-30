@@ -123,7 +123,7 @@ public class PAppearance extends PageItem {
             @Override
             public void onClick(InventoryClickEvent e, Player player) {
                 if (icon.getItemBuilder().getEnchantments() == null || icon.getItemBuilder().getEnchantments().size() == 0) {
-                    icon.setItem(icon.getItemBuilder().setHideStandardLore(true).addEnchantment(Editor.anyEnchantment(), 1).setHideEnchantments(true).getItem());
+                    icon.setItem(icon.getItemBuilder().setHideStandardLore(true).addEnchantment(ItemBuilder.anyEnchantment(), 1).setHideEnchantments(true).getItem());
                 } else {
                     icon.setItem(icon.getItemBuilder().setHideStandardLore(true).removeEnchantments().getItem());
                 }

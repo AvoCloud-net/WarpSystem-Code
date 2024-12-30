@@ -109,7 +109,7 @@ public class PClasses extends PageItem {
                     builder.addLore("");
 
                     if (warp.hasClass(c)) {
-                        builder.addEnchantment(Editor.anyEnchantment(), 1);
+                        builder.addEnchantment(ItemBuilder.anyEnchantment(), 1);
                         builder.setHideEnchantments(true);
                         builder.addLore(Editor.ITEM_SUB_TITLE_COLOR + Lang.get("Leftclick") + ": §c" + Lang.get("Remove") + "§8 (§7" + warp.getClasses().size() + "/" + PlayerWarpManager.getManager().getClassesMax() + "§8)");
                     } else {

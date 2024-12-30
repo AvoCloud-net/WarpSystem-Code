@@ -197,7 +197,7 @@ public class Editor<C> extends SimpleGUI {
             Button b = page.getPageButton().setOption(option);
 
             if (page == getCurrent()) {
-                b.getItem().addUnsafeEnchantment(anyEnchantment(), 1);
+                b.getItem().addUnsafeEnchantment(ItemBuilder.anyEnchantment(), 1);
                 ItemMeta m = b.getItem().getItemMeta();
                 m.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 b.getItem().setItemMeta(m);
@@ -269,11 +269,5 @@ public class Editor<C> extends SimpleGUI {
 
     public void setSuccessSound(SoundData successSound) {
         this.successSound = successSound;
-    }
-
-    @NotNull
-    public static Enchantment anyEnchantment() {
-        //noinspection deprecation
-        return Enchantment.values()[0];
     }
 }
