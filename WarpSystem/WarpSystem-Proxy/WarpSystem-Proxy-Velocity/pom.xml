@@ -66,5 +66,12 @@
             <version>3.1.1</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.ProxioDev.ValioBungee</groupId>
+            <artifactId>RedisBungee-Velocity</artifactId>
+            <version>0.12.6</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
+
 </project>
