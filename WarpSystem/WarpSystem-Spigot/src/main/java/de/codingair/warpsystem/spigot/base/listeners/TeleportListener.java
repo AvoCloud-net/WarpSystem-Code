@@ -135,6 +135,12 @@ public class TeleportListener implements Listener {
         if (t == null || t.isCanMove()) return;
         Location target = t.getDestination().buildLocation();
 
+        // Do not check ender pearl or chorus fruit teleports
+        if (e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL
+            || e.getCause() == PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT) {
+            return;
+        }
+
         if (target == null) {
             //we gonna switch the server -> cancel the teleport
             e.setCancelled(true);
