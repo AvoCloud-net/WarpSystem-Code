@@ -72,7 +72,7 @@
             <dependency>
                 <groupId>com.github.CodingAir</groupId>
                 <artifactId>CodingAPI</artifactId>
-                <version>1.97-Experimental</version>
+                <version>1.97-Experimental4</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>

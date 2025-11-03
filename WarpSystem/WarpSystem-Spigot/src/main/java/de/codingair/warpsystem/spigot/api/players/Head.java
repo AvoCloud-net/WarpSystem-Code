@@ -1,8 +1,12 @@
 package de.codingair.warpsystem.spigot.api.players;
 
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import de.codingair.codingapi.player.data.GameProfileUtils;
+import de.codingair.codingapi.server.specification.Version;
 import de.codingair.codingapi.tools.items.ItemBuilder;
 import de.codingair.codingapi.utils.PropertyUtils;
 import org.bukkit.entity.Player;
@@ -26,7 +30,8 @@ public class Head {
     public Head(Player player) {
         GameProfile profile = GameProfileUtils.getGameProfile(player);
 
-        Collection<Property> properties = profile.getProperties().get("textures");
+        PropertyMap propertyMap = GameProfileUtils.getProperties(profile);
+        Collection<Property> properties = propertyMap.get("textures");
         Property property = properties.toArray().length == 0 ? null : (Property) properties.toArray()[0];
 
         String pValue = property == null ? null : PropertyUtils.getValue(property);
@@ -43,11 +48,10 @@ public class Head {
     }
 
     public GameProfile buildProfile() {
-        GameProfile modified = new GameProfile(UUID.randomUUID(), "BLANK");
+        Multimap<String, Property> properties = LinkedHashMultimap.create();
+        properties.put("textures", new Property("textures", Base64Coder.encodeString(String.format(textures, id)), "BLANK"));
 
-        modified.getProperties().put("textures", new Property("textures", Base64Coder.encodeString(String.format(textures, id)), "BLANK"));
-
-        return modified;
+        return GameProfileUtils.createGameProfile(UUID.randomUUID(), "BLANK", GameProfileUtils.createPropertyMap(properties));
     }
 
     public ItemStack buildItem() {

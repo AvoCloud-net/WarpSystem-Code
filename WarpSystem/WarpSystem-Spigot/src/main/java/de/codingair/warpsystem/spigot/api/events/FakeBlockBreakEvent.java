@@ -34,13 +34,13 @@ public class FakeBlockBreakEvent extends BlockBreakEvent {
     static {
         Class<?> protocolDirection = IReflection.getClass(IReflection.ServerPacket.PROTOCOL, "EnumProtocolDirection");
 
-        if (Version.atLeast(20.2)) {
+        if (Version.atLeast(20.02)) {
             Class<?> clientInformationClass = IReflection.getClass("net.minecraft.server.level.", "ClientInformation");
             Class<?> commonListenerCookieClass = IReflection.getClass("net.minecraft.server.network.", "CommonListenerCookie");
             DEFAULT_CLIENT_INFORMATION = IReflection.getMethod(clientInformationClass, clientInformationClass, new Class[0]);
 
             IReflection.MethodAccessor getCookie;
-            if (Version.atLeast(20.5)) {
+            if (Version.atLeast(20.05)) {
                 getCookie = IReflection.getMethod(commonListenerCookieClass, commonListenerCookieClass, new Class[]{GameProfile.class, boolean.class});
                 COMMON_LISTENER_COOKIE = (profile) -> getCookie.invoke(null, profile, false);
             } else {
@@ -67,7 +67,7 @@ public class FakeBlockBreakEvent extends BlockBreakEvent {
 
             MUTE_NETWORK_MANAGER = man -> channelField.set(man, null);
         } else {
-            if (Version.between(19, 19.2)) {
+            if (Version.between(19, 19.02)) {
                 Class<?> profilePublicKeyClass = IReflection.getClass("net.minecraft.world.entity.player.", "ProfilePublicKey");
                 PLAYER_INTERACT_MANAGER = null;
                 PLAYER = IReflection.getConstructor(PacketUtils.EntityPlayerClass, PacketUtils.MinecraftServerClass, PacketUtils.WorldServerClass, GameProfile.class, profilePublicKeyClass);
@@ -164,14 +164,14 @@ public class FakeBlockBreakEvent extends BlockBreakEvent {
                     profile,
                     PLAYER_INTERACT_MANAGER.newInstance(PacketUtils.getWorldServer(player.getWorld()))
             );
-        else if (Version.atLeast(20.2))
+        else if (Version.atLeast(20.02))
             return PLAYER.newInstance(
                     PacketUtils.getMinecraftServer(),
                     PacketUtils.getWorldServer(player.getWorld()),
                     profile,
                     DEFAULT_CLIENT_INFORMATION.invoke(null)
             );
-        else if (Version.between(19, 19.2))
+        else if (Version.between(19, 19.02))
             return PLAYER.newInstance(
                     PacketUtils.getMinecraftServer(),
                     PacketUtils.getWorldServer(player.getWorld()),
@@ -186,7 +186,7 @@ public class FakeBlockBreakEvent extends BlockBreakEvent {
     }
 
     private static Object createConnectionDump(@NotNull Player player, @NotNull Object fakePlayer, @NotNull GameProfile profile) {
-        if (Version.atLeast(20.2)) {
+        if (Version.atLeast(20.02)) {
             Object networkManager = NETWORK_MANAGER.apply(player);
             Object playerCon = PLAYER_CONNECTION.newInstance(PacketUtils.getMinecraftServer(), networkManager, fakePlayer, COMMON_LISTENER_COOKIE.apply(profile));
             MUTE_NETWORK_MANAGER.accept(networkManager);
