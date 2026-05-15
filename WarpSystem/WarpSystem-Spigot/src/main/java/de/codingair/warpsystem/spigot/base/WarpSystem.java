@@ -40,6 +40,7 @@ import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -194,7 +195,9 @@ public class WarpSystem extends JavaPlugin implements Proxy {
             }
 
             Bukkit.getPluginManager().registerEvents(new PlayerDataListener(), this);
-            Bukkit.getPluginManager().registerEvents(new TeleportListener(), this);
+            TeleportListener teleportListener = new TeleportListener();
+            Bukkit.getPluginManager().registerEvents(teleportListener, this);
+            SpawnLocationEvents.register(teleportListener, this, EventPriority.HIGHEST, true, teleportListener::onSpawn);
             Bukkit.getPluginManager().registerEvents(new NotifyListener(), this);
             Bukkit.getPluginManager().registerEvents(new CommandListener(), this);
 
